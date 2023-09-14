@@ -1,0 +1,17 @@
+{
+  "development": {
+      "username": "pgadmin",
+      "password": "India@123",
+      "database": "commandcentredb",
+      "host": "indiarba-db-dev.database.windows.net",
+      "dialect": "mssql"
+  },
+
+    "development2": {
+        "username": "pgadmin",
+        "password": "India$1234",
+        "database": "cmndctr",
+        "host": "cmndcntr-db-dev.database.windows.net",
+        "dialect": "mssql"
+    }
+}
