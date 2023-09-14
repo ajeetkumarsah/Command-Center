@@ -1,0 +1,39 @@
+{
+  "name": "command_center",
+  "version": "1.0.0",
+  "description": "testing for API Response",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "Testing"
+  ],
+  "author": "Chandan",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "compression": "^1.7.4",
+    "connect-flash": "^0.1.1",
+    "cookie-session": "^2.0.0",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "jsonwebtoken": "^9.0.0",
+    "lodash": "^4.17.21",
+    "log4js": "^6.9.1",
+    "memory-cache": "^0.2.0",
+    "passport": "^0.5.3",
+    "passport-ping-oauth2": "^1.0.0",
+    "request": "^2.88.2",
+    "sequelize": "^6.32.0",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^4.6.3",
+    "tedious": "^16.1.0"
+  },
+  "engines": {
+    "npm": "6.14.x",
+    "node": "16.19.x"
+  }
+}
