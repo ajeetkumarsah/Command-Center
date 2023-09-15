@@ -310,7 +310,10 @@ let getDeepDivePageData = async (req, res) =>{
 
             let categories_data_rt_cy = await sequelize.query(channel_query_rt_cy)
             let categories_data_rt_py = await sequelize.query(channel_query_rt_py)
-
+            if(categories_data_rt_cy[0].length === 0){
+                res.status(200).json([]);
+                return 0
+            }
             let cy_key = {}
             for(let i in categories_data_rt_cy[0]){
                 cy_key[`${categories_data_rt_cy[0][i]['MonthYear']}/${categories_data_rt_cy[0][i]['channel_name']}/${categories_data_rt_cy[0][i]['CustName']}`] = categories_data_rt_cy[0][i]['Retailing_Sum']
@@ -338,7 +341,7 @@ let getDeepDivePageData = async (req, res) =>{
 
             let final_obj = {
                 "filter_key": filter_1['filter_data'],
-                "filter_key2": filter_1['filter_data'],
+                "filter_key2": filter_2!=="" ? filter_2['filter_data'] : "",
                 "date": date,
                 "channel": channel_list.map(item => item).join("/"),
                 "site": site,

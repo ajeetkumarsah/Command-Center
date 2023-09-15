@@ -346,6 +346,11 @@ let getDeepDivePageData = async (req, res) =>{
             let categories_data_rt_cy = await sequelize.query(channel_query_rt_cy)
             let categories_data_rt_py = await sequelize.query(channel_query_rt_py)
 
+            if(categories_data_rt_cy[0].length === 0){
+                res.status(200).json([]);
+                return 0
+            }
+
             let cy_key = {}
             for(let i in categories_data_rt_cy[0]){
                 cy_key[`${categories_data_rt_cy[0][i]['MonthYear']}/${categories_data_rt_cy[0][i]['channel_name']}/${categories_data_rt_cy[0][i]['CustName']}`] = categories_data_rt_cy[0][i]['Retailing_Sum']
@@ -373,7 +378,7 @@ let getDeepDivePageData = async (req, res) =>{
 
             let final_obj = {
                 "filter_key": filter_1['filter_data'],
-                "filter_key2": filter_1['filter_data'],
+                "filter_key2": filter_2!=="" ? filter_2['filter_data'] : "",
                 "date": date,
                 "channel": channel_list.map(item => item).join("/"),
                 "site": site,
@@ -388,64 +393,98 @@ let getDeepDivePageData = async (req, res) =>{
             let cm_set_cy = getPNMSet(categories_data_rt_cy[0], monthsList_cy, 1, 0)
             let cm_set_py = getPNMSet(categories_data_rt_py[0], monthsList_py, 1, 0)
             let cmDataSetList = getFinalDataOfPNMSet(cm_set_cy, cm_set_py, filter_1, filter_2, channel_list)
-            let cm_data_obj ={
-                "cy_retailing_sum": getFormatedNumberValue_RT(cmDataSetList[0]["cy_retailing_sum"]),
-                "py_retailing_sum": getFormatedNumberValue_RT(cmDataSetList[0]["py_retailing_sum"]),
-                "IYA": cmDataSetList[0]["IYA"],
+            for(let i in cmDataSetList){
+                let cm_data_obj ={
+                    "cy_retailing_sum": getFormatedNumberValue_RT(cmDataSetList[i]["cy_retailing_sum"]),
+                    "py_retailing_sum": getFormatedNumberValue_RT(cmDataSetList[i]["py_retailing_sum"]),
+                    "IYA": cmDataSetList[i]["IYA"],
+                    "division": cmDataSetList[i]["division"] ,
+                    "cluster": cmDataSetList[i]["cluster"] ,
+                    "branch": cmDataSetList[i]["branch"] ,
+                }
+                final_obj['cm'].push(cm_data_obj)
             }
-            final_obj['cm'].push(cm_data_obj)
 
             let p1m_set_cy = getPNMSet(categories_data_rt_cy[0], monthsList_cy, 2, 1)
             let p1m_set_py = getPNMSet(categories_data_rt_py[0], monthsList_py, 2, 1)
             let p1mDataSetList = getFinalDataOfPNMSet(p1m_set_cy, p1m_set_py, filter_1, filter_2, channel_list)
-            let p1m_data_obj ={
-                "cy_retailing_sum": getFormatedNumberValue_RT(p1mDataSetList[0]["cy_retailing_sum"]),
-                "py_retailing_sum": getFormatedNumberValue_RT(p1mDataSetList[0]["py_retailing_sum"]),
-                "IYA": p1mDataSetList[0]["IYA"],
+            for(let i in p1mDataSetList){
+                let p1m_data_obj ={
+                    "cy_retailing_sum": getFormatedNumberValue_RT(p1mDataSetList[0]["cy_retailing_sum"]),
+                    "py_retailing_sum": getFormatedNumberValue_RT(p1mDataSetList[0]["py_retailing_sum"]),
+                    "IYA": p1mDataSetList[0]["IYA"],
+                    "division": p1mDataSetList[i]["division"] ,
+                    "cluster": p1mDataSetList[i]["cluster"] ,
+                    "branch": cmDataSetList[i]["branch"] ,
+                }
+                final_obj['p1m'].push(p1m_data_obj)
             }
-            final_obj['p1m'].push(p1m_data_obj)
+
 
             let p3m_set_cy = getPNMSet(categories_data_rt_cy[0], monthsList_cy, 4, 1)
             let p3m_set_py = getPNMSet(categories_data_rt_py[0], monthsList_py, 4, 1)
             let p3mDataSetList = getFinalDataOfPNMSet(p3m_set_cy, p3m_set_py, filter_1, filter_2, channel_list)
-            let p3m_data_obj ={
-                "cy_retailing_sum": getFormatedNumberValue_RT(p3mDataSetList[0]["cy_retailing_sum"]),
-                "py_retailing_sum": getFormatedNumberValue_RT(p3mDataSetList[0]["py_retailing_sum"]),
-                "IYA": p3mDataSetList[0]["IYA"],
+            for(let i in p3mDataSetList){
+                let p3m_data_obj ={
+                    "cy_retailing_sum": getFormatedNumberValue_RT(p3mDataSetList[0]["cy_retailing_sum"]),
+                    "py_retailing_sum": getFormatedNumberValue_RT(p3mDataSetList[0]["py_retailing_sum"]),
+                    "IYA": p3mDataSetList[0]["IYA"],
+                    "division": p3mDataSetList[i]["division"] ,
+                    "cluster": p3mDataSetList[i]["cluster"] ,
+                    "branch": p3mDataSetList[i]["branch"] ,
+                }
+                final_obj['p3m'].push(p3m_data_obj)
             }
-            final_obj['p3m'].push(p3m_data_obj)
+
 
             let p6m_set_cy = getPNMSet(categories_data_rt_cy[0], monthsList_cy, 7, 1)
             let p6m_set_py = getPNMSet(categories_data_rt_py[0], monthsList_py, 7, 1)
             let p6mDataSetList = getFinalDataOfPNMSet(p6m_set_cy, p6m_set_py, filter_1, filter_2, channel_list)
-            let p6m_data_obj ={
-                "cy_retailing_sum": getFormatedNumberValue_RT(p6mDataSetList[0]["cy_retailing_sum"]),
-                "py_retailing_sum": getFormatedNumberValue_RT(p6mDataSetList[0]["py_retailing_sum"]),
-                "IYA": p6mDataSetList[0]["IYA"],
+            for(let i in p6mDataSetList){
+                let p6m_data_obj ={
+                    "cy_retailing_sum": getFormatedNumberValue_RT(p6mDataSetList[0]["cy_retailing_sum"]),
+                    "py_retailing_sum": getFormatedNumberValue_RT(p6mDataSetList[0]["py_retailing_sum"]),
+                    "IYA": p6mDataSetList[0]["IYA"],
+                    "division": p6mDataSetList[i]["division"] ,
+                    "cluster": p6mDataSetList[i]["cluster"] ,
+                    "branch": p6mDataSetList[i]["branch"] ,
+                }
+                final_obj['p6m'].push(p6m_data_obj)
             }
-            final_obj['p6m'].push(p6m_data_obj)
+
 
             let p12m_set_cy = getPNMSet(categories_data_rt_cy[0], monthsList_cy, 12, 0)
             let p12m_set_py = getPNMSet(categories_data_rt_py[0], monthsList_py, 12, 0)
             let p12mDataSetList = getFinalDataOfPNMSet(p12m_set_cy, p12m_set_py, filter_1, filter_2, channel_list)
-            let p12m_data_obj ={
-                "cy_retailing_sum": getFormatedNumberValue_RT(p12mDataSetList[0]["cy_retailing_sum"]),
-                "py_retailing_sum": getFormatedNumberValue_RT(p12mDataSetList[0]["py_retailing_sum"]),
-                "IYA": p12mDataSetList[0]["IYA"],
+            for(let i in p12mDataSetList){
+                let p12m_data_obj ={
+                    "cy_retailing_sum": getFormatedNumberValue_RT(p12mDataSetList[0]["cy_retailing_sum"]),
+                    "py_retailing_sum": getFormatedNumberValue_RT(p12mDataSetList[0]["py_retailing_sum"]),
+                    "IYA": p12mDataSetList[0]["IYA"],
+                    "division": p12mDataSetList[i]["division"] ,
+                    "cluster": p12mDataSetList[i]["cluster"] ,
+                    "branch": p12mDataSetList[i]["branch"] ,
+                }
+                final_obj['p12m'].push(p12m_data_obj)
             }
-            final_obj['p12m'].push(p12m_data_obj)
+
 
             let financialYearCount = getFinancialYearList(parseInt(getMonthDigit(date.split("-")[0]))-1, date.split("-")[1])
 
             let py_set_cy = getPNMSet(categories_data_rt_cy[0], monthsList_cy, financialYearCount, 0)
             let py_set_py = getPNMSet(categories_data_rt_py[0], monthsList_py, financialYearCount, 0)
             let pyDataSetList = getFinalDataOfPNMSet(py_set_cy, py_set_py, filter_1, filter_2, channel_list)
-            let py_data_obj ={
-                "cy_retailing_sum": getFormatedNumberValue_RT(pyDataSetList[0]["cy_retailing_sum"]),
-                "py_retailing_sum": getFormatedNumberValue_RT(pyDataSetList[0]["py_retailing_sum"]),
-                "IYA": pyDataSetList[0]["IYA"],
+            for(let i in pyDataSetList){
+                let py_data_obj ={
+                    "cy_retailing_sum": getFormatedNumberValue_RT(pyDataSetList[0]["cy_retailing_sum"]),
+                    "py_retailing_sum": getFormatedNumberValue_RT(pyDataSetList[0]["py_retailing_sum"]),
+                    "IYA": pyDataSetList[0]["IYA"],
+                    "division": pyDataSetList[i]["division"] ,
+                    "cluster": pyDataSetList[i]["cluster"] ,
+                    "branch": pyDataSetList[i]["branch"] ,
+                }
+                final_obj['financial_year'].push(py_data_obj)
             }
-            final_obj['financial_year'].push(py_data_obj)
             all_result.push([final_obj])
         }
         res.status(200).json(all_result);

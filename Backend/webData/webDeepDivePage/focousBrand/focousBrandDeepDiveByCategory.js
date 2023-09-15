@@ -376,20 +376,25 @@ let getDeepDivePageData = async (req, res) => {
             for(let k in cacheData){
                 let cachebodyData = cacheData[k]['reqBody']
                 let curReq = req.body
-                for(let i=0; i<curReq.length; i++){
-                    let matched = false
-                    for(let n = 0; n<cachebodyData.length; n++){
-                        if (deepEqual(cachebodyData[n], curReq[i])) {
-                            if((cachebodyData[n]['channel'].map(item => `'${item}'`).join(", ")) === (curReq[i]['channel'].map(item => `'${item}'`).join(", "))){
-                                matchedDataList.push(cacheData[k]['resData'][n])
-                                matched = true
-                                console.log("Data fetched from cache")
+                if (Array.isArray(curReq)){
+                    for(let i=0; i<curReq.length; i++){
+                        let matched = false
+                        for(let n = 0; n<cachebodyData.length; n++){
+                            if (deepEqual(cachebodyData[n], curReq[i])) {
+                                if((cachebodyData[n]['channel'].map(item => `'${item}'`).join(", ")) === (curReq[i]['channel'].map(item => `'${item}'`).join(", "))){
+                                    matchedDataList.push(cacheData[k]['resData'][n])
+                                    matched = true
+                                    console.log("Data fetched from cache")
+                                }
                             }
                         }
+                        if(!matched){
+                            nonMatchedIndex.push(curReq[i])
+                        }
                     }
-                    if(!matched){
-                        nonMatchedIndex.push(curReq[i])
-                    }
+                }
+                else{
+                    console.log("No data in Cache")
                 }
             }
 

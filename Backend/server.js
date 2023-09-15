@@ -3,6 +3,14 @@ const app = express();
 const port = process.env.PORT || 3000;
 // require('./build/build/web/index.html')
 modelInit = require("./models-init/models-init")
+const rateLimit = require('express-rate-limit');
+
+// Apply rate limiting to a specific endpoint
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // 100 requests per IP address
+});
+
 
 const docSwag = require('./api-doc/definition'),
     swaggerUi = require('swagger-ui-express'),
@@ -70,7 +78,7 @@ require('./router/routes')(app);
 app.use(express.static( './build/build/web'));
 
 app.use((req, res) => {
-    res.sendFile(path.join(__dirname + '/build/build/web/index.html'));
+    res.sendFile(path.join(__dirname + '/build/build/web/index.html'), limiter);
 });
 
 // app.use(express.static(dir));

@@ -23,7 +23,7 @@ module.exports = function () {
             authorizationURL: configAuth.authorizationURL,
             tokenURL: configAuth.tokenURL,
             clientID: configAuth.clientID,
-            clientSecret: configAuth.clientSecret,
+            clientSecret: process.env.clientSecret,
             callbackURL: configAuth.callbackURL,
         },
         async function (accessToken, refreshToken, params, profile, done) {
