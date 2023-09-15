@@ -14,7 +14,6 @@ module.exports = {
     authorizationURL: 'https://fedauthtst.pg.com/as/authorization.oauth2',
     tokenURL: 'https://fedauthtst.pg.com/as/token.oauth2',
     clientID: 'Command Center',
-    clientSecret: 'QOOthCqZMLOByTFJoPat3U1xXUVVI3unFua54dFWq0d7ShhQ7c9dvPbCyMIhMfvC',
     // callbackURL: 'https://ahmcanteen-webcqu-prod.azurewebsites.net/callback',
     // callbackURL: 'http://localhost:3000/callback',
     callbackURL: 'https://cmndcntr-web-dev-web01.azurewebsites.net/callback',
