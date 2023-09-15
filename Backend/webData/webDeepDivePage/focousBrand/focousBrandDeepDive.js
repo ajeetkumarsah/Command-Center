@@ -5,6 +5,15 @@ function copyObject(obj) {
     return JSON.parse(JSON.stringify(obj));
 }
 
+function sanitizeInput(input) {
+    const sanitizedInput = input.trim();
+    if (/^[a-zA-Z0-9\s\W_]+$/.test(sanitizedInput)) {
+        return sanitizedInput; // Return the sanitized input if it contains only alphabet and special characters
+    } else {
+        throw new Error('Invalid input'); // Throw an error for invalid input
+    }
+}
+
 function deepEqual(obj1, obj2) {
     // Convert objects to JSON strings and compare them
     const json1 = JSON.stringify(obj1);
@@ -136,7 +145,9 @@ async function getTableData(bodyData){
                 fb_target_base = mergedArr[i]['fb_target_sum']
             }
             let obj = {}
-            let key = `${mergedArr[i]['Calendar Month']}/${mergedArr[i]['Division']}`
+            let Month = sanitizeInput(mergedArr[i]['Calendar Month'])
+            let Division = sanitizeInput(mergedArr[i]['Division'])
+            let key = `${Month}/${Division}`
             if (mergedArr[i]['fb_achieve_sum'] == null) {
                 mergedArr[i]['fb_achieve_sum'] = 0
             }
@@ -176,7 +187,10 @@ async function getTableData(bodyData){
                 fb_target_base = mergedArr[i]['fb_target_sum']
             }
             let obj = {}
-            let key = `${mergedArr[i]['Calendar Month']}/${mergedArr[i]['Division']}/${mergedArr[i]['Site Name']}`
+            let Month = sanitizeInput(mergedArr[i]['Calendar Month'])
+            let Division = sanitizeInput(mergedArr[i]['Division'])
+            let Site_Name = sanitizeInput(mergedArr[i]['Site Name'])
+            let key = `${Month}/${Division}/${Site_Name}`
             if (mergedArr[i]['fb_achieve_sum'] == null) {
                 mergedArr[i]['fb_achieve_sum'] = 0
             }
@@ -215,7 +229,11 @@ async function getTableData(bodyData){
                 fb_target_base = mergedArr[i]['fb_target_sum']
             }
             let obj = {}
-            let key = `${mergedArr[i]['Calendar Month']}/${mergedArr[i]['Division']}/${mergedArr[i]['Site Name']}/${mergedArr[i]['Branch Name']}`
+            let Month = sanitizeInput(mergedArr[i]['Calendar Month'])
+            let Division = sanitizeInput(mergedArr[i]['Division'])
+            let Site_Name = sanitizeInput(mergedArr[i]['Site Name'])
+            let Branch_Name = sanitizeInput(mergedArr[i]['Branch Name'])
+            let key = `${Month}/${Division}/${Site_Name}/${Branch_Name}`
             if (mergedArr[i]['fb_achieve_sum'] == null) {
                 mergedArr[i]['fb_achieve_sum'] = 0
             }
@@ -254,7 +272,12 @@ async function getTableData(bodyData){
                 fb_target_base = mergedArr[i]['fb_target_sum']
             }
             let obj = {}
-            let key = `${mergedArr[i]['Calendar Month']}/${mergedArr[i]['Division']}/${mergedArr[i]['Site Name']}/${mergedArr[i]['Branch Name']}/${mergedArr[i]['ChannelName']}`
+            let Month = sanitizeInput(mergedArr[i]['Calendar Month'])
+            let Division = sanitizeInput(mergedArr[i]['Division'])
+            let Site_Name = sanitizeInput(mergedArr[i]['Site Name'])
+            let Branch_Name = sanitizeInput(mergedArr[i]['Branch Name'])
+            let ChannelName = sanitizeInput(mergedArr[i]['ChannelName'])
+            let key = `${Month}/${Division}/${Site_Name}/${Branch_Name}/${ChannelName}`
             if (mergedArr[i]['fb_achieve_sum'] == null) {
                 mergedArr[i]['fb_achieve_sum'] = 0
             }
@@ -292,7 +315,13 @@ async function getTableData(bodyData){
                 fb_target_base = mergedArr[i]['fb_target_sum']
             }
             let obj = {}
-            let key = `${mergedArr[i]['Calendar Month']}/${mergedArr[i]['Division']}/${mergedArr[i]['Site Name']}/${mergedArr[i]['Branch Name']}/${mergedArr[i]['ChannelName']}/${mergedArr[i]['SubChannelName']}`
+            let Month = sanitizeInput(mergedArr[i]['Calendar Month'])
+            let Division = sanitizeInput(mergedArr[i]['Division'])
+            let Site_Name = sanitizeInput(mergedArr[i]['Site Name'])
+            let Branch_Name = sanitizeInput(mergedArr[i]['Branch Name'])
+            let ChannelName = sanitizeInput(mergedArr[i]['ChannelName'])
+            let SubChannelName = sanitizeInput(mergedArr[i]['SubChannelName'])
+            let key = `${Month}/${Division}/${Site_Name}/${Branch_Name}/${ChannelName}/${SubChannelName}`
             if (mergedArr[i]['fb_achieve_sum'] == null) {
                 mergedArr[i]['fb_achieve_sum'] = 0
             }
