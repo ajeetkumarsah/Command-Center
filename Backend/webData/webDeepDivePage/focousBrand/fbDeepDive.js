@@ -1,7 +1,15 @@
 const {sequelize} = require('../../../databaseConnection/sql_connection');
 const lodash = require("lodash");
 const {QueryTypes} = require("sequelize");
-// const {sequelize2} = require('../../../databaseConnection/sql_connection2');
+
+function sanitizeInput(input) {
+    const sanitizedInput = input.trim();
+    if (/^[a-zA-Z\s\W_]+$/.test(sanitizedInput)) {
+        return sanitizedInput; // Return the sanitized input if it contains only alphabet and special characters
+    } else {
+        throw new Error('Invalid input'); // Throw an error for invalid input
+    }
+}
 
 let getDeepDivePageDataBySBF = async (req, res) =>{
 
@@ -35,10 +43,11 @@ let getDeepDivePageDataBySBF = async (req, res) =>{
 
         let categorySet = {}
         for(let i in categories_data_fb[0]){
-            if(categorySet[`${categories_data_fb[0][i]['CategoryName']}`]){
-                categorySet[`${categories_data_fb[0][i]['CategoryName']}`]['fb_target'] = categorySet[`${categories_data_fb[0][i]['CategoryName']}`]['fb_target'] + categories_data_fb[0][i]['fb_target_sum']
-                categorySet[`${categories_data_fb[0][i]['CategoryName']}`]['fb_achieved'] = categorySet[`${categories_data_fb[0][i]['CategoryName']}`]['fb_achieved'] + categories_data_fb[0][i]['fb_achieve_sum']
-                categorySet[`${categories_data_fb[0][i]['CategoryName']}`]['fb_IYA'] = (categorySet[`${categories_data_fb[0][i]['CategoryName']}`]['fb_IYA'] + ((categories_data_fb[0][i]['fb_achieve_sum'])/(categories_data_fb[0][i]['fb_target_sum']) * 100))/2
+            let data = sanitizeInput(categorySet[`${categories_data_fb[0][i]['CategoryName']}`])
+            if(data){
+                data['fb_target'] = data['fb_target'] + categories_data_fb[0][i]['fb_target_sum']
+                data['fb_achieved'] = data['fb_achieved'] + categories_data_fb[0][i]['fb_achieve_sum']
+                data['fb_IYA'] = (data['fb_IYA'] + ((categories_data_fb[0][i]['fb_achieve_sum'])/(categories_data_fb[0][i]['fb_target_sum']) * 100))/2
             }
             else{
                 categorySet[`${categories_data_fb[0][i]['CategoryName']}`] = {
@@ -51,7 +60,7 @@ let getDeepDivePageDataBySBF = async (req, res) =>{
         let brandObj = {}
         for(let i in categories_data_fb[0]){
             let obj = {}
-            let key  = categories_data_fb[0][i]['CategoryName']
+            let key  = sanitizeInput(categories_data_fb[0][i]['CategoryName'])
             if (key in brandObj){
                 if(brandObj[`${categories_data_fb[0][i]['BrandName']}`]){
                     brandObj[`${categories_data_fb[0][i]['BrandName']}`] = categories_data_fb[0][i]['BrandName']
@@ -370,7 +379,9 @@ let getDeepDivePageDataBySBF2 = async (req, res) =>{
             let DivisionObj = {}
             for(let i in mergedArr){
                 let obj = {}
-                let key  = `${mergedArr[i]['Calendar Month']}/${mergedArr[i]['Division']}`
+                let Month = sanitizeInput(mergedArr[i]['Calendar Month'])
+                let Division = sanitizeInput(mergedArr[i]['Division'])
+                let key  = `${Month}/${Division}`
                 if(mergedArr[i]['billed_sum'] == null){mergedArr[i]['billed_sum'] = 0}
                 if(mergedArr[i]['coverage_sum'] == null){mergedArr[i]['coverage_sum'] = 0}
                 if(mergedArr[i]['productivity_per'] == null){mergedArr[i]['productivity_per'] = 0}
@@ -397,7 +408,10 @@ let getDeepDivePageDataBySBF2 = async (req, res) =>{
             let SiteObj = {}
             for(let i in mergedArr){
                 let obj = {}
-                let key  = `${mergedArr[i]['Calendar Month']}/${mergedArr[i]['Division']}/${mergedArr[i]['Site Name']}`
+                let Month = sanitizeInput(mergedArr[i]['Calendar Month'])
+                let Division = sanitizeInput(mergedArr[i]['Division'])
+                let Site_Name = sanitizeInput(mergedArr[i]['Site Name'])
+                let key  = `${Month}/${Division}/${Site_Name}`
                 if(mergedArr[i]['billed_sum'] == null){mergedArr[i]['billed_sum'] = 0}
                 if(mergedArr[i]['coverage_sum'] == null){mergedArr[i]['coverage_sum'] = 0}
                 if(mergedArr[i]['productivity_per'] == null){mergedArr[i]['productivity_per'] = 0}
@@ -425,7 +439,11 @@ let getDeepDivePageDataBySBF2 = async (req, res) =>{
             let BranchObj = {}
             for(let i in mergedArr){
                 let obj = {}
-                let key  = `${mergedArr[i]['Calendar Month']}/${mergedArr[i]['Division']}/${mergedArr[i]['Site Name']}/${mergedArr[i]['Branch Name']}`
+                let Month = sanitizeInput(mergedArr[i]['Calendar Month'])
+                let Division = sanitizeInput(mergedArr[i]['Division'])
+                let Site_Name = sanitizeInput(mergedArr[i]['Site Name'])
+                let Branch_Name = sanitizeInput(mergedArr[i]['Branch Name'])
+                let key  = `${Month}/${Division}/${Site_Name}/${Branch_Name}`
                 if(mergedArr[i]['billed_sum'] == null){mergedArr[i]['billed_sum'] = 0}
                 if(mergedArr[i]['coverage_sum'] == null){mergedArr[i]['coverage_sum'] = 0}
                 if(mergedArr[i]['productivity_per'] == null){mergedArr[i]['productivity_per'] = 0}
@@ -453,7 +471,12 @@ let getDeepDivePageDataBySBF2 = async (req, res) =>{
             let ChannelObj = {}
             for(let i in mergedArr){
                 let obj = {}
-                let key  = `${mergedArr[i]['Calendar Month']}/${mergedArr[i]['Division']}/${mergedArr[i]['Site Name']}/${mergedArr[i]['Branch Name']}/${mergedArr[i]['ChannelName']}`
+                let Month = sanitizeInput(mergedArr[i]['Calendar Month'])
+                let Division = sanitizeInput(mergedArr[i]['Division'])
+                let Site_Name = sanitizeInput(mergedArr[i]['Site Name'])
+                let Branch_Name = sanitizeInput(mergedArr[i]['Branch Name'])
+                let ChannelName = sanitizeInput(mergedArr[i]['ChannelName'])
+                let key  = `${Month}/${Division}/${Site_Name}/${Branch_Name}/${ChannelName}`
                 if(mergedArr[i]['billed_sum'] == null){mergedArr[i]['billed_sum'] = 0}
                 if(mergedArr[i]['coverage_sum'] == null){mergedArr[i]['coverage_sum'] = 0}
                 if(mergedArr[i]['productivity_per'] == null){mergedArr[i]['productivity_per'] = 0}
@@ -481,7 +504,13 @@ let getDeepDivePageDataBySBF2 = async (req, res) =>{
             let subChannelObj = {}
             for(let i in mergedArr){
                 let obj = {}
-                let key  = `${mergedArr[i]['Calendar Month']}/${mergedArr[i]['Division']}/${mergedArr[i]['Site Name']}/${mergedArr[i]['Branch Name']}/${mergedArr[i]['ChannelName']}/${mergedArr[i]['SubChannelName']}`
+                let Month = sanitizeInput(mergedArr[i]['Calendar Month'])
+                let Division = sanitizeInput(mergedArr[i]['Division'])
+                let Site_Name = sanitizeInput(mergedArr[i]['Site Name'])
+                let Branch_Name = sanitizeInput(mergedArr[i]['Branch Name'])
+                let ChannelName = sanitizeInput(mergedArr[i]['ChannelName'])
+                let SubChannelName = sanitizeInput(mergedArr[i]['SubChannelName'])
+                let key  = `${Month}/${Division}/${Site_Name}/${Branch_Name}/${ChannelName}/${SubChannelName}`
                 if(mergedArr[i]['billed_sum'] == null){mergedArr[i]['billed_sum'] = 0}
                 if(mergedArr[i]['coverage_sum'] == null){mergedArr[i]['coverage_sum'] = 0}
                 if(mergedArr[i]['productivity_per'] == null){mergedArr[i]['productivity_per'] = 0}

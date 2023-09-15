@@ -7,6 +7,15 @@ function getTableName(data, table_name){
     return table_name
 }
 
+function sanitizeInput(input) {
+    const sanitizedInput = input.trim();
+    if (/^[a-zA-Z\s\W_]+$/.test(sanitizedInput)) {
+        return sanitizedInput; // Return the sanitized input if it contains only alphabet and special characters
+    } else {
+        throw new Error('Invalid input'); // Throw an error for invalid input
+    }
+}
+
 function getFinancialYearList(month, year) {
     const months = [
         'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
@@ -104,7 +113,9 @@ function getPNMSet(data, monthsList, no_of_months, skip){
     }
     let obj = {}
     for(let i in mergeArr){
-        let key = `${mergeArr[i]['division']}/${mergeArr[i]['SiteName']}`
+        let division = sanitizeInput(mergeArr[i]['division']);
+        let siteName = sanitizeInput(mergeArr[i]['SiteName']);
+        let key = `${division}/${siteName}`;
         if(obj[key]){
             obj[key]['Retailing_Sum'] += mergeArr[i]['Retailing_Sum']
         }else {

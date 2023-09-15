@@ -1,5 +1,14 @@
 const {sequelize} = require('../../../databaseConnection/sql_connection');
 
+function sanitizeInput(input) {
+    const sanitizedInput = input.trim();
+    if (/^[a-zA-Z\s\W_]+$/.test(sanitizedInput)) {
+        return sanitizedInput; // Return the sanitized input if it contains only alphabet and special characters
+    } else {
+        throw new Error('Invalid input'); // Throw an error for invalid input
+    }
+}
+
 function getTableName(data, table_name){
     if(data === '[Category]'){table_name = table_name+"category"}
     if(data === '[brand_name]'){table_name = table_name+"Brand"}
@@ -119,9 +128,15 @@ function getPNMSet(data, monthsList, no_of_months, skip){
             }
         }
     }
+    for(let i in mergeArr){
+
+    }
     let obj = {}
     for(let i in mergeArr){
-        let key = `${mergeArr[i]['division']}/${mergeArr[i]['SiteName']}//${mergeArr[i]['BranchName']}`
+        let division = sanitizeInput(mergeArr[i]['division']);
+        let siteName = sanitizeInput(mergeArr[i]['SiteName']);
+        let branchName = sanitizeInput(mergeArr[i]['BranchName']);
+        let key = `${division}/${siteName}/${branchName}`;
         if(obj[key]){
             obj[key]['Retailing_Sum'] += mergeArr[i]['Retailing_Sum']
         }else {
