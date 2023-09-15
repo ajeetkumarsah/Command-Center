@@ -8,6 +8,20 @@ function getTableName(data, table_name){
     return table_name
 }
 
+function getFormatedNumberValue_RT(value){
+    let formatedValue = '0'
+    // console.log("Your Value Before Format", value)
+    if(value>=10000000 ){
+        formatedValue = ((value/10000000).toFixed(2).split(".")[0])+'Cr'
+    }
+
+    else if(value>=100000 && value<10000000){
+        formatedValue = ((value/100000).toFixed(2).split(".")[0])+'Lk'
+    }
+    // console.log("Your Value After Format", formatedValue)
+    return formatedValue
+}
+
 function getFinancialYearList(month, year) {
     const months = [
         'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
@@ -42,21 +56,29 @@ function getFinancialYearList(month, year) {
 }
 
 function getFinalDataOfPNMSet(cy_data, py_data, filter_1, filter_2, channel_list){
-    let geo_filter = filter_1['filter_key'] === 'allIndia' ? 'division' : filter_1['filter_key']
+    // let geo_filter = filter_1['filter_key'] === 'allIndia' ? 'division' : filter_1['filter_key']
     let mergedArr = []
     let subCategoryMap = {}
     for(let i in py_data){
-        let key = `${py_data[i][geo_filter]}`
-        subCategoryMap[key] = py_data[i]['Retailing_Sum']
+        let key = `${py_data[i]['channel_name']}`
+        if(subCategoryMap[key]){
+            subCategoryMap[key] += py_data[i]['Retailing_Sum']
+        }else{
+            subCategoryMap[key] = py_data[i]['Retailing_Sum']
+        }
+
     }
+    let final_data = {}
     for(let i in cy_data){
-        let key = `${cy_data[i][geo_filter]}`
-        if(filter_1 ['filter_key'] === 'division' || filter_1['filter_key'] === 'allIndia'){
-            let obj = {
+        let key = `${cy_data[i]['channel_name']}`
+        if(final_data[key]){
+            final_data[key]['cy_retailing_sum'] += cy_data[i]['Retailing_Sum']
+            final_data[key]['py_retailing_sum'] += subCategoryMap[key] ? subCategoryMap[key] : 0
+        }else {
+             final_data[key] = {
                 'cy_retailing_sum': cy_data[i]['Retailing_Sum'],
                 'py_retailing_sum': subCategoryMap[key] ? subCategoryMap[key] : 0,
                 'MonthYear': cy_data[i]['MonthYear'],
-                'division': cy_data[i]['division'],
                 'site': cy_data[i]['SiteName'],
                 'branch': cy_data[i]['BranchName'],
                 'channel': channel_list.map(item => item).join("/"),
@@ -64,32 +86,54 @@ function getFinalDataOfPNMSet(cy_data, py_data, filter_1, filter_2, channel_list
                 'filter_key': `${filter_1['filter_data']}`,
                 'filter_key2': `${filter_2['filter_data'] ? filter_2['filter_data'] : ''}`
             }
-            obj['IYA'] = ((obj['cy_retailing_sum'] ? obj['cy_retailing_sum'] : 0) / (obj['py_retailing_sum'] ? obj['py_retailing_sum'] : 1)) * 100
-            obj['IYA'] = parseInt((obj['IYA'].toFixed(2)).split(".")[0])
-            while(obj['IYA']>200){obj['IYA'] = parseInt(((obj['IYA']/10).toFixed(2)).split(".")[0])}
-            mergedArr.push(obj)
+            final_data[key][`${filter_1['filter_key']}`] = final_data[key][`${filter_1['filter_data']}`]
+            final_data[key]['IYA'] = ((final_data[key]['cy_retailing_sum'] ? final_data[key]['cy_retailing_sum'] : 0) / (final_data[key]['py_retailing_sum'] ? final_data[key]['py_retailing_sum'] : 1)) * 100
+            final_data[key]['IYA'] = parseInt((final_data[key]['IYA'].toFixed(2)).split(".")[0])
         }
-        if(filter_1['filter_key'] === 'cluster'){
-            let obj = {
-                'cy_retailing_sum': cy_data[i]['Retailing_Sum'],
-                'py_retailing_sum': subCategoryMap[key] ? subCategoryMap[key] : 0,
-                'MonthYear': cy_data[i]['MonthYear'],
-                'cluster': `${filter_1['filter_data']}`,
-                'site': cy_data[i]['SiteName'],
-                'branch': cy_data[i]['BranchName'],
-                'channel': channel_list.map(item => item).join("/"),
-                'channel_name': cy_data[i]['channel_name'],
-                'filter_key': `${filter_1['filter_data']}`,
-                'filter_key2': `${filter_2['filter_data'] ? filter_2['filter_data'] : ''}`
-            }
-            obj['IYA'] = ((obj['cy_retailing_sum'] ? obj['cy_retailing_sum'] : 0) / (obj['py_retailing_sum'] ? obj['py_retailing_sum'] : 1)) * 100
-            obj['IYA'] = parseInt((obj['IYA'].toFixed(2)).split(".")[0])
-            while(obj['IYA']>200){obj['IYA'] = parseInt(((obj['IYA']/10).toFixed(2)).split(".")[0])}
-            mergedArr.push(obj)
-        }
+        // while(obj['IYA']>200){obj['IYA'] = parseInt(((obj['IYA']/10).toFixed(2)).split(".")[0])}
+        // mergedArr.push(obj)
 
+        // if(filter_1 ['filter_key'] === 'division' || filter_1['filter_key'] === 'allIndia'){
+        //     let obj = {
+        //         'cy_retailing_sum': cy_data[i]['Retailing_Sum'],
+        //         'py_retailing_sum': subCategoryMap[key] ? subCategoryMap[key] : 0,
+        //         'MonthYear': cy_data[i]['MonthYear'],
+        //         'division': cy_data[i]['division'],
+        //         'site': cy_data[i]['SiteName'],
+        //         'branch': cy_data[i]['BranchName'],
+        //         'channel': channel_list.map(item => item).join("/"),
+        //         'channel_name': cy_data[i]['channel_name'],
+        //         'filter_key': `${filter_1['filter_data']}`,
+        //         'filter_key2': `${filter_2['filter_data'] ? filter_2['filter_data'] : ''}`
+        //     }
+        //     obj['IYA'] = ((obj['cy_retailing_sum'] ? obj['cy_retailing_sum'] : 0) / (obj['py_retailing_sum'] ? obj['py_retailing_sum'] : 1)) * 100
+        //     obj['IYA'] = parseInt((obj['IYA'].toFixed(2)).split(".")[0])
+        //     while(obj['IYA']>200){obj['IYA'] = parseInt(((obj['IYA']/10).toFixed(2)).split(".")[0])}
+        //     mergedArr.push(obj)
+        // }
+        // if(filter_1['filter_key'] === 'cluster'){
+        //     let obj = {
+        //         'cy_retailing_sum': cy_data[i]['Retailing_Sum'],
+        //         'py_retailing_sum': subCategoryMap[key] ? subCategoryMap[key] : 0,
+        //         'MonthYear': cy_data[i]['MonthYear'],
+        //         'cluster': `${filter_1['filter_data']}`,
+        //         'site': cy_data[i]['SiteName'],
+        //         'branch': cy_data[i]['BranchName'],
+        //         'channel': channel_list.map(item => item).join("/"),
+        //         'channel_name': cy_data[i]['channel_name'],
+        //         'filter_key': `${filter_1['filter_data']}`,
+        //         'filter_key2': `${filter_2['filter_data'] ? filter_2['filter_data'] : ''}`
+        //     }
+        //     obj['IYA'] = ((obj['cy_retailing_sum'] ? obj['cy_retailing_sum'] : 0) / (obj['py_retailing_sum'] ? obj['py_retailing_sum'] : 1)) * 100
+        //     obj['IYA'] = parseInt((obj['IYA'].toFixed(2)).split(".")[0])
+        //     while(obj['IYA']>200){obj['IYA'] = parseInt(((obj['IYA']/10).toFixed(2)).split(".")[0])}
+        //     mergedArr.push(obj)
+        // }
     }
-
+    for(let i in final_data){
+        while (final_data[i]['IYA']>200){final_data[i]['IYA'] = parseInt(((final_data[i]['IYA']/10).toFixed(2)).split(".")[0])}
+        mergedArr.push(final_data[i])
+    }
     return mergedArr
 }
 
@@ -346,44 +390,84 @@ let getDeepDivePageData = async (req, res) =>{
                 categories_data_rt_cy[0].push(cy_key_list[i])
             }
 
+            let final_obj = {
+                "filter_key": filter_1['filter_data'],
+                "filter_key2": filter_2!=="" ? filter_2['filter_data'] : "",
+                "date": date,
+                "channel": channel_list.map(item => item).join("/"),
+                "site": site,
+                "branch": branch,
+                "cm": [],
+                "p1m": [],
+                "p3m": [],
+                "p6m": [],
+                "p12m": [],
+                "financial_year": [],
+            }
+
             let cm_set_cy = getPNMSet(categories_data_rt_cy[0], monthsList_cy, 1, 0)
             let cm_set_py = getPNMSet(categories_data_rt_py[0], monthsList_py, 1, 0)
             let cmDataSetList = getFinalDataOfPNMSet(cm_set_cy, cm_set_py, filter_1, filter_2, channel_list)
-            let cm_obj = {
-                "name" : "cm",
-                "data" : cmDataSetList
+            for(let i in cmDataSetList){
+                let cm_data_obj ={
+                    "cy_retailing_sum": getFormatedNumberValue_RT(cmDataSetList[i]["cy_retailing_sum"]),
+                    "py_retailing_sum": getFormatedNumberValue_RT(cmDataSetList[i]["py_retailing_sum"]),
+                    "IYA": cmDataSetList[i]["IYA"],
+                    "channel": cmDataSetList[i]["channel_name"],
+                }
+                final_obj['cm'].push(cm_data_obj)
             }
+
 
             let p1m_set_cy = getPNMSet(categories_data_rt_cy[0], monthsList_cy, 2, 1)
             let p1m_set_py = getPNMSet(categories_data_rt_py[0], monthsList_py, 2, 1)
             let p1mDataSetList = getFinalDataOfPNMSet(p1m_set_cy, p1m_set_py, filter_1, filter_2, channel_list)
-            let p1m_obj = {
-                "name" : "p1m",
-                "data" : p1mDataSetList
+            for(let i in p1mDataSetList){
+                let p1m_data_obj ={
+                    "cy_retailing_sum": getFormatedNumberValue_RT(p1mDataSetList[i]["cy_retailing_sum"]),
+                    "py_retailing_sum": getFormatedNumberValue_RT(p1mDataSetList[i]["py_retailing_sum"]),
+                    "IYA": p1mDataSetList[i]["IYA"],
+                    "channel": p1mDataSetList[i]["channel_name"],
+                }
+                final_obj['p1m'].push(p1m_data_obj)
             }
 
-            let p3m_set_cy = getPNMSet(categories_data_rt_cy[0], monthsList_cy, 3, 0)
-            let p3m_set_py = getPNMSet(categories_data_rt_py[0], monthsList_py, 3, 0)
+            let p3m_set_cy = getPNMSet(categories_data_rt_cy[0], monthsList_cy, 4, 1)
+            let p3m_set_py = getPNMSet(categories_data_rt_py[0], monthsList_py, 4, 1)
             let p3mDataSetList = getFinalDataOfPNMSet(p3m_set_cy, p3m_set_py, filter_1, filter_2, channel_list)
-            let p3m_obj = {
-                "name" : "p3m",
-                "data" : p3mDataSetList
+            for(let i in p3mDataSetList){
+                let p3m_data_obj ={
+                    "cy_retailing_sum": getFormatedNumberValue_RT(p3mDataSetList[i]["cy_retailing_sum"]),
+                    "py_retailing_sum": getFormatedNumberValue_RT(p3mDataSetList[i]["py_retailing_sum"]),
+                    "IYA": p3mDataSetList[i]["IYA"],
+                    "channel": p3mDataSetList[i]["channel_name"],
+                }
+                final_obj['p3m'].push(p3m_data_obj)
             }
 
-            let p6m_set_cy = getPNMSet(categories_data_rt_cy[0], monthsList_cy, 6, 0)
-            let p6m_set_py = getPNMSet(categories_data_rt_py[0], monthsList_py, 6, 0)
+            let p6m_set_cy = getPNMSet(categories_data_rt_cy[0], monthsList_cy, 7, 1)
+            let p6m_set_py = getPNMSet(categories_data_rt_py[0], monthsList_py, 7, 1)
             let p6mDataSetList = getFinalDataOfPNMSet(p6m_set_cy, p6m_set_py, filter_1, filter_2, channel_list)
-            let p6m_obj = {
-                "name" : "p6m",
-                "data" : p6mDataSetList
+            for(let i in p6mDataSetList){
+                let p6m_data_obj ={
+                    "cy_retailing_sum": getFormatedNumberValue_RT(p6mDataSetList[i]["cy_retailing_sum"]),
+                    "py_retailing_sum": getFormatedNumberValue_RT(p6mDataSetList[i]["py_retailing_sum"]),
+                    "channel": p6mDataSetList[i]["channel_name"],
+                }
+                final_obj['p6m'].push(p6m_data_obj)
             }
 
             let p12m_set_cy = getPNMSet(categories_data_rt_cy[0], monthsList_cy, 12, 0)
             let p12m_set_py = getPNMSet(categories_data_rt_py[0], monthsList_py, 12, 0)
             let p12mDataSetList = getFinalDataOfPNMSet(p12m_set_cy, p12m_set_py, filter_1, filter_2, channel_list)
-            let p12m_obj = {
-                "name" : "p12m",
-                "data" : p12mDataSetList
+            for(let i in p12mDataSetList){
+                let p12m_data_obj ={
+                    "cy_retailing_sum": getFormatedNumberValue_RT(p12mDataSetList[i]["cy_retailing_sum"]),
+                    "py_retailing_sum": getFormatedNumberValue_RT(p12mDataSetList[i]["py_retailing_sum"]),
+                    "IYA": p12mDataSetList[i]["IYA"],
+                    "channel": p12mDataSetList[i]["channel_name"],
+                }
+                final_obj['p12m'].push(p12m_data_obj)
             }
 
             let financialYearCount = getFinancialYearList(parseInt(getMonthDigit(date.split("-")[0]))-1, date.split("-")[1])
@@ -391,19 +475,16 @@ let getDeepDivePageData = async (req, res) =>{
             let py_set_cy = getPNMSet(categories_data_rt_cy[0], monthsList_cy, financialYearCount, 0)
             let py_set_py = getPNMSet(categories_data_rt_py[0], monthsList_py, financialYearCount, 0)
             let pyDataSetList = getFinalDataOfPNMSet(py_set_cy, py_set_py, filter_1, filter_2, channel_list)
-            let py_obj = {
-                "name" : "financial_year",
-                "data" : pyDataSetList
+            for(let i in pyDataSetList){
+                let py_data_obj ={
+                    "cy_retailing_sum": getFormatedNumberValue_RT(pyDataSetList[i]["cy_retailing_sum"]),
+                    "py_retailing_sum": getFormatedNumberValue_RT(pyDataSetList[i]["py_retailing_sum"]),
+                    "IYA": pyDataSetList[i]["IYA"],
+                    "channel": pyDataSetList[i]["channel_name"],
+                }
+                final_obj['financial_year'].push(py_data_obj)
             }
-
-            let dataList = []
-            dataList.push(cm_obj)
-            dataList.push(p1m_obj)
-            dataList.push(p3m_obj)
-            dataList.push(p6m_obj)
-            dataList.push(p12m_obj)
-            dataList.push(py_obj)
-            all_result.push(dataList)
+            all_result.push([final_obj])
         }
         res.status(200).json(all_result);
     } catch (e) {

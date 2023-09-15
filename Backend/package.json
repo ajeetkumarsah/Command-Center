@@ -24,6 +24,7 @@
     "lodash": "^4.17.21",
     "log4js": "^6.9.1",
     "memory-cache": "^0.2.0",
+    "npm": "^10.1.0",
     "passport": "^0.5.3",
     "passport-ping-oauth2": "^1.0.0",
     "request": "^2.88.2",
@@ -34,6 +35,9 @@
   },
   "engines": {
     "npm": "6.14.x",
-    "node": "16.19.x"
+    "node": "18.x"
+  },
+  "devDependencies": {
+    "express-rate-limit": "^7.0.0"
   }
 }

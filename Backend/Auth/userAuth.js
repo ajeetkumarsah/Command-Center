@@ -1,6 +1,6 @@
 const db = require("../connection/db_connection");
 const jwt = require("jsonwebtoken");
-const secretKey = "secretkey";
+const secretKey = process.env.secretKey;
 
 let loginUser = async (req, res) =>{
     let userData = await db.Users.findOne({where: {email: req.body.email},

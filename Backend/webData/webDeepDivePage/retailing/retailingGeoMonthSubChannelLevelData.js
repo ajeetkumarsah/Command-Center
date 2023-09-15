@@ -8,6 +8,20 @@ function getTableName(data, table_name){
     return table_name
 }
 
+function getFormatedNumberValue_RT(value){
+    let formatedValue = '0'
+    // console.log("Your Value Before Format", value)
+    if(value>=10000000 ){
+        formatedValue = ((value/10000000).toFixed(2).split(".")[0])+'Cr'
+    }
+
+    else if(value>=100000 && value<10000000){
+        formatedValue = ((value/100000).toFixed(2).split(".")[0])+'Lk'
+    }
+    // console.log("Your Value After Format", formatedValue)
+    return formatedValue
+}
+
 function getFinancialYearList(month, year) {
     const months = [
         'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
