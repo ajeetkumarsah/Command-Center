@@ -1,5 +1,5 @@
 const {sequelize} = require('../databaseConnection/sql_connection');
-const {sequelize2} = require('../databaseConnection/sql_connection2');
+// const {sequelize2} = require('../databaseConnection/sql_connection2');
 
 function getMonthDigit(month) {
     const monthMap = {
@@ -1321,7 +1321,7 @@ let getFocusBrandDataByChannel = async (req, res) =>{
 
 async function getCategoryList(){
     try {
-        let data = await sequelize2.query(`select distinct [CategoryName] from [sdm].[productMaster]`)
+        let data = await sequelize.query(`select distinct [CategoryName] from [sdm].[productMaster]`)
         let category = []
         for(let i in data[0]){
             category.push(data[0][i]['CategoryName'])
@@ -1447,7 +1447,7 @@ let getFocusBrandDataByCategory = async (req, res) =>{
 
 async function getBrandList(){
     try {
-        let data = await sequelize2.query(`select distinct [BrandName] from [sdm].[productMaster]`)
+        let data = await sequelize.query(`select distinct [BrandName] from [sdm].[productMaster]`)
         let brand = []
         for(let i in data[0]){
             brand.push(data[0][i]['BrandName'])
@@ -1573,7 +1573,7 @@ let getFocusBrandDataByBrand = async (req, res) =>{
 
 async function getBrandFormList(){
     try {
-        let data = await sequelize2.query(`select distinct [BrandformName] from [sdm].[productMaster]`)
+        let data = await sequelize.query(`select distinct [BrandformName] from [sdm].[productMaster]`)
         let brandForm = []
         for(let i in data[0]){
             brandForm.push(data[0][i]['BrandformName'])
@@ -1697,7 +1697,7 @@ let getFocusBrandDataByBrandForm = async (req, res) =>{
 
 async function getSubBrandFormList(){
     try {
-        let data = await sequelize2.query(`select distinct [SubbfName] from [sdm].[productMaster]`)
+        let data = await sequelize.query(`select distinct [SubbfName] from [sdm].[productMaster]`)
         let subBrandForm = []
         for(let i in data[0]){
             subBrandForm.push(data[0][i]['SubbfName'])

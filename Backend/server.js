@@ -4,7 +4,7 @@ const port = process.env.PORT || 3000;
 // require('./build/build/web/index.html')
 modelInit = require("./models-init/models-init")
 const rateLimit = require('express-rate-limit');
-
+const helmet= require('helmet');
 // Apply rate limiting to a specific endpoint
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
@@ -34,6 +34,9 @@ const options = {
 }
 const swaggerSpec = swaggerJsdoc(options);
 let swaggerHtmlV1 = swaggerUi.generateHTML(swaggerSpec, docSwag.iconUI)
+
+app.use(limiter);
+app.use(helmet());
 
 app.use('/api-docs', swaggerUi.serveFiles(swaggerSpec, docSwag.iconUI))
 app.get('/api-docs', (req, res) => {

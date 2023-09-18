@@ -1,5 +1,5 @@
 const {sequelize} = require('../../../databaseConnection/sql_connection');
-const {sequelize2} = require('../../../databaseConnection/sql_connection2');
+// const {sequelize2} = require('../../../databaseConnection/sql_connection2');
 const lodash = require("lodash");
 const {QueryTypes} = require('sequelize')
 
@@ -33,13 +33,13 @@ async function getSiteList(filter_type, filter_data) {
         let data
 
         if(filter_data === 'allIndia'){
-            data = await sequelize2.query(`select distinct [SiteName] FROM [da].[locationHierarchy_updated] where Division in ('DIV_0001', 'DIV_0002')`)
+            data = await sequelize.query(`select distinct [SiteName] FROM [da].[locationHierarchy_updated] where Division in ('DIV_0001', 'DIV_0002')`)
         }
         else{
             if(filter_data === 'N-E'){filter_data = 'DIV_0002'}
             if(filter_data === 'S-W'){filter_data = 'DIV_0001'}
             if(filter_type === 'cluster'){filter_type = '[ClusterName]'}
-            data = await sequelize2.query(`select distinct [SiteName] FROM [da].[locationHierarchy_updated] where ${filter_type} = '${filter_data}'`)
+            data = await sequelize.query(`select distinct [SiteName] FROM [da].[locationHierarchy_updated] where ${filter_type} = '${filter_data}'`)
         }
 
         let sites = []
@@ -68,13 +68,13 @@ async function getBranchList(filter_type, filter_data, site) {
         let data
 
         if(filter_data === 'allIndia'){
-            data = await sequelize2.query(`select distinct [BranchName] FROM [da].[locationHierarchy_updated] where Division in ('DIV_0001', 'DIV_0002') and SiteName = '${site}' `)
+            data = await sequelize.query(`select distinct [BranchName] FROM [da].[locationHierarchy_updated] where Division in ('DIV_0001', 'DIV_0002') and SiteName = '${site}' `)
         }
         else{
             if(filter_data === 'N-E'){filter_data = 'DIV_0002'}
             if(filter_data === 'S-W'){filter_data = 'DIV_0001'}
             if(filter_type === 'cluster'){filter_type = '[ClusterName]'}
-            data = await sequelize2.query(`select distinct [BranchName] FROM [da].[locationHierarchy_updated] where ${filter_type} = '${filter_data}' and SiteName = '${site}'`)
+            data = await sequelize.query(`select distinct [BranchName] FROM [da].[locationHierarchy_updated] where ${filter_type} = '${filter_data}' and SiteName = '${site}'`)
         }
 
         let branch_list = []

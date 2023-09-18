@@ -1,5 +1,12 @@
 const config = require('../config/secret');
 const jwt = require('jsonwebtoken');
+const rateLimit = require("express-rate-limit");
+
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // 100 requests per IP address
+});
+
 module.exports = function (app, passport) {
 
 
@@ -14,7 +21,7 @@ module.exports = function (app, passport) {
     });
 
     // route for signing in
-    app.get('/ping/oauth2', passport.authenticate('oauth2', {
+    app.get('/ping/oauth2', limiter, passport.authenticate('oauth2', {
         scope: ['openid', 'profile', 'email', 'pingid'],
         pfidpadapterid: "Oauth"
     }));
@@ -22,7 +29,7 @@ module.exports = function (app, passport) {
 
 
     app.get('/callback',
-        passport.authenticate('oauth2', {
+        passport.authenticate('oauth2', limiter, {
             failureRedirect: '/sign-in;id=1'
         }),
         async function (req, res) {
