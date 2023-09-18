@@ -1,5 +1,13 @@
 const {sequelize} = require('../../../databaseConnection/sql_connection');
 
+function sanitizeInput(input) {
+    const sanitizedInput = input.trim();
+    if (/^[a-zA-Z0-9\s\W_]+$/.test(sanitizedInput)) {
+        return sanitizedInput; // Return the sanitized input if it contains only alphabet and special characters
+    } else {
+        throw new Error('Invalid input'); // Throw an error for invalid input
+    }
+}
 
 function getQuery(calendar_month, filter_2, filter_1, channel){
     let channel_query_rt_cy = ''
@@ -267,7 +275,9 @@ let getDeepDivePageData = async (req, res) =>{
                 for(let j in calendar_month_cy_list){
                     if(calendar_month_cy_list[j] === mergedArr[i]['MonthYear']){
                         let obj = {}
-                        let key  = `${mergedArr[i]['MonthYear']}//${mergedArr[i]['channel_name']}`
+                        let Month = sanitizeInput(mergedArr[i]['MonthYear'])
+                        let channel_name = sanitizeInput(mergedArr[i]['channel_name'])
+                        let key = `${Month}//${channel_name}`
                         if (key in channelObj){
                             channelObj[`${key}`]['cy_retailing_sum'] += mergedArr[i]['cy_retailing_sum']
                             channelObj[`${key}`]['py_retailing_sum'] += mergedArr[i]['py_retailing_sum']
@@ -298,7 +308,10 @@ let getDeepDivePageData = async (req, res) =>{
                 for(let j in calendar_month_cy_list){
                     if(calendar_month_cy_list[j] === mergedArr[i]['MonthYear']){
                         let obj = {}
-                        let key  = `${mergedArr[i]['MonthYear']}//${mergedArr[i]['channel_name']}//${mergedArr[i]['CustName']}`
+                        let Month = sanitizeInput(mergedArr[i]['MonthYear'])
+                        let channel_name = sanitizeInput(mergedArr[i]['channel_name'])
+                        let CustName = sanitizeInput(mergedArr[i]['CustName'])
+                        let key = `${Month}//${channel_name}//${CustName}`
                         if (key in storeObj){
                             storeObj[`${key}`]['cy_retailing_sum'] += mergedArr[i]['cy_retailing_sum']
                             storeObj[`${key}`]['py_retailing_sum'] += mergedArr[i]['py_retailing_sum']
@@ -338,7 +351,7 @@ let getDeepDivePageData = async (req, res) =>{
         res.status(200).json(all_result);
     } catch (e) {
         console.log('error',e)
-        res.status(500).send({successful: false, error: e})
+        res.status(500).send({successful: false, error: 'An internal server error occurred.'})
     }
 }
 

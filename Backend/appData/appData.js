@@ -224,7 +224,7 @@ let getTableData = async (req, res) =>{
         res.status(200).send({successful: true, data: data})
     }catch (e){
         console.log('error',e)
-        res.status(500).send({successful: false, error: e})
+        res.status(500).send({successful: false, error: 'An internal server error occurred.'})
     }
 }
 
@@ -645,7 +645,7 @@ let getHomePageData = async (req, res) =>{
 
     }catch (e) {
         console.log('error',e)
-        res.status(500).send({successful: false, error: e})
+        res.status(500).send({successful: false, error: 'An internal server error occurred.'})
     }
 }
 

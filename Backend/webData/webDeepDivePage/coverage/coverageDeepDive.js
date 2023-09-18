@@ -191,7 +191,7 @@ let getDeepDivePageData = async (req, res) =>{
 
     }catch (e) {
         console.log('error',e)
-        res.status(500).send({successful: false, error: e})
+        res.status(500).send({successful: false, error: 'An internal server error occurred.'})
     }
 }
 
@@ -274,6 +274,7 @@ let getDeepDivePageDataByBranch = async (req, res) =>{
             }
         for(let i in mergedArr){
             for(let siteName of siteNamesSet){
+                siteName = sanitizeInput(siteName)
                 if(siteName === mergedArr[i]['Site Name']){
                     if(siteNameObj[`${siteName}`]['Billing_Per'] === 0){
                         siteNameObj[`${siteName}`]['Billing_Per'] = parseFloat(((mergedArr[i]['billed_sum']/mergedArr[i]['coverage_sum'])*100).toFixed(2))
@@ -366,7 +367,7 @@ let getDeepDivePageDataByBranch = async (req, res) =>{
 
     }catch (e) {
         console.log('error',e)
-        res.status(500).send({successful: false, error: e})
+        res.status(500).send({successful: false, error: 'An internal server error occurred.'})
     }
 }
 
@@ -452,6 +453,7 @@ let getDeepDivePageDataBySubChannel = async (req, res) =>{
         }
         for(let i in mergedArr){
             for(let channelName of channelNamesSet){
+                channelName = sanitizeInput(channelName)
                 if(channelName === mergedArr[i]['ChannelName']){
                     if(channelNameObj[`${channelName}`]['Billing_Per'] === 0){
                         channelNameObj[`${channelName}`]['Billing_Per'] = parseFloat(((mergedArr[i]['billed_sum']/mergedArr[i]['coverage_sum'])*100).toFixed(2))
@@ -544,7 +546,7 @@ let getDeepDivePageDataBySubChannel = async (req, res) =>{
 
     }catch (e) {
         console.log('error',e)
-        res.status(500).send({successful: false, error: e})
+        res.status(500).send({successful: false, error: 'An internal server error occurred.'})
     }
 }
 
@@ -1032,7 +1034,7 @@ async function getTableData (bodyData){
     }catch (e) {
         console.log('error',e)
         return e
-        // res.status(500).send({successful: false, error: e})
+        // res.status(500).send({successful: false, error: 'An internal server error occurred.'})
     }
 }
 
@@ -1099,7 +1101,7 @@ let getDeepDivePageDataBySubChannel2 = async (req, res) => {
 
     } catch (e) {
         console.log('error', e)
-        res.status(500).send({successful: false, error: e})
+        res.status(500).send({successful: false, error: 'An internal server error occurred.'})
     }
 }
 

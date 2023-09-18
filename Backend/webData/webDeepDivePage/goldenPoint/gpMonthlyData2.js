@@ -680,7 +680,7 @@ async function getTableData (bodyData)  {
     } catch (e) {
         console.log('error', e)
         return e
-        // res.status(500).send({successful: false, error: e})
+        // res.status(500).send({successful: false, error: 'An internal server error occurred.'})
     }
 }
 
@@ -747,7 +747,7 @@ let getDeepDivePageData = async (req, res) => {
 
     } catch (e) {
         console.log('error', e)
-        res.status(500).send({successful: false, error: e})
+        res.status(500).send({successful: false, error: 'An internal server error occurred.'})
     }
 }
 

@@ -15,7 +15,7 @@ let getDivisionFilterData = async (req, res) =>{
         res.status(200).send({successful: true, data: division})
     }catch (e){
         console.log('error',e)
-        res.status(500).send({successful: false, error: e})
+        res.status(500).send({successful: false, error: 'An internal server error occurred.' })
     }
 }
 
@@ -30,7 +30,7 @@ let getSiteFilterData = async (req, res) =>{
         res.status(200).send({successful: true, data: site})
     }catch (e){
         console.log('error',e)
-        res.status(500).send({successful: false, error: e})
+        res.status(500).send({successful: false, error: 'An internal server error occurred.' })
     }
 }
 
@@ -45,7 +45,7 @@ let getCategoryFilterData = async (req, res) =>{
         res.status(200).send({successful: true, data: category})
     }catch (e){
         console.log('error',e)
-        res.status(500).send({successful: false, error: e})
+        res.status(500).send({successful: false, error: 'An internal server error occurred.' })
     }
 }
 
@@ -60,7 +60,7 @@ let getBrandFilterData = async (req, res) =>{
         res.status(200).send({successful: true, data: brand})
     }catch (e){
         console.log('error',e)
-        res.status(500).send({successful: false, error: e})
+        res.status(500).send({successful: false, error: 'An internal server error occurred.'})
     }
 }
 
@@ -75,7 +75,7 @@ let getBrandFormFilterData = async (req, res) =>{
         res.status(200).send({successful: true, data: brandForm})
     }catch (e){
         console.log('error',e)
-        res.status(500).send({successful: false, error: e})
+        res.status(500).send({successful: false, error: 'An internal server error occurred.'})
     }
 }
 
@@ -90,7 +90,7 @@ let getSubBrandFormFilterData = async (req, res) =>{
         res.status(200).send({successful: true, data: subBrandForm})
     }catch (e){
         console.log('error',e)
-        res.status(500).send({successful: false, error: e})
+        res.status(500).send({successful: false, error: 'An internal server error occurred.'})
     }
 }
 
@@ -106,7 +106,7 @@ let getBranchFilterData = async (req, res) =>{
         res.status(200).send({successful: true, data: branch})
     }catch (e){
         console.log('error',e)
-        res.status(500).send({successful: false, error: e})
+        res.status(500).send({successful: false, error: 'An internal server error occurred.'})
     }
 }
 
@@ -159,7 +159,7 @@ let getChannelFilterData = async (req, res) =>{
         res.status(200).send({successful: true, data: channel_list})
     }catch (e){
         console.log('error',e)
-        res.status(500).send({successful: false, error: e})
+        res.status(500).send({successful: false, error: 'An internal server error occurred.'})
     }
 }
 
@@ -178,7 +178,7 @@ let getClusterFilterData = async (req, res) =>{
         res.status(200).send({successful: true, data: cluster})
     }catch (e){
         console.log('error',e)
-        res.status(500).send({successful: false, error: e})
+        res.status(500).send({successful: false, error: 'An internal server error occurred.'})
     }
 }
 
@@ -192,7 +192,7 @@ let getSubBrandFormGroupFilterData = async (req, res) =>{
         res.status(200).send({successful: true, data: subBrandGroup})
     }catch (e){
         console.log('error',e)
-        res.status(500).send({successful: false, error: e})
+        res.status(500).send({successful: false, error: 'An internal server error occurred.'})
     }
 }
 
@@ -228,7 +228,7 @@ let getCategoryFilterDataByChannel = async (req, res) =>{
         res.status(200).send({successful: true, data: category})
     }catch (e){
         console.log('error',e)
-        res.status(500).send({successful: false, error: e})
+        res.status(500).send({successful: false, error: 'An internal server error occurred.'})
     }
 }
 
@@ -265,7 +265,7 @@ let getBrandFilterDataByChannel = async (req, res) =>{
         res.status(200).send({successful: true, data: brand})
     }catch (e){
         console.log('error',e)
-        res.status(500).send({successful: false, error: e})
+        res.status(500).send({successful: false, error: 'An internal server error occurred.'})
     }
 }
 
@@ -303,7 +303,7 @@ let getBrandFormFilterDataByChannel = async (req, res) =>{
         res.status(200).send({successful: true, data: brand})
     }catch (e){
         console.log('error',e)
-        res.status(500).send({successful: false, error: e})
+        res.status(500).send({successful: false, error: 'An internal server error occurred.'})
     }
 }
 
@@ -342,7 +342,7 @@ let getSBFGroupFilterDataByChannel = async (req, res) =>{
         res.status(200).send({successful: true, data: brand})
     }catch (e){
         console.log('error',e)
-        res.status(500).send({successful: false, error: e})
+        res.status(500).send({successful: false, error: 'An internal server error occurred.'})
     }
 }
 
@@ -395,7 +395,7 @@ let getChannelFilterDataByCategory = async (req, res) =>{
         res.status(200).send({successful: true, data: channel})
     }catch (e){
         console.log('error',e)
-        res.status(500).send({successful: false, error: e})
+        res.status(500).send({successful: false, error: 'An internal server error occurred.'})
     }
 }
 
