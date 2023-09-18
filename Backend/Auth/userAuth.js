@@ -1,6 +1,6 @@
 const db = require("../connection/db_connection");
 const jwt = require("jsonwebtoken");
-const secretKey = "secretKey";
+const secretKey = process.env.secretKey;
 // const secretKey = process.env.secretKey;
 
 let loginUser = async (req, res) =>{
