@@ -1,6 +1,7 @@
 const {sequelize} = require('../../../databaseConnection/sql_connection');
 // const {sequelize2} = require('../../../databaseConnection/sql_connection2');
 
+
 function getPreviousMonth(currentMonth) {
     const months = [
         'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',

@@ -11,6 +11,33 @@ const limiter = rateLimit({
     max: 100, // 100 requests per IP address
 });
 
+const csrf = require('csurf');
+const cookieParser = require('cookie-parser');
+
+// Use cookieParser middleware to parse cookies
+app.use(cookieParser());
+
+// Enable CSRF protection
+const csrfProtection = csrf({ cookie: true });
+app.use(csrfProtection);
+
+// Add a middleware to set the CSRF token in the response locals
+app.use((req, res, next) => {
+    res.locals.csrfToken = req.csrfToken();
+    next();
+});
+
+// Your routes and other middleware go here
+
+// Error handler for CSRF token validation failures
+app.use((err, req, res, next) => {
+    if (err && err.code === 'EBADCSRFTOKEN') {
+        res.status(403).send('CSRF token validation failed');
+    } else {
+        next(err);
+    }
+});
+
 
 const docSwag = require('./api-doc/definition'),
     swaggerUi = require('swagger-ui-express'),

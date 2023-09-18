@@ -6,7 +6,8 @@ const util = require("../utill")
     , config = require('../config/secret')
     // , access_groups = require('../config/access_groups')
 const db = require("../connection/db_connection");
-const secretKey = process.env.secretKey;
+const secretKey = "secretKey";
+// const secretKey = process.env.secretKey;
 // const fs = require('fs');
 //
 // const privateKey = fs.readFileSync('path/to/private-key.pem');
