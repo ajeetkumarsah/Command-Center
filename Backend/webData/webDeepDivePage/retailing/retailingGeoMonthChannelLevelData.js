@@ -1,5 +1,14 @@
 const {sequelize} = require('../../../databaseConnection/sql_connection');
 
+function sanitizeInput(input) {
+    const sanitizedInput = input.trim();
+    if (/^[a-zA-Z0-9\s\W_]+$/.test(sanitizedInput)) {
+        return sanitizedInput; // Return the sanitized input if it contains only alphabet and special characters
+    } else {
+        throw new Error('Invalid input'); // Throw an error for invalid input
+    }
+}
+
 function getTableName(data, table_name){
     if(data === 'Category'){table_name = table_name+"_category"}
     if(data === 'brand_name'){table_name = table_name+"_Brand"}
@@ -70,7 +79,8 @@ function getFinalDataOfPNMSet(cy_data, py_data, filter_1, filter_2, channel_list
     }
     let final_data = {}
     for(let i in cy_data){
-        let key = `${cy_data[i]['channel_name']}`
+        let channel_name = sanitizeInput(cy_data[i]['channel_name'])
+        let key = `${channel_name}`
         if(final_data[key]){
             final_data[key]['cy_retailing_sum'] += cy_data[i]['Retailing_Sum']
             final_data[key]['py_retailing_sum'] += subCategoryMap[key] ? subCategoryMap[key] : 0
@@ -489,7 +499,7 @@ let getDeepDivePageData = async (req, res) =>{
         res.status(200).json(all_result);
     } catch (e) {
         console.log('error',e)
-        res.status(500).send({successful: false, error: e})
+        res.status(500).send({successful: false, error: 'An internal server error occurred.'})
     }
 }
 

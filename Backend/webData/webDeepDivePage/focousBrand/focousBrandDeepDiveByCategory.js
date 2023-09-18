@@ -6,6 +6,15 @@ function copyObject(obj) {
     return JSON.parse(JSON.stringify(obj));
 }
 
+function sanitizeInput(input) {
+    const sanitizedInput = input.trim();
+    if (/^[a-zA-Z0-9\s\W_]+$/.test(sanitizedInput)) {
+        return sanitizedInput; // Return the sanitized input if it contains only alphabet and special characters
+    } else {
+        throw new Error('Invalid input'); // Throw an error for invalid input
+    }
+}
+
 function deepEqual(obj1, obj2) {
     // Convert objects to JSON strings and compare them
     const json1 = JSON.stringify(obj1);
@@ -144,7 +153,9 @@ async function getTableData(bodyData){
                 fb_target_base = mergedArr[i]['fb_target_sum']
             }
             let obj = {}
-            let key = `${mergedArr[i]['Calendar Month']}/${mergedArr[i]['CategoryName']}`
+            let Month = sanitizeInput(mergedArr[i]['Calendar Month'])
+            let CategoryName = sanitizeInput(mergedArr[i]['CategoryName'])
+            let key = `${Month}/${CategoryName}`
             if (mergedArr[i]['fb_achieve_sum'] == null) {
                 mergedArr[i]['fb_achieve_sum'] = 0
             }
@@ -183,7 +194,10 @@ async function getTableData(bodyData){
                 fb_target_base = mergedArr[i]['fb_target_sum']
             }
             let obj = {}
-            let key = `${mergedArr[i]['Calendar Month']}/${mergedArr[i]['CategoryName']}/${mergedArr[i]['BrandName']}`
+            let Month = sanitizeInput(mergedArr[i]['Calendar Month'])
+            let CategoryName = sanitizeInput(mergedArr[i]['CategoryName'])
+            let BrandName = sanitizeInput(mergedArr[i]['BrandName'])
+            let key = `${Month}/${CategoryName}/${BrandName}`
             if (mergedArr[i]['fb_achieve_sum'] == null) {
                 mergedArr[i]['fb_achieve_sum'] = 0
             }
@@ -221,7 +235,11 @@ async function getTableData(bodyData){
                 fb_target_base = mergedArr[i]['fb_target_sum']
             }
             let obj = {}
-            let key = `${mergedArr[i]['Calendar Month']}/${mergedArr[i]['CategoryName']}/${mergedArr[i]['BrandName']}/${mergedArr[i]['BFName']}`
+            let Month = sanitizeInput(mergedArr[i]['Calendar Month'])
+            let CategoryName = sanitizeInput(mergedArr[i]['CategoryName'])
+            let BrandName = sanitizeInput(mergedArr[i]['BrandName'])
+            let BFName = sanitizeInput(mergedArr[i]['BFName'])
+            let key = `${Month}/${CategoryName}/${BrandName}/${BFName}`
             if (mergedArr[i]['fb_achieve_sum'] == null) {
                 mergedArr[i]['fb_achieve_sum'] = 0
             }
@@ -427,7 +445,7 @@ let getDeepDivePageData = async (req, res) => {
 
     } catch (e) {
         console.log('error', e)
-        res.status(500).send({successful: false, error: e})
+        res.status(500).send({successful: false, error: 'An internal server error occurred.'})
     }
 }
 

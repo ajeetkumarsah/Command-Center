@@ -12,7 +12,7 @@ const webProductivityPage = require('../../webData/webSummaryPage/webProductivit
 
 const webDeepDiveCoveragePage = require('../../webData/webDeepDivePage/coverage/coverageDeepDive')
 const webDeepDiveProductivityPage = require('../../webData/webDeepDivePage/coverage/productivityMonthyData')
-const webDeepDiveProductivityPage2 = require('../../webData/webDeepDivePage/coverage/productivityTemp')
+// const webDeepDiveProductivityPage2 = require('../../webData/webDeepDivePage/coverage/productivityTemp')
 const webDeepDiveBillingPage = require('../../webData/webDeepDivePage/coverage/billingMonthlyData')
 const webDeepDiveCCPage = require('../../webData/webDeepDivePage/coverage/ccMonthlyData')
 
@@ -55,7 +55,7 @@ router.get('/webSummary/productivityData', webProductivityPage.getSummaryPageDat
 router.get('/webDeepDive/coverage', webDeepDiveCoveragePage.getDeepDivePageData);
 router.get('/webDeepDive/coverage/branch', webDeepDiveCoveragePage.getDeepDivePageDataByBranch);
 router.post('/webDeepDive/coverage/productivity', webDeepDiveProductivityPage.getDeepDivePageData);
-router.post('/webDeepDive/coverage/productivity2', webDeepDiveProductivityPage2.getDeepDivePageData);
+// router.post('/webDeepDive/coverage/productivity2', webDeepDiveProductivityPage2.getDeepDivePageData);
 router.post('/webDeepDive/coverage/billing', webDeepDiveBillingPage.getDeepDivePageData);
 router.post('/webDeepDive/coverage/cc', webDeepDiveCCPage.getDeepDivePageData);
 router.post('/webDeepDive/coverage/subChannel', webDeepDiveCoveragePage.getDeepDivePageDataBySubChannel2);
