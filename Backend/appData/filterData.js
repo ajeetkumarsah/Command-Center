@@ -1,10 +1,10 @@
 const {sequelize} = require('../databaseConnection/sql_connection');
-const {sequelize2} = require('../databaseConnection/sql_connection2');
+// const {sequelize2} = require('../databaseConnection/sql_connection2');
 
 let getDivisionFilterData = async (req, res) =>{
     try {
         // console.log("getDivisionFilterData invoked")
-        let data = await sequelize2.query(`select distinct Division FROM [da].[locationHierarchy_updated]`)
+        let data = await sequelize.query(`select distinct Division FROM [da].[locationHierarchy_updated]`)
         // console.log("getDivisionFilterData invoked2")
         let division = []
         for(let div in data[0]){
@@ -21,7 +21,7 @@ let getDivisionFilterData = async (req, res) =>{
 
 let getSiteFilterData = async (req, res) =>{
     try {
-        let data = await sequelize2.query(`select distinct [SiteName] FROM [da].[locationHierarchy_updated]`)
+        let data = await sequelize.query(`select distinct [SiteName] FROM [da].[locationHierarchy_updated]`)
         let site = []
         for(let div in data[0]){
             site.push(data[0][div]['SiteName'])
@@ -36,7 +36,7 @@ let getSiteFilterData = async (req, res) =>{
 
 let getCategoryFilterData = async (req, res) =>{
     try {
-        let data = await sequelize2.query(`select distinct [CategoryName] from [sdm].[productMaster]`)
+        let data = await sequelize.query(`select distinct [CategoryName] from [sdm].[productMaster]`)
         let category = []
         for(let i in data[0]){
             category.push(data[0][i]['CategoryName'])
@@ -51,7 +51,7 @@ let getCategoryFilterData = async (req, res) =>{
 
 let getBrandFilterData = async (req, res) =>{
     try {
-        let data = await sequelize2.query(`select distinct [BrandName] from [sdm].[productMaster]`)
+        let data = await sequelize.query(`select distinct [BrandName] from [sdm].[productMaster]`)
         let brand = []
         for(let i in data[0]){
             brand.push(data[0][i]['BrandName'])
@@ -66,7 +66,7 @@ let getBrandFilterData = async (req, res) =>{
 
 let getBrandFormFilterData = async (req, res) =>{
     try {
-        let data = await sequelize2.query(`select distinct [BrandformName] from [sdm].[productMaster]`)
+        let data = await sequelize.query(`select distinct [BrandformName] from [sdm].[productMaster]`)
         let brandForm = []
         for(let i in data[0]){
             brandForm.push(data[0][i]['BrandformName'])
@@ -81,7 +81,7 @@ let getBrandFormFilterData = async (req, res) =>{
 
 let getSubBrandFormFilterData = async (req, res) =>{
     try {
-        let data = await sequelize2.query(`select distinct [SubbfName] from [sdm].[productMaster]`)
+        let data = await sequelize.query(`select distinct [SubbfName] from [sdm].[productMaster]`)
         let subBrandForm = []
         for(let i in data[0]){
             subBrandForm.push(data[0][i]['SubbfName'])
@@ -96,7 +96,7 @@ let getSubBrandFormFilterData = async (req, res) =>{
 
 let getBranchFilterData = async (req, res) =>{
     try {
-        let data = await sequelize2.query(`select distinct [BranchName] FROM [da].[locationHierarchy_updated]`)
+        let data = await sequelize.query(`select distinct [BranchName] FROM [da].[locationHierarchy_updated]`)
         let branch = []
         for(let div in data[0]){
             // Here we are using replace because there is more <""> are there in data so to remove that
@@ -166,7 +166,7 @@ let getChannelFilterData = async (req, res) =>{
 
 let getClusterFilterData = async (req, res) =>{
     try {
-        let data = await sequelize2.query(`select distinct [ClusterName] FROM [da].[locationHierarchy_updated]`)
+        let data = await sequelize.query(`select distinct [ClusterName] FROM [da].[locationHierarchy_updated]`)
         let cluster = []
         for(let div in data[0]){
             if(data[0][div]['ClusterName'] === null){
@@ -184,7 +184,7 @@ let getClusterFilterData = async (req, res) =>{
 
 let getSubBrandFormGroupFilterData = async (req, res) =>{
     try {
-        let data = await sequelize2.query(`select distinct [SubbfGroupName]  from [sdm].[productMaster] order by [SubbfGroupName]`)
+        let data = await sequelize.query(`select distinct [SubbfGroupName]  from [sdm].[productMaster] order by [SubbfGroupName]`)
         let subBrandGroup = []
         for(let i in data[0]){
             subBrandGroup.push(data[0][i]['SubbfGroupName'])
