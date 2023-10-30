@@ -8,9 +8,6 @@ import 'package:command_centre/web_dashboard/utils/comman_utils/table_utils/tabl
 import 'package:command_centre/web_dashboard/utils/comman_utils/table_utils/tabs_body_table.dart';
 import 'package:command_centre/web_dashboard/utils/comman_utils/table_utils/tabs_sizedbox_table.dart';
 import 'package:command_centre/web_dashboard/utils/comman_utils/utils/filter_all_category.dart';
-import 'package:command_centre/web_dashboard/utils/comman_utils/utils/filter_by_order.dart';
-import 'package:command_centre/web_dashboard/utils/comman_utils/utils/filter_channel.dart';
-import 'package:command_centre/web_dashboard/utils/comman_utils/utils/filters_retailing.dart';
 import 'package:command_centre/web_dashboard/utils/summary_utils/drawer_container/drawer_utils/title_widget.dart';
 import 'package:command_centre/web_dashboard/utils/table/fb_tables/allIndia_table.dart';
 import 'package:command_centre/web_dashboard/utils/table/fb_tables/category_table.dart';
@@ -19,12 +16,13 @@ import 'package:command_centre/web_dashboard/utils/table/fb_tables/month_wise_ta
 import 'package:command_centre/web_dashboard/utils/table/fb_tables/site_table.dart';
 import 'package:command_centre/web_dashboard/utils/table/table_tabs/division_table_tab.dart';
 import 'package:command_centre/web_dashboard/utils/table/table_tabs/site_table_tab.dart';
+import 'package:excel/excel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../../../model/data_table_model.dart';
 import '../../../../../../provider/sheet_provider.dart';
 import '../../../../../../utils/colors/colors.dart';
-// import 'dart:html' as html;
+import '../../../../../utils/style/text_style.dart';
 
 class FBWebSummary extends StatefulWidget {
   final Function() onTap;
@@ -60,6 +58,11 @@ class FBWebSummary extends StatefulWidget {
   final Function() onTap3;
   final Function() onTap4;
   final Function() onTapChannelFilter;
+  final Function() onTapRemoveFilter;
+  final Function() tryAgain;
+  final Function() tryAgain1;
+  final Function() tryAgain2;
+  final Function() tryAgain3;
   final int selectedIndex1;
   final List<String> selectedItemValueCategory;
   final List<String> selectedItemValueBrand;
@@ -100,7 +103,12 @@ class FBWebSummary extends StatefulWidget {
       required this.onTap4,
       required this.selectedIndex1,
       required this.onRemoveFilterCategory,
-      required this.selectedCategoryList, required this.selectedItemValueCategory, required this.selectedItemValueBrand, required this.selectedItemValueBrandForm, required this.selectedItemValueBrandFromGroup, required this.onTapChannelFilter})
+      required this.selectedCategoryList,
+      required this.selectedItemValueCategory,
+      required this.selectedItemValueBrand,
+      required this.selectedItemValueBrandForm,
+      required this.selectedItemValueBrandFromGroup,
+      required this.onTapChannelFilter, required this.onTapRemoveFilter, required this.tryAgain, required this.tryAgain1, required this.tryAgain2, required this.tryAgain3})
       : super(key: key);
 
   @override
@@ -129,6 +137,53 @@ class _FBWebSummaryState extends State<FBWebSummary> {
   String selectedMonth = '';
   String _selectedMonth = '';
   String _selectedCategory = '';
+
+  postRequest(context) async {
+    if (true) {
+      setState(() {
+
+        final Map<String, Map<String, String>> excelData = {};
+        final Set<String> uniqueMonths = {};
+        final List<String> allDates = [];
+
+        // Iterate through the JSON data and populate the excelData map
+        for (var monthData in widget.dataList) {
+          for (var monthEntry in monthData) {
+            final month = monthEntry['month'];
+            uniqueMonths.add(month);
+            final data = monthEntry['data'];
+            for (var dateEntry in data) {
+              final date = dateEntry['date'];
+              final retailing = dateEntry['retailing'];
+              final key = '$date';
+              allDates.add(key);
+              if (!excelData.containsKey(key)) {
+                excelData[key] = {'Date': date};
+              }
+              excelData[key]![month] = retailing;
+            }
+          }
+        }
+        // Get sorted list of dates
+        final sortedDates = allDates.toSet().toList()..sort();
+        // Create an Excel workbook and sheet
+        final excel = Excel.createExcel();
+        final sheet = excel['Sheet1'];
+        // Write headers
+        final headers = ['Date', ...uniqueMonths];
+        sheet.appendRow(headers);
+        // Write sorted data to the sheet
+        for (var date in sortedDates) {
+          final entry = excelData[date]!;
+          sheet.appendRow(headers.map((header) => entry[header] ?? '').toList());
+        }
+        // Save the Excel file
+        excel.save();
+        print('Excel file saved successfully.');
+      });
+    } else {
+    }
+  }
 
   // final TextEditingController _textController = TextEditingController();
   // String _displayText = '';
@@ -227,12 +282,14 @@ class _FBWebSummaryState extends State<FBWebSummary> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   TitleWidget(
-                    title: 'Focus Brand / ${widget.selectedIndex1 == 0?"Consolidated View By Site":widget.selectedIndex1 == 1?"Consolidated View By Category":widget.selectedIndex1 == 2?"FB %":widget.selectedIndex1 == 3?"FB Absolute":""}',
+                    title:
+                        'Focus Brand / ${widget.selectedIndex1 == 0 ? "Consolidated View By Site" : widget.selectedIndex1 == 1 ? "Consolidated View By Category" : widget.selectedIndex1 == 2 ? "FB %" : widget.selectedIndex1 == 3 ? "FB Absolute" : ""}',
                     subTitle: 'Focus Brand',
                     showHide: false,
                     onPressed: () {},
                     onNewMonth: () {},
                     showHideRetailing: false,
+                    onTapDefaultGoe: () {},
                   ),
                   Padding(
                       padding: const EdgeInsets.only(
@@ -299,10 +356,34 @@ class _FBWebSummaryState extends State<FBWebSummary> {
                                     borderRadius: BorderRadius.circular(15)),
                                 child: Stack(
                                   children: [
-                                    sheetProvider.isLoaderActive == true
-                                        ? const Center(
-                                            child: CircularProgressIndicator())
-                                        : Column(
+                                    sheetProvider.fbErrorMsg.isNotEmpty
+                                        ? Center(
+                                            child: Column(
+                                              // crossAxisAlignment: CrossAxisAlignment.center,
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              children: [
+                                                const Text('Something went wrong! Try Again'),
+                                                const SizedBox(height: 20,),
+                                                OutlinedButton(
+                                                  onPressed:widget.tryAgain,
+                                                  style: ButtonStyle(
+                                                    side: MaterialStateProperty.all(
+                                                        const BorderSide(
+                                                            width: 1.0, color: MyColors.primary)),
+                                                    shape: MaterialStateProperty.all(
+                                                        RoundedRectangleBorder(
+                                                            borderRadius:
+                                                            BorderRadius.circular(5.0))),
+                                                  ),
+                                                  child: const Text(
+                                                    "Try Again",
+                                                    style: TextStyle(
+                                                        fontFamily: fontFamily, color: Colors.black),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                    ) : Column(
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             mainAxisAlignment:
@@ -346,7 +427,7 @@ class _FBWebSummaryState extends State<FBWebSummary> {
                                                             selectedIndexLocation]
                                                         [0]['month'];
                                                     sheetProvider
-                                                        .selectedChannelIndex =
+                                                            .selectedChannelIndexFB =
                                                         selectedIndexLocation;
                                                     return TabsBodyTable(
                                                       onTap: () {
@@ -354,8 +435,8 @@ class _FBWebSummaryState extends State<FBWebSummary> {
                                                           selectedIndexLocation =
                                                               outerIndex;
                                                           sheetProvider
-                                                                  .selectedChannelIndex =
-                                                              outerIndex;
+                                                                  .selectedChannelIndexFB =
+                                                              selectedIndexLocation;
                                                           sheetProvider
                                                                   .selectedChannelDivision =
                                                               findDatasetName(widget
@@ -556,11 +637,34 @@ class _FBWebSummaryState extends State<FBWebSummary> {
                                             BorderRadius.circular(15)),
                                     child: Stack(
                                       children: [
-                                        sheetProvider.isLoaderActive == true
-                                            ? const Center(
-                                                child:
-                                                    CircularProgressIndicator())
-                                            : Column(
+                                        sheetProvider.fb1ErrorMsg.isNotEmpty
+                                            ? Center(
+                                          child: Column(
+                                            // crossAxisAlignment: CrossAxisAlignment.center,
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              const Text('Something went wrong! Try Again'),
+                                              const SizedBox(height: 20,),
+                                              OutlinedButton(
+                                                onPressed:widget.tryAgain1,
+                                                style: ButtonStyle(
+                                                  side: MaterialStateProperty.all(
+                                                      const BorderSide(
+                                                          width: 1.0, color: MyColors.primary)),
+                                                  shape: MaterialStateProperty.all(
+                                                      RoundedRectangleBorder(
+                                                          borderRadius:
+                                                          BorderRadius.circular(5.0))),
+                                                ),
+                                                child: const Text(
+                                                  "Try Again",
+                                                  style: TextStyle(
+                                                      fontFamily: fontFamily, color: Colors.black),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ) : Column(
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.start,
                                                 mainAxisAlignment:
@@ -582,13 +686,19 @@ class _FBWebSummaryState extends State<FBWebSummary> {
                                                                     .dataListCCTabs[
                                                                 selectedIndexLocation1]
                                                             [0]['filter_key'];
-                                                        var monthForm = widget.dataListCCTabs[outerIndex1][0]['month'];
-                                                        String year =
-                                                        monthForm.substring(2, 6);
-                                                        String month = monthForm.substring(7);
-                                                        var finalMonth = "$month-$year";
+                                                        var monthForm =
+                                                            widget.dataListCCTabs[
+                                                                    outerIndex1]
+                                                                [0]['month'];
+                                                        String year = monthForm
+                                                            .substring(2, 6);
+                                                        String month = monthForm
+                                                            .substring(7);
+                                                        var finalMonth =
+                                                            "$month-$year";
                                                         sheetProvider
-                                                                .selectedChannelMonthData = finalMonth;
+                                                                .selectedChannelMonthData =
+                                                            finalMonth;
                                                         selectedMonth = widget
                                                                     .dataListCCTabs[
                                                                 selectedIndexLocation1]
@@ -597,14 +707,17 @@ class _FBWebSummaryState extends State<FBWebSummary> {
                                                                     .dataListCCTabs[
                                                                 selectedIndexLocation1]
                                                             [0]['month'];
+                                                        sheetProvider
+                                                                .selectedChannelIndexFB =
+                                                            selectedIndexLocation1;
                                                         return TabsBodyTable(
                                                           onTap: () {
                                                             setState(() {
                                                               selectedIndexLocation1 =
                                                                   outerIndex1;
                                                               sheetProvider
-                                                                      .selectedChannelIndex =
-                                                                  outerIndex1;
+                                                                      .selectedChannelIndexFB =
+                                                                  selectedIndexLocation1;
                                                               sheetProvider
                                                                   .selectedChannelDivision = findDatasetName(widget
                                                                           .dataListCCTabs[
@@ -637,7 +750,6 @@ class _FBWebSummaryState extends State<FBWebSummary> {
                                                                           selectedIndexLocation1]
                                                                       [
                                                                       0]['month'];
-
                                                             });
                                                           },
                                                           onTapGes: () {
@@ -816,11 +928,34 @@ class _FBWebSummaryState extends State<FBWebSummary> {
                                                 BorderRadius.circular(15)),
                                         child: Stack(
                                           children: [
-                                            sheetProvider.isLoaderActive == true
-                                                ? const Center(
-                                                    child:
-                                                        CircularProgressIndicator())
-                                                : Column(
+                                            sheetProvider.fb2ErrorMsg.isNotEmpty
+                                                ? Center(
+                                              child: Column(
+                                                // crossAxisAlignment: CrossAxisAlignment.center,
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: [
+                                                  const Text('Something went wrong! Try Again'),
+                                                  const SizedBox(height: 20,),
+                                                  OutlinedButton(
+                                                    onPressed:widget.tryAgain2,
+                                                    style: ButtonStyle(
+                                                      side: MaterialStateProperty.all(
+                                                          const BorderSide(
+                                                              width: 1.0, color: MyColors.primary)),
+                                                      shape: MaterialStateProperty.all(
+                                                          RoundedRectangleBorder(
+                                                              borderRadius:
+                                                              BorderRadius.circular(5.0))),
+                                                    ),
+                                                    child: const Text(
+                                                      "Try Again",
+                                                      style: TextStyle(
+                                                          fontFamily: fontFamily, color: Colors.black),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ) : Column(
                                                     crossAxisAlignment:
                                                         CrossAxisAlignment
                                                             .start,
@@ -857,14 +992,17 @@ class _FBWebSummaryState extends State<FBWebSummary> {
                                                                         .dataListTabs[
                                                                     selectedIndexLocation2]
                                                                 [0]['month1'];
+                                                            sheetProvider
+                                                                    .selectedChannelIndexFB =
+                                                                selectedIndexLocation2;
                                                             return TabsBodyTable(
                                                               onTap: () {
                                                                 setState(() {
                                                                   selectedIndexLocation2 =
                                                                       outerIndex2;
                                                                   sheetProvider
-                                                                          .selectedChannelIndex =
-                                                                      outerIndex2;
+                                                                          .selectedChannelIndexFB =
+                                                                      selectedIndexLocation2;
                                                                   sheetProvider
                                                                       .selectedChannelDivision = findDatasetName(widget
                                                                               .dataListTabs[
@@ -953,14 +1091,14 @@ class _FBWebSummaryState extends State<FBWebSummary> {
                                                                         Column(
                                                                       children: [
                                                                         TableHeaderWidget(
-                                                                          onTap:
-                                                                              () {
-                                                                            setState(() {
-                                                                              addGeoBool = !addGeoBool;
-                                                                            });
-                                                                          },
-                                                                            title: "${widget.dataListTabs[selectedIndexLocation2][0]['filter_key']} / ${widget.dataListTabs[selectedIndexLocation2][0]['month1']}  ${widget.dataListTabs[selectedIndexLocation2][0]['channel'].isEmpty?'': '/ ${widget.dataListTabs[selectedIndexLocation2][0]['channel']}'}"
-                                                                        ),
+                                                                            onTap:
+                                                                                () {
+                                                                              setState(() {
+                                                                                addGeoBool = !addGeoBool;
+                                                                              });
+                                                                            },
+                                                                            title:
+                                                                                "${widget.dataListTabs[selectedIndexLocation2][0]['filter_key'] == 'allIndia' ? 'All India' : widget.dataListTabs[selectedIndexLocation2][0]['filter_key']} / ${widget.dataListTabs[selectedIndexLocation2][0]['month1']}  ${widget.dataListTabs[selectedIndexLocation2][0]['channel'].isEmpty ? '' : '/ ${widget.dataListTabs[selectedIndexLocation2][0]['channel']}'}"),
                                                                         Scrollbar(
                                                                           controller:
                                                                               _scrollControllerTable,
@@ -1069,12 +1207,34 @@ class _FBWebSummaryState extends State<FBWebSummary> {
                                                     BorderRadius.circular(15)),
                                             child: Stack(
                                               children: [
-                                                sheetProvider.isLoaderActive ==
-                                                        true
-                                                    ? const Center(
-                                                        child:
-                                                            CircularProgressIndicator())
-                                                    : Column(
+                                                sheetProvider.fb3ErrorMsg.isNotEmpty
+                                                    ? Center(
+                                                  child: Column(
+                                                    // crossAxisAlignment: CrossAxisAlignment.center,
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    children: [
+                                                      const Text('Something went wrong! Try Again'),
+                                                      const SizedBox(height: 20,),
+                                                      OutlinedButton(
+                                                        onPressed:widget.tryAgain3,
+                                                        style: ButtonStyle(
+                                                          side: MaterialStateProperty.all(
+                                                              const BorderSide(
+                                                                  width: 1.0, color: MyColors.primary)),
+                                                          shape: MaterialStateProperty.all(
+                                                              RoundedRectangleBorder(
+                                                                  borderRadius:
+                                                                  BorderRadius.circular(5.0))),
+                                                        ),
+                                                        child: const Text(
+                                                          "Try Again",
+                                                          style: TextStyle(
+                                                              fontFamily: fontFamily, color: Colors.black),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ) : Column(
                                                         crossAxisAlignment:
                                                             CrossAxisAlignment
                                                                 .start,
@@ -1117,6 +1277,9 @@ class _FBWebSummaryState extends State<FBWebSummary> {
                                                                             selectedIndexLocation3][0]
                                                                         [
                                                                         'month1'];
+                                                                sheetProvider
+                                                                        .selectedChannelIndexFB =
+                                                                    selectedIndexLocation3;
                                                                 return TabsBodyTable(
                                                                   onTap: () {
                                                                     setState(
@@ -1124,8 +1287,8 @@ class _FBWebSummaryState extends State<FBWebSummary> {
                                                                       selectedIndexLocation3 =
                                                                           outerIndex3;
                                                                       sheetProvider
-                                                                              .selectedChannelIndex =
-                                                                          outerIndex3;
+                                                                              .selectedChannelIndexFB =
+                                                                          selectedIndexLocation3;
                                                                       sheetProvider
                                                                           .selectedChannelDivision = findDatasetName(widget.dataListBillingTabs[selectedIndexLocation3]
                                                                               [
@@ -1176,7 +1339,7 @@ class _FBWebSummaryState extends State<FBWebSummary> {
                                                                   outerIndex:
                                                                       outerIndex3,
                                                                   title:
-                                                                      "${widget.dataListBillingTabs[outerIndex3][0]['filter_key']} / ${widget.dataListBillingTabs[outerIndex3][0]['month1']}",
+                                                                      "${widget.dataListBillingTabs[selectedIndexLocation3][0]['filter_key'] == 'allIndia' ? 'All India' : widget.dataListBillingTabs[selectedIndexLocation3][0]['filter_key']} / ${widget.dataListBillingTabs[outerIndex3][0]['month1']}",
                                                                   onClosedTap:
                                                                       widget
                                                                           .onClosedTap,
@@ -1210,13 +1373,12 @@ class _FBWebSummaryState extends State<FBWebSummary> {
                                                                             Column(
                                                                           children: [
                                                                             TableHeaderWidget(
-                                                                              onTap: () {
-                                                                                setState(() {
-                                                                                  addGeoBool = !addGeoBool;
-                                                                                });
-                                                                              },
-                                                                                title: "${widget.dataListBillingTabs[selectedIndexLocation3][0]['filter_key']} / ${widget.dataListBillingTabs[selectedIndexLocation3][0]['month1']}  ${widget.dataListBillingTabs[selectedIndexLocation3][0]['channel'].isEmpty?'': '/ ${widget.dataListBillingTabs[selectedIndexLocation3][0]['channel']}'}"
-                                                                            ),
+                                                                                onTap: () {
+                                                                                  setState(() {
+                                                                                    addGeoBool = !addGeoBool;
+                                                                                  });
+                                                                                },
+                                                                                title: "${widget.dataListBillingTabs[selectedIndexLocation3][0]['filter_key'] == 'allIndia' ? 'All India' : widget.dataListBillingTabs[selectedIndexLocation3][0]['filter_key']} / ${widget.dataListBillingTabs[selectedIndexLocation3][0]['month1']}  ${widget.dataListBillingTabs[selectedIndexLocation3][0]['channel'].isEmpty ? '' : '/ ${widget.dataListBillingTabs[selectedIndexLocation3][0]['channel']}'}"),
                                                                             Scrollbar(
                                                                               controller: _scrollControllerTable,
                                                                               child: SingleChildScrollView(
@@ -1312,35 +1474,59 @@ class _FBWebSummaryState extends State<FBWebSummary> {
                                       ),
                                     )
                                   : Container(),
-                  const ExcelImportButton(),
+                  ExcelImportButton(onClickExcel: () async{
+                    print('hello');
+                    setState(() {});
+                    await postRequest(context);
+                  },),
                 ],
               ),
             ),
             FiltersAllCategory(
-            // FiltersChannel(
-              selectedMonthList:widget.selectedIndex1 == 0?
-              (widget.dataList).isEmpty?'Select..':
-              widget.dataList[0][0]['month']:
-              widget.selectedIndex1 == 1?(widget.dataListCCTabs).isEmpty?'Loading..':
-              widget.dataListCCTabs[0][0]['month']:
-              widget.selectedIndex1 == 2?(widget.dataListTabs).isEmpty?'Loading..':
-              widget.dataListTabs[0][0]['month1']:
-              widget.selectedIndex1 == 3?(widget.dataListBillingTabs).isEmpty?'Loading..':
-              widget.dataListBillingTabs[0][0]['month1']:"" ,
-              // (widget.dataList).isEmpty?'Loading..':selectedMonth,
-              // widget.dataList[selectedIndexLocation][0]['month'],
+              selectedMonthList: widget.selectedIndex1 == 0
+                  ? (widget.dataList).isEmpty
+                      ? 'Select..'
+                      : widget.dataList[selectedIndexLocation][0]['month']
+                  : widget.selectedIndex1 == 1
+                      ? (widget.dataListCCTabs).isEmpty
+                          ? 'Select..'
+                          : widget.dataListCCTabs[selectedIndexLocation1][0]
+                              ['month']
+                      : widget.selectedIndex1 == 2
+                          ? (widget.dataListTabs).isEmpty
+                              ? 'Select..'
+                              : widget.dataListTabs[selectedIndexLocation2][0]
+                                  ['month1']
+                          : widget.selectedIndex1 == 3
+                              ? (widget.dataListBillingTabs).isEmpty
+                                  ? 'Select..'
+                                  : widget.dataListBillingTabs[
+                                      selectedIndexLocation][0]['month1']
+                              : "Select..",
               onTapMonthFilter: widget.onTapMonthFilter,
-              selectedChannelList:
-              widget.selectedIndex1 == 0?
-              (widget.dataList).isEmpty?'Select..':
-              widget.dataList[0][0]['channel']:
-              widget.selectedIndex1 == 1?(widget.dataListCCTabs).isEmpty?'Loading..':
-              widget.dataListCCTabs[0][0]['channel']:
-              widget.selectedIndex1 == 2?(widget.dataListTabs).isEmpty?'Loading..':
-              widget.dataListTabs[0][0]['channel']:
-              widget.selectedIndex1 == 3?(widget.dataListBillingTabs).isEmpty?'Loading..':
-              widget.dataListBillingTabs[0][0]['channel']:"" ,
-              onTapChannelFilter:  widget.onTapChannelFilter, attributeName: 'FB', categoryApply: widget.categoryApply,
+              selectedChannelList: widget.selectedIndex1 == 0
+                  ? (widget.dataList).isEmpty
+                      ? ['Select..']
+                      : widget.dataList[selectedIndexLocation][0]['channel']
+                  : widget.selectedIndex1 == 1
+                      ? (widget.dataListCCTabs).isEmpty
+                          ? ['Select..']
+                          : widget.dataListCCTabs[selectedIndexLocation1][0]
+                              ['channel']
+                      : widget.selectedIndex1 == 2
+                          ? (widget.dataListTabs).isEmpty
+                              ? ['Select..']
+                              : widget.dataListTabs[selectedIndexLocation2][0]
+                                  ['channel']
+                          : widget.selectedIndex1 == 3
+                              ? (widget.dataListBillingTabs).isEmpty
+                                  ? ['Select..']
+                                  : widget.dataListBillingTabs[
+                                      selectedIndexLocation][0]['channel']
+                              : ["Select.."],
+              onTapChannelFilter: widget.onTapChannelFilter,
+              attributeName: 'FB',
+              categoryApply: widget.categoryApply, onTapRemoveFilter: widget.onTapRemoveFilter,
             )
           ],
         ),

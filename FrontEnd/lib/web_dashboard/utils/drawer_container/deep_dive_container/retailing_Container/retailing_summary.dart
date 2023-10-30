@@ -1,3 +1,7 @@
+import 'dart:io';
+
+import 'package:command_centre/helper/app_urls.dart';
+import 'package:command_centre/utils/sharedpreferences/sharedpreferences_utils.dart';
 import 'package:command_centre/web_dashboard/utils/comman_utils/excel_button.dart';
 import 'package:command_centre/web_dashboard/utils/comman_utils/table_utils/back_button_table.dart';
 import 'package:command_centre/web_dashboard/utils/comman_utils/table_utils/custome_header_title.dart';
@@ -8,12 +12,16 @@ import 'package:command_centre/web_dashboard/utils/comman_utils/table_utils/tabl
 import 'package:command_centre/web_dashboard/utils/comman_utils/table_utils/tabs_body_table.dart';
 import 'package:command_centre/web_dashboard/utils/comman_utils/table_utils/tabs_sizedbox_table.dart';
 import 'package:command_centre/web_dashboard/utils/comman_utils/text_header_widget.dart';
+import 'package:command_centre/web_dashboard/utils/comman_utils/utils/filter_all_category.dart';
 import 'package:command_centre/web_dashboard/utils/comman_utils/utils/filter_channel.dart';
+import 'package:command_centre/web_dashboard/utils/comman_utils/utils/filter_retailing_summary.dart';
 import 'package:command_centre/web_dashboard/utils/comman_utils/utils/filters_retailing.dart';
 import 'package:command_centre/web_dashboard/utils/summary_utils/drawer_container/drawer_utils/title_widget.dart';
 import 'package:command_centre/web_dashboard/utils/table/retailing_table/retailing_allIndia_table.dart';
 import 'package:command_centre/web_dashboard/utils/table/tables_retailing.dart';
+import 'package:excel/excel.dart';
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -22,6 +30,7 @@ import '../../../../../../provider/sheet_provider.dart';
 import '../../../../../../utils/colors/colors.dart';
 import '../../../../../../utils/comman/retailing_table/retailing_table.dart';
 import '../../../../../../utils/style/text_style.dart';
+import '../../../../../activities/pglogin/model.dart';
 
 class RetailingWebSummary extends StatefulWidget {
   final Function() onTap;
@@ -48,11 +57,18 @@ class RetailingWebSummary extends StatefulWidget {
   final Function() categoryApply;
   final Function() onRemoveFilterCategory;
   final Function() onTapChannelFilter;
+  final Function() onTapRemoveFilter;
+  final Function() tryAgain;
+  final Function() tryAgain1;
+  final Function() tryAgain2;
+  final Function() tryAgain3;
   final List<String> selectedItemValueCategory;
   final List<String> selectedItemValueBrand;
   final List<String> selectedItemValueBrandForm;
   final List<String> selectedItemValueBrandFromGroup;
   final String selectedMonthList;
+  final Function() onTapSiteFilter;
+  final Function() onTapBranchFilter;
 
   const RetailingWebSummary(
       {Key? key,
@@ -83,7 +99,16 @@ class RetailingWebSummary extends StatefulWidget {
       required this.selectedItemValueBrandForm,
       required this.selectedItemValueBrandFromGroup,
       required this.selectedMonthList,
-      required this.onTapChannelFilter, required this.dataListByGeo})
+      required this.onTapChannelFilter,
+      required this.dataListByGeo,
+      required this.onTapRemoveFilter,
+      required this.onTapSiteFilter,
+      required this.onTapBranchFilter,
+      required this.tryAgain,
+      required this.tryAgain1,
+      required this.tryAgain2,
+      required this.tryAgain3
+      })
       : super(key: key);
 
   @override
@@ -107,22 +132,13 @@ class _RetailingWebSummaryState extends State<RetailingWebSummary> {
     'View Definitions'
   ];
 
-  List arrayTitle = [
-    'Month',
-    'Distribution Period',
-    'Month',
-    'Distribution Period',
-    'Month',
-    'Distribution Period',
-    'Month',
-    'Distribution Period'
-  ];
+  List arrayTitle = ['Month', 'Distribution Period', 'Month', 'Distribution Period', 'Month', 'Distribution Period', 'Month', 'Distribution Period'];
 
   List arrayRetailing = [
     'Daily Retailing Report',
-    'Retailing by Channel',
+    'Retailing by Geo',
     'Retailing by Category',
-    'Retailing Trends',
+    'Retailing by Channel',
   ];
   List arrayLocation = [
     'Goa',
@@ -149,6 +165,7 @@ class _RetailingWebSummaryState extends State<RetailingWebSummary> {
   int selectedIndexRetailing = 1;
   int selectedIndexLocation = 0;
   int selectedIndexLocation1 = 0;
+  int selectedIndexLocation2 = 0;
   late List<DataTableWebModel> rowData;
   String selectedMonth = '';
   String _selectedMonth = '';
@@ -156,8 +173,13 @@ class _RetailingWebSummaryState extends State<RetailingWebSummary> {
   late ScrollController _scrollController1;
   late ScrollController scrollController2;
   late ScrollController _scrollControllerTable;
+  late ScrollController _scrollControllerTable1;
   bool addGeoBool = false;
   late ScrollController _scrollController3;
+  ScrollController _controller = ScrollController();
+
+  ScrollController _controller1 = ScrollController();
+  ScrollController _controller2 = ScrollController();
 
   Color getColor(Set<MaterialState> states) {
     return const Color(0x397992D2);
@@ -170,8 +192,8 @@ class _RetailingWebSummaryState extends State<RetailingWebSummary> {
   List clusterCount = [];
 
   Future<void> clusterFilterAPI() async {
-    var url = 'https://run.mocky.io/v3/64496a8b-11ff-414b-b0ca-d7d861653287';
-    // var url = 'https://3975-223-226-227-19.ngrok-free.app/api/appData/clusterFilter';
+    // var url = 'https://run.mocky.io/v3/64496a8b-11ff-414b-b0ca-d7d861653287';
+    var url = '$BASE_URL/api/appData/clusterFilter';
     var response = await http.get(Uri.parse(url), headers: {
       'Content-Type': 'application/json; charset=UTF-8',
       'Accept': 'application/json',
@@ -187,6 +209,51 @@ class _RetailingWebSummaryState extends State<RetailingWebSummary> {
     }
   }
 
+  postRequest(context) async {
+    if (true) {
+      setState(() {
+        final Map<String, Map<String, String>> excelData = {};
+        final Set<String> uniqueMonths = {};
+        final List<String> allDates = [];
+
+        // Iterate through the JSON data and populate the excelData map
+        for (var monthData in widget.dataList) {
+          for (var monthEntry in monthData) {
+            final month = monthEntry['month'];
+            uniqueMonths.add(month);
+            final data = monthEntry['data'];
+            for (var dateEntry in data) {
+              final date = dateEntry['date'];
+              final retailing = dateEntry['retailing'];
+              final key = '$date';
+              allDates.add(key);
+              if (!excelData.containsKey(key)) {
+                excelData[key] = {'Date': date};
+              }
+              excelData[key]![month] = retailing;
+            }
+          }
+        }
+        // Get sorted list of dates
+        final sortedDates = allDates.toSet().toList()..sort();
+        // Create an Excel workbook and sheet
+        final excel = Excel.createExcel();
+        final sheet = excel['Sheet1'];
+        // Write headers
+        final headers = ['Date', ...uniqueMonths];
+        sheet.appendRow(headers);
+        // Write sorted data to the sheet
+        for (var date in sortedDates) {
+          final entry = excelData[date]!;
+          sheet.appendRow(headers.map((header) => entry[header] ?? '').toList());
+        }
+        // Save the Excel file
+        excel.save();
+        print('Excel file saved successfully.');
+      });
+    } else {}
+  }
+
   late ScrollController _scrollController;
 
   @override
@@ -197,6 +264,7 @@ class _RetailingWebSummaryState extends State<RetailingWebSummary> {
     _scrollController1 = ScrollController();
     scrollController2 = ScrollController();
     _scrollControllerTable = ScrollController();
+    _scrollControllerTable1 = ScrollController();
     _scrollController3 = ScrollController();
     selectedMonth = widget.selectedMonthList;
     clusterFilterAPI();
@@ -217,16 +285,16 @@ class _RetailingWebSummaryState extends State<RetailingWebSummary> {
                   TitleWidget(
                     // title: 'Retailing / Daily Retailing Report',
                     title:
-                        "Retailing / ${widget.selectedIndex1 == 0 ? 'Daily Retailing Report' : widget.selectedIndex1 == 1 ? 'Daily Channel' : widget.selectedIndex1 == 2 ? 'Daily Category' : widget.selectedIndex1 == 3 ? 'Daily Trends' : ''}",
+                        "Retailing / ${widget.selectedIndex1 == 0 ? 'Daily Retailing Report' : widget.selectedIndex1 == 1 ? 'Retailing By Geo' : widget.selectedIndex1 == 2 ? 'Retailing By Category' : widget.selectedIndex1 == 3 ? 'Retailing By Channel' : ''}",
                     subTitle: 'Retailing',
                     showHide: false,
                     onPressed: () {},
                     onNewMonth: () {},
                     showHideRetailing: false,
+                    onTapDefaultGoe: () {},
                   ),
                   Padding(
-                      padding: const EdgeInsets.only(
-                          top: 20, left: 0, right: 0, bottom: 20),
+                      padding: const EdgeInsets.only(top: 20, left: 0, right: 0, bottom: 20),
                       child: Stack(
                         children: [
                           Padding(
@@ -284,124 +352,81 @@ class _RetailingWebSummaryState extends State<RetailingWebSummary> {
                             child: Container(
                                 width: size.width,
                                 height: size.height / 1.3,
-                                decoration: BoxDecoration(
-                                    color: MyColors.whiteColor,
-                                    borderRadius: BorderRadius.circular(15)),
+                                decoration: BoxDecoration(color: MyColors.whiteColor, borderRadius: BorderRadius.circular(15)),
                                 child: Stack(
                                   children: [
-                                    sheetProvider.isLoaderActive == true
-                                        ? const Center(
-                                            child: CircularProgressIndicator())
+                                    sheetProvider.retailingErrorMsg.isNotEmpty
+                                        ? Center(
+                                            child: Column(
+                                              // crossAxisAlignment: CrossAxisAlignment.center,
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              children: [
+                                                const Text('Something went wrong! Try Again'),
+                                                const SizedBox(
+                                                  height: 20,
+                                                ),
+                                                OutlinedButton(
+                                                  onPressed: widget.tryAgain,
+                                                  style: ButtonStyle(
+                                                    side: MaterialStateProperty.all(const BorderSide(width: 1.0, color: MyColors.primary)),
+                                                    shape:
+                                                        MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0))),
+                                                  ),
+                                                  child: const Text(
+                                                    "Try Again",
+                                                    style: TextStyle(fontFamily: fontFamily, color: Colors.black),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          )
                                         : Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            mainAxisAlignment: MainAxisAlignment.start,
                                             children: [
                                               Container(
                                                 color: MyColors.dark400,
                                                 height: 42,
                                                 child: ListView.builder(
-                                                  scrollDirection:
-                                                      Axis.horizontal,
-                                                  itemCount:
-                                                      widget.dataList.length,
-                                                  itemBuilder:
-                                                      (context, outerIndex) {
-                                                    sheetProvider
-                                                        .selectedChannelSite = widget
-                                                                .dataList[
-                                                            selectedIndexLocation]
-                                                        [0]['filter_key1'];
-                                                    sheetProvider
-                                                            .selectedChannelDivision =
-                                                        findDatasetName(widget
-                                                                    .dataList[
-                                                                selectedIndexLocation]
-                                                            [0]['filter_key1']);
-                                                    sheetProvider
-                                                            .selectedChannelMonthData =
-                                                        widget.dataList[
-                                                                outerIndex][0]
-                                                            ['month'];
-                                                    selectedMonth = widget
-                                                                .dataList[
-                                                            selectedIndexLocation]
-                                                        [0]['month'];
-                                                    sheetProvider
-                                                            .myStringMonthFB =
-                                                        selectedMonth;
-                                                    _selectedMonth = widget
-                                                                .dataList[
-                                                            selectedIndexLocation]
-                                                        [0]['month'];
-                                                    selectedMonth = widget
-                                                                .dataList[
-                                                            selectedIndexLocation]
-                                                        [0]['month'];
-                                                    sheetProvider
-                                                            .selectedChannelIndex =
-                                                        selectedIndexLocation;
+                                                  scrollDirection: Axis.horizontal,
+                                                  itemCount: widget.dataList.length,
+                                                  itemBuilder: (context, outerIndex) {
+                                                    sheetProvider.selectedChannelSite = widget.dataList[selectedIndexLocation][0]['filter_key1'];
+                                                    sheetProvider.selectedChannelDivision =
+                                                        findDatasetName(widget.dataList[selectedIndexLocation][0]['filter_key1']);
+                                                    sheetProvider.selectedChannelMonthData = widget.dataList[outerIndex][0]['month'];
+                                                    selectedMonth = widget.dataList[selectedIndexLocation][0]['month'];
+                                                    sheetProvider.myStringMonthFB = selectedMonth;
+                                                    _selectedMonth = widget.dataList[selectedIndexLocation][0]['month'];
+                                                    selectedMonth = widget.dataList[selectedIndexLocation][0]['month'];
+                                                    sheetProvider.selectedChannelIndex = selectedIndexLocation;
                                                     return TabsBodyTable(
                                                       onTap: () {
                                                         setState(() {
-                                                          selectedIndexLocation =
-                                                              outerIndex;
-                                                          sheetProvider
-                                                                  .selectedChannelIndex =
-                                                              outerIndex;
-                                                          sheetProvider
-                                                                  .selectedChannelDivision =
-                                                              findDatasetName(widget
-                                                                          .dataList[
-                                                                      outerIndex][0]
-                                                                  [
-                                                                  'filter_key1']);
-                                                          sheetProvider
-                                                                  .selectedChannelMonthData =
-                                                              widget.dataList[
-                                                                      outerIndex]
-                                                                  [0]['month'];
-                                                          sheetProvider
-                                                                  .selectedChannelCategory =
-                                                              widget.dataList[
-                                                                      outerIndex]
-                                                                  [
-                                                                  0]['channel'];
-                                                          _selectedMonth =
-                                                              widget.dataList[
-                                                                      outerIndex]
-                                                                  [0]['month'];
-                                                          selectedMonth = widget
-                                                                      .dataList[
-                                                                  selectedIndexLocation]
-                                                              [0]['month'];
+                                                          selectedIndexLocation = outerIndex;
+                                                          sheetProvider.selectedChannelIndex = outerIndex;
+                                                          sheetProvider.selectedChannelDivision =
+                                                              findDatasetName(widget.dataList[outerIndex][0]['filter_key1']);
+                                                          sheetProvider.selectedChannelMonthData = widget.dataList[outerIndex][0]['month'];
+                                                          sheetProvider.selectedChannelCategory = widget.dataList[outerIndex][0]['channel'];
+                                                          _selectedMonth = widget.dataList[outerIndex][0]['month'];
+                                                          selectedMonth = widget.dataList[selectedIndexLocation][0]['month'];
                                                           // widget.selectedItemValueChannel = widget.dataList[outerIndex][0]['channel'];
                                                         });
 
-                                                        sheetProvider
-                                                                .removeIndexRe =
-                                                            selectedIndexLocation;
+                                                        sheetProvider.removeIndexRe = selectedIndexLocation;
                                                       },
                                                       onTapGes: () {
                                                         setState(() {
-                                                          selectedIndex =
-                                                              selectedIndex ==
-                                                                      outerIndex
-                                                                  ? -1
-                                                                  : outerIndex;
-                                                          sheetProvider
-                                                                  .isExpanded ==
-                                                              true;
+                                                          selectedIndex = selectedIndex == outerIndex ? -1 : outerIndex;
+                                                          sheetProvider.isExpanded == true;
                                                         });
                                                       },
-                                                      selectedIndexLocation:
-                                                          selectedIndexLocation,
+                                                      selectedIndexLocation: selectedIndexLocation,
                                                       outerIndex: outerIndex,
                                                       title:
                                                           "${widget.dataList[outerIndex][0]['filter_key1'] == 'allIndia' ? 'All India' : widget.dataList[outerIndex][0]['filter_key1']} / ${widget.dataList[outerIndex][0]['month']}",
-                                                      onClosedTap:
-                                                          widget.onClosedTap,
+                                                      onClosedTap: widget.onClosedTap,
                                                     );
                                                   },
                                                 ),
@@ -409,71 +434,48 @@ class _RetailingWebSummaryState extends State<RetailingWebSummary> {
                                               // Container B (conditionally shown)
                                               if (selectedIndexLocation != -1)
                                                 Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(0.0),
+                                                  padding: const EdgeInsets.all(0.0),
                                                   child: widget.dataList.isEmpty
-                                                      ? const Center(
-                                                          child:
-                                                              CircularProgressIndicator())
+                                                      ? const Center(child: CircularProgressIndicator())
                                                       : SingleChildScrollView(
                                                           child: Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                        .only(
-                                                                    left: 8.0,
-                                                                    right: 8.0),
+                                                            padding: const EdgeInsets.only(left: 8.0, right: 8.0),
                                                             child: Container(
                                                               width: size.width,
                                                               decoration: const BoxDecoration(
-                                                                  color: MyColors
-                                                                      .whiteColor,
-                                                                  borderRadius:
-                                                                      BorderRadius.all(
-                                                                          Radius.circular(
-                                                                              20))),
+                                                                  color: MyColors.whiteColor, borderRadius: BorderRadius.all(Radius.circular(20))),
                                                               child: Column(
                                                                 children: [
                                                                   TableHeaderWidget(
                                                                     onTap: () {
-                                                                      setState(
-                                                                          () {
-                                                                        addGeoBool =
-                                                                            !addGeoBool;
+                                                                      setState(() {
+                                                                        addGeoBool = !addGeoBool;
                                                                       });
                                                                     },
                                                                     title:
-                                                                        "${widget.dataList[selectedIndexLocation][0]['filter_key1'] == 'allIndia' ? 'All India' : widget.dataList[selectedIndexLocation][0]['filter_key1']} / ${widget.dataList[selectedIndexLocation][0]['month']}${widget.dataList[selectedIndexLocation][0]['channel'] == '' ? '' : "/ ${widget.dataList[selectedIndexLocation][0]['channel']}"} ",
+                                                                        "${widget.dataList[selectedIndexLocation][0]['filter_key1'] == 'allIndia' ? 'All India' : widget.dataList[selectedIndexLocation][0]['filter_key1']} / ${widget.dataList[selectedIndexLocation][0]['month']}${(widget.dataList[selectedIndexLocation][0]['channel']).isEmpty ? '' : "/ ${widget.dataList[selectedIndexLocation][0]['channel']}"} ",
                                                                   ),
                                                                   Scrollbar(
-                                                                    controller:
-                                                                        _scrollControllerTable,
-                                                                    child:
-                                                                        SingleChildScrollView(
-                                                                      controller:
-                                                                          _scrollControllerTable,
-                                                                      scrollDirection:
-                                                                          Axis.horizontal,
-                                                                      child:
-                                                                          Container(
+                                                                    controller: _scrollControllerTable,
+                                                                    child: SingleChildScrollView(
+                                                                      controller: _scrollControllerTable,
+                                                                      scrollDirection: Axis.horizontal,
+                                                                      child: Container(
                                                                         decoration:
                                                                             const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(20))),
-                                                                        width: MediaQuery.of(context).size.width -
-                                                                            400,
-                                                                        height: MediaQuery.of(context).size.height -
-                                                                            410,
-                                                                        child:
-                                                                            Column(
-                                                                          crossAxisAlignment:
-                                                                              CrossAxisAlignment.start,
+                                                                        width: MediaQuery.of(context).size.width - 400,
+                                                                        height: MediaQuery.of(context).size.height - 410,
+                                                                        child: Column(
+                                                                          crossAxisAlignment: CrossAxisAlignment.start,
                                                                           children: [
                                                                             Container(
                                                                               height: 30,
                                                                               decoration: const BoxDecoration(
-                                                                                border: Border(
-                                                                                  bottom: BorderSide(width: 0.5, color: MyColors.textColor),
-                                                                                  top: BorderSide(width: 0.5, color: MyColors.textColor),
-                                                                                ),
-                                                                              ),
+                                                                                  // border: Border(
+                                                                                  //   bottom: BorderSide(width: 0.5, color: MyColors.textColor),
+                                                                                  //   top: BorderSide(width: 0.5, color: MyColors.textColor),
+                                                                                  // ),
+                                                                                  ),
                                                                               child: Row(
                                                                                 children: [
                                                                                   const Padding(
@@ -496,9 +498,11 @@ class _RetailingWebSummaryState extends State<RetailingWebSummary> {
                                                                                             SizedBox(
                                                                                                 width: 140,
                                                                                                 child: Text(
-                                                                                                  widget.dataList[selectedIndexLocation][index]['month'],
+                                                                                                  widget.dataList[selectedIndexLocation][index]
+                                                                                                      ['month'],
                                                                                                   textAlign: TextAlign.center,
-                                                                                                  style: const TextStyle(fontSize: 16, fontFamily: fontFamily),
+                                                                                                  style: const TextStyle(
+                                                                                                      fontSize: 16, fontFamily: fontFamily),
                                                                                                 ))
                                                                                           ],
                                                                                         );
@@ -508,106 +512,123 @@ class _RetailingWebSummaryState extends State<RetailingWebSummary> {
                                                                             ),
                                                                             Stack(
                                                                               children: [
-                                                                                Container(
-                                                                                  width: MediaQuery.of(context).size.width - 400,
-                                                                                  height: MediaQuery.of(context).size.height - 440,
-                                                                                  child: ListView.builder(itemBuilder: (context, index) {
-                                                                                    return Container(
-                                                                                      height: 35.52,
-                                                                                      color: index % 2 == 0 ? MyColors.dark500 : MyColors.dark600,
-                                                                                    );
-                                                                                  }),
-                                                                                ),
-                                                                                Row(
-                                                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                  children: [
-                                                                                    SizedBox(
-                                                                                      width: 140,
-                                                                                      height: size.height - 440,
-                                                                                      child: ListView.builder(
-                                                                                          itemCount: 31,
-                                                                                          physics: const NeverScrollableScrollPhysics(),
-                                                                                          itemBuilder: (context, index) {
-                                                                                            return Padding(
-                                                                                              padding: const EdgeInsets.only(left: 15.0),
-                                                                                              child: Container(
-                                                                                                decoration: BoxDecoration(
-                                                                                                  color: index % 2 == 0 ? MyColors.dark500 : MyColors.dark600,
-                                                                                                  border: const Border(
-                                                                                                    bottom: BorderSide(width: 0.2, color: MyColors.whiteColor),
-                                                                                                    top: BorderSide(width: 0.2, color: MyColors.whiteColor),
-                                                                                                  ),
-                                                                                                ),
-                                                                                                child: Center(
-                                                                                                  child: Padding(
-                                                                                                    padding: const EdgeInsets.all(8.0),
-                                                                                                    child: Text(
-                                                                                                      "${index + 1}",
-                                                                                                      style: ThemeText.sheetText,
+                                                                                // SizedBox(
+                                                                                //   width: MediaQuery.of(context).size.width - 400,
+                                                                                //   height: MediaQuery.of(context).size.height - 440,
+                                                                                //   child: ListView.builder(itemBuilder: (context, index) {
+                                                                                //     return Container(
+                                                                                //       height: 35.52,
+                                                                                //       color: index % 2 == 0 ? MyColors.dark500 : MyColors.dark600,
+                                                                                //     );
+                                                                                //   }),
+                                                                                // ),
+                                                                                Scrollbar(
+                                                                                  controller: _scrollControllerTable1,
+                                                                                  child: SingleChildScrollView(
+                                                                                    controller: _scrollControllerTable1,
+                                                                                    child: Row(
+                                                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                      children: [
+                                                                                        Expanded(
+                                                                                          child: SizedBox(
+                                                                                            width: 140,
+                                                                                            height: size.height - 440,
+                                                                                            child: ListView.builder(
+                                                                                                itemCount: 31,
+                                                                                                controller: _controller1,
+                                                                                                physics: const NeverScrollableScrollPhysics(),
+                                                                                                itemBuilder: (context, index) {
+                                                                                                  return Padding(
+                                                                                                    padding: const EdgeInsets.only(left: 15.0),
+                                                                                                    child: Container(
+                                                                                                      decoration: BoxDecoration(
+                                                                                                        color: index % 2 == 0
+                                                                                                            ? MyColors.dark500
+                                                                                                            : MyColors.dark600,
+                                                                                                        // border: Border(
+                                                                                                        //   bottom: BorderSide(width: 0.2, color: MyColors.whiteColor),
+                                                                                                        //   top: BorderSide(width: 0.2, color: MyColors.whiteColor),
+                                                                                                        // ),
+                                                                                                      ),
+                                                                                                      child: Center(
+                                                                                                        child: Padding(
+                                                                                                          padding: const EdgeInsets.all(8.0),
+                                                                                                          child: Text(
+                                                                                                            "${index + 1}",
+                                                                                                            style: ThemeText.sheetText,
+                                                                                                          ),
+                                                                                                        ),
+                                                                                                      ),
                                                                                                     ),
+                                                                                                  );
+                                                                                                }),
+                                                                                          ),
+                                                                                        ),
+                                                                                        SizedBox(
+                                                                                          height: size.height - 440,
+                                                                                          width: size.width - 540,
+                                                                                          child: ListView.builder(
+                                                                                              // controller: _controller,
+                                                                                              physics: const NeverScrollableScrollPhysics(),
+                                                                                              shrinkWrap: true,
+                                                                                              scrollDirection: Axis.horizontal,
+                                                                                              itemCount:
+                                                                                                  widget.dataList[selectedIndexLocation].length,
+                                                                                              itemBuilder: (context, index) {
+                                                                                                return SizedBox(
+                                                                                                  height: 40,
+                                                                                                  width: 140,
+                                                                                                  child: Row(
+                                                                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                                    children: [
+                                                                                                      Expanded(
+                                                                                                        child: ListView.builder(
+                                                                                                            shrinkWrap: true,
+                                                                                                            controller: _controller2,
+                                                                                                            physics:
+                                                                                                                const NeverScrollableScrollPhysics(),
+                                                                                                            itemCount: widget
+                                                                                                                .dataList[selectedIndexLocation]
+                                                                                                                    [index]['data']
+                                                                                                                .length,
+                                                                                                            scrollDirection: Axis.vertical,
+                                                                                                            itemBuilder: (context, indx) {
+                                                                                                              return Row(
+                                                                                                                children: [
+                                                                                                                  Container(
+                                                                                                                      width: 140,
+                                                                                                                      decoration: BoxDecoration(
+                                                                                                                        color: indx % 2 == 0
+                                                                                                                            ? MyColors.dark500
+                                                                                                                            : MyColors.dark600,
+                                                                                                                        // border: const Border(
+                                                                                                                        //   bottom: BorderSide(width: 0.2, color: MyColors.whiteColor),
+                                                                                                                        //   top: BorderSide(width: 0.2, color: MyColors.whiteColor),
+                                                                                                                        // ),
+                                                                                                                      ),
+                                                                                                                      child: Padding(
+                                                                                                                        padding:
+                                                                                                                            const EdgeInsets.all(8.0),
+                                                                                                                        child: Text(
+                                                                                                                          "${widget.dataList[selectedIndexLocation][index]['data'][indx]['retailing']}",
+                                                                                                                          textAlign: TextAlign.center,
+                                                                                                                          style: const TextStyle(
+                                                                                                                              fontSize: 16,
+                                                                                                                              fontFamily: fontFamily),
+                                                                                                                        ),
+                                                                                                                      ))
+                                                                                                                ],
+                                                                                                              );
+                                                                                                            }),
+                                                                                                      )
+                                                                                                    ],
                                                                                                   ),
-                                                                                                ),
-                                                                                              ),
-                                                                                            );
-                                                                                          }),
+                                                                                                );
+                                                                                              }),
+                                                                                        ),
+                                                                                      ],
                                                                                     ),
-                                                                                    Scrollbar(
-                                                                                      controller: _scrollController3,
-                                                                                      child: SizedBox(
-                                                                                        // color: MyColors.backgroundAppBarColor,
-                                                                                        height: size.height - 440,
-                                                                                        width: size.width - 540,
-                                                                                        child: ListView.builder(
-                                                                                            controller: _scrollController3,
-                                                                                            physics: const NeverScrollableScrollPhysics(),
-                                                                                            shrinkWrap: true,
-                                                                                            scrollDirection: Axis.horizontal,
-                                                                                            itemCount: widget.dataList[selectedIndexLocation].length,
-                                                                                            itemBuilder: (context, index) {
-                                                                                              return SizedBox(
-                                                                                                height: 40,
-                                                                                                width: 140,
-                                                                                                child: Row(
-                                                                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                                  children: [
-                                                                                                    Expanded(
-                                                                                                      child: ListView.builder(
-                                                                                                          shrinkWrap: true,
-                                                                                                          controller: _scrollController3,
-                                                                                                          physics: const NeverScrollableScrollPhysics(),
-                                                                                                          itemCount: widget.dataList[selectedIndexLocation][index]['data'].length,
-                                                                                                          scrollDirection: Axis.vertical,
-                                                                                                          itemBuilder: (context, indx) {
-                                                                                                            return Row(
-                                                                                                              children: [
-                                                                                                                Container(
-                                                                                                                    width: 140,
-                                                                                                                    decoration: BoxDecoration(
-                                                                                                                      color: indx % 2 == 0 ? MyColors.dark500 : MyColors.dark600,
-                                                                                                                      border: const Border(
-                                                                                                                        bottom: BorderSide(width: 0.2, color: MyColors.whiteColor),
-                                                                                                                        top: BorderSide(width: 0.2, color: MyColors.whiteColor),
-                                                                                                                      ),
-                                                                                                                    ),
-                                                                                                                    child: Padding(
-                                                                                                                      padding: const EdgeInsets.all(8.0),
-                                                                                                                      child: Text(
-                                                                                                                        "${widget.dataList[selectedIndexLocation][index]['data'][indx]['retailing']}",
-                                                                                                                        textAlign: TextAlign.center,
-                                                                                                                        style: const TextStyle(fontSize: 16, fontFamily: fontFamily),
-                                                                                                                      ),
-                                                                                                                    ))
-                                                                                                              ],
-                                                                                                            );
-                                                                                                          }),
-                                                                                                    )
-                                                                                                  ],
-                                                                                                ),
-                                                                                              );
-                                                                                            }),
-                                                                                      ),
-                                                                                    ),
-                                                                                  ],
+                                                                                  ),
                                                                                 )
                                                                               ],
                                                                             )
@@ -645,8 +666,7 @@ class _RetailingWebSummaryState extends State<RetailingWebSummary> {
                                     ),
                                     MonthPositionTable(
                                       visible: sheetProvider.selectMonth,
-                                      onApplyPressedMonth:
-                                          widget.onApplyPressedMonth,
+                                      onApplyPressedMonth: widget.onApplyPressedMonth,
                                       onTap: () {
                                         setState(() {
                                           sheetProvider.selectMonth = false;
@@ -659,321 +679,670 @@ class _RetailingWebSummaryState extends State<RetailingWebSummary> {
                         )
                       : widget.selectedIndex1 == 1
                           ? Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.only(bottom: 20),
-                      child: Container(
-                          width: size.width,
-                          height: size.height / 1.3,
-                          decoration: BoxDecoration(
-                              color: MyColors.whiteColor,
-                              borderRadius: BorderRadius.circular(15)),
-                          child: Stack(
-                            children: [
-                              sheetProvider.isLoaderActive == true
-                                  ? const Center(
-                                  child: CircularProgressIndicator())
-                                  : Column(
-                                crossAxisAlignment:
-                                CrossAxisAlignment.start,
-                                mainAxisAlignment:
-                                MainAxisAlignment.start,
-                                children: [
-                                  Container(
-                                    color: MyColors.dark400,
-                                    height: 42,
-                                    child: ListView.builder(
-                                      scrollDirection:
-                                      Axis.horizontal,
-                                      itemCount:
-                                      widget.dataListByGeo.length,
-                                      itemBuilder:
-                                          (context, outerIndex1) {
-                                        // sheetProvider
-                                        //     .selectedChannelSite = widget
-                                        //     .dataList[
-                                        // selectedIndexLocation]
-                                        // [0]['filter_key1'];
-                                        // sheetProvider
-                                        //     .selectedChannelDivision =
-                                        //     findDatasetName(widget
-                                        //         .dataList[
-                                        //     selectedIndexLocation]
-                                        //     [0]['filter_key1']);
-                                        // sheetProvider
-                                        //     .selectedChannelMonthData =
-                                        // widget.dataList[
-                                        // outerIndex][0]
-                                        // ['month'];
-                                        // selectedMonth = widget
-                                        //     .dataList[
-                                        // selectedIndexLocation]
-                                        // [0]['month'];
-                                        // sheetProvider
-                                        //     .myStringMonthFB =
-                                        //     selectedMonth;
-                                        // _selectedMonth = widget
-                                        //     .dataList[
-                                        // selectedIndexLocation]
-                                        // [0]['month'];
-                                        // selectedMonth = widget
-                                        //     .dataList[
-                                        // selectedIndexLocation]
-                                        // [0]['month'];
-                                        // sheetProvider
-                                        //     .selectedChannelIndex =
-                                        //     selectedIndexLocation;
-                                        return TabsBodyTable(
+                              child: Padding(
+                                padding: const EdgeInsets.only(bottom: 20),
+                                child: Container(
+                                    width: size.width,
+                                    height: size.height / 1.3,
+                                    decoration: BoxDecoration(color: MyColors.whiteColor, borderRadius: BorderRadius.circular(15)),
+                                    child: Stack(
+                                      children: [
+                                        sheetProvider.retailing1ErrorMsg.isNotEmpty
+                                            ? Center(
+                                                child: Column(
+                                                  // crossAxisAlignment: CrossAxisAlignment.center,
+                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  children: [
+                                                    const Text('Something went wrong! Try Again'),
+                                                    const SizedBox(
+                                                      height: 20,
+                                                    ),
+                                                    OutlinedButton(
+                                                      onPressed: widget.tryAgain1,
+                                                      style: ButtonStyle(
+                                                        side: MaterialStateProperty.all(const BorderSide(width: 1.0, color: MyColors.primary)),
+                                                        shape: MaterialStateProperty.all(
+                                                            RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0))),
+                                                      ),
+                                                      child: const Text(
+                                                        "Try Again",
+                                                        style: TextStyle(fontFamily: fontFamily, color: Colors.black),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              )
+                                            : Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                children: [
+                                                  Container(
+                                                    color: MyColors.dark400,
+                                                    height: 42,
+                                                    child: ListView.builder(
+                                                      scrollDirection: Axis.horizontal,
+                                                      itemCount: widget.dataListByGeo.length,
+                                                      itemBuilder: (context, outerIndex1) {
+                                                        SharedPreferencesUtils.setString('divisionChannelSelected1',
+                                                            findDatasetName(widget.dataListByGeo[selectedIndexLocation1][0]['filter_key']));
+                                                        SharedPreferencesUtils.setString(
+                                                            'siteChannelSelected1', widget.dataListByGeo[selectedIndexLocation1][0]['filter_key']);
+                                                        SharedPreferencesUtils.setString(
+                                                            'monthChannelSelected1', widget.dataListByGeo[selectedIndexLocation1][0]['date']);
+                                                        sheetProvider.selectedChannelIndex = selectedIndexLocation1;
+                                                        return TabsBodyTable(
+                                                          onTap: () {
+                                                            setState(() {
+                                                              selectedIndexLocation1 = outerIndex1;
+
+                                                              SharedPreferencesUtils.setString('divisionChannelSelected1',
+                                                                  findDatasetName(widget.dataListByGeo[selectedIndexLocation1][0]['filter_key']));
+                                                              SharedPreferencesUtils.setString('siteChannelSelected1',
+                                                                  widget.dataListByGeo[selectedIndexLocation1][0]['filter_key']);
+                                                              SharedPreferencesUtils.setString(
+                                                                  'monthChannelSelected1', widget.dataListByGeo[selectedIndexLocation1][0]['date']);
+                                                              sheetProvider.selectedChannelIndex = selectedIndexLocation1;
+                                                            });
+
+                                                            // sheetProvider
+                                                            //     .removeIndexRe =
+                                                            //     selectedIndexLocation;
+                                                          },
+                                                          onTapGes: () {
+                                                            setState(() {
+                                                              selectedIndex = selectedIndex == outerIndex1 ? -1 : outerIndex1;
+                                                              sheetProvider.isExpanded == true;
+                                                            });
+                                                          },
+                                                          selectedIndexLocation: selectedIndexLocation1,
+                                                          outerIndex: outerIndex1,
+                                                          title:
+                                                              "${widget.dataListByGeo[outerIndex1][0]['filter_key'] == 'allIndia' ? 'All India' : widget.dataListByGeo[outerIndex1][0]['filter_key']} / ${widget.dataListByGeo[outerIndex1][0]['date']}",
+                                                          onClosedTap: widget.onClosedTap,
+                                                        );
+                                                      },
+                                                    ),
+                                                  ),
+                                                  // Container B (conditionally shown)
+                                                  if (selectedIndexLocation != -1)
+                                                    Padding(
+                                                      padding: const EdgeInsets.all(0.0),
+                                                      child: widget.dataListByGeo.isEmpty
+                                                          ? const Center(child: CircularProgressIndicator())
+                                                          : SingleChildScrollView(
+                                                              child: Container(
+                                                                width: size.width,
+                                                                decoration: const BoxDecoration(
+                                                                    color: MyColors.whiteColor, borderRadius: BorderRadius.all(Radius.circular(20))),
+                                                                child: Column(
+                                                                  children: [
+                                                                    TableHeaderWidget(
+                                                                      onTap: () {
+                                                                        setState(() {
+                                                                          addGeoBool = !addGeoBool;
+                                                                        });
+                                                                      },
+                                                                      title:
+                                                                          "${widget.dataListByGeo[selectedIndexLocation1][0]['filter_key'] == 'allIndia' ? 'All India' : widget.dataListByGeo[selectedIndexLocation1][0]['filter_key']} / ${widget.dataListByGeo[selectedIndexLocation1][0]['date']} ${(widget.dataListByGeo[selectedIndexLocation1][0]['channel']).isEmpty ? "" : "/ ${widget.dataListByGeo[selectedIndexLocation1][0]['channel']}"} ${widget.dataListByGeo[selectedIndexLocation1][0]['filter_key2'] == "" ? "" : "/ ${widget.dataListByGeo[selectedIndexLocation1][0]['filter_key2']}"}",
+                                                                    ),
+                                                                    Scrollbar(
+                                                                      controller: _scrollControllerTable,
+                                                                      child: SingleChildScrollView(
+                                                                        controller: _scrollControllerTable,
+                                                                        scrollDirection: Axis.horizontal,
+                                                                        child: Container(
+                                                                          decoration: const BoxDecoration(
+                                                                              borderRadius: BorderRadius.all(Radius.circular(20))),
+                                                                          width: MediaQuery.of(context).size.width - 200,
+                                                                          height: MediaQuery.of(context).size.height - 410,
+                                                                          child: Column(
+                                                                            children: [
+                                                                              RetailingCustomHeaderTitle(
+                                                                                dataList: widget.dataListByGeo,
+                                                                                selectedIndexLocation: selectedIndexLocation1,
+                                                                                cm: 'CM',
+                                                                                cmIYA: 'CMIYA',
+                                                                                p1m: 'P1M',
+                                                                                p3m: 'P3M',
+                                                                                p6m: 'P6M',
+                                                                                p12m: 'P12M',
+                                                                                fy: 'FY',
+                                                                                fyIYA: 'FYIYA',
+                                                                              ),
+                                                                              Padding(
+                                                                                padding: const EdgeInsets.only(left: 15.0, right: 15.0, bottom: 8.0),
+                                                                                child:
+                                                                                    // widget.dataList[selectedIndexLocation][0]['filter_key'] == 'All India' || widget.dataList[selectedIndexLocation][0]['filter_key'] == 'allIndia'
+                                                                                    //     ?c
+                                                                                    RetailingAllIndiaTableData(
+                                                                                        newDataList: widget.dataListByGeo[selectedIndexLocation1],
+                                                                                        selectedIndex: selectedIndexLocation,
+                                                                                        division: findDatasetName(widget
+                                                                                            .dataListByGeo[selectedIndexLocation1][0]['filter_key']),
+                                                                                        divisionName: widget.dataListByGeo[selectedIndexLocation1][0]
+                                                                                            ['filter_key'],
+                                                                                        month: widget.dataListByGeo[selectedIndexLocation1][0]
+                                                                                            ['date']),
+                                                                              )
+                                                                              //     : widget.dataList[selectedIndexLocation][0]['filter_key'] == 'N-E' || widget.dataList[selectedIndexLocation][0]['filter_key'] == 'S-W'
+                                                                              //     ? FBTableDivision(
+                                                                              //   newDataList: widget.dataList[selectedIndexLocation],
+                                                                              //   keyName1: 'fb_per',
+                                                                              //   keyName2: 'fb_achieve_sum',
+                                                                              //   keyName3: 'fb_target_sum',
+                                                                              // )
+                                                                              //     : FBTableSite(newDataList: widget.dataList[selectedIndexLocation], keyName1: 'fb_per', keyName2: 'fb_achieve_sum', keyName3: 'fb_target_sum'),
+                                                                              // ),
+                                                                            ],
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                    )
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                            ),
+                                                    ),
+                                                ],
+                                              ),
+                                        GeoPositionTable(
+                                          addGeoBool: addGeoBool,
+                                          onCoverageTap: () {
+                                            setState(() {
+                                              addGeoBool = !addGeoBool;
+                                            });
+                                          },
+                                          divisionList: widget.divisionList,
+                                          siteList: widget.siteList,
+                                          branchList: widget.branchList,
+                                          selectedGeo: widget.selectedGeo,
+                                          clusterList: widget.clusterList,
+                                          onApplyTap: () {
+                                            setState(() {
+                                              addGeoBool = !addGeoBool;
+                                              sheetProvider.selectMonth = true;
+                                            });
+                                          },
+                                        ),
+                                        MonthPositionTable(
+                                          visible: sheetProvider.selectMonth,
+                                          onApplyPressedMonth: widget.onApplyPressedMonth,
                                           onTap: () {
                                             setState(() {
-                                              selectedIndexLocation1 =
-                                                  outerIndex1;
-                                              // sheetProvider
-                                              //     .selectedChannelIndex =
-                                              //     outerIndex;
-                                              // sheetProvider
-                                              //     .selectedChannelDivision =
-                                              //     findDatasetName(widget
-                                              //         .dataList[
-                                              //     outerIndex][0]
-                                              //     [
-                                              //     'filter_key1']);
-                                              // sheetProvider
-                                              //     .selectedChannelMonthData =
-                                              // widget.dataList[
-                                              // outerIndex]
-                                              // [0]['month'];
-                                              // sheetProvider
-                                              //     .selectedChannelCategory =
-                                              // widget.dataList[
-                                              // outerIndex]
-                                              // [
-                                              // 0]['channel'];
-                                              // _selectedMonth =
-                                              // widget.dataList[
-                                              // outerIndex]
-                                              // [0]['month'];
-                                              // selectedMonth = widget
-                                              //     .dataList[
-                                              // selectedIndexLocation]
-                                              // [0]['month'];
-                                              // widget.selectedItemValueChannel = widget.dataList[outerIndex][0]['channel'];
-                                            });
-
-                                            // sheetProvider
-                                            //     .removeIndexRe =
-                                            //     selectedIndexLocation;
-                                          },
-                                          onTapGes: () {
-                                            setState(() {
-                                              selectedIndex =
-                                              selectedIndex ==
-                                                  outerIndex1
-                                                  ? -1
-                                                  : outerIndex1;
-                                              sheetProvider
-                                                  .isExpanded ==
-                                                  true;
+                                              sheetProvider.selectMonth = false;
                                             });
                                           },
-                                          selectedIndexLocation:
-                                          selectedIndexLocation1,
-                                          outerIndex: outerIndex1,
-                                          title:
-                                          "${widget.dataListByGeo[outerIndex1][0]['data'][0]['filter_key'] == 'allIndia' ? 'All India' : widget.dataListByGeo[outerIndex1][0]['data'][0]['filter_key']} / ${widget.dataListByGeo[outerIndex1][0]['data'][0]['MonthYear']}",
-                                          onClosedTap:
-                                          widget.onClosedTap,
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                  // Container B (conditionally shown)
-                                  if (selectedIndexLocation != -1)
-                                    Padding(
-                                      padding:
-                                      const EdgeInsets.all(0.0),
-                                      child: widget.dataListByGeo.isEmpty
-                                          ? const Center(
-                                          child:
-                                          CircularProgressIndicator())
-                                          : SingleChildScrollView(
-                                        child: Container(
-                                          width: size.width,
-                                          decoration: const BoxDecoration(
-                                              color: MyColors
-                                                  .whiteColor,
-                                              borderRadius: BorderRadius
-                                                  .all(Radius
-                                                  .circular(
-                                                  20))),
-                                          child: Column(
-                                            children: [
-                                              TableHeaderWidget(
-                                                onTap: () {
-                                                  setState(
-                                                          () {
-                                                        addGeoBool =
-                                                        !addGeoBool;
-                                                      });
-                                                },
-                                                title:
-                                                "${widget.dataListByGeo[selectedIndexLocation1][0]['data'][0]['filter_key'] == 'allIndia' ? 'All India' : widget.dataListByGeo[selectedIndexLocation1][0]['data'][0]['filter_key']} / ${widget.dataListByGeo[selectedIndexLocation1][0]['data'][0]['MonthYear']}",
-                                              ),
-                                              Scrollbar(
-                                                controller:
-                                                _scrollControllerTable,
-                                                child:
-                                                SingleChildScrollView(
-                                                  controller:
-                                                  _scrollControllerTable,
-                                                  scrollDirection:
-                                                  Axis.horizontal,
-                                                  child:
-                                                  Container(
-                                                    decoration:
-                                                    const BoxDecoration(
-                                                        borderRadius: BorderRadius.all(Radius.circular(20))),
-                                                    width: MediaQuery.of(context)
-                                                        .size
-                                                        .width -
-                                                        200,
-                                                    height: MediaQuery.of(context)
-                                                        .size
-                                                        .height -
-                                                        410,
-                                                    child:
-                                                    Column(
+                                        ),
+                                      ],
+                                    )),
+                              ),
+                            )
+                          : widget.selectedIndex1 == 2
+                              ? Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(bottom: 20),
+                                    child: Container(
+                                        width: size.width,
+                                        height: size.height / 1.3,
+                                        decoration: BoxDecoration(color: MyColors.whiteColor, borderRadius: BorderRadius.circular(15)),
+                                        child: Stack(
+                                          children: [
+                                            sheetProvider.retailing2ErrorMsg.isNotEmpty
+                                                ? Center(
+                                                    child: Column(
+                                                      // crossAxisAlignment: CrossAxisAlignment.center,
+                                                      mainAxisAlignment: MainAxisAlignment.center,
                                                       children: [
-                                                        RetailingCustomHeaderTitle(
-                                                          dataList:
-                                                          widget.dataListByGeo,
-                                                          selectedIndexLocation:
-                                                          selectedIndexLocation,
-                                                          cm:
-                                                          'CM',
-                                                          cmIYA: 'CMIYA',
-                                                          p1m:
-                                                          'P1M',
-                                                          p3m:
-                                                          'P3M',
-                                                          p6m: 'P6M',
-                                                          p12m: 'P12M',
-                                                          fy: 'FY',
-                                                          fyIYA: 'FYIYA',
+                                                        const Text('Something went wrong! Try Again'),
+                                                        const SizedBox(
+                                                          height: 20,
                                                         ),
-                                                        // TextButton(onPressed: (){
-                                                        //   print((widget.dataListByGeo[selectedIndexLocation]).length);
-                                                        // }, child: const Text('Click'))
-                                                        Padding(
-                                                          padding: const EdgeInsets.only(
-                                                              left: 15.0,
-                                                              right: 15.0,
-                                                              bottom: 8.0),
-                                                          child:
-                                                          // widget.dataList[selectedIndexLocation][0]['filter_key'] == 'All India' || widget.dataList[selectedIndexLocation][0]['filter_key'] == 'allIndia'
-                                                          //     ?c
-                                                          RetailingAllIndiaTableData(
-                                                            newDataList: widget.dataListByGeo[selectedIndexLocation],
-                                                          )
-                                                          //     : widget.dataList[selectedIndexLocation][0]['filter_key'] == 'N-E' || widget.dataList[selectedIndexLocation][0]['filter_key'] == 'S-W'
-                                                          //     ? FBTableDivision(
-                                                          //   newDataList: widget.dataList[selectedIndexLocation],
-                                                          //   keyName1: 'fb_per',
-                                                          //   keyName2: 'fb_achieve_sum',
-                                                          //   keyName3: 'fb_target_sum',
-                                                          // )
-                                                          //     : FBTableSite(newDataList: widget.dataList[selectedIndexLocation], keyName1: 'fb_per', keyName2: 'fb_achieve_sum', keyName3: 'fb_target_sum'),
+                                                        OutlinedButton(
+                                                          onPressed: widget.tryAgain2,
+                                                          style: ButtonStyle(
+                                                            side: MaterialStateProperty.all(const BorderSide(width: 1.0, color: MyColors.primary)),
+                                                            shape: MaterialStateProperty.all(
+                                                                RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0))),
+                                                          ),
+                                                          child: const Text(
+                                                            "Try Again",
+                                                            style: TextStyle(fontFamily: fontFamily, color: Colors.black),
+                                                          ),
                                                         ),
                                                       ],
                                                     ),
+                                                  )
+                                                : Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    mainAxisAlignment: MainAxisAlignment.start,
+                                                    children: [
+                                                      Container(
+                                                        color: MyColors.dark400,
+                                                        height: 42,
+                                                        child: ListView.builder(
+                                                          scrollDirection: Axis.horizontal,
+                                                          itemCount: widget.dataListByGeo.length,
+                                                          itemBuilder: (context, outerIndex1) {
+                                                            SharedPreferencesUtils.setString('divisionChannelSelected1',
+                                                                findDatasetName(widget.dataListByGeo[selectedIndexLocation1][0]['filter_key']));
+                                                            SharedPreferencesUtils.setString('siteChannelSelected1',
+                                                                widget.dataListByGeo[selectedIndexLocation1][0]['filter_key']);
+                                                            SharedPreferencesUtils.setString(
+                                                                'monthChannelSelected1', widget.dataListByGeo[selectedIndexLocation1][0]['date']);
+                                                            sheetProvider.selectedChannelIndex = selectedIndexLocation1;
+                                                            return TabsBodyTable(
+                                                              onTap: () {
+                                                                setState(() {
+                                                                  selectedIndexLocation1 = outerIndex1;
+
+                                                                  SharedPreferencesUtils.setString('divisionChannelSelected1',
+                                                                      findDatasetName(widget.dataListByGeo[selectedIndexLocation1][0]['filter_key']));
+                                                                  SharedPreferencesUtils.setString('siteChannelSelected1',
+                                                                      widget.dataListByGeo[selectedIndexLocation1][0]['filter_key']);
+                                                                  SharedPreferencesUtils.setString('monthChannelSelected1',
+                                                                      widget.dataListByGeo[selectedIndexLocation1][0]['date']);
+                                                                  sheetProvider.selectedChannelIndex = selectedIndexLocation1;
+                                                                });
+
+                                                                // sheetProvider
+                                                                //     .removeIndexRe =
+                                                                //     selectedIndexLocation;
+                                                              },
+                                                              onTapGes: () {
+                                                                setState(() {
+                                                                  selectedIndex = selectedIndex == outerIndex1 ? -1 : outerIndex1;
+                                                                  sheetProvider.isExpanded == true;
+                                                                });
+                                                              },
+                                                              selectedIndexLocation: selectedIndexLocation1,
+                                                              outerIndex: outerIndex1,
+                                                              title:
+                                                                  "${widget.dataListByGeo[outerIndex1][0]['filter_key'] == 'allIndia' ? 'All India' : widget.dataListByGeo[outerIndex1][0]['filter_key']} / ${widget.dataListByGeo[outerIndex1][0]['date']}",
+                                                              onClosedTap: widget.onClosedTap,
+                                                            );
+                                                          },
+                                                        ),
+                                                      ),
+                                                      // Container B (conditionally shown)
+                                                      if (selectedIndexLocation != -1)
+                                                        Padding(
+                                                          padding: const EdgeInsets.all(0.0),
+                                                          child: widget.dataListByGeo.isEmpty
+                                                              ? const Center(child: CircularProgressIndicator())
+                                                              : SingleChildScrollView(
+                                                                  child: Container(
+                                                                    width: size.width,
+                                                                    decoration: const BoxDecoration(
+                                                                        color: MyColors.whiteColor,
+                                                                        borderRadius: BorderRadius.all(Radius.circular(20))),
+                                                                    child: Column(
+                                                                      children: [
+                                                                        TableHeaderWidget(
+                                                                          onTap: () {
+                                                                            setState(() {
+                                                                              addGeoBool = !addGeoBool;
+                                                                            });
+                                                                          },
+                                                                          title:
+                                                                              "${widget.dataListByGeo[selectedIndexLocation1][0]['filter_key'] == 'allIndia' ? 'All India' : widget.dataListByGeo[selectedIndexLocation1][0]['filter_key']} / ${widget.dataListByGeo[selectedIndexLocation1][0]['date']} ${(widget.dataListByGeo[selectedIndexLocation1][0]['channel']).isEmpty ? "" : "/ ${widget.dataListByGeo[selectedIndexLocation1][0]['channel']}"} ${widget.dataListByGeo[selectedIndexLocation1][0]['filter_key2'] == "" ? "" : "/ ${widget.dataListByGeo[selectedIndexLocation1][0]['filter_key2']}"}",
+                                                                        ),
+                                                                        Scrollbar(
+                                                                          controller: _scrollControllerTable,
+                                                                          child: SingleChildScrollView(
+                                                                            controller: _scrollControllerTable,
+                                                                            scrollDirection: Axis.horizontal,
+                                                                            child: Container(
+                                                                              decoration: const BoxDecoration(
+                                                                                  borderRadius: BorderRadius.all(Radius.circular(20))),
+                                                                              width: MediaQuery.of(context).size.width - 200,
+                                                                              height: MediaQuery.of(context).size.height - 410,
+                                                                              child: Column(
+                                                                                children: [
+                                                                                  RetailingCustomHeaderTitle(
+                                                                                    dataList: widget.dataListByGeo,
+                                                                                    selectedIndexLocation: selectedIndexLocation1,
+                                                                                    cm: 'CM',
+                                                                                    cmIYA: 'CMIYA',
+                                                                                    p1m: 'P1M',
+                                                                                    p3m: 'P3M',
+                                                                                    p6m: 'P6M',
+                                                                                    p12m: 'P12M',
+                                                                                    fy: 'FY',
+                                                                                    fyIYA: 'FYIYA',
+                                                                                  ),
+                                                                                  Padding(
+                                                                                    padding:
+                                                                                        const EdgeInsets.only(left: 15.0, right: 15.0, bottom: 8.0),
+                                                                                    child:
+                                                                                        // widget.dataList[selectedIndexLocation][0]['filter_key'] == 'All India' || widget.dataList[selectedIndexLocation][0]['filter_key'] == 'allIndia'
+                                                                                        //     ?c
+                                                                                        RetailingAllIndiaTableData(
+                                                                                            newDataList: widget.dataListByGeo[selectedIndexLocation1],
+                                                                                            selectedIndex: selectedIndexLocation,
+                                                                                            division: findDatasetName(
+                                                                                                widget.dataListByGeo[selectedIndexLocation1][0]
+                                                                                                    ['filter_key']),
+                                                                                            divisionName: widget.dataListByGeo[selectedIndexLocation1]
+                                                                                                [0]['filter_key'],
+                                                                                            month: widget.dataListByGeo[selectedIndexLocation1][0]
+                                                                                                ['date']),
+                                                                                  )
+                                                                                  //     : widget.dataList[selectedIndexLocation][0]['filter_key'] == 'N-E' || widget.dataList[selectedIndexLocation][0]['filter_key'] == 'S-W'
+                                                                                  //     ? FBTableDivision(
+                                                                                  //   newDataList: widget.dataList[selectedIndexLocation],
+                                                                                  //   keyName1: 'fb_per',
+                                                                                  //   keyName2: 'fb_achieve_sum',
+                                                                                  //   keyName3: 'fb_target_sum',
+                                                                                  // )
+                                                                                  //     : FBTableSite(newDataList: widget.dataList[selectedIndexLocation], keyName1: 'fb_per', keyName2: 'fb_achieve_sum', keyName3: 'fb_target_sum'),
+                                                                                  // ),
+                                                                                ],
+                                                                              ),
+                                                                            ),
+                                                                          ),
+                                                                        )
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                        ),
+                                                    ],
                                                   ),
-                                                ),
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                ],
-                              ),
-                              GeoPositionTable(
-                                addGeoBool: addGeoBool,
-                                onCoverageTap: () {
-                                  setState(() {
-                                    addGeoBool = !addGeoBool;
-                                  });
-                                },
-                                divisionList: widget.divisionList,
-                                siteList: widget.siteList,
-                                branchList: widget.branchList,
-                                selectedGeo: widget.selectedGeo,
-                                clusterList: widget.clusterList,
-                                onApplyTap: () {
-                                  setState(() {
-                                    addGeoBool = !addGeoBool;
-                                    sheetProvider.selectMonth = true;
-                                  });
-                                },
-                              ),
-                              MonthPositionTable(
-                                visible: sheetProvider.selectMonth,
-                                onApplyPressedMonth:
-                                widget.onApplyPressedMonth,
-                                onTap: () {
-                                  setState(() {
-                                    sheetProvider.selectMonth = false;
-                                  });
-                                },
-                              ),
-                            ],
-                          )),
-                    ),
-                  )
-                          : widget.selectedIndex1 == 2
-                              ? const Center(
-                                  child: Text('Daily Category'),
+                                            GeoPositionTable(
+                                              addGeoBool: addGeoBool,
+                                              onCoverageTap: () {
+                                                setState(() {
+                                                  addGeoBool = !addGeoBool;
+                                                });
+                                              },
+                                              divisionList: widget.divisionList,
+                                              siteList: widget.siteList,
+                                              branchList: widget.branchList,
+                                              selectedGeo: widget.selectedGeo,
+                                              clusterList: widget.clusterList,
+                                              onApplyTap: () {
+                                                setState(() {
+                                                  addGeoBool = !addGeoBool;
+                                                  sheetProvider.selectMonth = true;
+                                                });
+                                              },
+                                            ),
+                                            MonthPositionTable(
+                                              visible: sheetProvider.selectMonth,
+                                              onApplyPressedMonth: widget.onApplyPressedMonth,
+                                              onTap: () {
+                                                setState(() {
+                                                  sheetProvider.selectMonth = false;
+                                                });
+                                              },
+                                            ),
+                                          ],
+                                        )),
+                                  ),
                                 )
                               : widget.selectedIndex1 == 3
-                                  ? const Center(
-                                      child: Text('Daily Trends'),
+                                  ? Expanded(
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(bottom: 20),
+                                        child: Container(
+                                            width: size.width,
+                                            height: size.height / 1.3,
+                                            decoration: BoxDecoration(color: MyColors.whiteColor, borderRadius: BorderRadius.circular(15)),
+                                            child: Stack(
+                                              children: [
+                                                sheetProvider.retailing3ErrorMsg.isNotEmpty
+                                                    ? Center(
+                                                        child: Column(
+                                                          // crossAxisAlignment: CrossAxisAlignment.center,
+                                                          mainAxisAlignment: MainAxisAlignment.center,
+                                                          children: [
+                                                            const Text('Something went wrong! Try Again'),
+                                                            const SizedBox(
+                                                              height: 20,
+                                                            ),
+                                                            OutlinedButton(
+                                                              onPressed: widget.tryAgain3,
+                                                              style: ButtonStyle(
+                                                                side:
+                                                                    MaterialStateProperty.all(const BorderSide(width: 1.0, color: MyColors.primary)),
+                                                                shape: MaterialStateProperty.all(
+                                                                    RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0))),
+                                                              ),
+                                                              child: const Text(
+                                                                "Try Again",
+                                                                style: TextStyle(fontFamily: fontFamily, color: Colors.black),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      )
+                                                    : Column(
+                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                        mainAxisAlignment: MainAxisAlignment.start,
+                                                        children: [
+                                                          Container(
+                                                            color: MyColors.dark400,
+                                                            height: 42,
+                                                            child: ListView.builder(
+                                                              scrollDirection: Axis.horizontal,
+                                                              itemCount: widget.dataListByGeo.length,
+                                                              itemBuilder: (context, outerIndex1) {
+                                                                SharedPreferencesUtils.setString('divisionChannelSelected1',
+                                                                    findDatasetName(widget.dataListByGeo[selectedIndexLocation1][0]['filter_key']));
+                                                                SharedPreferencesUtils.setString('siteChannelSelected1',
+                                                                    widget.dataListByGeo[selectedIndexLocation1][0]['filter_key']);
+                                                                SharedPreferencesUtils.setString(
+                                                                    'monthChannelSelected1', widget.dataListByGeo[selectedIndexLocation1][0]['date']);
+                                                                sheetProvider.selectedChannelIndex = selectedIndexLocation1;
+                                                                return TabsBodyTable(
+                                                                  onTap: () {
+                                                                    setState(() {
+                                                                      selectedIndexLocation1 = outerIndex1;
+
+                                                                      SharedPreferencesUtils.setString(
+                                                                          'divisionChannelSelected1',
+                                                                          findDatasetName(
+                                                                              widget.dataListByGeo[selectedIndexLocation1][0]['filter_key']));
+                                                                      SharedPreferencesUtils.setString('siteChannelSelected1',
+                                                                          widget.dataListByGeo[selectedIndexLocation1][0]['filter_key']);
+                                                                      SharedPreferencesUtils.setString('monthChannelSelected1',
+                                                                          widget.dataListByGeo[selectedIndexLocation1][0]['date']);
+                                                                      sheetProvider.selectedChannelIndex = selectedIndexLocation1;
+                                                                    });
+
+                                                                    // sheetProvider
+                                                                    //     .removeIndexRe =
+                                                                    //     selectedIndexLocation;
+                                                                  },
+                                                                  onTapGes: () {
+                                                                    setState(() {
+                                                                      selectedIndex = selectedIndex == outerIndex1 ? -1 : outerIndex1;
+                                                                      sheetProvider.isExpanded == true;
+                                                                    });
+                                                                  },
+                                                                  selectedIndexLocation: selectedIndexLocation1,
+                                                                  outerIndex: outerIndex1,
+                                                                  title:
+                                                                      "${widget.dataListByGeo[outerIndex1][0]['filter_key'] == 'allIndia' ? 'All India' : widget.dataListByGeo[outerIndex1][0]['filter_key']} / ${widget.dataListByGeo[outerIndex1][0]['date']}",
+                                                                  onClosedTap: widget.onClosedTap,
+                                                                );
+                                                              },
+                                                            ),
+                                                          ),
+                                                          // Container B (conditionally shown)
+                                                          if (selectedIndexLocation != -1)
+                                                            Padding(
+                                                              padding: const EdgeInsets.all(0.0),
+                                                              child: widget.dataListByGeo.isEmpty
+                                                                  ? const Center(child: CircularProgressIndicator())
+                                                                  : SingleChildScrollView(
+                                                                      child: Container(
+                                                                        width: size.width,
+                                                                        decoration: const BoxDecoration(
+                                                                            color: MyColors.whiteColor,
+                                                                            borderRadius: BorderRadius.all(Radius.circular(20))),
+                                                                        child: Column(
+                                                                          children: [
+                                                                            TableHeaderWidget(
+                                                                              onTap: () {
+                                                                                setState(() {
+                                                                                  addGeoBool = !addGeoBool;
+                                                                                });
+                                                                              },
+                                                                              title:
+                                                                                  "${widget.dataListByGeo[selectedIndexLocation1][0]['filter_key'] == 'allIndia' ? 'All India' : widget.dataListByGeo[selectedIndexLocation1][0]['filter_key']} / ${widget.dataListByGeo[selectedIndexLocation1][0]['date']} ${(widget.dataListByGeo[selectedIndexLocation1][0]['channel']).isEmpty ? "" : "/ ${widget.dataListByGeo[selectedIndexLocation1][0]['channel']}"} ${widget.dataListByGeo[selectedIndexLocation1][0]['filter_key2'] == "" ? "" : "/ ${widget.dataListByGeo[selectedIndexLocation1][0]['filter_key2']}"}",
+                                                                            ),
+                                                                            Scrollbar(
+                                                                              controller: _scrollControllerTable,
+                                                                              child: SingleChildScrollView(
+                                                                                controller: _scrollControllerTable,
+                                                                                scrollDirection: Axis.horizontal,
+                                                                                child: Container(
+                                                                                  decoration: const BoxDecoration(
+                                                                                      borderRadius: BorderRadius.all(Radius.circular(20))),
+                                                                                  width: MediaQuery.of(context).size.width - 200,
+                                                                                  height: MediaQuery.of(context).size.height - 410,
+                                                                                  child: Column(
+                                                                                    children: [
+                                                                                      RetailingCustomHeaderTitle(
+                                                                                        dataList: widget.dataListByGeo,
+                                                                                        selectedIndexLocation: selectedIndexLocation1,
+                                                                                        cm: 'CM',
+                                                                                        cmIYA: 'CMIYA',
+                                                                                        p1m: 'P1M',
+                                                                                        p3m: 'P3M',
+                                                                                        p6m: 'P6M',
+                                                                                        p12m: 'P12M',
+                                                                                        fy: 'FY',
+                                                                                        fyIYA: 'FYIYA',
+                                                                                      ),
+                                                                                      Padding(
+                                                                                        padding: const EdgeInsets.only(
+                                                                                            left: 15.0, right: 15.0, bottom: 8.0),
+                                                                                        child:
+                                                                                            // widget.dataList[selectedIndexLocation][0]['filter_key'] == 'All India' || widget.dataList[selectedIndexLocation][0]['filter_key'] == 'allIndia'
+                                                                                            //     ?c
+                                                                                            RetailingAllIndiaTableData(
+                                                                                                newDataList:
+                                                                                                    widget.dataListByGeo[selectedIndexLocation1],
+                                                                                                selectedIndex: selectedIndexLocation,
+                                                                                                division: findDatasetName(
+                                                                                                    widget.dataListByGeo[selectedIndexLocation1][0]
+                                                                                                        ['filter_key']),
+                                                                                                divisionName:
+                                                                                                    widget.dataListByGeo[selectedIndexLocation1][0]
+                                                                                                        ['filter_key'],
+                                                                                                month: widget.dataListByGeo[selectedIndexLocation1][0]
+                                                                                                    ['date']),
+                                                                                      )
+                                                                                      //     : widget.dataList[selectedIndexLocation][0]['filter_key'] == 'N-E' || widget.dataList[selectedIndexLocation][0]['filter_key'] == 'S-W'
+                                                                                      //     ? FBTableDivision(
+                                                                                      //   newDataList: widget.dataList[selectedIndexLocation],
+                                                                                      //   keyName1: 'fb_per',
+                                                                                      //   keyName2: 'fb_achieve_sum',
+                                                                                      //   keyName3: 'fb_target_sum',
+                                                                                      // )
+                                                                                      //     : FBTableSite(newDataList: widget.dataList[selectedIndexLocation], keyName1: 'fb_per', keyName2: 'fb_achieve_sum', keyName3: 'fb_target_sum'),
+                                                                                      // ),
+                                                                                    ],
+                                                                                  ),
+                                                                                ),
+                                                                              ),
+                                                                            )
+                                                                          ],
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                            ),
+                                                        ],
+                                                      ),
+                                                GeoPositionTable(
+                                                  addGeoBool: addGeoBool,
+                                                  onCoverageTap: () {
+                                                    setState(() {
+                                                      addGeoBool = !addGeoBool;
+                                                    });
+                                                  },
+                                                  divisionList: widget.divisionList,
+                                                  siteList: widget.siteList,
+                                                  branchList: widget.branchList,
+                                                  selectedGeo: widget.selectedGeo,
+                                                  clusterList: widget.clusterList,
+                                                  onApplyTap: () {
+                                                    setState(() {
+                                                      addGeoBool = !addGeoBool;
+                                                      sheetProvider.selectMonth = true;
+                                                    });
+                                                  },
+                                                ),
+                                                MonthPositionTable(
+                                                  visible: sheetProvider.selectMonth,
+                                                  onApplyPressedMonth: widget.onApplyPressedMonth,
+                                                  onTap: () {
+                                                    setState(() {
+                                                      sheetProvider.selectMonth = false;
+                                                    });
+                                                  },
+                                                ),
+                                              ],
+                                            )),
+                                      ),
                                     )
                                   : Container(),
-                  const ExcelImportButton(),
+                  ExcelImportButton(
+                    onClickExcel: () async {
+                      print('hello');
+                      setState(() {});
+                      await postRequest(context);
+                    },
+                  ),
                 ],
               ),
             ),
-            FiltersChannel(
-              selectedMonthList: (widget.dataList).isEmpty
-                  ? 'Select..'
-                  : widget.dataList[0][0]['month'][0],
-              // (widget.dataList).isEmpty?'Loading..':selectedMonth,
-              // widget.dataList[selectedIndexLocation][0]['month'],
+            FiltersAllRetailingSummary(
+              selectedMonthList: widget.selectedIndex1 == 0
+                  ? (widget.dataList).isEmpty
+                      ? 'Select..'
+                      : widget.dataList[selectedIndexLocation][0]['month']
+                  : widget.selectedIndex1 == 1
+                      ? (widget.dataListByGeo).isEmpty
+                          ? 'Select..'
+                          : widget.dataListByGeo[selectedIndexLocation1][0]['date']
+                      : widget.selectedIndex1 == 2
+                          ? (widget.dataListByGeo).isEmpty
+                              ? 'Select..'
+                              : widget.dataListByGeo[selectedIndexLocation2][0]['date']
+                          : widget.selectedIndex1 == 3
+                              ? (widget.dataListByGeo).isEmpty
+                                  ? 'Select..'
+                                  : widget.dataListByGeo[selectedIndexLocation][0]['date']
+                              : "Select..",
               onTapMonthFilter: widget.onTapMonthFilter,
-              selectedChannelList: (widget.dataList).isEmpty
-                  ? 'Select..'
-                  : widget.dataList[0][0]['channel'][0],
+              selectedChannelList: widget.selectedIndex1 == 0
+                  ? (widget.dataList).isEmpty
+                      ? ['Select..']
+                      : widget.dataList[selectedIndexLocation][0]['channel']
+                  : widget.selectedIndex1 == 1
+                      ? (widget.dataListByGeo).isEmpty
+                          ? ['Select..']
+                          : widget.dataListByGeo[selectedIndexLocation1][0]['channel']
+                      : widget.selectedIndex1 == 2
+                          ? (widget.dataListByGeo).isEmpty
+                              ? ['Select..']
+                              : widget.dataListByGeo[selectedIndexLocation2][0]['channel']
+                          : widget.selectedIndex1 == 3
+                              ? (widget.dataListByGeo).isEmpty
+                                  ? ['Select..']
+                                  : widget.dataListByGeo[selectedIndexLocation][0]['channel']
+                              : ['Select..'],
               onTapChannelFilter: widget.onTapChannelFilter,
+              attributeName: 'FB',
+              categoryApply: widget.categoryApply,
+              onTapRemoveFilter: widget.onTapRemoveFilter,
+              selectedCategoryList: "Select..",
+              onTapSiteFilter: widget.onTapSiteFilter,
+              onTapBranchFilter: widget.onTapBranchFilter,
             )
-            // FiltersRetailing(
-            //   clusterCount: clusterCount,
-            //   onChangedFilter: widget.onChangedFilter,
-            //   selectedItemValueChannel: widget.selectedItemValueChannel,
-            //   onChangedFilterMonth: (String) {},
-            //   selectedItemValueChannelMonth: [],
-            //   onChangedFilterBrand: (String) {},
-            //   selectedItemValueChannelBrand: [],
-            //   categoryApply: widget.categoryApply,
-            //   fbFilter: 'FB',
-            //   selectedMonth: '',
-            //   onRemoveFilter: widget.onRemoveFilter,
-            //   selectedMonthList: selectedMonth=="Select.."?"":selectedMonth,
-            //   onTapMonthFilter: widget.onTapMonthFilter,
-            //   onRemoveFilterCategory: widget.onRemoveFilterCategory,
-            //   selectedCategoryList: '',
-            //   selectedItemValueCategory: widget.selectedItemValueCategory,
-            //   selectedItemValueBrand: widget.selectedItemValueBrand,
-            //   selectedItemValueBrandForm: widget.selectedItemValueBrandForm,
-            //   selectedItemValueBrandFromGroup: widget.selectedItemValueBrandFromGroup,
-            // )
           ],
         ),
       ],

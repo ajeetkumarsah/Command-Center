@@ -1,4 +1,5 @@
 import 'package:command_centre/utils/colors/colors.dart';
+import 'package:command_centre/utils/const/const_array.dart';
 import 'package:command_centre/utils/style/text_style.dart';
 import 'package:command_centre/web_dashboard/utils/drawer_container/deep_dive_container/fb_Container/fb_container.dart';
 import 'package:flutter/material.dart';
@@ -45,6 +46,7 @@ class _FBContainerDrawerState extends State<FBContainerDrawer> {
   List<dynamic> flattenedListCC = [];
   List<dynamic> flattenedListProd = [];
   List<dynamic> flattenedListBilling = [];
+  List<dynamic> errorMsg = [];
   RegExp pattern1 =
       RegExp(r'\b(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)-\d{4}\b');
   RegExp pattern2 = RegExp(
@@ -72,6 +74,16 @@ class _FBContainerDrawerState extends State<FBContainerDrawer> {
   String monthNew = '';
   String brandNew = '';
   String selectedCategoryList = 'Select..';
+
+  bool menuBool = false;
+  bool divisionBool = false;
+  bool removeBool = false;
+
+  List<dynamic> listRetailing = [];
+  List<dynamic> listRetailingData = [];
+  List<dynamic> listRetailingDataListCoverage = [];
+  List<dynamic> listRetailingData1 = [];
+  bool defaultMonthPressed = false;
 
   Future<String>? divisionFilterAPI() async {
     // var url = 'https://run.mocky.io/v3/9aa3f386-5275-4213-9372-dcaf9d068388';
@@ -121,7 +133,8 @@ class _FBContainerDrawerState extends State<FBContainerDrawer> {
       setState(() {
         siteCount = jsonResponse;
       });
-    } else {
+    }
+   else {
       print('Request failed with status: ${response.statusCode}.');
     }
     return '';
@@ -129,9 +142,9 @@ class _FBContainerDrawerState extends State<FBContainerDrawer> {
 
   Future<http.Response> postRequest(
       context, String channelFilter, String monthFilter) async {
-    var url =
-        '$BASE_URL/api/webDeepDive/fb/sbf';
-    // var url = 'https://run.mocky.io/v3/311f279a-7619-4c71-a7cd-d03b889abb63';
+    final provider = Provider.of<SheetProvider>(context, listen: false);
+
+    var url = '$BASE_URL/api/webDeepDive/fb/sbf';
 
     var body = json.encode(flattenedList.isEmpty
         ? [
@@ -146,7 +159,7 @@ class _FBContainerDrawerState extends State<FBContainerDrawer> {
             }
           ]
         : flattenedList);
-    print("Body FB Tab 2 $body");
+    print("Body FB Tab 1 $body");
     var response = await http.post(Uri.parse(url),
         headers: {"Content-Type": "application/json"}, body: body);
     if (response.statusCode == 200) {
@@ -154,21 +167,24 @@ class _FBContainerDrawerState extends State<FBContainerDrawer> {
         dataListCoverage = jsonDecode(response.body);
       });
     } else {
-      print("Post ${response.body}");
-      var snackBar = SnackBar(content: Text(response.body));
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      print("Else");
+      setState(() {
+        provider.setFbErrorMsg([response.body]);
+        provider.isLoaderActive = false;
+      });
+      // print(provider.fbErrorMsg);
+      // var snackBar = SnackBar(content: Text(response.body));
+      // ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
     return response;
   }
 
   Future<http.Response> postRequestCCTabs(
       String channelFilter, String monthFilter, context) async {
-    var url =
-        '$BASE_URL/api/webDeepDive/fb/bf';
-    // var url ='https://run.mocky.io/v3/16822299-30a6-427f-8669-407b8ded83d9';
-    // var url = 'https://run.mocky.io/v3/6b187fed-0da7-4a67-a6cf-d32e547c990b';
+    final provider = Provider.of<SheetProvider>(context, listen: false);
+    var url = '$BASE_URL/api/webDeepDive/fb/bf';
     var body = json.encode(flattenedListCC.isEmpty
-        ? [
+        ? flattenedListCC = [
             {
               "allIndia": "allIndia",
               "date": "Jun-2023",
@@ -190,20 +206,21 @@ class _FBContainerDrawerState extends State<FBContainerDrawer> {
       });
     } else {
       print(response.statusCode);
-      var snackBar = SnackBar(content: Text(response.body));
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      setState(() {
+        provider.setFb1ErrorMsg([response.body]);
+        // provider.isLoaderActive = false;
+      });
     }
     return response;
   }
 
-  //
   Future<http.Response> postRequestProdTabs(
       context, String channelFilter, String monthFilter) async {
-    var url =
-        '$BASE_URL/api/webDeepDive/fb/monthlyData';
+    final provider = Provider.of<SheetProvider>(context, listen: false);
+    var url = '$BASE_URL/api/webDeepDive/fb/monthlyData';
     // var url = 'https://run.mocky.io/v3/533a2f1b-6163-4694-814a-8adfdc09a432';
     var body = json.encode(flattenedListProd.isEmpty
-        ? [
+        ? flattenedListProd = [
             {
               "allIndia": "allIndia",
               "date": "Jun-2023",
@@ -224,20 +241,21 @@ class _FBContainerDrawerState extends State<FBContainerDrawer> {
       });
     } else {
       print(response.body);
-      var snackBar = SnackBar(content: Text(response.body));
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      setState(() {
+        provider.setFb2ErrorMsg([response.body]);
+        // provider.isLoaderActive = false;
+      });
     }
     return response;
   }
 
-  //
   Future<http.Response> postRequestBillingTabs(
       context, String channelFilter, String monthFilter) async {
-    var url =
-        '$BASE_URL/api/webDeepDive/fb/abs/monthlyData';
+    final provider = Provider.of<SheetProvider>(context, listen: false);
+    var url = '$BASE_URL/api/webDeepDive/fb/abs/monthlyData';
     // var url = 'https://run.mocky.io/v3/4576ec4e-755a-4645-bf49-bf483f12e7a9';
     var body = json.encode(flattenedListBilling.isEmpty
-        ? [
+        ? flattenedListBilling = [
             {
               "allIndia": "allIndia",
               "date": "Jun-2023",
@@ -258,25 +276,132 @@ class _FBContainerDrawerState extends State<FBContainerDrawer> {
       });
     } else {
       print(response.body);
+      setState(() {
+        provider.setFb3ErrorMsg([response.body]);
+        // provider.isLoaderActive = false;
+      });
+    }
+    return response;
+  }
+
+  /////////////////////// API Call for All Cards End//////////////////////
+  Future<http.Response> postRequestRetailing(context) async {
+    var url = '$BASE_URL/api/webSummary/allDefaultData';
+    listRetailingData1 =
+    [
+      {
+        findDatasetName(
+            SharedPreferencesUtils.getString('webRetailingSite')!):
+        SharedPreferencesUtils.getString('webRetailingSite'),
+        "date": "${SharedPreferencesUtils.getString('webCoverageMonth') ?? "Jun"}-${SharedPreferencesUtils.getString('webCoverageYear') ?? "2023"}"
+        // Here to change month
+      }
+    ];
+    var body = json.encode(listRetailingData.isEmpty
+        ? listRetailingData = [
+      {"filter_key": "retailing", "query": []},
+      {"filter_key": "gp", "query": []},
+      {"filter_key": "fb", "query": listRetailingData1},
+      {"filter_key": "cc", "query": []},
+      {"filter_key": "coverage", "query": []},
+      {"filter_key": "productivity", "query": []}
+    ]
+        : listRetailingData);
+    print("Summary Body ${json.encode(listRetailingData)}");
+    var response = await http.post(Uri.parse(url),
+        headers: {"Content-Type": "application/json"}, body: body);
+    if (response.statusCode == 200) {
+      setState(() {
+        listRetailingDataListCoverage = jsonDecode(response.body);
+      });
+    } else {
       var snackBar = SnackBar(content: Text(response.body));
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
     return response;
   }
 
+  /////////////////////// API Call for All Cards End//////////////////////
+
+  /////////////////////// Local Storage for All Cards Start//////////////////////
+// TODO: Here
+  void saveDataCoverageAllRetailing() {
+    final jsonData = jsonEncode(listRetailingData);
+    html.window.localStorage['dataSummaryNewFB'] = jsonData;
+  }
+
+  void loadDataCoverageAllRetailing() {
+    final storedValue = html.window.localStorage['dataSummaryNewFB'];
+    if (storedValue != null) {
+      final decodedData = jsonDecode(storedValue);
+      if (decodedData is List<dynamic>) {
+        setState(() {
+          listRetailingData = decodedData;
+        });
+      }
+    }
+  }
+
+  void addDataCoverageAllRetailing() async {
+    dynamic decodedRetailing = listRetailingData1;
+    if (decodedRetailing is List<dynamic>) {
+      List<dynamic> retailingObject = decodedRetailing;
+      final jsonToAdd = retailingObject;
+      setState(() {
+        if(listRetailingData.isEmpty){
+          listRetailingData.add([
+            {"filter_key": "retailing", "query": []},
+            {"filter_key": "gp", "query": []},
+            {"filter_key": "fb", "query": listRetailingData1},
+            {"filter_key": "cc", "query": []},
+            {"filter_key": "coverage", "query": []},
+            {"filter_key": "productivity", "query": []}
+          ]);
+        }else{
+          if(defaultMonthPressed){
+            listRetailingData.map((entry) {
+              if (entry['filter_key'] == 'fb') {
+                final queries = entry['query'];
+                for (final query in queries) {
+                  if (query.containsKey('date')) {
+                    query['date'] = "${SharedPreferencesUtils.getString('webCoverageMonth') ?? "Jun"}-${SharedPreferencesUtils.getString('webCoverageYear') ?? "2023"}"; // Replace 'UpdatedDate' with your desired date
+                  }
+                }
+              }
+              return entry;
+            }).toList();
+            defaultMonthPressed = false;
+          }else{
+            listRetailingData = [
+              {"filter_key": "retailing", "query": []},
+              {"filter_key": "gp", "query": []},
+              {"filter_key": "fb", "query": jsonToAdd},
+              {"filter_key": "cc", "query": []},
+              {"filter_key": "coverage", "query": []},
+              {"filter_key": "productivity", "query": []}
+            ];
+          }
+
+        }
+      });
+      saveDataCoverageAllRetailing();
+    }
+  }
+
+
+// TODO: Here
   void saveDataCoverageAll() {
     final jsonData = jsonEncode(flattenedList);
-    html.window.localStorage['dataListFBAll'] = jsonData;
+    html.window.localStorage['dataListFBAllData'] = jsonData;
   }
 
   void loadDataCoverageAll() {
-    final storedValue = html.window.localStorage['dataListFBAll'];
+    final storedValue = html.window.localStorage['dataListFBAllData'];
     if (storedValue != null) {
       final decodedData = jsonDecode(storedValue);
       if (decodedData is List<dynamic>) {
         setState(() {
           flattenedList = decodedData;
-          print("Saved $flattenedList");
         });
       }
     }
@@ -301,10 +426,24 @@ class _FBContainerDrawerState extends State<FBContainerDrawer> {
           });
         } else {
           if (bosData.isExpandedMonthFilter) {
-            flattenedList[bosData.selectedChannelIndex] = jsonToAdd[0];
-            bosData.isExpandedMonthFilter = false;
-          } else {
-            // print("jsonToAdd[0] ${jsonToAdd[0]}");
+            if (dataListCoverage1.isEmpty) {
+              flattenedList[bosData.selectedChannelIndexFB]["channel"] = [];
+            } else {
+              for (String element in jsonToAdd) {
+                flattenedList[bosData.selectedChannelIndexFB]["channel"]
+                    .add(element);
+              }
+              bosData.isExpandedMonthFilter = false;
+            }
+          } else if (bosData.isExpandedMonthCDFilter) {
+            flattenedList[bosData.selectedChannelIndexFB]['date'] =
+                jsonToAdd[0];
+            bosData.isExpandedMonthCDFilter = false;
+          } else if (bosData.isExpandedCategoryFilter) {
+            flattenedList[bosData.selectedChannelIndexFB]['category'] =
+            jsonToAdd[0];
+            bosData.isExpandedCategoryFilter = false;
+          }else {
             if (jsonToAdd.isNotEmpty) {
               flattenedList.add(jsonToAdd[0]);
             }
@@ -316,6 +455,7 @@ class _FBContainerDrawerState extends State<FBContainerDrawer> {
     await postRequest(context, channel, month);
   }
 
+  // TODO: Here
   void saveDataCoverageCCR() {
     final jsonData = jsonEncode(flattenedListCC);
     html.window.localStorage['dataListFBCategory'] = jsonData;
@@ -341,28 +481,30 @@ class _FBContainerDrawerState extends State<FBContainerDrawer> {
       final jsonToAdd = retailingObject;
 
       setState(() {
-        if (flattenedListCC.isEmpty) {
-          print("First time if $jsonToAdd");
-          flattenedListCC.add({
-            "allIndia": "allIndia",
-            "date": "May-2023",
-            "brandForm": "",
-            "brand": "",
-            "sbfGroup": "",
-            "category": "",
-            "channel": []
-          });
-        } else {
-          print("First time else $jsonToAdd");
-          if (bosData.isExpandedMonthFilter) {
-            flattenedListCC[bosData.selectedChannelIndex] = jsonToAdd[0];
+        if (bosData.isExpandedMonthFilter) {
+          if (dataListCoverageCCTabs1.isEmpty) {
+            flattenedListCC[bosData.selectedChannelIndexFB]["channel"] = [];
             bosData.isExpandedMonthFilter = false;
-            print("not work");
           } else {
-            print("worked");
-            if (jsonToAdd.isNotEmpty) {
-              flattenedListCC.add(jsonToAdd[0]);
+            for (String element in jsonToAdd) {
+              flattenedListCC[bosData.selectedChannelIndexFB]["channel"]
+                  .add(element);
             }
+            bosData.isExpandedMonthFilter = false;
+          }
+        } else if (bosData.isExpandedMonthCDFilter) {
+          flattenedListCC[bosData.selectedChannelIndexFB]['date'] =
+              jsonToAdd[0].toString();
+          bosData.isExpandedMonthCDFilter = false;
+        }else if (bosData.isExpandedCategoryFilter) {
+          flattenedListCC[bosData.selectedChannelIndexFB]['category'] =
+          jsonToAdd[0];
+          bosData.isExpandedCategoryFilter = false;
+        } else {
+          if (!flattenedListCC.contains(jsonToAdd[0])) {
+            flattenedListCC.add(jsonToAdd[0]);
+          } else {
+            print("Value already exists in flattenedListCC");
           }
         }
       });
@@ -371,7 +513,7 @@ class _FBContainerDrawerState extends State<FBContainerDrawer> {
     await postRequestCCTabs(channel, month, context);
   }
 
-  //
+  // TODO: Here
   void saveDataCoverageProd() {
     final jsonData = jsonEncode(flattenedListProd);
     html.window.localStorage['dataListFBPer'] = jsonData;
@@ -396,24 +538,30 @@ class _FBContainerDrawerState extends State<FBContainerDrawer> {
       List<dynamic> retailingObject = decodedRetailing;
       final jsonToAdd = retailingObject;
       setState(() {
-        if (flattenedListProd.isEmpty) {
-          flattenedListProd.add({
-            "allIndia": "allIndia",
-            "date": "Jun-2023",
-            "brandForm": "",
-            "brand": "",
-            "sbfGroup": "",
-            "category": "",
-            "channel": []
-          });
-        } else {
-          if (bosData.isExpandedMonthFilter) {
-            flattenedListProd[bosData.selectedChannelIndex] = jsonToAdd[0];
+        if (bosData.isExpandedMonthFilter) {
+          if (dataListCoverageProdTabs1.isEmpty) {
+            flattenedListProd[bosData.selectedChannelIndexFB]["channel"] = [];
             bosData.isExpandedMonthFilter = false;
           } else {
-            if (jsonToAdd.isNotEmpty) {
-              flattenedListProd.add(jsonToAdd[0]);
+            for (String element in jsonToAdd) {
+              flattenedListProd[bosData.selectedChannelIndexFB]["channel"]
+                  .add(element);
             }
+            bosData.isExpandedMonthFilter = false;
+          }
+        } else if (bosData.isExpandedMonthCDFilter) {
+          flattenedListProd[bosData.selectedChannelIndexFB]['date'] =
+              jsonToAdd[0].toString();
+          bosData.isExpandedMonthCDFilter = false;
+        }else if (bosData.isExpandedCategoryFilter) {
+          flattenedListProd[bosData.selectedChannelIndexFB]['category'] =
+          jsonToAdd[0];
+          bosData.isExpandedCategoryFilter = false;
+        } else {
+          if (!flattenedListProd.contains(jsonToAdd[0])) {
+            flattenedListProd.add(jsonToAdd[0]);
+          } else {
+            print("Value already exists in flattenedListCC");
           }
         }
       });
@@ -422,7 +570,7 @@ class _FBContainerDrawerState extends State<FBContainerDrawer> {
     await postRequestProdTabs(context, channel, month);
   }
 
-  //
+  // TODO: Here
   void saveDataCoverageBilling() {
     final jsonData = jsonEncode(flattenedListBilling);
     html.window.localStorage['dataListFBAbs'] = jsonData;
@@ -447,24 +595,31 @@ class _FBContainerDrawerState extends State<FBContainerDrawer> {
       List<dynamic> retailingObject = decodedRetailing;
       final jsonToAdd = retailingObject;
       setState(() {
-        if (flattenedListBilling.isEmpty) {
-          flattenedListBilling.add({
-            "allIndia": "allIndia",
-            "date": "Jun-2023",
-            "brandForm": "",
-            "brand": "",
-            "sbfGroup": "",
-            "category": "",
-            "channel": []
-          });
-        } else {
-          if (bosData.isExpandedMonthFilter) {
-            flattenedListBilling[bosData.selectedChannelIndex] = jsonToAdd[0];
+        if (bosData.isExpandedMonthFilter) {
+          if (dataListCoverageBillingTabs1.isEmpty) {
+            flattenedListBilling[bosData.selectedChannelIndexFB]
+                ["channel"] = [];
             bosData.isExpandedMonthFilter = false;
           } else {
-            if (jsonToAdd.isNotEmpty) {
-              flattenedListBilling.add(jsonToAdd[0]);
+            for (String element in jsonToAdd) {
+              flattenedListBilling[bosData.selectedChannelIndexFB]["channel"]
+                  .add(element);
             }
+            bosData.isExpandedMonthFilter = false;
+          }
+        } else if (bosData.isExpandedMonthCDFilter) {
+          flattenedListBilling[bosData.selectedChannelIndexFB]['date'] =
+              jsonToAdd[0].toString();
+          bosData.isExpandedMonthCDFilter = false;
+        } else if (bosData.isExpandedCategoryFilter) {
+          flattenedListBilling[bosData.selectedChannelIndexFB]['category'] =
+          jsonToAdd[0];
+          bosData.isExpandedCategoryFilter = false;
+        }else {
+          if (!flattenedListBilling.contains(jsonToAdd[0])) {
+            flattenedListBilling.add(jsonToAdd[0]);
+          } else {
+            print("Value already exists in flattenedListCC");
           }
         }
       });
@@ -506,6 +661,15 @@ class _FBContainerDrawerState extends State<FBContainerDrawer> {
         flattenedListBilling.removeAt(index);
       });
       saveDataCoverageBilling();
+    }
+  }
+
+  void removeDataRetailing(int index) {
+    if (index >= 0 && index < listRetailingData.length) {
+      setState(() {
+        listRetailingData.removeAt(index);
+        saveDataCoverageAllRetailing(); // Save the updated list after removal
+      });
     }
   }
 
@@ -552,8 +716,7 @@ class _FBContainerDrawerState extends State<FBContainerDrawer> {
   List<String> selectedArrayItems = [];
 
   Future<List<String>> postRequestChannel(context) async {
-    var url =
-        '$BASE_URL/api/appData/channelFilter/category';
+    var url = '$BASE_URL/api/appData/channelFilter/category';
 
     var body = json.encode({"table": "fb", "date": "Jun-2023"});
     var response = await http.post(Uri.parse(url),
@@ -571,7 +734,6 @@ class _FBContainerDrawerState extends State<FBContainerDrawer> {
     return channelFilter;
   }
 
-
   @override
   void initState() {
     // TODO: implement initState
@@ -583,13 +745,12 @@ class _FBContainerDrawerState extends State<FBContainerDrawer> {
     loadDataCoverageCCR();
     loadDataCoverageProd();
     loadDataCoverageBilling();
-    final bosData = Provider.of<SheetProvider>(context, listen: false);
+    loadDataCoverageAllRetailing();
+    // addDataCoverageAllRetailing();
     addDataCoverageAll('', 'Jun-2023');
-    // addDataCoverageCCR('', 'June-2023');
-    // addDataCoverageProd('', 'June-2023');
-    // addDataCoverageBilling('', 'June-2023');
     _selectedMonth = getLast24Months()[0];
     postRequestChannel(context);
+    postRequestRetailing(context);
   }
 
   void popup() {
@@ -626,19 +787,19 @@ class _FBContainerDrawerState extends State<FBContainerDrawer> {
                 FBContainerWeb(
                   title: 'Focus Brand',
                   onApplyPressedMonth: () async {
-                    print(sheetProvider.isCurrentTab);
+                    sheetProvider.selectMonth = false;
+                    sheetProvider.isExpandedMonthFilter = false;
+                    var division = SharedPreferencesUtils.getString(
+                        'webCoverageSheetDivision');
+                    var site = SharedPreferencesUtils.getString(
+                        'webCoverageSheetSite');
+                    var year =
+                        SharedPreferencesUtils.getString('webCoverageYear');
+                    var month =
+                        SharedPreferencesUtils.getString('webCoverageMonth');
+                    var finalSite = site == 'All India' ? 'allIndia' : site;
                     if (sheetProvider.isCurrentTab == 0) {
                       sheetProvider.isLoaderActive = true;
-                      sheetProvider.selectMonth = false;
-                      var division = SharedPreferencesUtils.getString(
-                          'webCoverageSheetDivision');
-                      var site = SharedPreferencesUtils.getString(
-                          'webCoverageSheetSite');
-                      var year =
-                          SharedPreferencesUtils.getString('webCoverageYear');
-                      var month =
-                          SharedPreferencesUtils.getString('webCoverageMonth');
-                      var finalSite = site == 'All India' ? 'allIndia' : site;
                       dataListCoverage1 = [
                         {
                           "$division": finalSite,
@@ -657,15 +818,6 @@ class _FBContainerDrawerState extends State<FBContainerDrawer> {
                     } else if (sheetProvider.isCurrentTab == 1) {
                       sheetProvider.isLoaderActive = true;
                       sheetProvider.selectMonth = false;
-                      var division = SharedPreferencesUtils.getString(
-                          'webCoverageSheetDivision');
-                      var site = SharedPreferencesUtils.getString(
-                          'webCoverageSheetSite');
-                      var year =
-                          SharedPreferencesUtils.getString('webCoverageYear');
-                      var month =
-                          SharedPreferencesUtils.getString('webCoverageMonth');
-                      var finalSite = site == 'All India' ? 'allIndia' : site;
                       dataListCoverageCCTabs1 = [
                         {
                           "$division": finalSite,
@@ -684,15 +836,6 @@ class _FBContainerDrawerState extends State<FBContainerDrawer> {
                     } else if (sheetProvider.isCurrentTab == 2) {
                       sheetProvider.isLoaderActive = true;
                       sheetProvider.selectMonth = false;
-                      var division = SharedPreferencesUtils.getString(
-                          'webCoverageSheetDivision');
-                      var site = SharedPreferencesUtils.getString(
-                          'webCoverageSheetSite');
-                      var year =
-                          SharedPreferencesUtils.getString('webCoverageYear');
-                      var month =
-                          SharedPreferencesUtils.getString('webCoverageMonth');
-                      var finalSite = site == 'All India' ? 'allIndia' : site;
                       dataListCoverageProdTabs1 = [
                         {
                           "$division": finalSite,
@@ -712,15 +855,6 @@ class _FBContainerDrawerState extends State<FBContainerDrawer> {
                       sheetProvider.isLoaderActive = true;
                       setState(() {
                         sheetProvider.selectMonth = false;
-                        var division = SharedPreferencesUtils.getString(
-                            'webCoverageSheetDivision');
-                        var site = SharedPreferencesUtils.getString(
-                            'webCoverageSheetSite');
-                        var year =
-                            SharedPreferencesUtils.getString('webCoverageYear');
-                        var month = SharedPreferencesUtils.getString(
-                            'webCoverageMonth');
-                        var finalSite = site == 'All India' ? 'allIndia' : site;
                         dataListCoverageBillingTabs1 = [
                           {
                             "$division": finalSite,
@@ -739,444 +873,163 @@ class _FBContainerDrawerState extends State<FBContainerDrawer> {
                       sheetProvider.isLoaderActive = false;
                     }
                   },
-                  onChangedFilter: (value) async {
-
-                  },
+                  onChangedFilter: (value) async {},
                   onChangedFilterMonth: (value) async {},
                   onChangedFilterBrand: (value) {},
                   categoryApply: () async {
-                    sheetProvider.isExpandedMonthFilter = true;
+                    // sheetProvider.isExpandedMonthFilter = true;
+                    sheetProvider.isExpandedCategoryFilter = true;
                     sheetProvider.isLoaderActive = true;
                     if (sheetProvider.isCurrentTab == 0) {
-                      var finalMonth = "Jun-2023";
-                      if (pattern1.hasMatch(sheetProvider.myStringMonthFB)) {
-                        finalMonth = sheetProvider.myStringMonthFB;
-                      } else if (pattern2
-                          .hasMatch(sheetProvider.myStringMonthFB)) {
-                        String year =
-                            sheetProvider.myStringMonthFB.substring(2, 6);
-                        String month =
-                            sheetProvider.myStringMonthFB.substring(7);
-                        finalMonth = "$month-$year";
-                      } else {
-                        finalMonth = "Jun-2023";
-                      }
                       if (sheetProvider.selectedCategoryFilter.isNotEmpty) {
+                        // Category
                         dataListCoverage1 = [
-                          {
-                            sheetProvider.selectedChannelDivision:
-                                sheetProvider.selectedChannelSite == "All India"
-                                    ? 'allIndia'
-                                    : sheetProvider.selectedChannelSite,
-                            "date": finalMonth,
-                            "brandForm":
-                                sheetProvider.selectedCategoryFiltersbf ==
-                                        "Select.."
-                                    ? ""
-                                    : sheetProvider.selectedCategoryFiltersbf,
-                            "brand": sheetProvider.selectedCategoryFilterbr ==
-                                    "Select.."
-                                ? ""
-                                : sheetProvider.selectedCategoryFilterbr,
-                            "sbfGroup":
-                                sheetProvider.selectedCategoryFiltersbfg ==
-                                        "Select.."
-                                    ? ""
-                                    : sheetProvider.selectedCategoryFiltersbfg,
-                            "category": sheetProvider.selectedCategoryFilter ==
-                                    "Select.."
-                                ? ""
-                                : sheetProvider.selectedCategoryFilter,
-                            "channel": selectedArrayItems
-                          }
+                          sheetProvider.selectedCategoryFilter == "Select.."
+                              ? ""
+                              : sheetProvider.selectedCategoryFilter,
                         ];
                       } else if (sheetProvider
                           .selectedCategoryFilterbr.isNotEmpty) {
                         dataListCoverage1 = [
-                          {
-                            sheetProvider.selectedChannelDivision:
-                                sheetProvider.selectedChannelSite == "All India"
-                                    ? 'allIndia'
-                                    : sheetProvider.selectedChannelSite,
-                            "date": finalMonth,
-                            "brandForm":
-                                sheetProvider.selectedCategoryFiltersbf ==
-                                        "Select.."
-                                    ? ""
-                                    : sheetProvider.selectedCategoryFiltersbf,
-                            "sbfGroup":
-                                sheetProvider.selectedCategoryFiltersbfg ==
-                                        "Select.."
-                                    ? ""
-                                    : sheetProvider.selectedCategoryFiltersbfg,
-                            "category": sheetProvider.selectedCategoryFilter ==
-                                    "Select.."
-                                ? ""
-                                : sheetProvider.selectedCategoryFilter,
-                            "brand": sheetProvider.selectedCategoryFilterbr ==
-                                    "Select.."
-                                ? ""
-                                : sheetProvider.selectedCategoryFilterbr,
-                            "channel": selectedArrayItems
-                          }
+                          // Brand
+                          sheetProvider.selectedCategoryFilterbr == "Select.."
+                              ? ""
+                              : sheetProvider.selectedCategoryFilterbr,
                         ];
-                      } else {
+                      } else if (sheetProvider
+                          .selectedCategoryFiltersbf.isNotEmpty) {
+                        // SBF
                         dataListCoverage1 = [
-                          {
-                            sheetProvider.selectedChannelDivision:
-                                sheetProvider.selectedChannelSite == "All India"
-                                    ? 'allIndia'
-                                    : sheetProvider.selectedChannelSite,
-                            "date": finalMonth,
-                            "sbfGroup":
-                                sheetProvider.selectedCategoryFiltersbfg ==
-                                        "Select.."
-                                    ? ""
-                                    : sheetProvider.selectedCategoryFiltersbfg,
-                            "category": sheetProvider.selectedCategoryFilter ==
-                                    "Select.."
-                                ? ""
-                                : sheetProvider.selectedCategoryFilter,
-                            "brand": sheetProvider.selectedCategoryFilterbr ==
-                                    "Select.."
-                                ? ""
-                                : sheetProvider.selectedCategoryFilterbr,
-                            "brandForm":
-                                sheetProvider.selectedCategoryFiltersbf ==
-                                        "Select.."
-                                    ? ""
-                                    : sheetProvider.selectedCategoryFiltersbf,
-                            "channel": selectedArrayItems
-                          }
+                          sheetProvider.selectedCategoryFiltersbf == "Select.."
+                              ? ""
+                              : sheetProvider.selectedCategoryFiltersbf,
                         ];
-                      }
+                      } else if (sheetProvider
+                          .selectedCategoryFiltersbfg.isNotEmpty) {
+                        // SBFG
+                        dataListCoverage1 = [
+                          sheetProvider.selectedCategoryFiltersbfg == "Select.."
+                              ? ""
+                              : sheetProvider.selectedCategoryFiltersbfg,
+                        ];
+                      } else {}
                       setState(() {});
                       addDataCoverageAll(channelNew, monthNew);
                       await postRequest(context, channelNew, monthNew);
                       sheetProvider.isLoaderActive = false;
                     } else if (sheetProvider.isCurrentTab == 1) {
-                      var finalMonth = "Jun-2023";
-                      if (pattern1.hasMatch(sheetProvider.myStringMonthFB)) {
-                        finalMonth = sheetProvider.myStringMonthFB;
-                      } else if (pattern2
-                          .hasMatch(sheetProvider.myStringMonthFB)) {
-                        String year =
-                            sheetProvider.myStringMonthFB.substring(2, 6);
-                        String month =
-                            sheetProvider.myStringMonthFB.substring(7);
-                        finalMonth = "$month-$year";
-                      } else {
-                        finalMonth = "Jun-2023";
-                      }
                       if (sheetProvider.selectedCategoryFilter.isNotEmpty) {
-                        dataListCoverageCCTabs1 = [
-                          {
-                            sheetProvider.selectedChannelDivision:
-                                sheetProvider.selectedChannelSite == "All India"
-                                    ? 'allIndia'
-                                    : sheetProvider.selectedChannelSite,
-                            "date": finalMonth,
-                            "brandForm":
-                                sheetProvider.selectedCategoryFiltersbf ==
-                                        "Select.."
-                                    ? ""
-                                    : sheetProvider.selectedCategoryFiltersbf,
-                            "brand": sheetProvider.selectedCategoryFilterbr ==
-                                    "Select.."
-                                ? ""
-                                : sheetProvider.selectedCategoryFilterbr,
-                            "sbfGroup":
-                                sheetProvider.selectedCategoryFiltersbfg ==
-                                        "Select.."
-                                    ? ""
-                                    : sheetProvider.selectedCategoryFiltersbfg,
-                            "category": sheetProvider.selectedCategoryFilter ==
-                                    "Select.."
-                                ? ""
-                                : sheetProvider.selectedCategoryFilter,
-                            "channel": selectedArrayItems
-                          }
+                        // Category
+                        dataListCoverage1 = [
+                          sheetProvider.selectedCategoryFilter == "Select.."
+                              ? ""
+                              : sheetProvider.selectedCategoryFilter,
                         ];
                       } else if (sheetProvider
                           .selectedCategoryFilterbr.isNotEmpty) {
-                        dataListCoverageCCTabs1 = [
-                          {
-                            sheetProvider.selectedChannelDivision:
-                                sheetProvider.selectedChannelSite == "All India"
-                                    ? 'allIndia'
-                                    : sheetProvider.selectedChannelSite,
-                            "date": finalMonth,
-                            "brandForm":
-                                sheetProvider.selectedCategoryFiltersbf ==
-                                        "Select.."
-                                    ? ""
-                                    : sheetProvider.selectedCategoryFiltersbf,
-                            "sbfGroup":
-                                sheetProvider.selectedCategoryFiltersbfg ==
-                                        "Select.."
-                                    ? ""
-                                    : sheetProvider.selectedCategoryFiltersbfg,
-                            "category": sheetProvider.selectedCategoryFilter ==
-                                    "Select.."
-                                ? ""
-                                : sheetProvider.selectedCategoryFilter,
-                            "brand": sheetProvider.selectedCategoryFilterbr ==
-                                    "Select.."
-                                ? ""
-                                : sheetProvider.selectedCategoryFilterbr,
-                            "channel": selectedArrayItems
-                          }
+                        dataListCoverage1 = [
+                          // Brand
+                          sheetProvider.selectedCategoryFilterbr == "Select.."
+                              ? ""
+                              : sheetProvider.selectedCategoryFilterbr,
                         ];
-                      } else {
-                        dataListCoverageCCTabs1 = [
-                          {
-                            sheetProvider.selectedChannelDivision:
-                                sheetProvider.selectedChannelSite == "All India"
-                                    ? 'allIndia'
-                                    : sheetProvider.selectedChannelSite,
-                            "date": finalMonth,
-                            "sbfGroup":
-                                sheetProvider.selectedCategoryFiltersbfg ==
-                                        "Select.."
-                                    ? ""
-                                    : sheetProvider.selectedCategoryFiltersbfg,
-                            "category": sheetProvider.selectedCategoryFilter ==
-                                    "Select.."
-                                ? ""
-                                : sheetProvider.selectedCategoryFilter,
-                            "brand": sheetProvider.selectedCategoryFilterbr ==
-                                    "Select.."
-                                ? ""
-                                : sheetProvider.selectedCategoryFilterbr,
-                            "brandForm":
-                                sheetProvider.selectedCategoryFiltersbf ==
-                                        "Select.."
-                                    ? ""
-                                    : sheetProvider.selectedCategoryFiltersbf,
-                            "channel": selectedArrayItems
-                          }
+                      } else if (sheetProvider
+                          .selectedCategoryFiltersbf.isNotEmpty) {
+                        // SBF
+                        dataListCoverage1 = [
+                          sheetProvider.selectedCategoryFiltersbf == "Select.."
+                              ? ""
+                              : sheetProvider.selectedCategoryFiltersbf,
                         ];
-                      }
+                      } else if (sheetProvider
+                          .selectedCategoryFiltersbfg.isNotEmpty) {
+                        // SBFG
+                        dataListCoverage1 = [
+                          sheetProvider.selectedCategoryFiltersbfg == "Select.."
+                              ? ""
+                              : sheetProvider.selectedCategoryFiltersbfg,
+                        ];
+                      } else {}
                       setState(() {});
                       addDataCoverageCCR(channelNew, monthNew);
                       await postRequestCCTabs(channelNew, monthNew, context);
                       sheetProvider.isLoaderActive = false;
                     } else if (sheetProvider.isCurrentTab == 2) {
-                      var finalMonth = "Jun-2023";
-                      if (pattern1.hasMatch(sheetProvider.myStringMonthFB)) {
-                        finalMonth = sheetProvider.myStringMonthFB;
-                      } else if (pattern2
-                          .hasMatch(sheetProvider.myStringMonthFB)) {
-                        String year =
-                            sheetProvider.myStringMonthFB.substring(2, 6);
-                        String month =
-                            sheetProvider.myStringMonthFB.substring(7);
-                        finalMonth = "$month-$year";
-                      } else {
-                        finalMonth = "Jun-2023";
-                      }
                       if (sheetProvider.selectedCategoryFilter.isNotEmpty) {
-                        dataListCoverageProdTabs1 = [
-                          {
-                            sheetProvider.selectedChannelDivision:
-                                sheetProvider.selectedChannelSite == "All India"
-                                    ? 'allIndia'
-                                    : sheetProvider.selectedChannelSite,
-                            "date": finalMonth,
-                            "brandForm":
-                                sheetProvider.selectedCategoryFiltersbf ==
-                                        "Select.."
-                                    ? ""
-                                    : sheetProvider.selectedCategoryFiltersbf,
-                            "brand": sheetProvider.selectedCategoryFilterbr ==
-                                    "Select.."
-                                ? ""
-                                : sheetProvider.selectedCategoryFilterbr,
-                            "sbfGroup":
-                                sheetProvider.selectedCategoryFiltersbfg ==
-                                        "Select.."
-                                    ? ""
-                                    : sheetProvider.selectedCategoryFiltersbfg,
-                            "category": sheetProvider.selectedCategoryFilter ==
-                                    "Select.."
-                                ? ""
-                                : sheetProvider.selectedCategoryFilter,
-                            "channel": selectedArrayItems
-                          }
+                        // Category
+                        dataListCoverage1 = [
+                          sheetProvider.selectedCategoryFilter == "Select.."
+                              ? ""
+                              : sheetProvider.selectedCategoryFilter,
                         ];
                       } else if (sheetProvider
                           .selectedCategoryFilterbr.isNotEmpty) {
-                        dataListCoverageProdTabs1 = [
-                          {
-                            sheetProvider.selectedChannelDivision:
-                                sheetProvider.selectedChannelSite == "All India"
-                                    ? 'allIndia'
-                                    : sheetProvider.selectedChannelSite,
-                            "date": finalMonth,
-                            "brandForm":
-                                sheetProvider.selectedCategoryFiltersbf ==
-                                        "Select.."
-                                    ? ""
-                                    : sheetProvider.selectedCategoryFiltersbf,
-                            "sbfGroup":
-                                sheetProvider.selectedCategoryFiltersbfg ==
-                                        "Select.."
-                                    ? ""
-                                    : sheetProvider.selectedCategoryFiltersbfg,
-                            "category": sheetProvider.selectedCategoryFilter ==
-                                    "Select.."
-                                ? ""
-                                : sheetProvider.selectedCategoryFilter,
-                            "brand": sheetProvider.selectedCategoryFilterbr ==
-                                    "Select.."
-                                ? ""
-                                : sheetProvider.selectedCategoryFilterbr,
-                            "channel": selectedArrayItems
-                          }
+                        dataListCoverage1 = [
+                          // Brand
+                          sheetProvider.selectedCategoryFilterbr == "Select.."
+                              ? ""
+                              : sheetProvider.selectedCategoryFilterbr,
                         ];
-                      } else {
-                        dataListCoverageProdTabs1 = [
-                          {
-                            sheetProvider.selectedChannelDivision:
-                                sheetProvider.selectedChannelSite == "All India"
-                                    ? 'allIndia'
-                                    : sheetProvider.selectedChannelSite,
-                            "date": finalMonth,
-                            "sbfGroup":
-                                sheetProvider.selectedCategoryFiltersbfg ==
-                                        "Select.."
-                                    ? ""
-                                    : sheetProvider.selectedCategoryFiltersbfg,
-                            "category": sheetProvider.selectedCategoryFilter ==
-                                    "Select.."
-                                ? ""
-                                : sheetProvider.selectedCategoryFilter,
-                            "brand": sheetProvider.selectedCategoryFilterbr ==
-                                    "Select.."
-                                ? ""
-                                : sheetProvider.selectedCategoryFilterbr,
-                            "brandForm":
-                                sheetProvider.selectedCategoryFiltersbf ==
-                                        "Select.."
-                                    ? ""
-                                    : sheetProvider.selectedCategoryFiltersbf,
-                            "channel": selectedArrayItems
-                          }
+                      } else if (sheetProvider
+                          .selectedCategoryFiltersbf.isNotEmpty) {
+                        // SBF
+                        dataListCoverage1 = [
+                          sheetProvider.selectedCategoryFiltersbf == "Select.."
+                              ? ""
+                              : sheetProvider.selectedCategoryFiltersbf,
                         ];
-                      }
+                      } else if (sheetProvider
+                          .selectedCategoryFiltersbfg.isNotEmpty) {
+                        // SBFG
+                        dataListCoverage1 = [
+                          sheetProvider.selectedCategoryFiltersbfg == "Select.."
+                              ? ""
+                              : sheetProvider.selectedCategoryFiltersbfg,
+                        ];
+                      } else {}
                       setState(() {});
                       addDataCoverageProd(channelNew, monthNew);
                       await postRequestProdTabs(context, channelNew, monthNew);
                       sheetProvider.isLoaderActive = false;
-                    } else {
-                      var finalMonth = "Jun-2023";
-                      if (pattern1.hasMatch(sheetProvider.myStringMonthFB)) {
-                        finalMonth = sheetProvider.myStringMonthFB;
-                      } else if (pattern2
-                          .hasMatch(sheetProvider.myStringMonthFB)) {
-                        String year =
-                            sheetProvider.myStringMonthFB.substring(2, 6);
-                        String month =
-                            sheetProvider.myStringMonthFB.substring(7);
-                        finalMonth = "$month-$year";
-                      } else {
-                        finalMonth = "Jun-2023";
-                      }
+                    } else if (sheetProvider.isCurrentTab == 3) {
                       if (sheetProvider.selectedCategoryFilter.isNotEmpty) {
-                        dataListCoverageBillingTabs1 = [
-                          {
-                            sheetProvider.selectedChannelDivision:
-                                sheetProvider.selectedChannelSite == "All India"
-                                    ? 'allIndia'
-                                    : sheetProvider.selectedChannelSite,
-                            "date": finalMonth,
-                            "brandForm":
-                                sheetProvider.selectedCategoryFiltersbf ==
-                                        "Select.."
-                                    ? ""
-                                    : sheetProvider.selectedCategoryFiltersbf,
-                            "brand": sheetProvider.selectedCategoryFilterbr ==
-                                    "Select.."
-                                ? ""
-                                : sheetProvider.selectedCategoryFilterbr,
-                            "sbfGroup":
-                                sheetProvider.selectedCategoryFiltersbfg ==
-                                        "Select.."
-                                    ? ""
-                                    : sheetProvider.selectedCategoryFiltersbfg,
-                            "category": sheetProvider.selectedCategoryFilter ==
-                                    "Select.."
-                                ? ""
-                                : sheetProvider.selectedCategoryFilter,
-                            "channel": selectedArrayItems
-                          }
+                        // Category
+                        dataListCoverage1 = [
+                          sheetProvider.selectedCategoryFilter == "Select.."
+                              ? ""
+                              : sheetProvider.selectedCategoryFilter,
                         ];
                       } else if (sheetProvider
                           .selectedCategoryFilterbr.isNotEmpty) {
-                        dataListCoverageBillingTabs1 = [
-                          {
-                            sheetProvider.selectedChannelDivision:
-                                sheetProvider.selectedChannelSite == "All India"
-                                    ? 'allIndia'
-                                    : sheetProvider.selectedChannelSite,
-                            "date": finalMonth,
-                            "brandForm":
-                                sheetProvider.selectedCategoryFiltersbf ==
-                                        "Select.."
-                                    ? ""
-                                    : sheetProvider.selectedCategoryFiltersbf,
-                            "sbfGroup":
-                                sheetProvider.selectedCategoryFiltersbfg ==
-                                        "Select.."
-                                    ? ""
-                                    : sheetProvider.selectedCategoryFiltersbfg,
-                            "category": sheetProvider.selectedCategoryFilter ==
-                                    "Select.."
-                                ? ""
-                                : sheetProvider.selectedCategoryFilter,
-                            "brand": sheetProvider.selectedCategoryFilterbr ==
-                                    "Select.."
-                                ? ""
-                                : sheetProvider.selectedCategoryFilterbr,
-                            "channel": selectedArrayItems
-                          }
+                        dataListCoverage1 = [
+                          // Brand
+                          sheetProvider.selectedCategoryFilterbr == "Select.."
+                              ? ""
+                              : sheetProvider.selectedCategoryFilterbr,
                         ];
-                      } else {
-                        dataListCoverageBillingTabs1 = [
-                          {
-                            sheetProvider.selectedChannelDivision:
-                                sheetProvider.selectedChannelSite == "All India"
-                                    ? 'allIndia'
-                                    : sheetProvider.selectedChannelSite,
-                            "date": finalMonth,
-                            "sbfGroup":
-                                sheetProvider.selectedCategoryFiltersbfg ==
-                                        "Select.."
-                                    ? ""
-                                    : sheetProvider.selectedCategoryFiltersbfg,
-                            "category": sheetProvider.selectedCategoryFilter ==
-                                    "Select.."
-                                ? ""
-                                : sheetProvider.selectedCategoryFilter,
-                            "brand": sheetProvider.selectedCategoryFilterbr ==
-                                    "Select.."
-                                ? ""
-                                : sheetProvider.selectedCategoryFilterbr,
-                            "brandForm":
-                                sheetProvider.selectedCategoryFiltersbf ==
-                                        "Select.."
-                                    ? ""
-                                    : sheetProvider.selectedCategoryFiltersbf,
-                            "channel": selectedArrayItems
-                          }
+                      } else if (sheetProvider
+                          .selectedCategoryFiltersbf.isNotEmpty) {
+                        // SBF
+                        dataListCoverage1 = [
+                          sheetProvider.selectedCategoryFiltersbf == "Select.."
+                              ? ""
+                              : sheetProvider.selectedCategoryFiltersbf,
                         ];
-                      }
+                      } else if (sheetProvider
+                          .selectedCategoryFiltersbfg.isNotEmpty) {
+                        // SBFG
+                        dataListCoverage1 = [
+                          sheetProvider.selectedCategoryFiltersbfg == "Select.."
+                              ? ""
+                              : sheetProvider.selectedCategoryFiltersbfg,
+                        ];
+                      } else {}
                       setState(() {});
                       addDataCoverageBilling(channelNew, monthNew);
                       await postRequestBillingTabs(
                           context, channelNew, monthNew);
                       sheetProvider.isLoaderActive = false;
-                    }
+                    }else{}
                   },
                   onApplyPressedMonthCHRTab: () async {},
                   addMonthBool: addMonthBool,
@@ -1257,8 +1110,7 @@ class _FBContainerDrawerState extends State<FBContainerDrawer> {
                       addDataCoverageAll(channelNew, monthNew);
                       await postRequest(context, channelNew, monthNew);
                       sheetProvider.isLoaderActive = false;
-                    }
-                    else if (sheetProvider.isCurrentTab == 1) {
+                    } else if (sheetProvider.isCurrentTab == 1) {
                       sheetProvider.isExpandedMonthFilter = true;
                       sheetProvider.isLoaderActive = true;
                       var finalMonth = "Jun-2023";
@@ -1297,8 +1149,7 @@ class _FBContainerDrawerState extends State<FBContainerDrawer> {
                       addDataCoverageCCR(channelNew, monthNew);
                       await postRequestCCTabs(channelNew, monthNew, context);
                       sheetProvider.isLoaderActive = false;
-                    }
-                    else if (sheetProvider.isCurrentTab == 2) {
+                    } else if (sheetProvider.isCurrentTab == 2) {
                       sheetProvider.isExpandedMonthFilter = true;
                       sheetProvider.isLoaderActive = true;
                       var finalMonth = "Jun-2023";
@@ -1337,8 +1188,7 @@ class _FBContainerDrawerState extends State<FBContainerDrawer> {
                       addDataCoverageProd(channelNew, monthNew);
                       await postRequestProdTabs(context, channelNew, monthNew);
                       sheetProvider.isLoaderActive = false;
-                    }
-                    else if (sheetProvider.isCurrentTab == 3) {
+                    } else if (sheetProvider.isCurrentTab == 3) {
                       sheetProvider.isExpandedMonthFilter = true;
                       sheetProvider.isLoaderActive = true;
                       var finalMonth = "Jun-2023";
@@ -1378,8 +1228,7 @@ class _FBContainerDrawerState extends State<FBContainerDrawer> {
                       await postRequestBillingTabs(
                           context, channelNew, monthNew);
                       sheetProvider.isLoaderActive = false;
-                    }
-                    else {}
+                    } else {}
                   },
                   selectedMonthList: _selectedMonth,
                   onTapMonthFilter: () {
@@ -1405,142 +1254,46 @@ class _FBContainerDrawerState extends State<FBContainerDrawer> {
                                       setState(() {
                                         _selectedMonth = monthYear;
                                       });
-                                      sheetProvider.isExpandedMonthFilter =
+                                      sheetProvider.isExpandedMonthCDFilter =
                                           true;
                                       monthNew = "$shortMonth-$year";
                                     });
-                                    if (sheetProvider.isCurrentTab == 0) {
-                                      print(
-                                          "Here now ${sheetProvider.selectedChannelIndex}");
+                                    if (selectedTapAPI == 0) {
                                       sheetProvider.isLoaderActive = true;
-                                      dataListCoverage1 = [
-                                        {
-                                          sheetProvider.selectedChannelDivision ==
-                                                      ""
-                                                  ? "allIndia"
-                                                  : sheetProvider
-                                                      .selectedChannelDivision:
-                                              sheetProvider.selectedChannelSite ==
-                                                          "All India" ||
-                                                      sheetProvider
-                                                              .selectedChannelSite ==
-                                                          ""
-                                                  ? 'allIndia'
-                                                  : sheetProvider
-                                                      .selectedChannelSite,
-                                          "date": monthNew,
-                                          "brandForm": "",
-                                          "brand": "",
-                                          "sbfGroup": "",
-                                          "category": "",
-                                          "channel": []
-                                        }
-                                      ];
+                                      dataListCoverage1 = [monthNew];
                                       setState(() {});
                                       addDataCoverageAll('', monthNew);
                                       popup();
                                       await postRequest(context, '', monthNew);
                                       sheetProvider.isLoaderActive = false;
-                                    }
-                                    else if (sheetProvider.isCurrentTab ==
-                                        1) {
-                                      print("Month New $monthNew");
+                                    } else if (selectedTapAPI == 1) {
                                       sheetProvider.isLoaderActive = true;
-                                      dataListCoverageCCTabs1 = [
-                                        {
-                                          sheetProvider.selectedChannelDivision ==
-                                                      ""
-                                                  ? "allIndia"
-                                                  : sheetProvider
-                                                      .selectedChannelDivision:
-                                              sheetProvider.selectedChannelSite ==
-                                                          "All India" ||
-                                                      sheetProvider
-                                                              .selectedChannelSite ==
-                                                          ""
-                                                  ? 'allIndia'
-                                                  : sheetProvider
-                                                      .selectedChannelSite,
-                                          "date": monthNew,
-                                          "brandForm": "",
-                                          "brand": "",
-                                          "sbfGroup": "",
-                                          "category": "",
-                                          "channel": []
-                                        }
-                                      ];
+                                      dataListCoverageCCTabs1 = [monthNew];
                                       setState(() {});
                                       addDataCoverageCCR('', monthNew);
                                       popup();
                                       await postRequestCCTabs(
                                           "", monthNew, context);
                                       sheetProvider.isLoaderActive = false;
-                                    }
-                                    else if (sheetProvider.isCurrentTab ==
-                                        2) {
+                                    } else if (selectedTapAPI == 2) {
                                       sheetProvider.isLoaderActive = true;
-                                      dataListCoverageProdTabs1 = [
-                                        {
-                                          sheetProvider.selectedChannelDivision ==
-                                                      ""
-                                                  ? "allIndia"
-                                                  : sheetProvider
-                                                      .selectedChannelDivision:
-                                              sheetProvider.selectedChannelSite ==
-                                                          "All India" ||
-                                                      sheetProvider
-                                                              .selectedChannelSite ==
-                                                          ""
-                                                  ? 'allIndia'
-                                                  : sheetProvider
-                                                      .selectedChannelSite,
-                                          "date": monthNew,
-                                          "brandForm": "",
-                                          "brand": "",
-                                          "sbfGroup": "",
-                                          "category": "",
-                                          "channel": []
-                                        }
-                                      ];
+                                      dataListCoverageProdTabs1 = [monthNew];
                                       setState(() {});
                                       addDataCoverageProd('', monthNew);
                                       popup();
                                       await postRequestProdTabs(
                                           context, channelNew, monthNew);
                                       sheetProvider.isLoaderActive = false;
-                                    }
-                                    else {
+                                    } else if (selectedTapAPI == 3) {
                                       sheetProvider.isLoaderActive = true;
-                                      dataListCoverageBillingTabs1 = [
-                                        {
-                                          sheetProvider.selectedChannelDivision ==
-                                                      ""
-                                                  ? "allIndia"
-                                                  : sheetProvider
-                                                      .selectedChannelDivision:
-                                              sheetProvider.selectedChannelSite ==
-                                                          "All India" ||
-                                                      sheetProvider
-                                                              .selectedChannelSite ==
-                                                          ""
-                                                  ? 'allIndia'
-                                                  : sheetProvider
-                                                      .selectedChannelSite,
-                                          "date": monthNew,
-                                          "brandForm": "",
-                                          "brand": "",
-                                          "sbfGroup": "",
-                                          "category": "",
-                                          "channel": []
-                                        }
-                                      ];
+                                      dataListCoverageBillingTabs1 = [monthNew];
                                       setState(() {});
                                       addDataCoverageBilling('', monthNew);
                                       popup();
                                       await postRequestBillingTabs(
                                           context, channelNew, monthNew);
                                       sheetProvider.isLoaderActive = false;
-                                    }
+                                    } else {}
                                   },
                                 );
                               },
@@ -1593,7 +1346,6 @@ class _FBContainerDrawerState extends State<FBContainerDrawer> {
                   },
                   selectedIndex1: selectedTapAPI,
                   onRemoveFilterCategory: () async {
-                    // print("Here $selectedCategoryList");
                     if (sheetProvider.isCurrentTab == 0) {
                       sheetProvider.isExpandedMonthFilter = true;
                       sheetProvider.isLoaderActive = true;
@@ -1781,18 +1533,21 @@ class _FBContainerDrawerState extends State<FBContainerDrawer> {
                     showDialog(
                         context: context,
                         builder: (BuildContext context) {
-                          return StatefulBuilder(builder: (context, setState){
+                          return StatefulBuilder(builder: (context, setState) {
                             return AlertDialog(
                               titlePadding: const EdgeInsets.all(0),
                               title: Container(
                                 color: MyColors.dark600,
                                 child: const Padding(
                                   padding: EdgeInsets.all(10.0),
-                                  child: Text('Select Channel', style: TextStyle(
-                                      fontFamily: fontFamily,
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 16,
-                                      color: Color(0xff344C65)),),
+                                  child: Text(
+                                    'Select Channel',
+                                    style: TextStyle(
+                                        fontFamily: fontFamily,
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 16,
+                                        color: Color(0xff344C65)),
+                                  ),
                                 ),
                               ),
                               content: SizedBox(
@@ -1801,259 +1556,290 @@ class _FBContainerDrawerState extends State<FBContainerDrawer> {
                                 child: ListView.builder(
                                   itemCount: channelFilter.length,
                                   itemBuilder: (BuildContext context, index) {
-                                    return channelFilter.isEmpty?const Center(child: CircularProgressIndicator()): Row(
-                                      children: [
-                                        Expanded(
-                                          child: InkWell(
-                                            onTap: () {
-                                              setState(() {
-                                                if (selectedArrayItems
-                                                    .contains(channelFilter[index])) {
-                                                  selectedArrayItems
-                                                      .remove(channelFilter[index]);
-                                                } else {
-                                                  selectedArrayItems.add(channelFilter[index]);
-                                                }
+                                    return channelFilter.isEmpty
+                                        ? const Center(
+                                            child: CircularProgressIndicator())
+                                        : Row(
+                                            children: [
+                                              Expanded(
+                                                child: InkWell(
+                                                  onTap: () {
+                                                    setState(() {
+                                                      if (selectedArrayItems
+                                                          .contains(
+                                                              channelFilter[
+                                                                  index])) {
+                                                        selectedArrayItems
+                                                            .remove(
+                                                                channelFilter[
+                                                                    index]);
+                                                      } else {
+                                                        selectedArrayItems.add(
+                                                            channelFilter[
+                                                                index]);
+                                                      }
 
-                                                print(selectedArrayItems);
-                                              });
-                                            },
-                                            child: Padding(
-                                              padding: const EdgeInsets.only(
-                                                left: 20,
-                                                top: 5,
-                                                bottom: 4,
-                                              ),
-                                              child: Row(
-                                                children: [
-                                                  Container(
-                                                    height: 15,
-                                                    width: 15,
-                                                    decoration: BoxDecoration(
-                                                      color: selectedArrayItems
-                                                          .contains(channelFilter[index])
-                                                          ? Colors.blue
-                                                          : MyColors.transparent,
-                                                      borderRadius: const BorderRadius.all(
-                                                          Radius.circular(2)),
-                                                      border: Border.all(
-                                                        color: selectedArrayItems
-                                                            .contains(channelFilter[index])
-                                                            ? Colors.blue
-                                                            : MyColors.grey,
-                                                        width: 1,
-                                                      ),
+                                                      print(selectedArrayItems);
+                                                    });
+                                                  },
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                      left: 20,
+                                                      top: 5,
+                                                      bottom: 4,
                                                     ),
-                                                    child: selectedArrayItems
-                                                        .contains(channelFilter[index])
-                                                        ? const Icon(
-                                                      Icons.check,
-                                                      color: MyColors.whiteColor,
-                                                      size: 13,
-                                                    )
-                                                        : null,
-                                                  ),
-                                                  const SizedBox(
-                                                    width: 8,
-                                                  ),
-                                                  Expanded(
-                                                    child: Text(
-                                                      channelFilter[index],
-                                                      maxLines: 2,
-                                                      style: const TextStyle(
-                                                        fontFamily: fontFamily,
-                                                        fontWeight: FontWeight.w500,
-                                                        fontSize: 14,
-                                                        color: Color(0xff344C65),
-                                                      ),
+                                                    child: Row(
+                                                      children: [
+                                                        Container(
+                                                          height: 15,
+                                                          width: 15,
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            color: selectedArrayItems
+                                                                    .contains(
+                                                                        channelFilter[
+                                                                            index])
+                                                                ? Colors.blue
+                                                                : MyColors
+                                                                    .transparent,
+                                                            borderRadius:
+                                                                const BorderRadius
+                                                                        .all(
+                                                                    Radius
+                                                                        .circular(
+                                                                            2)),
+                                                            border: Border.all(
+                                                              color: selectedArrayItems
+                                                                      .contains(
+                                                                          channelFilter[
+                                                                              index])
+                                                                  ? Colors.blue
+                                                                  : MyColors
+                                                                      .grey,
+                                                              width: 1,
+                                                            ),
+                                                          ),
+                                                          child: selectedArrayItems
+                                                                  .contains(
+                                                                      channelFilter[
+                                                                          index])
+                                                              ? const Icon(
+                                                                  Icons.check,
+                                                                  color: MyColors
+                                                                      .whiteColor,
+                                                                  size: 13,
+                                                                )
+                                                              : null,
+                                                        ),
+                                                        const SizedBox(
+                                                          width: 8,
+                                                        ),
+                                                        Expanded(
+                                                          child: Text(
+                                                            channelFilter[
+                                                                index],
+                                                            maxLines: 2,
+                                                            style:
+                                                                const TextStyle(
+                                                              fontFamily:
+                                                                  fontFamily,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500,
+                                                              fontSize: 14,
+                                                              color: Color(
+                                                                  0xff344C65),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
                                                   ),
-                                                ],
+                                                ),
                                               ),
-                                            ),
-                                          ),
-                                        ),
-
-                                      ],
-                                    );
+                                            ],
+                                          );
                                   },
                                 ),
                               ),
                               actions: [
-                                TextButton(onPressed: () async{
-                                  sheetProvider.isExpandedMonthFilter = true;
-                                  // selectedItemValueChannel[0] = value!;
-                                  // channelNew = selectedItemValueChannel[0];
-                                  print("BosData ${sheetProvider.isExpandedMonthFilter}");
-                                  sheetProvider.isLoaderActive = true;
-                                  if (sheetProvider.isCurrentTab == 0) {
-                                    var finalMonth = "Jun-2023";
-                                    if (pattern1.hasMatch(sheetProvider.myStringMonthFB)) {
-                                      finalMonth = sheetProvider.myStringMonthFB;
-                                    } else if (pattern2
-                                        .hasMatch(sheetProvider.myStringMonthFB)) {
-                                      String year =
-                                      sheetProvider.myStringMonthFB.substring(2, 6);
-                                      String month =
-                                      sheetProvider.myStringMonthFB.substring(7);
-                                      finalMonth = "$month-$year";
-                                    } else {
-                                      finalMonth = "Jun-2023";
-                                    }
-                                    print("Final $finalMonth");
-                                    dataListCoverage1 = [
-                                      {
-                                        sheetProvider.selectedChannelDivision:
-                                        sheetProvider.selectedChannelSite == "All India"
-                                            ? 'allIndia'
-                                            : sheetProvider.selectedChannelSite,
-                                        "date": finalMonth,
-                                        "brandForm": "",
-                                        "brand": "",
-                                        "sbfGroup": "",
-                                        "category":
-                                        sheetProvider.selectedCategoryFilter == "Select.."
-                                            ? ""
-                                            : sheetProvider.selectedCategoryFilter,
-                                        "channel": selectedArrayItems
+                                TextButton(
+                                    onPressed: () async {
+                                      sheetProvider.isExpandedMonthFilter =
+                                          true;
+                                      sheetProvider.isLoaderActive = true;
+                                      if (selectedTapAPI == 0) {
+                                        dataListCoverage1 = selectedArrayItems;
+                                        setState(() {});
+                                        Navigator.pop(context);
+                                        addDataCoverageAll(
+                                            channelNew, monthNew);
+                                        await postRequest(
+                                            context, channelNew, monthNew);
+                                        sheetProvider.isLoaderActive = false;
+                                      } else if (selectedTapAPI == 1) {
+                                        dataListCoverageCCTabs1 =
+                                            selectedArrayItems;
+                                        setState(() {});
+                                        Navigator.pop(context);
+                                        addDataCoverageCCR(
+                                            channelNew, monthNew);
+                                        await postRequestCCTabs(
+                                            channelNew, monthNew, context);
+                                        sheetProvider.isLoaderActive = false;
+                                      } else if (selectedTapAPI == 2) {
+                                        dataListCoverageProdTabs1 =
+                                            selectedArrayItems;
+                                        setState(() {});
+                                        Navigator.pop(context);
+                                        addDataCoverageProd(
+                                            channelNew, monthNew);
+                                        await postRequestProdTabs(
+                                            context, channelNew, monthNew);
+                                        sheetProvider.isLoaderActive = false;
+                                      } else if (selectedTapAPI == 3) {
+                                        dataListCoverageBillingTabs1 =
+                                            selectedArrayItems;
+                                        setState(() {});
+                                        Navigator.pop(context);
+                                        addDataCoverageBilling(
+                                            channelNew, monthNew);
+                                        await postRequestBillingTabs(
+                                            context, channelNew, monthNew);
+                                        sheetProvider.isLoaderActive = false;
                                       }
-                                    ];
-                                    setState(() {});
-                                    Navigator.pop(context);
-                                    addDataCoverageAll(channelNew, monthNew);
-                                    await postRequest(context, channelNew, monthNew);
-                                    sheetProvider.isLoaderActive = false;
-                                  }
-                                  else if (sheetProvider.isCurrentTab == 1) {
-                                    var finalMonth = "Jun-2023";
-                                    if (pattern1.hasMatch(sheetProvider.myStringMonthFB)) {
-                                      finalMonth = sheetProvider.myStringMonthFB;
-                                    } else if (pattern2
-                                        .hasMatch(sheetProvider.myStringMonthFB)) {
-                                      String year =
-                                      sheetProvider.myStringMonthFB.substring(2, 6);
-                                      String month =
-                                      sheetProvider.myStringMonthFB.substring(7);
-                                      finalMonth = "$month-$year";
-                                    } else {
-                                      finalMonth = "Jun-2023";
-                                    }
-                                    dataListCoverageCCTabs1 = [
-                                      {
-                                        sheetProvider.selectedChannelDivision:
-                                        sheetProvider.selectedChannelSite == "All India"
-                                            ? 'allIndia'
-                                            : sheetProvider.selectedChannelSite,
-                                        "date": finalMonth,
-                                        "brandForm": "",
-                                        "brand": "",
-                                        "sbfGroup": "",
-                                        "category":
-                                        sheetProvider.selectedCategoryFilter == "Select.."
-                                            ? ""
-                                            : sheetProvider.selectedCategoryFilter,
-                                        "channel": selectedArrayItems
-                                      }
-                                    ];
-                                    setState(() {});
-                                    Navigator.pop(context);
-                                    addDataCoverageCCR(channelNew, monthNew);
-                                    await postRequestCCTabs(channelNew, monthNew, context);
-                                    sheetProvider.isLoaderActive = false;
-                                  }
-                                  else if (sheetProvider.isCurrentTab == 2) {
-                                    // sheetProvider.isExpandedMonthFilter = true;
-                                    var finalMonth = "Jun-2023";
-                                    if (pattern1.hasMatch(sheetProvider.myStringMonthFB)) {
-                                      finalMonth = sheetProvider.myStringMonthFB;
-                                    } else if (pattern2
-                                        .hasMatch(sheetProvider.myStringMonthFB)) {
-                                      String year =
-                                      sheetProvider.myStringMonthFB.substring(2, 6);
-                                      String month =
-                                      sheetProvider.myStringMonthFB.substring(7);
-                                      finalMonth = "$month-$year";
-                                    } else {
-                                      finalMonth = "Jun-2023";
-                                    }
-                                    dataListCoverageProdTabs1 = [
-                                      {
-                                        sheetProvider.selectedChannelDivision:
-                                        sheetProvider.selectedChannelSite == "All India"
-                                            ? 'allIndia'
-                                            : sheetProvider.selectedChannelSite,
-                                        "date": finalMonth,
-                                        "brandForm": "",
-                                        "brand": "",
-                                        "sbfGroup": "",
-                                        "category":
-                                        sheetProvider.selectedCategoryFilter == "Select.."
-                                            ? ""
-                                            : sheetProvider.selectedCategoryFilter,
-                                        "channel": selectedArrayItems
-                                      }
-                                    ];
-                                    setState(() {});
-                                    Navigator.pop(context);
-                                    addDataCoverageProd(channelNew, monthNew);
-                                    await postRequestProdTabs(context, channelNew, monthNew);
-                                    sheetProvider.isLoaderActive = false;
-                                  }
-                                  else {
-                                    var finalMonth = "Jun-2023";
-                                    if (pattern1.hasMatch(sheetProvider.myStringMonthFB)) {
-                                      finalMonth = sheetProvider.myStringMonthFB;
-                                    } else if (pattern2
-                                        .hasMatch(sheetProvider.myStringMonthFB)) {
-                                      String year =
-                                      sheetProvider.myStringMonthFB.substring(2, 6);
-                                      String month =
-                                      sheetProvider.myStringMonthFB.substring(7);
-                                      finalMonth = "$month-$year";
-                                    } else {
-                                      finalMonth = "Jun-2023";
-                                    }
-                                    dataListCoverageBillingTabs1 = [
-                                      {
-                                        sheetProvider.selectedChannelDivision:
-                                        sheetProvider.selectedChannelSite == "All India"
-                                            ? 'allIndia'
-                                            : sheetProvider.selectedChannelSite,
-                                        "date": finalMonth,
-                                        "brandForm": "",
-                                        "brand": "",
-                                        "sbfGroup": "",
-                                        "category":
-                                        sheetProvider.selectedCategoryFilter == "Select.."
-                                            ? ""
-                                            : sheetProvider.selectedCategoryFilter,
-                                        "channel": selectedArrayItems
-                                      }
-                                    ];
-                                    setState(() {});
-                                    Navigator.pop(context);
-                                    addDataCoverageBilling(channelNew, monthNew);
-                                    await postRequestBillingTabs(
-                                        context, channelNew, monthNew);
-                                    sheetProvider.isLoaderActive = false;
-                                  }
-                                }, child: const Text('Apply',style: TextStyle(
-                                    fontFamily: fontFamily,
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 16,
-                                    color: MyColors.primary),)),
-                                TextButton(onPressed: (){
-                                  Navigator.pop(context);
-                                }, child: const Text('Cancel',style: TextStyle(
-                                    fontFamily: fontFamily,
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 16,
-                                    color: MyColors.primary),))
+                                    },
+                                    child: const Text(
+                                      'Apply',
+                                      style: TextStyle(
+                                          fontFamily: fontFamily,
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 16,
+                                          color: MyColors.primary),
+                                    )),
+                                TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: const Text(
+                                      'Cancel',
+                                      style: TextStyle(
+                                          fontFamily: fontFamily,
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 16,
+                                          color: MyColors.primary),
+                                    ))
                               ],
                             );
                           });
                         });
-                },
+                  },
+                  onTapRemoveFilter: () async {
+                    sheetProvider.isExpandedMonthFilter = true;
+                    if (selectedTapAPI == 0) {
+                      sheetProvider.isLoaderActive = true;
+                      dataListCoverage1 = [];
+                      addDataCoverageAll('', monthNew);
+                      await postRequest(context, '', '');
+                      sheetProvider.isLoaderActive = false;
+                    } else if (selectedTapAPI == 1) {
+                      sheetProvider.isLoaderActive = true;
+                      dataListCoverageCCTabs1 = [];
+                      addDataCoverageCCR('', monthNew);
+                      await postRequestCCTabs('', '', context);
+                      sheetProvider.isLoaderActive = false;
+                    } else if (selectedTapAPI == 2) {
+                      sheetProvider.isLoaderActive = true;
+                      dataListCoverageProdTabs1 = [];
+                      addDataCoverageProd('', monthNew);
+                      await postRequestProdTabs(context, '', '');
+                      sheetProvider.isLoaderActive = false;
+                    } else if (selectedTapAPI == 3) {
+                      sheetProvider.isLoaderActive = true;
+                      dataListCoverageBillingTabs1 = [];
+                      addDataCoverageBilling('', monthNew);
+                      await postRequestBillingTabs(context, '', '');
+                      sheetProvider.isLoaderActive = false;
+                    }
+                  },
+                  listRetailingDataListCoverage: listRetailingDataListCoverage,
+                  onTapContainer: () {  },
+                  onApplyRetailingSummary: () async{
+                    menuBool = !menuBool;
+                    divisionBool = !divisionBool;
+                    removeBool = !removeBool;
+                    sheetProvider.isExpandedMonthFilter = true;
+                    sheetProvider.isLoadingPage = true;
+                    var newElement =
+                        '{"${SharedPreferencesUtils.getString('webRetailingSummaryDivision')}": "${SharedPreferencesUtils.getString('webRetailingSummarySite')}", "date": "${SharedPreferencesUtils.getString('webCoverageMonth') ?? "Jun"}-${SharedPreferencesUtils.getString('webCoverageYear') ?? "2023"}"}';
+                    var ele = json.decode(newElement);
+                    listRetailingData1.add(ele);
+                    addDataCoverageAllRetailing();
+                    sheetProvider.isMenuActive = false;
+                    sheetProvider.isDivisionActive = false;
+                    sheetProvider.isRemoveActive = false;
+                    await postRequestRetailing(context);
+                    sheetProvider.isLoadingPage = false;
+                    setState(() {});
+                  },
+                  onRemoveGeoPressed: () async {
+                    menuBool = !menuBool;
+                    divisionBool = !divisionBool;
+                    removeBool = !removeBool;
+                    sheetProvider.isLoadingPage = true;
+                    removeDataRetailing(sheetProvider.removeIndexRetailingSummary);
+                    sheetProvider.isMenuActive = false;
+                    sheetProvider.isDivisionActive = false;
+                    sheetProvider.isRemoveActive = false;
+                    await postRequestRetailing(context);
+                    sheetProvider.isLoadingPage = false;
+                    setState(() {});
+                  },
+                  onMonthChangedDefault: () {
+                    setState(() {
+                    });
+                    sheetProvider.selectMonth = true;
+                  }, onApplySummaryDefaultMonth: () async{
+                  defaultMonthPressed = true;
+                  sheetProvider.isLoadingPage = true;
+                  addDataCoverageAllRetailing();
+                  sheetProvider.selectMonth = false;
+                  await postRequestRetailing(context);
+                  sheetProvider.isLoadingPage = false;
+                  setState(() {});
+                }, tryAgain: () async{
+                    print('button');
+                    sheetProvider.setFbErrorMsg([]);
+                    sheetProvider.isLoaderActive = true;
+                    await postRequest(context, "", "");
+                    sheetProvider.isLoaderActive = false;
+                    setState(() {});
+                    },
+                  tryAgain1: () async{
+                    print('button1');
+                    sheetProvider.setFb1ErrorMsg([]);
+                    sheetProvider.isLoaderActive = true;
+                    await postRequestCCTabs("","", context);
+                    sheetProvider.isLoaderActive = false;
+                    setState(() {});
+                  },
+                  tryAgain2: () async{
+                    print('button');
+                    sheetProvider.setFb2ErrorMsg([]);
+                    sheetProvider.isLoaderActive = true;
+                    await postRequestProdTabs(context, "", "");
+                    sheetProvider.isLoaderActive = false;
+                    setState(() {});
+                  },
+                  tryAgain3: () async{
+                    print('button');
+                    sheetProvider.setFb3ErrorMsg([]);
+                    sheetProvider.isLoaderActive = true;
+                    await postRequestBillingTabs(context, "", "");
+                    sheetProvider.isLoaderActive = false;
+                    setState(() {});
+                  },
                 )
               ],
             ),
@@ -2061,5 +1847,29 @@ class _FBContainerDrawerState extends State<FBContainerDrawer> {
         ],
       ),
     );
+  }
+
+  ////// Get Geo category according to Geo //////
+  findDatasetName(String selectedKey) {
+    List<dynamic> cluster = ConstArray().clusterNewList;
+    List<dynamic> site = ConstArray().siteNewList;
+    List<dynamic> division = ConstArray().divisionNewList;
+    List<dynamic> divisionN = ['S-W', 'N-E'];
+
+    if (site.contains(selectedKey)) {
+      return "site";
+    } else if (cluster.contains(selectedKey)) {
+      return "cluster";
+    } else if (divisionN.contains(selectedKey)) {
+      return "division";
+    } else if (division.contains(selectedKey)) {
+      return "division";
+    } else if (selectedKey == 'allIndia') {
+      return "allIndia";
+    } else {
+      if (selectedKey == 'All India') {
+        return "allIndia";
+      }
+    }
   }
 }

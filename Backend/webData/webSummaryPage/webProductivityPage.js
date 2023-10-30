@@ -1,4 +1,5 @@
-const {sequelize} = require('../../databaseConnection/sql_connection');
+// const {sequelize} = require('../../databaseConnection/sql_connection');
+const {getConnection, getQueryData} = require('../../databaseConnection/dbConnection');
 
 let getSummaryPageData = async (req, res) =>{
     try {
@@ -46,7 +47,9 @@ let getSummaryPageData = async (req, res) =>{
 
 
         // let billing_and_coverage_data = await sequelize.query(sql_query_no_of_billing_current_year)
-        let productivity_data = await sequelize.query(new_producitivity_query_current_month)
+        let connection = await getConnection()
+        let productivity_data = await getQueryData(connection, new_producitivity_query_current_month)
+        // let productivity_data = await sequelize.query(new_producitivity_query_current_month)
 
         // let billing_and_coverage_data_all_india = await sequelize.query(sql_query_no_of_billing_current_year_all_india)
         // let productivity_data_all_india = await sequelize.query(new_producitivity_query_current_month_all_india)
@@ -67,9 +70,9 @@ let getSummaryPageData = async (req, res) =>{
         //     billing = billing_and_coverage_data[0][0]['billed_sum']
         //     coverage = billing_and_coverage_data[0][0]['coverage_sum']
         // }
-        if(productivity_data[0][0] !== undefined) {
-            productive_calls = productivity_data[0][0]['productivity_calls']
-            target_calls = productivity_data[0][0]['target_calls']
+        if(productivity_data[0] !== undefined && productivity_data[0]['productivity_calls'] !== null) {
+            productive_calls = productivity_data[0]['productivity_calls']
+            target_calls = productivity_data[0]['target_calls']
         }
 
         // if(billing_and_coverage_data_all_india[0][0] !== undefined){

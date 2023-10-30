@@ -13,6 +13,7 @@
   "author": "Chandan",
   "license": "ISC",
   "dependencies": {
+    "adal-node": "^0.2.4",
     "body-parser": "^1.20.2",
     "compression": "^1.7.4",
     "connect-flash": "^0.1.1",
@@ -27,6 +28,8 @@
     "lodash": "^4.17.21",
     "log4js": "^6.9.1",
     "memory-cache": "^0.2.0",
+    "ms-rest-nodeauth": "^0.7.1",
+    "mssql": "^10.0.1",
     "npm": "^10.1.0",
     "passport": "^0.5.3",
     "passport-ping-oauth2": "^1.0.0",
@@ -34,7 +37,8 @@
     "sequelize": "^6.32.0",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^4.6.3",
-    "tedious": "^16.1.0"
+    "tedious": "^16.4.1",
+    "uuid": "^9.0.1"
   },
   "engines": {
     "npm": "6.14.x",

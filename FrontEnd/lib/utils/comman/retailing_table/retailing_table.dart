@@ -5,6 +5,7 @@ import '../../style/text_style.dart';
 
 class RetailingTable extends StatelessWidget {
   final List rowData;
+  final List<dynamic> rowData1;
   final bool sort;
   final Function() onTap;
 
@@ -12,7 +13,8 @@ class RetailingTable extends StatelessWidget {
       {Key? key,
       required this.rowData,
       required this.sort,
-      required this.onTap})
+      required this.onTap,
+      required this.rowData1})
       : super(key: key);
 
   Color getColor(Set<MaterialState> states) {
@@ -29,98 +31,126 @@ class RetailingTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 15, right: 15),
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 6.0),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20.0),
-          color: Colors.white,
-          boxShadow: const [
-            BoxShadow(
-              color: Color(0xffE1E7EC),
-              offset: Offset(0.0, 1.0), //(x,y)
-              blurRadius: 8.0,
-            ),
-          ],
-        ),
-        width: MediaQuery.of(context).size.width,
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(5.0),
-            child: Container(
-              width: double.infinity,
-              decoration: const BoxDecoration(
-                  // color: MyColors.primary,
-                  borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(20),
-                      bottomRight: Radius.circular(20))),
-              child: Padding(
-                padding:
-                    const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 8.0),
-                child: Row(children: [
-                  SizedBox(
-                    width: 84,
-                    child: Theme(
-                      data: Theme.of(context)
-                          .copyWith(dividerColor: MyColors.whiteColor),
-                      child: DataTable(
-                        columnSpacing: 0,
-                        dataRowHeight: 35,
-                        headingRowHeight: 35,
-                        // border: const TableBorder(borderRadius: BorderRadius.only(bottomLeft: Radius.circular(20))),
-                        columns: const [
-                          DataColumn(
-                            label: SizedBox(width: 50, child: Text('')),
-                            numeric: true,
-                            tooltip: '',
-                          ),
-                        ],
-                        rows: List.generate(rowData.length, (index) {
-                          final item = rowData[index];
-                          return DataRow(
-                            color: index == 0
-                                ? MaterialStateProperty.resolveWith(
-                                    getColorHeader)
-                                : index == 1
-                                    ? MaterialStateProperty.resolveWith(getColor)
-                                    : index == 2
-                                        ? MaterialStateProperty.resolveWith(
-                                            getColorGray)
-                                        : index == 3
-                                            ? MaterialStateProperty.resolveWith(
-                                                getColorHeader)
-                                            : index == 4
-                                                ? MaterialStateProperty
-                                                    .resolveWith(getColor)
-                                                : index == 5
-                                                    ? MaterialStateProperty
-                                                        .resolveWith(getColorGray)
-                                                    : MaterialStateProperty
-                                                        .resolveWith(
-                                                            getColorGray),
-                            cells: [
-                              DataCell(SizedBox(
-                                  width: 60, child: Text('${item.name}', style: ThemeText.tableTextText,)))
-                            ],
-                          );
-                        }),
+    return rowData1.isEmpty
+        ? const Center(child: CircularProgressIndicator())
+        : Stack(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 15, right: 15),
+                child: Container(
+                  margin: const EdgeInsets.only(bottom: 6.0),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20.0),
+                    color: Colors.white,
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Color(0xffE1E7EC),
+                        offset: Offset(0.0, 1.0), //(x,y)
+                        blurRadius: 8.0,
+                      ),
+                    ],
+                  ),
+                  width: MediaQuery.of(context).size.width,
+                  child: SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.all(5.0),
+                      child: Container(
+                        width: double.infinity,
+                        decoration: const BoxDecoration(
+                            // color: MyColors.primary,
+                            borderRadius: BorderRadius.only(
+                                bottomLeft: Radius.circular(20),
+                                bottomRight: Radius.circular(20))),
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                              left: 8.0, right: 8.0, bottom: 8.0),
+                          child: Row(children: [
+                            SizedBox(
+                              width: 84,
+                              child: Theme(
+                                data: Theme.of(context).copyWith(
+                                    dividerColor: MyColors.whiteColor),
+                                child: DataTable(
+                                  columnSpacing: 0,
+                                  dataRowHeight: 35,
+                                  headingRowHeight: 35,
+                                  columns: const [
+                                    DataColumn(
+                                      label:
+                                          SizedBox(width: 50, child: Text('')),
+                                      numeric: true,
+                                      tooltip: '',
+                                    ),
+                                  ],
+                                  rows: List.generate(
+                                      rowData1[0][0]['table'].length, (index) {
+                                    return DataRow(
+                                      color: index == 0
+                                          ? MaterialStateProperty.resolveWith(
+                                              getColorHeader)
+                                          : index == 1
+                                              ? MaterialStateProperty
+                                                  .resolveWith(getColor)
+                                              : index == 2
+                                                  ? MaterialStateProperty
+                                                      .resolveWith(getColorGray)
+                                                  : index == 3
+                                                      ? MaterialStateProperty
+                                                          .resolveWith(
+                                                              getColorHeader)
+                                                      : index == 4
+                                                          ? MaterialStateProperty
+                                                              .resolveWith(
+                                                                  getColor)
+                                                          : index == 5
+                                                              ? MaterialStateProperty
+                                                                  .resolveWith(
+                                                                      getColorGray)
+                                                              : MaterialStateProperty
+                                                                  .resolveWith(
+                                                                      getColorGray),
+                                      cells: [
+                                        DataCell(SizedBox(
+                                            width: 60,
+                                            child: Text(
+                                              '${rowData1[0][0]['table'][index]['key']}',
+                                              style: ThemeText.tableTextText,
+                                            )))
+                                      ],
+                                    );
+                                  }),
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: dataBody(sort, context),
+                              ),
+                            ),
+                          ]),
+                        ),
                       ),
                     ),
                   ),
-                  Expanded(
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: dataBody(sort, context),
-                    ),
-                  ),
-                ]),
+                ),
               ),
-            ),
-          ),
-        ),
-      ),
-    );
+              Positioned(
+                right: 30,
+                top: 5,
+                child: GestureDetector(
+                    onTap: onTap,
+                    child: Container(
+                        width: 60,
+                        height: 30,
+                        color: MyColors.whiteColor,
+                        child: const Align(
+                          alignment: Alignment.centerRight,
+                          child: Icon(Icons.add),
+                        ))),
+              )
+            ],
+          );
   }
 
   Widget dataBody(bool sort, BuildContext context) {
@@ -133,8 +163,7 @@ class RetailingTable extends StatelessWidget {
         sortAscending: sort,
         sortColumnIndex: 0,
         columns: _buildColumnsSummary(),
-        rows: List.generate(rowData.length, (index) {
-          final item = rowData[index];
+        rows: List.generate(rowData1[0][0]['table'].length, (index) {
           return DataRow(
             color: index == 0
                 ? MaterialStateProperty.resolveWith(getColorHeader)
@@ -152,45 +181,27 @@ class RetailingTable extends StatelessWidget {
                                     : MaterialStateProperty.resolveWith(
                                         getColorGray),
             cells: [
-              DataCell(
-                SizedBox(
-                    width: 60,
-                    child: Text(
-                      item.divi1,
-                      textAlign: TextAlign.center
-                      , style: ThemeText.tableTextText,
-                    )),
-              ),
-              DataCell(
-                SizedBox(
-                    width: 60,
-                    child: Text(
-                      item.age,
-                      textAlign: TextAlign.center,
-                      style: ThemeText.tableTextText,
-                    )),
-              ),
-              DataCell(
-                SizedBox(
-                    width: 60,
-                    child: Text(
-                      item.role,
-                      textAlign: TextAlign.center,
-                      style: ThemeText.tableTextText,
-                    )),
-              ),
-              DataCell(
-                SizedBox(
-                    width: 60,
-                    child: Text(
-                      item.divi,
-                      textAlign: TextAlign.center,
-                      style: ThemeText.tableTextText,
-                    )),
-              ),
-              const DataCell(
-                SizedBox(width: 60, child: Text('')),
-              ),
+              DataCell(SizedBox(
+                height: 100,
+                width: 300,
+                child: ListView.builder(
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    scrollDirection: Axis.horizontal,
+                    itemCount: rowData1.length,
+                    itemBuilder: (context, inde) {
+                      // print("$index ${rowData1[2]}");
+                      return Center(
+                        child: SizedBox(
+                            width: 60,
+                            child: Text(
+                              '${rowData1[inde][0]['table'][index]['data'][0]['cy_retailing_sum']}',
+                              style: ThemeText.tableTextText,
+                            )),
+                      );
+                    }),
+              )),
+
             ],
           );
         }),
@@ -200,50 +211,28 @@ class RetailingTable extends StatelessWidget {
 
   List<DataColumn> _buildColumnsSummary() {
     return [
-      const DataColumn(
+      DataColumn(
         label: SizedBox(
-            width: 60,
-            child: Text(
-              'BRAND',
-              textAlign: TextAlign.center,
-              style: ThemeText.tableHeaderText,
-            )),
+          height: 100,
+          width: 300,
+          child: ListView.builder(
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              scrollDirection: Axis.horizontal,
+              itemCount: rowData1.length,
+              itemBuilder: (context, inde) {
+                return Center(
+                  child: SizedBox(
+                      width: 60,
+                      child: Text(
+                        '${rowData1[inde][0]['filter_key']}',
+                        style: ThemeText.tableTextText,
+                      )),
+                );
+              }),
+        ),
         numeric: true,
         tooltip: 'Name of user',
-      ),
-      const DataColumn(
-          label: SizedBox(
-              width: 60,
-              child: Text('SITE',
-                  textAlign: TextAlign.center,
-                  style: ThemeText.tableHeaderText)),
-          numeric: true,
-          tooltip: 'SITE'),
-      const DataColumn(
-          label: SizedBox(
-              width: 60,
-              child: Text('AI',
-                  textAlign: TextAlign.center,
-                  style: ThemeText.tableHeaderText)),
-          numeric: true,
-          tooltip: 'AI'),
-      const DataColumn(
-          label: SizedBox(
-              width: 60,
-              child: Text('DIVISION',
-                  textAlign: TextAlign.center,
-                  style: ThemeText.tableHeaderText)),
-          numeric: true,
-          tooltip: 'DIVISION'),
-      DataColumn(
-        label: GestureDetector(
-            onTap: onTap,
-            child: const SizedBox(
-                width: 60,
-                child: Text(
-                  '+',
-                  textAlign: TextAlign.center,
-                ))),
       ),
     ];
   }

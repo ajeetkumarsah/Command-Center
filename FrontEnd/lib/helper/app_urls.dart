@@ -1,6 +1,7 @@
 const retailingP12M = 'https://2820-117-96-7-247.ngrok-free.app/';
 // const BASE_URL = 'https://commandcentrewebapp.ase1apxnp.pgcloud.com';
-const BASE_URL = 'https://cmndcntr-web-dev-web01.azurewebsites.net';
+  const BASE_URL = 'https://cmndcntr-web-dev-web01.azurewebsites.net';
+// const BASE_URL = 'http://localhost:3000';
 
 // const BASE_URL = 'https://02d6-110-235-238-224.ngrok-free.app';
 

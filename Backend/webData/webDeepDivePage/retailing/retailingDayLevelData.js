@@ -1,4 +1,7 @@
-const {sequelize} = require('../../../databaseConnection/sql_connection');
+// const {sequelize} = require('../../../databaseConnection/sql_connection');
+const {getConnection, getQueryData} = require('../../../databaseConnection/dbConnection');
+const cache = require("memory-cache");
+const {v4: uuidv4} = require("uuid");
 
 function getMonthDigit(month) {
     const monthMap = {
@@ -36,6 +39,31 @@ function getDigitMonth(month) {
     };
 
     return monthMap[month];
+}
+
+function deepEqual(obj1, obj2) {
+    // Convert objects to JSON strings and compare them
+    const json1 = JSON.stringify(obj1);
+    const json2 = JSON.stringify(obj2);
+
+    return json1 === json2;
+}
+
+function getFormatedNumberValue_RT(value){
+    let formatedValue = '0'
+    // console.log("Your Value Before Format", value)
+    if(value>=10000000 ){
+        formatedValue = ((value/10000000).toFixed(2).split(".")[0])+'Cr'
+    }
+
+    else if(value>=100000 && value<10000000){
+        formatedValue = ((value/100000).toFixed(2).split(".")[0])+'Lk'
+    }
+    else {
+        formatedValue = ((value).toFixed(2).split(".")[0])
+    }
+    // console.log("Your Value After Format", formatedValue)
+    return formatedValue
 }
 
 function getPNMList2(current_date, no_of_months){
@@ -81,12 +109,28 @@ function getPreviousMonth(currentMonth) {
     return previousMonth;
 }
 
+function convertDateString(myDate){
+    // Parse the date string
+    const date = new Date(myDate);
+
+// Get the year, month, and day
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+    const day = String(date.getDate()).padStart(2, '0');
+
+// Create the formatted date string
+    const formattedDate = `${year}-${month}-${day}`;
+
+    // console.log(formattedDate);
+    return (formattedDate);
+}
+
 function getPNMListDayLevel(current_year, current_month, no_of_months, required_type){
     let pNm = []
 
     for(let i=0; i<no_of_months; i++){
         if(current_month === "Jan"){
-            current_year = parseInt(current_year) - 1
+            // current_year = parseInt(current_year) - 1
             let lastDayOfMonth = new Date(current_year, getMonthDigit(current_month), 0).getDate();
             for(let j=1; j<=lastDayOfMonth; j++){
                 let todayDate;
@@ -95,6 +139,7 @@ function getPNMListDayLevel(current_year, current_month, no_of_months, required_
                 pNm.push(todayDate)
             }
             current_month = getPreviousMonth(current_month)
+            current_year = parseInt(current_year) - 1
 
         }else {
             let todayDate;
@@ -115,16 +160,17 @@ function getPNMListDayLevel(current_year, current_month, no_of_months, required_
 
 }
 
-let getDeepDivePageData = async (req, res) =>{
+function copyObject(obj) {
+    return JSON.parse(JSON.stringify(obj));
+}
+
+async function getTableData(bodyData){
 
     try {
         let reqDate = ''
-        // let date = 'Aug-2023'
-        // let monthsList = getPNMListDayLevel(date.split("-")[1], date.split("-")[0], 3)
-        let all_data = req.body;
+        let all_data = copyObject(bodyData);
         let all_result = []
         for (let i in all_data) {
-            let final_result = []
             let final_data = []
             let data = all_data[i]
             let date = data.date;
@@ -138,6 +184,7 @@ let getDeepDivePageData = async (req, res) =>{
             let channel_list = []
             channel = data.channel
             channel_list = data.channel
+            channel_list = [...new Set(channel_list)];
             channel = channel.map(item => `'${item}'`).join(", ")
             let all_india_filter = data.allIndia ? data.allIndia : ''
             let division_filter = data.division ? data.division : ''
@@ -145,7 +192,7 @@ let getDeepDivePageData = async (req, res) =>{
             delete filter_type.date;
             delete filter_type.channel;
 
-            if(all_india_filter !== ''){
+                if(all_india_filter !== ''){
                 delete filter_type.allIndia;
                 filter_1 = {
                     filter_key : 'allIndia',
@@ -210,9 +257,9 @@ let getDeepDivePageData = async (req, res) =>{
                     }
                 }else{
                     if (filter_1['filter_data'] === 'allIndia') {
-                        channel_query_rt = `select sum([Retailing]) as Retailing_Sum, [Date] from [datahub].[totalSalesCombinedExt] where [Date] in (${calendar_month_cy}) and Division in ('N-E', 'S-W') and [channel_name] = ${channel} group by [Date] order by [Date]`
+                        channel_query_rt = `select sum([Retailing]) as Retailing_Sum, [Date] from [datahub].[totalSalesCombinedExt] where [Date] in (${calendar_month_cy}) and Division in ('N-E', 'S-W') and [channel_name] in (${channel}) group by [Date] order by [Date]`
                     } else {
-                        channel_query_rt = `select sum([Retailing]) as Retailing_Sum, [Date] from [datahub].[totalSalesCombinedExt] where [Date] in (${calendar_month_cy}) and [${filter_1['filter_key']}] = '${filter_1['filter_data']}' and [channel_name] = ${channel} group by [Date] order by [Date]`
+                        channel_query_rt = `select sum([Retailing]) as Retailing_Sum, [Date] from [datahub].[totalSalesCombinedExt] where [Date] in (${calendar_month_cy}) and [${filter_1['filter_key']}] = '${filter_1['filter_data']}' and [channel_name] in (${channel}) group by [Date] order by [Date]`
                     }
                 }
 
@@ -225,23 +272,26 @@ let getDeepDivePageData = async (req, res) =>{
                     }
                 }else {
                     if (filter_1['filter_data'] === 'allIndia') {
-                        channel_query_rt = `select sum([Retailing]) as Retailing_Sum, [Date] from [datahub].[totalSalesCombinedExt] where [Date] in (${calendar_month_cy}) and Division in ('N-E', 'S-W') and [${filter_2['filter_key']}] = '${filter_2['filter_data']}' and [channel_name] = ${channel} group by [Date] order by [Date]`
+                        channel_query_rt = `select sum([Retailing]) as Retailing_Sum, [Date] from [datahub].[totalSalesCombinedExt] where [Date] in (${calendar_month_cy}) and Division in ('N-E', 'S-W') and [${filter_2['filter_key']}] = '${filter_2['filter_data']}' and [channel_name] in (${channel}) group by [Date] order by [Date]`
                     } else {
-                        channel_query_rt = `select sum([Retailing]) as Retailing_Sum, [Date] from [datahub].[totalSalesCombinedExt] where [Date] in (${calendar_month_cy}) and [${filter_1['filter_key']}] = '${filter_1['filter_data']}' and [${filter_2['filter_key']}] = '${filter_2['filter_data']}' and [channel_name] = ${channel} group by [Date] order by [Date]`
+                        channel_query_rt = `select sum([Retailing]) as Retailing_Sum, [Date] from [datahub].[totalSalesCombinedExt] where [Date] in (${calendar_month_cy}) and [${filter_1['filter_key']}] = '${filter_1['filter_data']}' and [${filter_2['filter_key']}] = '${filter_2['filter_data']}' and [channel_name] in (${channel}) group by [Date] order by [Date]`
                     }
                 }
 
             }
             // console.time("Data Fetching")
 
-            let categories_data_rt = await sequelize.query(channel_query_rt)
+            // let categories_data_rt = await sequelize.query(channel_query_rt)
+            let connection = await getConnection()
+            let categories_data_rt = await getQueryData(connection, channel_query_rt)
             // console.timeEnd("Data Fetching")
 
-            mergedArr = categories_data_rt[0]
-            if(mergedArr.length<=0){
-                res.status(400).send({successful: false, message: "DB do not have data for this filter"})
-                return 0
-            }
+            mergedArr = categories_data_rt
+            // mergedArr = categories_data_rt[0]
+            // if(mergedArr.length<=0){
+            //     res.status(400).send({successful: false, message: "DB do not have data for this filter"})
+            //     return 0
+            // }
             let P3M = getPNMListDayLevel(date.split("-")[1], date.split("-")[0], 3, 'list')
             let processed_list = P3M.map(date => {
                 date = date.split("-");
@@ -252,12 +302,13 @@ let getDeepDivePageData = async (req, res) =>{
             for (let current_month in processed_list){
                 let monthList = []
                 for (let i in mergedArr) {
+                    mergedArr[i]['Date'] = convertDateString(mergedArr[i]['Date'])
                     if ((mergedArr[i]['Date']).includes(processed_list[current_month])){
                         let date = (mergedArr[i]['Date']).split("-")
                         date = date[2]
                         let obj = {
                             'date':  date,
-                            'retailing': mergedArr[i]['Retailing_Sum']  ? mergedArr[i]['Retailing_Sum'] : 0
+                            'retailing': mergedArr[i]['Retailing_Sum']  ? getFormatedNumberValue_RT(mergedArr[i]['Retailing_Sum']) : 0
                         }
                         monthList.push(obj)
                     }
@@ -268,7 +319,7 @@ let getDeepDivePageData = async (req, res) =>{
                     "month": month,
                     "filter_key1": filter_1['filter_data'],
                     "filter_key2": filter_2['filter_data'],
-                    "channel": channel_list.map(item => item).join("/"),
+                    "channel": channel_list,
                     "data": monthList
                 }
                 final_data.push(obj)
@@ -276,9 +327,91 @@ let getDeepDivePageData = async (req, res) =>{
             all_result.push(final_data)
 
         }
-        res.status(200).json(all_result);
+        return (all_result);
     } catch (e) {
         console.log('error',e)
+        return "Internal Server Error"
+    }
+}
+
+let getDeepDivePageData = async (req, res) => {
+    try {
+        let time_to_live = 7*24*60*60*1000 // Time in milliseconds for 7 days
+        let cacheKey = 'retailingDayLevelData'
+        let final_result = []
+        // let cacheDataCheck = false
+        if(cache.get(cacheKey)){
+            let cacheData = cache.get(cacheKey)
+            let nonMatchedIndex = []
+            let matchedDataList = []
+            for(let k in cacheData){
+                let cachebodyData = cacheData[k]['reqBody']
+                let curReq = req.body
+                if (Array.isArray(curReq)){
+                    for(let i=0; i<curReq.length; i++){
+                        let matched = false
+                        for(let n = 0; n<cachebodyData.length; n++){
+                            if (deepEqual(cachebodyData[n], curReq[i])) {
+                                if((cachebodyData[n]['channel'].map(item => `'${item}'`).join(", ")) === (curReq[i]['channel'].map(item => `'${item}'`).join(", "))){
+                                    cacheData[k]['resData'][n][0]['id'] = uuidv4()
+                                    matchedDataList.push(cacheData[k]['resData'][n])
+                                    matched = true
+                                    console.log("Data fetched from cache")
+                                }
+                            }
+                        }
+                        if(!matched){
+                            nonMatchedIndex.push(curReq[i])
+                        }
+                    }
+                }
+                else{
+                    console.log("No data in Cache")
+                }
+            }
+
+            let finalData = await getTableData(nonMatchedIndex)
+            for(let i in nonMatchedIndex){
+                if(finalData.length>0){
+                    finalData[i][0]['id'] = uuidv4()
+                    matchedDataList.push(finalData[i])
+                    cacheData[0]['reqBody'].push(nonMatchedIndex[i])
+                    cacheData[0]['resData'].push(finalData[i])
+                    console.log("Putting data into cache2")
+                }else{
+                    console.log("There is no data for this query");
+                }
+            }
+            let checkDublicate = {}
+            for(let i in matchedDataList){
+                let key = matchedDataList[i][0]['id']
+                checkDublicate[key] = matchedDataList[i]
+            }
+            let nonDulbicateList = []
+            for(let i in checkDublicate){
+                nonDulbicateList.push(checkDublicate[i])
+            }
+            res.status(200).json(nonDulbicateList);
+        }
+        else {
+            console.log("Data not found into Cache")
+            final_result = await getTableData(req.body)
+            if(final_result.length>0){
+                let obj ={
+                    'reqBody': req.body,
+                    'resData': final_result
+                }
+                cache.put(cacheKey, [obj], time_to_live);
+                console.log("Putting data into cache");
+                // console.log(cache.get(cacheKey))
+            }else{
+                console.log("There is no data for this query");
+            }
+            res.status(200).json(final_result);
+        }
+
+    } catch (e) {
+        console.log('error', e)
         res.status(500).send({successful: false, error: 'An internal server error occurred.'})
     }
 }

@@ -55,15 +55,15 @@ class RetailingCustomHeaderTitle extends StatelessWidget {
             children: [
               TextHeaderWidget(
                 title: dataList[selectedIndexLocation]
-                [0]['data'][0][
+                [0][
                 'filter_key'] ==
-                    'All India' || dataList[selectedIndexLocation][0]['data'][0]['filter_key'] ==
+                    'All India' || dataList[selectedIndexLocation][0]['filter_key'] ==
                     'allIndia'
                     ? 'Country Name'
-                    : dataList[selectedIndexLocation][0]['data'][0]['filter_key'] ==
+                    : dataList[selectedIndexLocation][0]['filter_key'] ==
                     'N-E'
                     ? 'Division Name'
-                    : dataList[selectedIndexLocation][0]['data'][0]['filter_key'] ==
+                    : dataList[selectedIndexLocation][0]['filter_key'] ==
                     'S-W'
                     ? 'Division Name'
                     : 'Cluster Name',

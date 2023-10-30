@@ -1,7 +1,6 @@
 import 'package:command_centre/activities/business_screen.dart';
 import 'package:command_centre/activities/home_screen.dart';
 import 'package:command_centre/activities/intro_screen.dart';
-import 'package:command_centre/activities/login/fedauth_login.dart';
 import 'package:command_centre/activities/login_screen.dart';
 import 'package:command_centre/activities/marketvisit_screen.dart';
 import 'package:command_centre/activities/purpose_screen.dart';
@@ -19,8 +18,8 @@ class Routes{
         return MaterialPageRoute(builder: (BuildContext context)=> IntroScreen());
       case RoutesName.login:
         return MaterialPageRoute(builder: (BuildContext context)=> LoginScreen());
-      case RoutesName.pglogin:
-        return MaterialPageRoute(builder: (BuildContext context)=> FedAuthLoginPage());
+      // case RoutesName.pglogin:
+      //   return MaterialPageRoute(builder: (BuildContext context)=> FedAuthLoginPage());
       case RoutesName.purpose:
         return MaterialPageRoute(builder: (BuildContext context)=> PurposeScreen(isBool: false,));
       case RoutesName.business:

@@ -27,10 +27,10 @@ class _FBTableDataAllCategoryState extends State<FBTableDataAllCategory> {
   @override
   Widget build(BuildContext context) {
     final sheetProvider = Provider.of<SheetProvider>(context);
-    return FutureBuilder(
-        future: getTableCoverageSummary(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
+    // return FutureBuilder(
+    //     future: getTableCoverageSummary(),
+    //     builder: (context, snapshot) {
+    //       if (snapshot.hasData) {
             return SingleChildScrollView(
               child: Column(
                 children: [
@@ -68,7 +68,7 @@ class _FBTableDataAllCategoryState extends State<FBTableDataAllCategory> {
                                 padding: const EdgeInsets.only(
                                     left: 10.0, top: 5, bottom: 5, right: 5),
                                 child: SizedBox(
-                                  height: 20,
+                                  height: 40,
                                   child: Row(
                                     children: [
                                       TextHeaderWidgetWithIcon(
@@ -286,7 +286,7 @@ class _FBTableDataAllCategoryState extends State<FBTableDataAllCategory> {
                                                       ? MyColors.dark500
                                                       : MyColors.dark400,
                                                   title: SizedBox(
-                                                    height: 20,
+                                                    height: 40,
                                                     child: Row(
                                                       // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                       children: [
@@ -540,7 +540,7 @@ class _FBTableDataAllCategoryState extends State<FBTableDataAllCategory> {
                                                                       title:
                                                                       SizedBox(
                                                                         height:
-                                                                        20,
+                                                                        40,
                                                                         child:
                                                                         Row(
                                                                           children: [
@@ -693,9 +693,9 @@ class _FBTableDataAllCategoryState extends State<FBTableDataAllCategory> {
                 ],
               ),
             );
-          } else {
-            return const Center(child: CircularProgressIndicator());
-          }
-        });
+        //   } else {
+        //     return const Center(child: CircularProgressIndicator());
+        //   }
+        // });
   }
 }

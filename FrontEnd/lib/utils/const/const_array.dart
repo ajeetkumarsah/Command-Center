@@ -522,4 +522,24 @@ class ConstArray {
     "South-West",
     "North-East"
   ];
+
+  List<dynamic> categoryNewList = [
+    "South-West1",
+    "North-East1"
+  ];
+
+  List<dynamic> brandNewList = [
+    "South-West2",
+    "North-East2"
+  ];
+
+  List<dynamic> brandformNewList = [
+    "South-West3",
+    "North-East3"
+  ];
+
+  List<dynamic> subBFNewList = [
+    "South-West4",
+    "North-East4"
+  ];
 }

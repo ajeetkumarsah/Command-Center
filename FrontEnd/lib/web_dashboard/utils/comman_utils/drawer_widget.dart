@@ -89,11 +89,11 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                 child: ListView.separated(
                     separatorBuilder: (context, index) => index == 6
                         ? const Padding(
-                            padding: EdgeInsets.only(
-                                top: 20, bottom: 20, left: 10, right: 10),
-                            child: Divider(
-                                height: 1, color: MyColors.deselectColor),
-                          )
+                      padding: EdgeInsets.only(
+                          top: 20, bottom: 20, left: 10, right: 10),
+                      child: Divider(
+                          height: 1, color: MyColors.deselectColor),
+                    )
                         : Container(),
                     itemCount: arrayDrawer.length,
                     itemBuilder: (BuildContext context, index) {
@@ -104,34 +104,34 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                             selectedIndex = index;
                             selectedIndex == 0
                                 ? Navigator.of(context)
-                                    .pushNamed('/summaryContainer')
+                                .pushNamed('/summary')
                                 : selectedIndex == 1
-                                    ? Navigator.of(context)
-                                        .pushNamed('/retailingContainer')
-                                    : selectedIndex == 2
-                                        ? Navigator.of(context)
-                                            .pushNamed('/cndContainer')
-                                        : selectedIndex == 3
-                                            ? Navigator.of(context)
-                                                .pushNamed('/gpContainer')
-                                            : selectedIndex == 4
-                                                ? Navigator.of(context)
-                                                    .pushNamed('/fbContainer')
-                                                : selectedIndex == 5
-                                                    ? Navigator.of(context)
-                                                        .pushNamed(
-                                                            '/ccContainer')
-                                                    : selectedIndex == 5
-                                                        ? Navigator.of(context)
-                                                            .pushNamed(
-                                                                '/ccContainer')
-                                                        : selectedIndex == 7
-                                                            ? _showLogoutPopup(
-                                                                context)
-                                                            : Navigator.of(
-                                                                    context)
-                                                                .pushNamed(
-                                                                    '/commonContainer');
+                                ? Navigator.of(context)
+                                .pushNamed('/retailingsummary')
+                                : selectedIndex == 2
+                                ? Navigator.of(context)
+                                .pushNamed('/cndsummary')
+                                : selectedIndex == 3
+                                ? Navigator.of(context)
+                                .pushNamed('/gpsummary')
+                                : selectedIndex == 4
+                                ? Navigator.of(context)
+                                .pushNamed('/fbsummary')
+                                : selectedIndex == 5
+                                ? Navigator.of(context)
+                                .pushNamed(
+                                '/ccsummary')
+                                : selectedIndex == 5
+                                ? Navigator.of(context)
+                                .pushNamed(
+                                '/ccsummary')
+                                : selectedIndex == 7
+                                ? _showLogoutPopup(
+                                context)
+                                : Navigator.of(
+                                context)
+                                .pushNamed(
+                                '/commonsummary');
                           });
                         },
                         child: Padding(
@@ -156,8 +156,8 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                                             color: selectedIndex == index
                                                 ? MyColors.whiteColor
                                                 : arrayDrawer[index] == "Logout"
-                                                    ? Colors.red
-                                                    : MyColors.textColor),
+                                                ? Colors.red
+                                                : MyColors.textColor),
                                       ),
                                     ))),
                           ),
@@ -186,3 +186,4 @@ class RoutePaths {
   static const String about = '/about';
   static const String contact = '/contact';
 }
+

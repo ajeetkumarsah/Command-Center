@@ -1,4 +1,5 @@
-const {sequelize} = require('../../databaseConnection/sql_connection');
+// const {sequelize} = require('../../databaseConnection/sql_connection');
+const {getConnection, getQueryData} = require('../../databaseConnection/dbConnection');
 
 let getSummaryPageData = async (req, res) =>{
     try {
@@ -44,13 +45,14 @@ let getSummaryPageData = async (req, res) =>{
             // let cc_new_query_previous_year_all_india = `select sum([Calls Made]) as calls_made_sum, sum([Target Calls]) as target_calls_sum from [dbo].[tbl_command_center_cc_calculation] where [Calendar Month] = '${previous_year_cc}' and [Division] not in ('')`
 
         }
-
-        let cc_achieved_current_year = await sequelize.query(cc_new_query_current_year)
+        let connection = await getConnection()
+        let cc_achieved_current_year = await getQueryData(connection, cc_new_query_current_year)
+        // let cc_achieved_current_year = await sequelize.query(cc_new_query_current_year)
 
         let cc_target_current_year = 1
-        if(cc_achieved_current_year[0][0] !== undefined){
-            cc_target_current_year = cc_achieved_current_year[0][0]['target_calls_sum']
-            cc_achieved_current_year = cc_achieved_current_year[0][0]['calls_made_sum']
+        if(cc_achieved_current_year[0] !== undefined && cc_achieved_current_year[0]['target_calls_sum'] !== null){
+            cc_target_current_year = cc_achieved_current_year[0]['target_calls_sum']
+            cc_achieved_current_year = cc_achieved_current_year[0]['calls_made_sum']
         }else{
             cc_achieved_current_year = 0
         }
@@ -66,10 +68,13 @@ let getSummaryPageData = async (req, res) =>{
         // }
 
         let cc_target_previous_year = 1
-        let cc_achieved_previous_year = await sequelize.query(cc_new_query_previous_year)
-        if(cc_achieved_previous_year[0][0] !== undefined){
-            cc_target_previous_year = cc_achieved_previous_year[0][0]['target_calls_sum']
-            cc_achieved_previous_year = cc_achieved_previous_year[0][0]['calls_made_sum']
+        connection = await getConnection()
+        let cc_achieved_previous_year = await getQueryData(connection, cc_new_query_previous_year)
+        // let cc_achieved_previous_year = await sequelize.query(cc_new_query_previous_year)
+        // let cc_achieved_previous_year = await sequelize.query(cc_new_query_previous_year)
+        if(cc_achieved_previous_year[0] !== undefined && cc_achieved_previous_year[0]['target_calls_sum'] !== null){
+            cc_target_previous_year = cc_achieved_previous_year[0]['target_calls_sum']
+            cc_achieved_previous_year = cc_achieved_previous_year[0]['calls_made_sum']
         }else{
             cc_achieved_previous_year = 1
         }

@@ -1,5 +1,27 @@
-const {sequelize} = require('../databaseConnection/sql_connection');
+// const {sequelize} = require('../databaseConnection/sql_connection');
+const {getConnection, getQueryData} = require('../databaseConnection/dbConnection');
 // const {sequelize2} = require('../databaseConnection/sql_connection2');
+
+function getPNMListRt(current_year, current_month, no_of_months, required_type){
+    let pNm = []
+    pNm.push(getMonthDigit(current_month)+current_year)
+    for(let i=0; i<no_of_months-1; i++){
+        let previous_month = getPreviousMonth(current_month)
+        if(current_month === "Jan"){
+            current_year = parseInt(current_year) - 1
+            current_month = previous_month
+            pNm.push(getMonthDigit(current_month)+current_year)
+        }else {
+            current_month = previous_month
+            pNm.push(getMonthDigit(current_month)+current_year)
+        }
+    }
+    if(required_type === 'string'){
+        return pNm.map(item => `'${item}'`).join(", ")
+    }else{
+        return pNm
+    }
+}
 
 function getMonthDigit(month) {
     const monthMap = {
@@ -67,9 +89,11 @@ async function getRetailingData(req, res){
     let fy_list_py = getFinancialYearList((parseInt(current_month)-1), parseInt(current_year)-1)
 
     let today_sales_query = `select [Retailing] as Retailing_sum FROM [dbo].[tbl_cc_reatailing_day_level_calculation] where ${day_level_filter_key} = '${filter_data}' and [Date] = '${today_date}'`
-    let today_sales = await sequelize.query(today_sales_query)
-    if(today_sales[0][0]!==undefined){
-        today_sales = today_sales[0][0]['Retailing_sum']
+    let connection = await getConnection()
+    let today_sales = await getQueryData(connection, today_sales_query)
+    // let today_sales = await sequelize.query(today_sales_query)
+    if(today_sales[0]!==undefined){
+        today_sales = today_sales[0]['Retailing_sum']
     }else{
         today_sales = 0
     }
@@ -88,27 +112,49 @@ async function getRetailingData(req, res){
     let p12_sales_query_pm = `select [Retailing] as Retailing_sum FROM [dbo].[tbl_command_center_retailing_calculation] where [Calendar Month] IN (${p12m_list_pm}) and ${filter_key} = '${filter_data}'`
     let fy_sales_query_py = `select [Retailing] as Retailing_sum FROM [dbo].[tbl_command_center_retailing_calculation] where [Calendar Month] IN (${fy_list_py}) and ${filter_key} = '${filter_data}'`
 
-    let m_sales_cm = await sequelize.query(month_sales_query)
-    let p1m_sales_cm = await sequelize.query(p1_sales_query_cm)
-    let p3m_sales_cm = await sequelize.query(p3_sales_query_cm)
-    let p6m_sales_cm = await sequelize.query(p6_sales_query_cm)
-    let p12m_sales_cm = await sequelize.query(p12_sales_query_cm)
-    let fy_sales_cy = await sequelize.query(fy_sales_query_cy)
+    connection = await getConnection()
+    let m_sales_cm = await getQueryData(connection, month_sales_query)
+    // let m_sales_cm = await sequelize.query(month_sales_query)
+    connection = await getConnection()
+    let p1m_sales_cm = await getQueryData(connection, p1_sales_query_cm)
+    // let p1m_sales_cm = await sequelize.query(p1_sales_query_cm)
+    connection = await getConnection()
+    let p3m_sales_cm = await getQueryData(connection, p3_sales_query_cm)
+    // let p3m_sales_cm = await sequelize.query(p3_sales_query_cm)
+    connection = await getConnection()
+    let p6m_sales_cm = await getQueryData(connection, p6_sales_query_cm)
+    // let p6m_sales_cm = await sequelize.query(p6_sales_query_cm)
+    connection = await getConnection()
+    let p12m_sales_cm = await getQueryData(connection, p12_sales_query_cm)
+    // let p12m_sales_cm = await sequelize.query(p12_sales_query_cm)
+    connection = await getConnection()
+    let fy_sales_cy = await getQueryData(connection, fy_sales_query_cy)
+    // let fy_sales_cy = await sequelize.query(fy_sales_query_cy)
 
-    let p1m_sales_pm = await sequelize.query(p1_sales_query_pm)
-    let p3m_sales_pm = await sequelize.query(p3_sales_query_pm)
-    let p6m_sales_pm = await sequelize.query(p6_sales_query_pm)
-    let p12m_sales_pm = await sequelize.query(p12_sales_query_pm)
-    let fy_sales_py = await sequelize.query(fy_sales_query_py)
+    connection = await getConnection()
+    let p1m_sales_pm = await getQueryData(connection, p1_sales_query_pm)
+    // let p1m_sales_pm = await sequelize.query(p1_sales_query_pm)
+    connection = await getConnection()
+    let p3m_sales_pm = await getQueryData(connection, p3_sales_query_pm)
+    // let p3m_sales_pm = await sequelize.query(p3_sales_query_pm)
+    connection = await getConnection()
+    let p6m_sales_pm = await getQueryData(connection, p6_sales_query_pm)
+    // let p6m_sales_pm = await sequelize.query(p6_sales_query_pm)
+    connection = await getConnection()
+    let p12m_sales_pm = await getQueryData(connection, p12_sales_query_pm)
+    // let p12m_sales_pm = await sequelize.query(p12_sales_query_pm)
+    connection = await getConnection()
+    let fy_sales_py = await getQueryData(connection, fy_sales_query_py)
+    // let fy_sales_py = await sequelize.query(fy_sales_query_py)
 
     let total_sales_m_cm = 0
-    if(m_sales_cm[0][0]!==undefined){
-        total_sales_m_cm = m_sales_cm[0][0]['Retailing_sum']
+    if(m_sales_cm[0]!==undefined){
+        total_sales_m_cm = m_sales_cm[0]['Retailing_sum']
     }
 
     let total_sales_p1m_cm = 0
-    if(p1m_sales_cm[0][0]!==undefined){
-        total_sales_p1m_cm = p1m_sales_cm[0][0]['Retailing_sum']
+    if(p1m_sales_cm[0]!==undefined){
+        total_sales_p1m_cm = p1m_sales_cm[0]['Retailing_sum']
     }
 
     let total_sales_p3m_cm = 0
@@ -124,34 +170,34 @@ async function getRetailingData(req, res){
     let total_sales_fy_py = 1
 
 
-    for(let i in p3m_sales_cm[0]){
-        total_sales_p3m_cm +=p3m_sales_cm[0][i]['Retailing_sum']
+    for(let i in p3m_sales_cm){
+        total_sales_p3m_cm +=p3m_sales_cm[i]['Retailing_sum']
     }
-    for(let i in p6m_sales_cm[0]){
-        total_sales_p6m_cm +=p6m_sales_cm[0][i]['Retailing_sum']
+    for(let i in p6m_sales_cm){
+        total_sales_p6m_cm +=p6m_sales_cm[i]['Retailing_sum']
     }
-    for(let i in p12m_sales_cm[0]){
-        total_sales_p12m_cm +=p12m_sales_cm[0][i]['Retailing_sum']
+    for(let i in p12m_sales_cm){
+        total_sales_p12m_cm +=p12m_sales_cm[i]['Retailing_sum']
     }
-    for(let i in fy_sales_cy[0]){
-        total_sales_fy_cy +=fy_sales_cy[0][i]['Retailing_sum']
+    for(let i in fy_sales_cy){
+        total_sales_fy_cy +=fy_sales_cy[i]['Retailing_sum']
     }
 
 
-    for(let i in p1m_sales_pm[0]){
-        total_sales_p1m_pm +=p1m_sales_pm[0][i]['Retailing_sum']
+    for(let i in p1m_sales_pm){
+        total_sales_p1m_pm +=p1m_sales_pm[i]['Retailing_sum']
     }
-    for(let i in p3m_sales_pm[0]){
-        total_sales_p3m_pm +=p3m_sales_pm[0][i]['Retailing_sum']
+    for(let i in p3m_sales_pm){
+        total_sales_p3m_pm +=p3m_sales_pm[i]['Retailing_sum']
     }
-    for(let i in p6m_sales_pm[0]){
-        total_sales_p6m_pm +=p6m_sales_pm[0][i]['Retailing_sum']
+    for(let i in p6m_sales_pm){
+        total_sales_p6m_pm +=p6m_sales_pm[i]['Retailing_sum']
     }
-    for(let i in p12m_sales_pm[0]){
-        total_sales_p12m_pm +=p12m_sales_pm[0][i]['Retailing_sum']
+    for(let i in p12m_sales_pm){
+        total_sales_p12m_pm +=p12m_sales_pm[i]['Retailing_sum']
     }
-    for(let i in fy_sales_py[0]){
-        total_sales_fy_py +=fy_sales_py[0][i]['Retailing_sum']
+    for(let i in fy_sales_py){
+        total_sales_fy_py +=fy_sales_py[i]['Retailing_sum']
     }
 
     let p1m_iya = (total_sales_p1m_cm/total_sales_p1m_pm) * 100
@@ -220,7 +266,9 @@ async function getGoldenPointsSummaryData(){
 
 let getTableData = async (req, res) =>{
     try {
-        let data = await sequelize.query(`select [Golden Points Target] FROM [dbo].[tbl_command_center_gp_calculation] where [Cluster] = 'HR'`)
+        let connection = await getConnection()
+        let data = await getQueryData(connection, `select [Golden Points Target] FROM [dbo].[tbl_command_center_gp_calculation] where [Cluster] = 'HR'`)
+        // let data = await sequelize.query(`select [Golden Points Target] FROM [dbo].[tbl_command_center_gp_calculation] where [Cluster] = 'HR'`)
         res.status(200).send({successful: true, data: data})
     }catch (e){
         console.log('error',e)
@@ -295,6 +343,29 @@ function getPreviousMonth(currentMonth) {
     return previousMonth;
 }
 
+function getRTQuery(filter_key, filter_data, current_year_rt, previous_year_rt){
+
+    let new_rt_query_current_month
+    let new_rt_query_current_month_all_india
+    let new_rt_query_previous_month
+    let rt_filter_key = filter_key
+    let rt_filter_data = filter_data
+    if(rt_filter_key==="Site Name"){rt_filter_key="SiteName"}
+    if(rt_filter_key==="Branch Name"){rt_filter_key="BranchName"}
+
+    if(filter_key==="allIndia"){
+        new_rt_query_current_month = `select sum([Retailing]) as Retailing_Sum from [dbo].[tbl_command_center_rt_Division_cluster_site] where [MonthYear] = ${current_year_rt} and [Division] in ('N-E', 'S-W') `
+        new_rt_query_current_month_all_india = `select sum([Retailing]) as Retailing_Sum from [dbo].[tbl_command_center_rt_Division_cluster_site] where [MonthYear] = ${current_year_rt} and [Division] in ('N-E', 'S-W') `
+        new_rt_query_previous_month = `select sum([Retailing]) as Retailing_Sum from [dbo].[tbl_command_center_rt_Division_cluster_site] where [MonthYear] = ${previous_year_rt} and [Division] in ('N-E', 'S-W') `
+    }else {
+        new_rt_query_current_month = `select [Retailing] as Retailing_Sum from [dbo].[tbl_command_center_rt_Division_cluster_site] where [${rt_filter_key}] = '${rt_filter_data}' and [MonthYear] = ${current_year_rt}`
+        new_rt_query_current_month_all_india = `select sum([Retailing]) as Retailing_Sum from [dbo].[tbl_command_center_rt_Division_cluster_site] where [MonthYear] = ${current_year_rt} and [Division] in ('N-E', 'S-W') `
+        new_rt_query_previous_month = `select [Retailing] as Retailing_Sum from [dbo].[tbl_command_center_rt_Division_cluster_site] where [${rt_filter_key}] = '${rt_filter_data}' and [MonthYear] = ${previous_year_rt}`
+    }
+
+    return [new_rt_query_current_month, new_rt_query_current_month_all_india, new_rt_query_previous_month]
+}
+
 let getHomePageData = async (req, res) =>{
     try {
         let date = req.query.date;
@@ -312,38 +383,44 @@ let getHomePageData = async (req, res) =>{
 
         // ______________________________Retailing Data___________________________________
 
-        let current_year_rt = `CY${date.split("-")[1]}-${date.split("-")[0]}`
+        let current_year_rt = getPNMListRt(date.split("-")[1], date.split("-")[0], 1, 'string')
+        let previous_year_rt = getPNMListRt((date.split("-")[1])-1, date.split("-")[0], 1, 'string')
+
+        // let current_year_rt = `CY${date.split("-")[1]}-${date.split("-")[0]}`
         if(filter_key==="site"){filter_key="Site Name"}
         if(filter_key==="branch"){filter_key="Branch Name"}
-        let previous_year_rt = `CY${parseInt(date.split("-")[1])-1}-${date.split("-")[0]}`
+        if(filter_data==="North-East"){filter_data="N-E"}
+        if(filter_data==="South-West"){filter_data="S-W"}
+        // let previous_year_rt = `CY${parseInt(date.split("-")[1])-1}-${date.split("-")[0]}`
         let new_rt_query_current_month
         let new_rt_query_current_month_all_india
         let new_rt_query_previous_month
 
-        if(filter_key==="allIndia"){
-            new_rt_query_current_month = `select sum([Retailing]) as Retailing_Sum from [dbo].[tbl_command_center_retailing_calculation] where [Calendar Month] = '${current_year_rt}' and [Division] in ('North-East', 'South-West') `
-            new_rt_query_current_month_all_india = `select sum([Retailing]) as Retailing_Sum from [dbo].[tbl_command_center_retailing_calculation] where [Calendar Month] = '${current_year_rt}' and [Division] in ('North-East', 'South-West') `
-            new_rt_query_previous_month = `select sum([Retailing]) as Retailing_Sum from [dbo].[tbl_command_center_retailing_calculation] where [Calendar Month] = '${previous_year_rt}' and [Division] in ('North-East', 'South-West') `
-        }else {
-            new_rt_query_current_month = `select [Retailing] as Retailing_Sum from [dbo].[tbl_command_center_retailing_calculation] where [${filter_key}] = '${filter_data}' and [Calendar Month] = '${current_year_rt}'`
-            new_rt_query_current_month_all_india = `select sum([Retailing]) as Retailing_Sum from [dbo].[tbl_command_center_retailing_calculation] where [Calendar Month] = '${current_year_rt}' and [Division] in ('North-East', 'South-West') `
-            new_rt_query_previous_month = `select [Retailing] as Retailing_Sum from [dbo].[tbl_command_center_retailing_calculation] where [${filter_key}] = '${filter_data}' and [Calendar Month] = '${previous_year_rt}'`
-        }
+        let query_data  = getRTQuery(filter_key, filter_data, current_year_rt, previous_year_rt)
+        new_rt_query_current_month = query_data[0]
+        new_rt_query_current_month_all_india = query_data[1]
+        new_rt_query_previous_month = query_data[2]
 
-        let rt_data_current_month = await sequelize.query(new_rt_query_current_month)
-        let rt_data_current_month_all_india = await sequelize.query(new_rt_query_current_month_all_india)
-        let rt_data_previous_month = await sequelize.query(new_rt_query_previous_month)
+        let connection = await getConnection()
+        let rt_data_current_month = await getQueryData(connection, new_rt_query_current_month)
+        // let rt_data_current_month = await sequelize.query(new_rt_query_current_month)
+        connection = await getConnection()
+        let rt_data_current_month_all_india = await getQueryData(connection, new_rt_query_current_month_all_india)
+        // let rt_data_current_month_all_india = await sequelize.query(new_rt_query_current_month_all_india)
+        connection = await getConnection()
+        let rt_data_previous_month = await getQueryData(connection, new_rt_query_previous_month)
+        // let rt_data_previous_month = await sequelize.query(new_rt_query_previous_month)
         let retailing_sum_current_month = 0
         let retailing_sum_current_month_all_india = 1
         let retailing_sum_previous_month = 1
-        if(rt_data_current_month[0][0] !== undefined){
-            retailing_sum_current_month = rt_data_current_month[0][0]['Retailing_Sum']
+        if(rt_data_current_month[0] !== undefined){
+            retailing_sum_current_month = rt_data_current_month[0]['Retailing_Sum']
         }
-        if(rt_data_current_month_all_india[0][0] !== undefined){
-            retailing_sum_current_month_all_india = rt_data_current_month_all_india[0][0]['Retailing_Sum']
+        if(rt_data_current_month_all_india[0] !== undefined){
+            retailing_sum_current_month_all_india = rt_data_current_month_all_india[0]['Retailing_Sum']
         }
-        if(rt_data_previous_month[0][0] !== undefined){
-            retailing_sum_previous_month = rt_data_previous_month[0][0]['Retailing_Sum']
+        if(rt_data_previous_month[0] !== undefined){
+            retailing_sum_previous_month = rt_data_previous_month[0]['Retailing_Sum']
         }
 
         if(retailing_sum_current_month_all_india === 0){
@@ -362,18 +439,20 @@ let getHomePageData = async (req, res) =>{
         if(filter_key==="branch"){filter_key="Branch Name"}
         let new_fb_query
         if(filter_key==="allIndia"){
-            new_fb_query = `select sum([FB Points achieved]) as fb_achieved_sum , sum([FB Target]) as fb_target_sum FROM [dbo].[tbl_command_center_fb_new] where [Division] in ('N-E', 'S-W')and [Calendar Month] = '${current_year_fb}'`
+            new_fb_query = `select sum([FB Points achieved]) as fb_achieved_sum , sum([FB Target]) as fb_target_sum FROM [dbo].[tbl_command_center_fb_new2] where [Division] in ('N-E', 'S-W')and [Calendar Month] = '${current_year_fb}'`
         }else {
-            new_fb_query = `select sum([FB Points achieved]) as fb_achieved_sum , sum([FB Target]) as fb_target_sum FROM [dbo].[tbl_command_center_fb_new] where [${filter_key}] = '${filter_data}' and [Calendar Month] = '${current_year_fb}'`
+            new_fb_query = `select sum([FB Points achieved]) as fb_achieved_sum , sum([FB Target]) as fb_target_sum FROM [dbo].[tbl_command_center_fb_new2] where [${filter_key}] = '${filter_data}' and [Calendar Month] = '${current_year_fb}'`
         }
 
 
-        let fb_data = await sequelize.query(new_fb_query)
+        connection = await getConnection()
+        let fb_data = await getQueryData(connection, new_fb_query)
+        // let fb_data = await sequelize.query(new_fb_query)
         let fb_achieved_current_year = 0
         let fb_target_current_year = 1
-        if(fb_data[0][0] !== undefined){
-            fb_achieved_current_year = fb_data[0][0]['fb_achieved_sum']
-            fb_target_current_year = fb_data[0][0]['fb_target_sum']
+        if(fb_data[0] !== undefined){
+            fb_achieved_current_year = fb_data[0]['fb_achieved_sum']
+            fb_target_current_year = fb_data[0]['fb_target_sum']
         }
 
         let fb_iya = (fb_achieved_current_year / fb_target_current_year) * 100
@@ -390,31 +469,35 @@ let getHomePageData = async (req, res) =>{
         let gp_new_query_previous_year
 
         if(filter_key==="allIndia"){
-            gp_new_query_current_year = `select sum([Golden Points Gap Filled - P3M]) as gp_gf_sum , sum([Golden Points Target]) as gp_target_sum from [dbo].[tbl_command_center_gp_calculation] where [Division] not in  ('') and [Calender Year] like '${current_year_gp}' and ChannelName is NULL`
-            gp_new_query_previous_year = `select sum([Golden Points Gap Filled - P3M]) as gp_gf_sum , sum([Golden Points Target]) as gp_target_sum from [dbo].[tbl_command_center_gp_calculation] where [Division] not in  ('') and [Calender Year] like '${previous_year_gp}' and ChannelName is NULL`
+            gp_new_query_current_year = `select sum([Golden Points Gap Filled - P3M]) as gp_gf_sum , sum([Golden Points Target]) as gp_target_sum from [dbo].[tbl_command_center_gp_new2] where [Division] in  ('N-E', 'S-W') and [Calendar Month] like '${current_year_gp}'`
+            gp_new_query_previous_year = `select sum([Golden Points Gap Filled - P3M]) as gp_gf_sum , sum([Golden Points Target]) as gp_target_sum from [dbo].[tbl_command_center_gp_new2] where [Division] in  ('N-E', 'S-W') and [Calendar Month] like '${previous_year_gp}'`
         }else{
-            gp_new_query_current_year = `select sum([Golden Points Gap Filled - P3M]) as gp_gf_sum , sum([Golden Points Target]) as gp_target_sum from [dbo].[tbl_command_center_gp_calculation] where [${filter_key}] = '${filter_data}' and [Calender Year] like '${current_year_gp}' and ChannelName is NULL`
-            gp_new_query_previous_year = `select sum([Golden Points Gap Filled - P3M]) as gp_gf_sum , sum([Golden Points Target]) as gp_target_sum from [dbo].[tbl_command_center_gp_calculation] where [${filter_key}] = '${filter_data}' and [Calender Year] like '${previous_year_gp}' and ChannelName is NULL`
+            gp_new_query_current_year = `select sum([Golden Points Gap Filled - P3M]) as gp_gf_sum , sum([Golden Points Target]) as gp_target_sum from [dbo].[tbl_command_center_gp_new2] where [${filter_key}] = '${filter_data}' and [Calendar Month] like '${current_year_gp}'`
+            gp_new_query_previous_year = `select sum([Golden Points Gap Filled - P3M]) as gp_gf_sum , sum([Golden Points Target]) as gp_target_sum from [dbo].[tbl_command_center_gp_new2] where [${filter_key}] = '${filter_data}' and [Calendar Month] like '${previous_year_gp}'`
         }
 
-        let gp_gf_p3m_current_year = await sequelize.query(gp_new_query_current_year)
+        connection = await getConnection()
+        let gp_gf_p3m_current_year = await getConnection(connection, gp_new_query_current_year)
+        // let gp_gf_p3m_current_year = await sequelize.query(gp_new_query_current_year)
 
         let gp_target_current_year = 1
-        if(gp_gf_p3m_current_year[0][0] === undefined){
+        if(gp_gf_p3m_current_year[0] === undefined){
             gp_gf_p3m_current_year = 0
         }else {
-            gp_target_current_year = gp_gf_p3m_current_year[0][0]['gp_target_sum']
-            gp_gf_p3m_current_year = gp_gf_p3m_current_year[0][0]['gp_gf_sum']
+            gp_target_current_year = gp_gf_p3m_current_year[0]['gp_target_sum']
+            gp_gf_p3m_current_year = gp_gf_p3m_current_year[0]['gp_gf_sum']
         }
 
 
         let gp_target_previous_year = 1
-        let gp_gf_p3m_previous_year = await sequelize.query(gp_new_query_previous_year)
-        if(gp_gf_p3m_previous_year[0][0] === undefined){
+        connection = await getConnection()
+        let gp_gf_p3m_previous_year = await getQueryData(connection, gp_new_query_previous_year)
+        // let gp_gf_p3m_previous_year = await sequelize.query(gp_new_query_previous_year)
+        if(gp_gf_p3m_previous_year[0] === undefined){
             gp_gf_p3m_previous_year = 1000000
         }
         else {
-                gp_gf_p3m_previous_year = gp_gf_p3m_previous_year[0][0]['gp_gf_sum']
+                gp_gf_p3m_previous_year = gp_gf_p3m_previous_year[0]['gp_gf_sum']
             }
 
         if(gp_gf_p3m_current_year === null || gp_gf_p3m_current_year === undefined){ gp_gf_p3m_current_year = 0 }
@@ -445,21 +528,25 @@ let getHomePageData = async (req, res) =>{
             cc_new_query_previous_year = `select sum([Calls Made])as cm_sum, sum([Target Calls])as target_call_sum from [dbo].[tbl_command_center_cc_new] where [${filter_key}] = '${filter_data}' and [Calendar Month] = '${previous_year_cc}' `
         }
 
-        let cc_achieved_current_year = await sequelize.query(cc_new_query_current_year)
+        connection = await getConnection()
+        let cc_achieved_current_year = await getQueryData(connection, cc_new_query_current_year)
+        // let cc_achieved_current_year = await sequelize.query(cc_new_query_current_year)
 
         let cc_target_current_year = 1
-        if(cc_achieved_current_year[0][0] !== undefined){
-            cc_target_current_year = cc_achieved_current_year[0][0]['target_call_sum']
-            cc_achieved_current_year = cc_achieved_current_year[0][0]['cm_sum']
+        if(cc_achieved_current_year[0] !== undefined){
+            cc_target_current_year = cc_achieved_current_year[0]['target_call_sum']
+            cc_achieved_current_year = cc_achieved_current_year[0]['cm_sum']
         }else{
             cc_achieved_current_year = 0
         }
 
         let cc_target_previous_year = 1
-        let cc_achieved_previous_year = await sequelize.query(cc_new_query_previous_year)
-        if(cc_achieved_previous_year[0][0] !== undefined){
-            cc_target_previous_year = cc_achieved_previous_year[0][0]['target_call_sum']
-            cc_achieved_previous_year = cc_achieved_previous_year[0][0]['cm_sum']
+        connection = await getConnection()
+        let cc_achieved_previous_year = await getQueryData(connection, cc_new_query_previous_year)
+        // let cc_achieved_previous_year = await sequelize.query(cc_new_query_previous_year)
+        if(cc_achieved_previous_year[0] !== undefined){
+            cc_target_previous_year = cc_achieved_previous_year[0]['target_call_sum']
+            cc_achieved_previous_year = cc_achieved_previous_year[0]['cm_sum']
         }else{
             cc_achieved_previous_year = 1
         }
@@ -492,32 +579,36 @@ let getHomePageData = async (req, res) =>{
             new_producitivity_query_previous_month = `select sum([Productive Calls]) as productivity_calls, sum([Target Calls]) as target_calls FROM [dbo].[tbl_command_center_productivity_new] where [${filter_key}] = '${filter_data}' and [Calendar Month] like '${previous_month_pc}'`
         }
 
-        let productivity_call_sum_cm = await sequelize.query(new_producitivity_query_current_month)
+        connection = await getConnection()
+        let productivity_call_sum_cm = await getQueryData(connection, new_producitivity_query_current_month)
+        // let productivity_call_sum_cm = await sequelize.query(new_producitivity_query_current_month)
         let target_call_current_month = 1
 
-        let productivity_call_sum_pm = await sequelize.query(new_producitivity_query_previous_month)
+        connection = await getConnection()
+        let productivity_call_sum_pm = await getQueryData(connection, new_producitivity_query_previous_month)
+        // let productivity_call_sum_pm = await sequelize.query(new_producitivity_query_previous_month)
         let target_call_previous_month = 1
 
-        if(productivity_call_sum_pm[0][0]===undefined){
+        if(productivity_call_sum_pm[0]===undefined){
             productivity_call_sum_pm = 0
             target_call_previous_month = 1
         }
         else {
-            target_call_previous_month = productivity_call_sum_pm[0][0]['target_calls']
-            productivity_call_sum_pm = productivity_call_sum_pm[0][0]['productivity_calls']
+            target_call_previous_month = productivity_call_sum_pm[0]['target_calls']
+            productivity_call_sum_pm = productivity_call_sum_pm[0]['productivity_calls']
         }
 
         if(productivity_call_sum_pm === null || productivity_call_sum_pm === undefined){
             productivity_call_sum_pm = 0
         }
 
-        if(productivity_call_sum_cm[0][0]===undefined){
+        if(productivity_call_sum_cm[0]===undefined){
             productivity_call_sum_cm = 0
             target_call_current_month = 1
         }
         else {
-            target_call_current_month = productivity_call_sum_cm[0][0]['target_calls']
-            productivity_call_sum_cm = productivity_call_sum_cm[0][0]['productivity_calls']
+            target_call_current_month = productivity_call_sum_cm[0]['target_calls']
+            productivity_call_sum_cm = productivity_call_sum_cm[0]['productivity_calls']
         }
 
         if(productivity_call_sum_cm === null || productivity_call_sum_cm === undefined){
@@ -549,14 +640,16 @@ let getHomePageData = async (req, res) =>{
             sql_query_no_of_billing_current_year = `select sum([No of stores billed atleast once]) as billed_sum , sum([Coverage]) as coverage_sum from [dbo].[tbl_command_center_billing_new] where [${filter_key}] = '${filter_data}' and [Calendar Month] = '${current_year_bc}'`
         }
 
-        let no_of_billing_current_year = await sequelize.query(sql_query_no_of_billing_current_year)
+        connection = await getConnection()
+        let no_of_billing_current_year = await getQueryData(connection, sql_query_no_of_billing_current_year)
+        // let no_of_billing_current_year = await sequelize.query(sql_query_no_of_billing_current_year)
 
         let billing_coverage_current_year = 1
-        if(no_of_billing_current_year[0][0] === undefined){
+        if(no_of_billing_current_year[0] === undefined){
             no_of_billing_current_year = 0
         }else {
-            billing_coverage_current_year = no_of_billing_current_year[0][0]['coverage_sum']
-            no_of_billing_current_year = no_of_billing_current_year[0][0]['billed_sum']
+            billing_coverage_current_year = no_of_billing_current_year[0]['coverage_sum']
+            no_of_billing_current_year = no_of_billing_current_year[0]['billed_sum']
         }
 
         if(no_of_billing_current_year === null || no_of_billing_current_year === undefined){ no_of_billing_current_year = 0 }
@@ -577,7 +670,7 @@ let getHomePageData = async (req, res) =>{
         while (retailing_sum_current_month>100){retailing_sum_current_month = retailing_sum_current_month/10}
         let mtdRetailing = {
             "cmIya": (rt_iya).toFixed(2).split('.')[0],
-            "cmSaliance": (rt_saliance).toString(),
+            "cmSaliance": (rt_saliance).toFixed(2).split('.')[0],
             "cmSellout": (retailing_sum_current_month).toFixed(2).split('.')[0],
             "tgtIya": tgtIya,
             "tgtSaliance": tgtSaliance,
@@ -767,21 +860,25 @@ let getCoverageBillingProductiveData = async (req, res) =>{
                 new_producitivity_query_current_month = `select [Productive Calls] as productivity_calls, [Target Calls] as target_calls FROM [dbo].[tbl_command_center_productivity_calculation] where [${filter_key}] = '${filter_data}' and [Calendar Month] = '${calendar_month_cy}'`
             }
 
-            let billing_and_coverage_data = await sequelize.query(sql_query_no_of_billing_current_year)
-            let productivity_data = await sequelize.query(new_producitivity_query_current_month)
+            let connection = await getConnection()
+            let billing_and_coverage_data = await getQueryData(connection, sql_query_no_of_billing_current_year)
+            // let billing_and_coverage_data = await sequelize.query(sql_query_no_of_billing_current_year)
+            connection = await getConnection()
+            let productivity_data = await getQueryData(connection, new_producitivity_query_current_month)
+            // let productivity_data = await sequelize.query(new_producitivity_query_current_month)
 
             let billing = 0
             let coverage = 0
             let productive_calls = 0
             let target_calls = 1
 
-            if(billing_and_coverage_data[0][0] !== undefined){
-                billing = billing_and_coverage_data[0][0]['billed_sum']
-                coverage = billing_and_coverage_data[0][0]['coverage_sum']
+            if(billing_and_coverage_data[0] !== undefined){
+                billing = billing_and_coverage_data[0]['billed_sum']
+                coverage = billing_and_coverage_data[0]['coverage_sum']
             }
-            if(productivity_data[0][0] !== undefined) {
-                productive_calls = productivity_data[0][0]['productivity_calls']
-                target_calls = productivity_data[0][0]['target_calls']
+            if(productivity_data[0] !== undefined) {
+                productive_calls = productivity_data[0]['productivity_calls']
+                target_calls = productivity_data[0]['target_calls']
             }
 
             let billing_per = (billing / coverage) * 100
@@ -931,21 +1028,25 @@ let getCoverageBillingProductiveByChannelData = async (req, res) =>{
                     new_producitivity_query_current_month = `select [Productive Calls] as productivity_calls, [Target Calls] as target_calls FROM [dbo].[tbl_command_center_productivity_calculation] where [${filter_key}] = '${filter_data}' and [Calendar Month] = '${calendar_month_cy}' and [ChannelName] = '${channel_name}'`
                 }
 
-                let billing_and_coverage_data = await sequelize.query(sql_query_no_of_billing_current_year)
-                let productivity_data = await sequelize.query(new_producitivity_query_current_month)
+                let connection = await getConnection()
+                let billing_and_coverage_data = await getQueryData(connection, sql_query_no_of_billing_current_year)
+                // let billing_and_coverage_data = await sequelize.query(sql_query_no_of_billing_current_year)
+                connection = await getConnection()
+                let productivity_data = await getQueryData(connection, new_producitivity_query_current_month)
+                // let productivity_data = await sequelize.query(new_producitivity_query_current_month)
 
                 let billing = 0
                 let coverage = 0
                 let productive_calls = 0
                 let target_calls= 0
 
-                if(billing_and_coverage_data[0][0] !== undefined){
-                    billing = billing_and_coverage_data[0][0]['billed_sum']
-                    coverage = billing_and_coverage_data[0][0]['coverage_sum']
+                if(billing_and_coverage_data[0] !== undefined){
+                    billing = billing_and_coverage_data[0]['billed_sum']
+                    coverage = billing_and_coverage_data[0]['coverage_sum']
                 }
-                if(productivity_data[0][0] !== undefined) {
-                    productive_calls = productivity_data[0][0]['productivity_calls']
-                    target_calls = productivity_data[0][0]['target_calls']
+                if(productivity_data[0] !== undefined) {
+                    productive_calls = productivity_data[0]['productivity_calls']
+                    target_calls = productivity_data[0]['target_calls']
                 }
 
                 let billing_per = (billing / coverage) * 100
@@ -1037,21 +1138,25 @@ let getCoverageTrendsData = async (req, res) =>{
                     new_producitivity_query_current_month = `select [Productive Calls] as productivity_calls, [Target Calls] as target_calls FROM [dbo].[tbl_command_center_productivity_calculation] where [${filter_key}] = '${filter_data}' and [Calendar Month] = '${calendar_month_cy}'`
                 }
 
-                let billing_and_coverage_data = await sequelize.query(sql_query_no_of_billing_current_year)
-                let productivity_data = await sequelize.query(new_producitivity_query_current_month)
+                let connection = await getConnection()
+                let billing_and_coverage_data = await getQueryData(connection, sql_query_no_of_billing_current_year)
+                // let billing_and_coverage_data = await sequelize.query(sql_query_no_of_billing_current_year)
+                connection = await getConnection()
+                let productivity_data = await getQueryData(connection, new_producitivity_query_current_month)
+                // let productivity_data = await sequelize.query(new_producitivity_query_current_month)
 
                 let billing = 0
                 let coverage = 0
                 let productive_calls = 0
                 let target_calls = 0
 
-                if(billing_and_coverage_data[0][0] !== undefined){
-                    billing = billing_and_coverage_data[0][0]['billed_sum']
-                    coverage = billing_and_coverage_data[0][0]['coverage_sum']
+                if(billing_and_coverage_data[0] !== undefined){
+                    billing = billing_and_coverage_data[0]['billed_sum']
+                    coverage = billing_and_coverage_data[0]['coverage_sum']
                 }
-                if(productivity_data[0][0] !== undefined) {
-                    productive_calls = productivity_data[0][0]['productivity_calls']
-                    target_calls = productivity_data[0][0]['target_calls']
+                if(productivity_data[0] !== undefined) {
+                    productive_calls = productivity_data[0]['productivity_calls']
+                    target_calls = productivity_data[0]['target_calls']
                 }
 
                 let billing_per = (billing / coverage) * 100
@@ -1282,14 +1387,16 @@ let getFocusBrandDataByChannel = async (req, res) =>{
                     sql_query_fb_current_year = `select [FB Points achieved Sum] as fb_achieved_sum, [FB Target Sum] as fb_target_sum FROM [dbo].[tbl_command_center_fb_calculation] where [${filter_key}] = '${filter_data}' and [Calender Year] = '${calendar_month_cy}' and [ChannelName] = '${channel_name}'`
                 }
 
-                let fb_data = await sequelize.query(sql_query_fb_current_year)
+                let connection = await getConnection()
+                let fb_data = await getQueryData(connection, sql_query_fb_current_year)
+                // let fb_data = await sequelize.query(sql_query_fb_current_year)
 
                 let fb_achieved = 0
                 let fb_target = 1
 
-                if(fb_data[0][0] !== undefined){
-                    fb_achieved = fb_data[0][0]['fb_achieved_sum']
-                    fb_target = fb_data[0][0]['fb_target_sum']
+                if(fb_data[0] !== undefined){
+                    fb_achieved = fb_data[0]['fb_achieved_sum']
+                    fb_target = fb_data[0]['fb_target_sum']
                 }
 
                 if(fb_target === 0){fb_target = 1}
@@ -1321,7 +1428,9 @@ let getFocusBrandDataByChannel = async (req, res) =>{
 
 async function getCategoryList(){
     try {
-        let data = await sequelize.query(`select distinct [CategoryName] from [sdm].[productMaster]`)
+        let connection = await getConnection()
+        let data = await getQueryData(connection, `select distinct [CategoryName] from [sdm].[productMaster]`)
+        // let data = await sequelize.query(`select distinct [CategoryName] from [sdm].[productMaster]`)
         let category = []
         for(let i in data[0]){
             category.push(data[0][i]['CategoryName'])
@@ -1407,14 +1516,16 @@ let getFocusBrandDataByCategory = async (req, res) =>{
                     sql_query_fb_current_year = `select [FB Points achieved Sum] as fb_achieved_sum, [FB Target Sum] as fb_target_sum FROM [dbo].[tbl_command_center_fb_calculation] where [${filter_key}] = '${filter_data}' and [Calender Year] = '${calendar_month_cy}' and [CategoryName] = '${category_name}'`
                 }
 
-                let fb_data = await sequelize.query(sql_query_fb_current_year)
+                let connection = await getConnection()
+                let fb_data = await getQueryData(connection, sql_query_fb_current_year)
+                // let fb_data = await sequelize.query(sql_query_fb_current_year)
 
                 let fb_achieved = 0
                 let fb_target = 1
 
-                if(fb_data[0][0] !== undefined){
-                    fb_achieved = fb_data[0][0]['fb_achieved_sum']
-                    fb_target = fb_data[0][0]['fb_target_sum']
+                if(fb_data[0] !== undefined){
+                    fb_achieved = fb_data[0]['fb_achieved_sum']
+                    fb_target = fb_data[0]['fb_target_sum']
                 }
 
                 if(fb_target === 0){fb_target = 1}
@@ -1447,7 +1558,9 @@ let getFocusBrandDataByCategory = async (req, res) =>{
 
 async function getBrandList(){
     try {
-        let data = await sequelize.query(`select distinct [BrandName] from [sdm].[productMaster]`)
+        let connection = await getConnection()
+        let data = await getQueryData(connection, `select distinct [BrandName] from [sdm].[productMaster]`)
+        // let data = await sequelize.query(`select distinct [BrandName] from [sdm].[productMaster]`)
         let brand = []
         for(let i in data[0]){
             brand.push(data[0][i]['BrandName'])
@@ -1535,14 +1648,16 @@ let getFocusBrandDataByBrand = async (req, res) =>{
                     sql_query_fb_current_year = `select [FB Points achieved Sum] as fb_achieved_sum, [FB Target Sum] as fb_target_sum FROM [dbo].[tbl_command_center_fb_calculation] where [${filter_key}] = '${filter_data}' and [Calender Year] = '${calendar_month_cy}' and [BrandName] = '${brand_name}'`
                 }
 
-                let fb_data = await sequelize.query(sql_query_fb_current_year)
+                let connection = await getConnection()
+                let fb_data = await getQueryData(connection, sql_query_fb_current_year)
+                // let fb_data = await sequelize.query(sql_query_fb_current_year)
 
                 let fb_achieved = 0
                 let fb_target = 1
 
-                if(fb_data[0][0] !== undefined){
-                    fb_achieved = fb_data[0][0]['fb_achieved_sum']
-                    fb_target = fb_data[0][0]['fb_target_sum']
+                if(fb_data[0] !== undefined){
+                    fb_achieved = fb_data[0]['fb_achieved_sum']
+                    fb_target = fb_data[0]['fb_target_sum']
                 }
                 if(fb_target === 0){fb_target = 1}
                 let fb_iya = (fb_achieved / fb_target) * 100
@@ -1573,7 +1688,9 @@ let getFocusBrandDataByBrand = async (req, res) =>{
 
 async function getBrandFormList(){
     try {
-        let data = await sequelize.query(`select distinct [BrandformName] from [sdm].[productMaster]`)
+        let connection = await getConnection()
+        let data = await getQueryData(connection, `select distinct [BrandformName] from [sdm].[productMaster]`)
+        // let data = await sequelize.query(`select distinct [BrandformName] from [sdm].[productMaster]`)
         let brandForm = []
         for(let i in data[0]){
             brandForm.push(data[0][i]['BrandformName'])
@@ -1659,14 +1776,16 @@ let getFocusBrandDataByBrandForm = async (req, res) =>{
                     sql_query_fb_current_year = `select [FB Points achieved Sum] as fb_achieved_sum, [FB Target Sum] as fb_target_sum FROM [dbo].[tbl_command_center_fb_calculation] where [${filter_key}] = '${filter_data}' and [Calender Year] = '${calendar_month_cy}' and [BFName] = '${brandForm_name}'`
                 }
 
-                let fb_data = await sequelize.query(sql_query_fb_current_year)
+                let connection = await getConnection()
+                let fb_data = await getQueryData(connection, sql_query_fb_current_year)
+                // let fb_data = await sequelize.query(sql_query_fb_current_year)
 
                 let fb_achieved = 0
                 let fb_target = 1
 
-                if(fb_data[0][0] !== undefined){
-                    fb_achieved = fb_data[0][0]['fb_achieved_sum']
-                    fb_target = fb_data[0][0]['fb_target_sum']
+                if(fb_data[0] !== undefined){
+                    fb_achieved = fb_data[0]['fb_achieved_sum']
+                    fb_target = fb_data[0]['fb_target_sum']
                 }
                 if(fb_target === 0){fb_target = 1}
                 let fb_iya = (fb_achieved / fb_target) * 100
@@ -1697,7 +1816,9 @@ let getFocusBrandDataByBrandForm = async (req, res) =>{
 
 async function getSubBrandFormList(){
     try {
-        let data = await sequelize.query(`select distinct [SubbfName] from [sdm].[productMaster]`)
+        let connection = await getConnection()
+        let data = await getQueryData(connection, `select distinct [SubbfName] from [sdm].[productMaster]`)
+        // let data = await sequelize.query(`select distinct [SubbfName] from [sdm].[productMaster]`)
         let subBrandForm = []
         for(let i in data[0]){
             subBrandForm.push(data[0][i]['SubbfName'])
@@ -1785,14 +1906,16 @@ let getFocusBrandDataBySubBrandForm = async (req, res) =>{
                     sql_query_fb_current_year = `select [FB Points achieved Sum] as fb_achieved_sum, [FB Target Sum] as fb_target_sum FROM [dbo].[tbl_command_center_fb_calculation] where [${filter_key}] = '${filter_data}' and [Calender Year] = '${calendar_month_cy}' and [SBFName] = '${subBrandForm_name}'`
                 }
 
-                let fb_data = await sequelize.query(sql_query_fb_current_year)
+                let connection = await getConnection()
+                let fb_data = await getQueryData(connection, sql_query_fb_current_year)
+                // let fb_data = await sequelize.query(sql_query_fb_current_year)
 
                 let fb_achieved = 0
                 let fb_target = 1
 
-                if(fb_data[0][0] !== undefined){
-                    fb_achieved = fb_data[0][0]['fb_achieved_sum']
-                    fb_target = fb_data[0][0]['fb_target_sum']
+                if(fb_data[0] !== undefined){
+                    fb_achieved = fb_data[0]['fb_achieved_sum']
+                    fb_target = fb_data[0]['fb_target_sum']
                 }
 
                 if(fb_target === 0){fb_target = 1}

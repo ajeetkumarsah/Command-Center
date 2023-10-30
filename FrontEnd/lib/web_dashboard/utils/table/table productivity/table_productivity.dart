@@ -10,10 +10,14 @@ import '../../comman_utils/text_header_widget.dart';
 
 class CoverageTableDataProductivity extends StatefulWidget {
   final List newDataList;
+  final String key1;
+  final String key2;
+  final String key3;
+
 
   const CoverageTableDataProductivity({
     super.key,
-    required this.newDataList,
+    required this.newDataList, required this.key1, required this.key2, required this.key3,
   });
 
   @override
@@ -24,10 +28,10 @@ class _CoverageTableDataProductivityState extends State<CoverageTableDataProduct
   @override
   Widget build(BuildContext context) {
     final sheetProvider = Provider.of<SheetProvider>(context);
-    return FutureBuilder(
-        future: getTableCoverageSummary(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
+    // return FutureBuilder(
+    //     future: getTableCoverageSummary(),
+    //     builder: (context, snapshot) {
+    //       if (snapshot.hasData) {
             return SingleChildScrollView(
               child: Column(
                 children: [
@@ -224,7 +228,7 @@ class _CoverageTableDataProductivityState extends State<CoverageTableDataProduct
                                         padding:
                                         const EdgeInsets.only(left: 0.0),
                                         child: TextHeaderWidget(
-                                          title: '${coverage1['productivity_per1']}',
+                                          title: '${coverage1[widget.key1]}',
                                           //IYA
                                           align: TextAlign.center,
                                         ),
@@ -236,7 +240,7 @@ class _CoverageTableDataProductivityState extends State<CoverageTableDataProduct
                                         padding:
                                         const EdgeInsets.only(left: 0.0),
                                         child: TextHeaderWidget(
-                                          title: '${coverage1['productivity_per2']}',
+                                          title: '${coverage1[widget.key2]}',
                                           //IYA
                                           align: TextAlign.center,
                                         ),
@@ -248,7 +252,7 @@ class _CoverageTableDataProductivityState extends State<CoverageTableDataProduct
                                         padding:
                                         const EdgeInsets.only(left: 0.0),
                                         child: TextHeaderWidget(
-                                          title: '${coverage1['productivity_per3']}',
+                                          title: '${coverage1[widget.key3]}',
                                           //IYA
                                           align: TextAlign.center,
                                         ),
@@ -310,7 +314,7 @@ class _CoverageTableDataProductivityState extends State<CoverageTableDataProduct
                                                       ? MyColors.dark500
                                                       : MyColors.dark400,
                                                   title: SizedBox(
-                                                    height: 20,
+                                                    height: 40,
                                                     child: Row(
                                                       // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                       children: [
@@ -473,7 +477,7 @@ class _CoverageTableDataProductivityState extends State<CoverageTableDataProduct
                                                         // ),
                                                         TextHeaderWidget(
                                                           title:
-                                                          "${sites['productivity_per1']}",
+                                                          "${sites[widget.key1]}",
                                                           align:
                                                           TextAlign.center,
                                                         ),
@@ -482,7 +486,7 @@ class _CoverageTableDataProductivityState extends State<CoverageTableDataProduct
                                                         ),
                                                         TextHeaderWidget(
                                                           title:
-                                                          "${sites['productivity_per2']}",
+                                                          "${sites[widget.key2]}",
                                                           align:
                                                           TextAlign.center,
                                                         ),
@@ -491,7 +495,7 @@ class _CoverageTableDataProductivityState extends State<CoverageTableDataProduct
                                                         ),
                                                         TextHeaderWidget(
                                                           title:
-                                                          "${sites['productivity_per3']}",
+                                                          "${sites[widget.key3]}",
                                                           align:
                                                           TextAlign.center,
                                                         ),
@@ -569,7 +573,7 @@ class _CoverageTableDataProductivityState extends State<CoverageTableDataProduct
                                                                       title:
                                                                       SizedBox(
                                                                         height:
-                                                                        20,
+                                                                        40,
                                                                         child:
                                                                         Row(
                                                                           children: [
@@ -632,21 +636,21 @@ class _CoverageTableDataProductivityState extends State<CoverageTableDataProduct
                                                                               width: 3,
                                                                             ),
                                                                             TextHeaderWidget(
-                                                                              title: "${branches['productivity_per1']}",
+                                                                              title: "${branches[widget.key1]}",
                                                                               align: TextAlign.center,
                                                                             ),
                                                                             const SizedBox(
                                                                               width: 3,
                                                                             ),
                                                                             TextHeaderWidget(
-                                                                              title: "${branches['productivity_per2']}",
+                                                                              title: "${branches[widget.key2]}",
                                                                               align: TextAlign.center,
                                                                             ),
                                                                             const SizedBox(
                                                                               width: 3,
                                                                             ),
                                                                             TextHeaderWidget(
-                                                                              title: "${branches['productivity_per3']}",
+                                                                              title: "${branches[widget.key3]}",
                                                                               align: TextAlign.center,
                                                                             ),
                                                                           ],
@@ -683,6 +687,7 @@ class _CoverageTableDataProductivityState extends State<CoverageTableDataProduct
                                                                                           collapsedBackgroundColor: branch2Index % 2 == 0 ? MyColors.dark500 : MyColors.dark400,
                                                                                           backgroundColor: branch2Index % 2 == 0 ? MyColors.dark500 : MyColors.dark400,
                                                                                           title: SizedBox(
+                                                                                            height: 40,
                                                                                             child: Row(
                                                                                               children: [
                                                                                                 Padding(
@@ -725,21 +730,21 @@ class _CoverageTableDataProductivityState extends State<CoverageTableDataProduct
                                                                                                   width: 3,
                                                                                                 ),
                                                                                                 TextHeaderWidget(
-                                                                                                  title: "${branchesDiv['productivity_per1']}",
+                                                                                                  title: "${branchesDiv[widget.key1]}",
                                                                                                   align: TextAlign.center,
                                                                                                 ),
                                                                                                 const SizedBox(
                                                                                                   width: 3,
                                                                                                 ),
                                                                                                 TextHeaderWidget(
-                                                                                                  title: "${branchesDiv['productivity_per2']}",
+                                                                                                  title: "${branchesDiv[widget.key2]}",
                                                                                                   align: TextAlign.center,
                                                                                                 ),
                                                                                                 const SizedBox(
                                                                                                   width: 3,
                                                                                                 ),
                                                                                                 TextHeaderWidget(
-                                                                                                  title: "${branchesDiv['productivity_per3']}",
+                                                                                                  title: "${branchesDiv[widget.key3]}",
                                                                                                   align: TextAlign.center,
                                                                                                 ),
                                                                                               ],
@@ -770,7 +775,7 @@ class _CoverageTableDataProductivityState extends State<CoverageTableDataProduct
                                                                                                               collapsedBackgroundColor: channelIndex % 2 == 0 ? MyColors.dark600 : MyColors.dark300,
                                                                                                               backgroundColor: channelIndex % 2 == 0 ? MyColors.dark600 : MyColors.dark300,
                                                                                                               title: SizedBox(
-                                                                                                                height: 20,
+                                                                                                                height: 40,
                                                                                                                 child: Row(
                                                                                                                   children: [
                                                                                                                     Padding(
@@ -803,21 +808,21 @@ class _CoverageTableDataProductivityState extends State<CoverageTableDataProduct
                                                                                                                       width: 3,
                                                                                                                     ),
                                                                                                                     TextHeaderWidget(
-                                                                                                                      title: "${channels['productivity_per1']}",
+                                                                                                                      title: "${channels[widget.key1]}",
                                                                                                                       align: TextAlign.center,
                                                                                                                     ),
                                                                                                                     const SizedBox(
                                                                                                                       width: 3,
                                                                                                                     ),
                                                                                                                     TextHeaderWidget(
-                                                                                                                      title: "${channels['productivity_per2']}",
+                                                                                                                      title: "${channels[widget.key2]}",
                                                                                                                       align: TextAlign.center,
                                                                                                                     ),
                                                                                                                     const SizedBox(
                                                                                                                       width: 3,
                                                                                                                     ),
                                                                                                                     TextHeaderWidget(
-                                                                                                                      title: "${channels['productivity_per3']}",
+                                                                                                                      title: "${channels[widget.key3]}",
                                                                                                                       align: TextAlign.center,
                                                                                                                     ),
                                                                                                                   ],
@@ -858,21 +863,21 @@ class _CoverageTableDataProductivityState extends State<CoverageTableDataProduct
                                                                                                                                       width: 3,
                                                                                                                                     ),
                                                                                                                                     TextHeaderWidget(
-                                                                                                                                      title: "${subChannels['productivity_per1']}",
+                                                                                                                                      title: "${subChannels[widget.key1]}",
                                                                                                                                       align: TextAlign.center,
                                                                                                                                     ),
                                                                                                                                     const SizedBox(
                                                                                                                                       width: 3,
                                                                                                                                     ),
                                                                                                                                     TextHeaderWidget(
-                                                                                                                                      title: "${subChannels['productivity_per2']}",
+                                                                                                                                      title: "${subChannels[widget.key2]}",
                                                                                                                                       align: TextAlign.center,
                                                                                                                                     ),
                                                                                                                                     const SizedBox(
                                                                                                                                       width: 3,
                                                                                                                                     ),
                                                                                                                                     TextHeaderWidget(
-                                                                                                                                      title: "${subChannels['productivity_per3']}",
+                                                                                                                                      title: "${subChannels[widget.key3]}",
                                                                                                                                       align: TextAlign.center,
                                                                                                                                     ),
                                                                                                                                   ],
@@ -923,9 +928,9 @@ class _CoverageTableDataProductivityState extends State<CoverageTableDataProduct
                 ],
               ),
             );
-          } else {
-            return const Center(child: CircularProgressIndicator());
-          }
-        });
+        //   } else {
+        //     return const Center(child: CircularProgressIndicator());
+        //   }
+        // });
   }
 }

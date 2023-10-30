@@ -84,8 +84,7 @@ class _SelectProfileScreenWebState extends State<SelectProfileScreenWeb>
   @override
   void initState() {
     super.initState();
-
-    // checkLogin();
+    checkLogin();
   }
 
   @override
@@ -329,8 +328,11 @@ class _SelectProfileScreenWebState extends State<SelectProfileScreenWeb>
                               print(SharedPreferencesUtils.getBool("business"));
                               print(SharedPreferencesUtils.getString(
                                   "selectedProfile"));
-                              Navigator.of(context)
-                                  .pushNamed('/divisionscreen');
+                              selectedContainerIndex == 2
+                                  ? Navigator.of(context)
+                                      .pushNamed('/supplydashboardscreen')
+                                  : Navigator.of(context)
+                                      .pushNamed('/divisionscreen');
                             },
                             style: ElevatedButton.styleFrom(
                                 shape: const StadiumBorder(),

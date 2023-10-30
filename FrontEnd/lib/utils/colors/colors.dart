@@ -36,4 +36,15 @@ class MyColors {
   static const Color dark600 = Color(0xffDDE3F3);
   static const Color dark300 = Color(0xffEFF3F7);
 
+
+
+  static const Color toggleColorWhite = Color(0xffFFFFFF);
+  static const Color alertColorPrimary = Color(0xffF7DCDC);
+  static const Color alertColorSecondary = Color(0xffFDEFEF);
+  static const Color dropdownTextGrey = Color(0xff344C65);
+  static const Color iconColorBlue = Color(0xff475DEF);
+  static const Color iconColorRed = Color(0xffF10000);
+  static const Color iconColorGreen = Color(0xff00C108);
+  static const Color barColor = Color(0xff527CB5);
+
 }

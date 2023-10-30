@@ -36,6 +36,7 @@ class SummaryContainer extends StatefulWidget {
   final Function() onTapContainer;
   final Function() onRemoveGeoPressed;
   final Function() onNewMonth;
+  final Function() onTapDefaultGoe;
   final List<AllMetrics> includedData;
   final List<AllMetrics> metricData;
   final List<AllMetrics> allMetrics;
@@ -101,7 +102,9 @@ class SummaryContainer extends StatefulWidget {
     required this.onRemoveGeoPressed,
     required this.onNewMonth,
     required this.updateMonth,
-    required this.onApplyPressedMonthDefault, required this.allSummary,
+    required this.onApplyPressedMonthDefault,
+    required this.allSummary,
+    required this.onTapDefaultGoe,
   }) : super(key: key);
 
   @override
@@ -138,19 +141,18 @@ class _SummaryContainerState extends State<SummaryContainer> {
     'All India'
   ];
 
-  Future<SummaryModel> fetchSummaryData(BuildContext context) async {
-
-    final response = await http.get(Uri.parse(
-        'https://run.mocky.io/v3/d2007bee-dbcd-446d-8b86-cf5ca19a20ee'));
-    if (response.statusCode == 200) {
-      final jsonBody = jsonDecode(response.body);
-      // print("Summary Screen $jsonBody");
-
-      return SummaryModel.fromJson(jsonBody[0]);
-    } else {
-      throw Exception('Failed to load data');
-    }
-  }
+  // Future<SummaryModel> fetchSummaryData(BuildContext context) async {
+  //   final response = await http.get(Uri.parse(
+  //       'https://run.mocky.io/v3/d2007bee-dbcd-446d-8b86-cf5ca19a20ee'));
+  //   if (response.statusCode == 200) {
+  //     final jsonBody = jsonDecode(response.body);
+  //     // print("Summary Screen $jsonBody");
+  //
+  //     return SummaryModel.fromJson(jsonBody[0]);
+  //   } else {
+  //     throw Exception('Failed to load data');
+  //   }
+  // }
 
   @override
   void initState() {
@@ -166,9 +168,6 @@ class _SummaryContainerState extends State<SummaryContainer> {
     metricData = allMetricsFromJson(
         SharedPreferencesUtils.getString('metricData') ??
             jsonEncode(widget.metricData));
-    // print("Include $includedData");
-    // fetchSummaryData(context);
-    // print("Summary Screen 2 ${widget.allSummary}");
   }
 
   List<String> popupmenuList = [
@@ -176,8 +175,6 @@ class _SummaryContainerState extends State<SummaryContainer> {
     'Remove Geo',
     'Delete Metric Card',
   ];
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -243,7 +240,8 @@ class _SummaryContainerState extends State<SummaryContainer> {
                             setState(() {
                               sheetProvider.selectedIcon =
                                   includedData[el].name;
-                              SharedPreferencesUtils.setString("keyName", includedData[el].name);
+                              SharedPreferencesUtils.setString(
+                                  "keyName", includedData[el].name);
                               // print(includedData[el].name);
                               widget.menuBool[el] = !widget.menuBool[el];
                             });
@@ -359,7 +357,8 @@ class _SummaryContainerState extends State<SummaryContainer> {
                                                                         .name ==
                                                                     "Cost/MSU"
                                                                 ? const TitleWidgetCard(
-                                                                    title: '0.0',
+                                                                    title:
+                                                                        '0.0',
                                                                   )
                                                                 : includedData[el]
                                                                             .name ==
@@ -636,325 +635,319 @@ class _SummaryContainerState extends State<SummaryContainer> {
                                               color: MyColors.textHeaderColor),
                                         ),
                                       ),
-                                      widget.allSummary.isEmpty?Container():
-                                      Expanded(
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(
-                                              bottom: 30.0),
-                                          child: ListView.builder(
-                                              itemCount: includedData[el]
-                                                          .name ==
-                                                      'Retailing'
-                                                  ? widget.allSummary[0]['data'].length
-                                                  : includedData[el].name ==
-                                                          'PXM billing'
-                                                      ? widget.allSummary[4]['data'].length
-                                                      : includedData[el].name ==
-                                                              'Focus Brand'
-                                                          ? widget.allSummary[2]['data'].length
-                                                          : includedData[el]
-                                                                      .name ==
-                                                                  'Golden Points'
-                                                              ? widget.allSummary[1]['data'].length
-                                                              : includedData[el]
-                                                                          .name ==
-                                                                      'Productivity'
-                                                                  ? widget.allSummary[5]['data'].length
-                                                                  : includedData[el]
-                                                                              .name ==
-                                                                          'Call Compliance'
-                                                                      ? widget.allSummary[3]['data'].length
-                                                                      : 0,
-                                              itemBuilder:
-                                                  (BuildContext context,
-                                                      index) {
-
-                                                return SizedBox(
-                                                  child: Row(
-                                                    children: [
-                                                      Expanded(
-                                                        child: InkWell(
-                                                          onTap: () {
-                                                            setState(() {
-                                                              if (includedData[
-                                                                          el]
-                                                                      .name ==
-                                                                  "Retailing") {
-                                                                if (selectedArrayItemRe ==
-                                                                    index) {
-                                                                  selectedArrayItemRe =
-                                                                      -1;
-                                                                  sheetProvider
-                                                                      .removeIndexRetailing =
-                                                                      index;
-                                                                } else {
-                                                                  selectedArrayItemRe =
-                                                                      index;
-                                                                  sheetProvider
-                                                                      .removeIndexRetailing =
-                                                                      index;
-                                                                }
-                                                              } else if (includedData[
-                                                                          el]
-                                                                      .name ==
-                                                                  "PXM billing") {
-                                                                if (selectedArrayItemCo ==
-                                                                    index) {
-                                                                  selectedArrayItemCo =
-                                                                      -1;
-                                                                  sheetProvider
-                                                                      .removeIndexCoverage =
-                                                                      index;
-                                                                } else {
-                                                                  selectedArrayItemCo =
-                                                                      index;
-                                                                  sheetProvider
-                                                                      .removeIndexCoverage =
-                                                                      index;
-                                                                }
-                                                              } else if (includedData[
-                                                                          el]
-                                                                      .name ==
-                                                                  "Golden Points") {
-                                                                if (selectedArrayItemGP ==
-                                                                    index) {
-                                                                  selectedArrayItemGP =
-                                                                      -1;
-                                                                  sheetProvider
-                                                                      .removeIndexGoldenPoint =
-                                                                      index;
-                                                                } else {
-                                                                  selectedArrayItemGP =
-                                                                      index;
-                                                                  sheetProvider
-                                                                      .removeIndexGoldenPoint =
-                                                                      index;
-                                                                }
-                                                              } else if (includedData[
-                                                                          el]
-                                                                      .name ==
-                                                                  "Focus Brand") {
-                                                                if (selectedArrayItemFB ==
-                                                                    index) {
-                                                                  selectedArrayItemFB =
-                                                                      -1;
-                                                                  sheetProvider
-                                                                      .removeIndexFocusBrand =
-                                                                      index;
-                                                                } else {
-                                                                  selectedArrayItemFB =
-                                                                      index;
-                                                                  sheetProvider
-                                                                      .removeIndexFocusBrand =
-                                                                      index;
-                                                                }
-                                                              } else if (includedData[
-                                                                          el]
-                                                                      .name ==
-                                                                  "Productivity") {
-                                                                if (selectedArrayItemPr ==
-                                                                    index) {
-                                                                  selectedArrayItemPr =
-                                                                      -1;
-                                                                  sheetProvider
-                                                                      .removeIndexProductivity =
-                                                                      index;
-                                                                } else {
-                                                                  selectedArrayItemPr =
-                                                                      index;
-                                                                  sheetProvider
-                                                                      .removeIndexProductivity =
-                                                                      index;
-                                                                }
-                                                              } else if (includedData[
-                                                                          el]
-                                                                      .name ==
-                                                                  "Call Compliance") {
-                                                                if (selectedArrayItemCC ==
-                                                                    index) {
-                                                                  selectedArrayItemCC =
-                                                                      -1;
-                                                                  sheetProvider
-                                                                      .removeIndexCallC =
-                                                                      index;
-                                                                } else {
-                                                                  selectedArrayItemCC =
-                                                                      index;
-                                                                  sheetProvider
-                                                                      .removeIndexCallC =
-                                                                      index;
-                                                                }
-                                                              } else {}
-
-                                                            });
-                                                          },
-                                                          child: Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                    .only(
-                                                                    left: 20,
-                                                                    top: 5,
-                                                                    bottom: 4),
-                                                            child: Row(
-                                                              children: [
-                                                                Container(
-                                                                  height: 15,
-                                                                  width: 15,
-                                                                  decoration: BoxDecoration(
-                                                                      color: includedData[el].name == "Retailing"
-                                                                          ? selectedArrayItemRe == index
-                                                                              ? Colors.blue
-                                                                              : MyColors.transparent
-                                                                          : includedData[el].name == "PXM billing"
-                                                                              ? selectedArrayItemCo == index
-                                                                                  ? Colors.blue
-                                                                                  : MyColors.transparent
-                                                                              : includedData[el].name == "Golden Points"
-                                                                                  ? selectedArrayItemGP == index
-                                                                                      ? Colors.blue
-                                                                                      : MyColors.transparent
-                                                                                  : includedData[el].name == "Focus Brand"
-                                                                                      ? selectedArrayItemFB == index
-                                                                                          ? Colors.blue
-                                                                                          : MyColors.transparent
-                                                                                      : includedData[el].name == "Productivity"
-                                                                                          ? selectedArrayItemPr == index
-                                                                                              ? Colors.blue
-                                                                                              : MyColors.transparent
-                                                                                          : includedData[el].name == "Call Compliance"
-                                                                                              ? selectedArrayItemCC == index
-                                                                                                  ? Colors.blue
-                                                                                                  : MyColors.transparent
-                                                                                              : MyColors.whiteColor,
-                                                                      // selectedArrayItem == index
-                                                                      //     ? Colors.blue
-                                                                      //     : MyColors
-                                                                      //     .transparent,
-                                                                      borderRadius: const BorderRadius.all(Radius.circular(2)),
-                                                                      border: Border.all(
-                                                                          color: includedData[el].name == "Retailing"
-                                                                              ? selectedArrayItemRe == index
-                                                                                  ? Colors.blue
-                                                                                  : MyColors.grey
-                                                                              : includedData[el].name == "PXM billing"
-                                                                                  ? selectedArrayItemCo == index
-                                                                                      ? Colors.blue
-                                                                                      : MyColors.grey
-                                                                                  : includedData[el].name == "Golden Points"
-                                                                                      ? selectedArrayItemGP == index
-                                                                                          ? Colors.blue
-                                                                                          : MyColors.grey
-                                                                                      : includedData[el].name == "Focus Brand"
-                                                                                          ? selectedArrayItemFB == index
-                                                                                              ? Colors.blue
-                                                                                              : MyColors.grey
-                                                                                          : includedData[el].name == "Productivity"
-                                                                                              ? selectedArrayItemPr == index
-                                                                                                  ? Colors.blue
-                                                                                                  : MyColors.grey
-                                                                                              : includedData[el].name == "Call Compliance"
-                                                                                                  ? selectedArrayItemCC == index
-                                                                                                      ? Colors.blue
-                                                                                                      : MyColors.grey
-                                                                                                  : MyColors.grey,
-                                                                          width: 1)),
-                                                                  child: includedData[el]
-                                                                              .name ==
-                                                                          "Retailing"
-                                                                      ? selectedArrayItemRe ==
-                                                                              index
-                                                                          ? const Icon(
-                                                                              Icons.check,
-                                                                              color: MyColors.whiteColor,
-                                                                              size: 13,
-                                                                            )
-                                                                          : null
-                                                                      : includedData[el].name ==
-                                                                              "PXM billing"
-                                                                          ? selectedArrayItemCo == index
-                                                                              ? const Icon(
-                                                                                  Icons.check,
-                                                                                  color: MyColors.whiteColor,
-                                                                                  size: 13,
-                                                                                )
-                                                                              : null
-                                                                          : includedData[el].name == "Golden Points"
-                                                                              ? selectedArrayItemGP == index
-                                                                                  ? const Icon(
-                                                                                      Icons.check,
-                                                                                      color: MyColors.whiteColor,
-                                                                                      size: 13,
-                                                                                    )
-                                                                                  : null
-                                                                              : includedData[el].name == "Focus Brand"
-                                                                                  ? selectedArrayItemFB == index
-                                                                                      ? const Icon(
-                                                                                          Icons.check,
-                                                                                          color: MyColors.whiteColor,
-                                                                                          size: 13,
-                                                                                        )
-                                                                                      : null
-                                                                                  : includedData[el].name == "Productivity"
-                                                                                      ? selectedArrayItemPr == index
-                                                                                          ? const Icon(
-                                                                                              Icons.check,
-                                                                                              color: MyColors.whiteColor,
-                                                                                              size: 13,
-                                                                                            )
-                                                                                          : null
-                                                                                      : includedData[el].name == "Call Compliance"
-                                                                                          ? selectedArrayItemCC == index
-                                                                                              ? const Icon(
-                                                                                                  Icons.check,
-                                                                                                  color: MyColors.whiteColor,
-                                                                                                  size: 13,
-                                                                                                )
-                                                                                              : null
-                                                                                          : null,
+                                      widget.allSummary.isEmpty
+                                          ? Container()
+                                          : Expanded(
+                                              child: Padding(
+                                                padding: const EdgeInsets.only(
+                                                    bottom: 30.0),
+                                                child: ListView.builder(
+                                                    itemCount: includedData[el]
+                                                                .name ==
+                                                            'Retailing'
+                                                        ? widget
+                                                            .allSummary[0]
+                                                                ['data']
+                                                            .length
+                                                        : includedData[el]
+                                                                    .name ==
+                                                                'PXM billing'
+                                                            ? widget
+                                                                .allSummary[4]
+                                                                    ['data']
+                                                                .length
+                                                            : includedData[el]
+                                                                        .name ==
+                                                                    'Focus Brand'
+                                                                ? widget
+                                                                    .allSummary[2]
+                                                                        ['data']
+                                                                    .length
+                                                                : includedData[el]
+                                                                            .name ==
+                                                                        'Golden Points'
+                                                                    ? widget
+                                                                        .allSummary[1]
+                                                                            [
+                                                                            'data']
+                                                                        .length
+                                                                    : includedData[el].name ==
+                                                                            'Productivity'
+                                                                        ? widget
+                                                                            .allSummary[5]['data']
+                                                                            .length
+                                                                        : includedData[el].name == 'Call Compliance'
+                                                                            ? widget.allSummary[3]['data'].length
+                                                                            : 0,
+                                                    itemBuilder: (BuildContext context, index) {
+                                                      return SizedBox(
+                                                        child: Row(
+                                                          children: [
+                                                            Expanded(
+                                                              child: InkWell(
+                                                                onTap: () {
+                                                                  setState(() {
+                                                                    if (includedData[el]
+                                                                            .name ==
+                                                                        "Retailing") {
+                                                                      if (selectedArrayItemRe ==
+                                                                          index) {
+                                                                        selectedArrayItemRe =
+                                                                            -1;
+                                                                        sheetProvider.removeIndexRetailing =
+                                                                            index;
+                                                                      } else {
+                                                                        selectedArrayItemRe =
+                                                                            index;
+                                                                        sheetProvider.removeIndexRetailing =
+                                                                            index;
+                                                                      }
+                                                                    } else if (includedData[el]
+                                                                            .name ==
+                                                                        "PXM billing") {
+                                                                      if (selectedArrayItemCo ==
+                                                                          index) {
+                                                                        selectedArrayItemCo =
+                                                                            -1;
+                                                                        sheetProvider.removeIndexCoverage =
+                                                                            index;
+                                                                      } else {
+                                                                        selectedArrayItemCo =
+                                                                            index;
+                                                                        sheetProvider.removeIndexCoverage =
+                                                                            index;
+                                                                      }
+                                                                    } else if (includedData[el]
+                                                                            .name ==
+                                                                        "Golden Points") {
+                                                                      if (selectedArrayItemGP ==
+                                                                          index) {
+                                                                        selectedArrayItemGP =
+                                                                            -1;
+                                                                        sheetProvider.removeIndexGoldenPoint =
+                                                                            index;
+                                                                      } else {
+                                                                        selectedArrayItemGP =
+                                                                            index;
+                                                                        sheetProvider.removeIndexGoldenPoint =
+                                                                            index;
+                                                                      }
+                                                                    } else if (includedData[el]
+                                                                            .name ==
+                                                                        "Focus Brand") {
+                                                                      if (selectedArrayItemFB ==
+                                                                          index) {
+                                                                        selectedArrayItemFB =
+                                                                            -1;
+                                                                        sheetProvider.removeIndexFocusBrand =
+                                                                            index;
+                                                                      } else {
+                                                                        selectedArrayItemFB =
+                                                                            index;
+                                                                        sheetProvider.removeIndexFocusBrand =
+                                                                            index;
+                                                                      }
+                                                                    } else if (includedData[el]
+                                                                            .name ==
+                                                                        "Productivity") {
+                                                                      if (selectedArrayItemPr ==
+                                                                          index) {
+                                                                        selectedArrayItemPr =
+                                                                            -1;
+                                                                        sheetProvider.removeIndexProductivity =
+                                                                            index;
+                                                                      } else {
+                                                                        selectedArrayItemPr =
+                                                                            index;
+                                                                        sheetProvider.removeIndexProductivity =
+                                                                            index;
+                                                                      }
+                                                                    } else if (includedData[el]
+                                                                            .name ==
+                                                                        "Call Compliance") {
+                                                                      if (selectedArrayItemCC ==
+                                                                          index) {
+                                                                        selectedArrayItemCC =
+                                                                            -1;
+                                                                        sheetProvider.removeIndexCallC =
+                                                                            index;
+                                                                      } else {
+                                                                        selectedArrayItemCC =
+                                                                            index;
+                                                                        sheetProvider.removeIndexCallC =
+                                                                            index;
+                                                                      }
+                                                                    } else {}
+                                                                  });
+                                                                },
+                                                                child: Padding(
+                                                                  padding:
+                                                                      const EdgeInsets
+                                                                          .only(
+                                                                          left:
+                                                                              20,
+                                                                          top:
+                                                                              5,
+                                                                          bottom:
+                                                                              4),
+                                                                  child: Row(
+                                                                    children: [
+                                                                      Container(
+                                                                        height:
+                                                                            15,
+                                                                        width:
+                                                                            15,
+                                                                        decoration: BoxDecoration(
+                                                                            color: includedData[el].name == "Retailing"
+                                                                                ? selectedArrayItemRe == index
+                                                                                    ? Colors.blue
+                                                                                    : MyColors.transparent
+                                                                                : includedData[el].name == "PXM billing"
+                                                                                    ? selectedArrayItemCo == index
+                                                                                        ? Colors.blue
+                                                                                        : MyColors.transparent
+                                                                                    : includedData[el].name == "Golden Points"
+                                                                                        ? selectedArrayItemGP == index
+                                                                                            ? Colors.blue
+                                                                                            : MyColors.transparent
+                                                                                        : includedData[el].name == "Focus Brand"
+                                                                                            ? selectedArrayItemFB == index
+                                                                                                ? Colors.blue
+                                                                                                : MyColors.transparent
+                                                                                            : includedData[el].name == "Productivity"
+                                                                                                ? selectedArrayItemPr == index
+                                                                                                    ? Colors.blue
+                                                                                                    : MyColors.transparent
+                                                                                                : includedData[el].name == "Call Compliance"
+                                                                                                    ? selectedArrayItemCC == index
+                                                                                                        ? Colors.blue
+                                                                                                        : MyColors.transparent
+                                                                                                    : MyColors.whiteColor,
+                                                                            // selectedArrayItem == index
+                                                                            //     ? Colors.blue
+                                                                            //     : MyColors
+                                                                            //     .transparent,
+                                                                            borderRadius: const BorderRadius.all(Radius.circular(2)),
+                                                                            border: Border.all(
+                                                                                color: includedData[el].name == "Retailing"
+                                                                                    ? selectedArrayItemRe == index
+                                                                                        ? Colors.blue
+                                                                                        : MyColors.grey
+                                                                                    : includedData[el].name == "PXM billing"
+                                                                                        ? selectedArrayItemCo == index
+                                                                                            ? Colors.blue
+                                                                                            : MyColors.grey
+                                                                                        : includedData[el].name == "Golden Points"
+                                                                                            ? selectedArrayItemGP == index
+                                                                                                ? Colors.blue
+                                                                                                : MyColors.grey
+                                                                                            : includedData[el].name == "Focus Brand"
+                                                                                                ? selectedArrayItemFB == index
+                                                                                                    ? Colors.blue
+                                                                                                    : MyColors.grey
+                                                                                                : includedData[el].name == "Productivity"
+                                                                                                    ? selectedArrayItemPr == index
+                                                                                                        ? Colors.blue
+                                                                                                        : MyColors.grey
+                                                                                                    : includedData[el].name == "Call Compliance"
+                                                                                                        ? selectedArrayItemCC == index
+                                                                                                            ? Colors.blue
+                                                                                                            : MyColors.grey
+                                                                                                        : MyColors.grey,
+                                                                                width: 1)),
+                                                                        child: includedData[el].name ==
+                                                                                "Retailing"
+                                                                            ? selectedArrayItemRe == index
+                                                                                ? const Icon(
+                                                                                    Icons.check,
+                                                                                    color: MyColors.whiteColor,
+                                                                                    size: 13,
+                                                                                  )
+                                                                                : null
+                                                                            : includedData[el].name == "PXM billing"
+                                                                                ? selectedArrayItemCo == index
+                                                                                    ? const Icon(
+                                                                                        Icons.check,
+                                                                                        color: MyColors.whiteColor,
+                                                                                        size: 13,
+                                                                                      )
+                                                                                    : null
+                                                                                : includedData[el].name == "Golden Points"
+                                                                                    ? selectedArrayItemGP == index
+                                                                                        ? const Icon(
+                                                                                            Icons.check,
+                                                                                            color: MyColors.whiteColor,
+                                                                                            size: 13,
+                                                                                          )
+                                                                                        : null
+                                                                                    : includedData[el].name == "Focus Brand"
+                                                                                        ? selectedArrayItemFB == index
+                                                                                            ? const Icon(
+                                                                                                Icons.check,
+                                                                                                color: MyColors.whiteColor,
+                                                                                                size: 13,
+                                                                                              )
+                                                                                            : null
+                                                                                        : includedData[el].name == "Productivity"
+                                                                                            ? selectedArrayItemPr == index
+                                                                                                ? const Icon(
+                                                                                                    Icons.check,
+                                                                                                    color: MyColors.whiteColor,
+                                                                                                    size: 13,
+                                                                                                  )
+                                                                                                : null
+                                                                                            : includedData[el].name == "Call Compliance"
+                                                                                                ? selectedArrayItemCC == index
+                                                                                                    ? const Icon(
+                                                                                                        Icons.check,
+                                                                                                        color: MyColors.whiteColor,
+                                                                                                        size: 13,
+                                                                                                      )
+                                                                                                    : null
+                                                                                                : null,
+                                                                      ),
+                                                                      const SizedBox(
+                                                                        width:
+                                                                            8,
+                                                                      ),
+                                                                      Text(
+                                                                        includedData[el].name ==
+                                                                                'Retailing'
+                                                                            ? "${widget.allSummary[0]['data'][index]['filter']} / ${widget.allSummary[0]['data'][index]['month']}"
+                                                                            : includedData[el].name == 'PXM billing'
+                                                                                ? "${widget.allSummary[4]['data'][index]['filter']} / ${widget.allSummary[4]['data'][index]['month']}"
+                                                                                : includedData[el].name == 'Focus Brand'
+                                                                                    ? "${widget.allSummary[2]['data'][index]['filter']} / ${widget.allSummary[2]['data'][index]['month']}"
+                                                                                    : includedData[el].name == 'Golden Points'
+                                                                                        ? "${widget.allSummary[1]['data'][index]['filter']} / ${widget.allSummary[1]['data'][index]['month']}"
+                                                                                        : includedData[el].name == 'Productivity'
+                                                                                            ? "${widget.allSummary[5]['data'][index]['filter']} / ${widget.allSummary[5]['data'][index]['month']}"
+                                                                                            : includedData[el].name == 'Call Compliance'
+                                                                                                ? "${widget.allSummary[3]['data'][index]['filter']} / ${widget.allSummary[3]['data'][index]['month']}"
+                                                                                                : "",
+                                                                        maxLines:
+                                                                            2,
+                                                                        style: const TextStyle(
+                                                                            fontFamily:
+                                                                                fontFamily,
+                                                                            fontWeight: FontWeight
+                                                                                .w500,
+                                                                            fontSize:
+                                                                                14,
+                                                                            color:
+                                                                                Color(0xff344C65)),
+                                                                      ),
+                                                                    ],
+                                                                  ),
                                                                 ),
-                                                                const SizedBox(
-                                                                  width: 8,
-                                                                ),
-                                                                Text(
-                                                                  includedData[el]
-                                                                              .name ==
-                                                                          'Retailing'
-                                                                      ? "${widget.allSummary[0]['data'][index]['filter']} / ${widget.allSummary[0]['data'][index]['month']}"
-                                                                      : includedData[el].name ==
-                                                                              'PXM billing'
-                                                                          ? "${widget.allSummary[4]['data'][index]['filter']} / ${widget.allSummary[4]['data'][index]['month']}"
-                                                                          : includedData[el].name == 'Focus Brand'
-                                                                              ? "${widget.allSummary[2]['data'][index]['filter']} / ${widget.allSummary[2]['data'][index]['month']}"
-                                                                              : includedData[el].name == 'Golden Points'
-                                                                                  ? "${widget.allSummary[1]['data'][index]['filter']} / ${widget.allSummary[1]['data'][index]['month']}"
-                                                                                  : includedData[el].name == 'Productivity'
-                                                                                      ? "${widget.allSummary[5]['data'][index]['filter']} / ${widget.allSummary[5]['data'][index]['month']}"
-                                                                                      : includedData[el].name == 'Call Compliance'
-                                                                                          ? "${widget.allSummary[3]['data'][index]['filter']} / ${widget.allSummary[3]['data'][index]['month']}"
-                                                                                          : "",
-                                                                  maxLines: 2,
-                                                                  style: const TextStyle(
-                                                                      fontFamily:
-                                                                          fontFamily,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w500,
-                                                                      fontSize:
-                                                                          14,
-                                                                      color: Color(
-                                                                          0xff344C65)),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ),
+                                                              ),
+                                                            )
+                                                          ],
                                                         ),
-                                                      )
-                                                    ],
-                                                  ),
-                                                );
-                                              }),
-                                        ),
-                                      ),
+                                                      );
+                                                    }),
+                                              ),
+                                            ),
                                     ],
                                   ),
                                 ),
@@ -1014,7 +1007,6 @@ class _SummaryContainerState extends State<SummaryContainer> {
       onTap: widget.onGestureTap,
       child: Stack(
         children: [
-
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -1025,6 +1017,7 @@ class _SummaryContainerState extends State<SummaryContainer> {
                 onPressed: widget.onPressed,
                 onNewMonth: widget.onNewMonth,
                 showHideRetailing: false,
+                onTapDefaultGoe: widget.onTapDefaultGoe,
               ),
               SingleChildScrollView(
                 child: Row(

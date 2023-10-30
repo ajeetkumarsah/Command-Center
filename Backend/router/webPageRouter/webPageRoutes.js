@@ -42,7 +42,7 @@ const webMonthlyRetailingByBrandFormPage = require('../../webData/webDeepDivePag
 const cacheData = require('../../webData/webSummaryPage/cacheDataTest')
 
 // ======================== Summary Page ========================//
-router.get('/webSummary/allData', webSummaryDefaultPage.getSummaryPageData);
+// router.get('/webSummary/allData', webSummaryDefaultPage.getSummaryPageData);
 router.post('/webSummary/allDefaultData', webSummaryDefaultMonthPage.getSummaryPageData);
 router.get('/webSummary/retailingData', webRetailingPage.getSummaryPageData);
 router.get('/webSummary/FBData', webFBPage.getSummaryPageData);
@@ -89,6 +89,6 @@ router.post('/webDeepDive/rt/monthlyData/byCategory', webMonthlyRetailingByCateg
 // ======================== Test Page ========================//
 router.post('/webDeepDive/test/post', webDeepDiveFBPage.getPostTest);
 router.get('/webDeepDive/test/get', webDeepDiveFBPage.getGetTest);
-router.post('/webDeepDive/test/getCacheData', cacheData.getSummaryPageData);
+// router.post('/webDeepDive/test/getCacheData', cacheData.getSummaryPageData);
 
 module.exports = router;

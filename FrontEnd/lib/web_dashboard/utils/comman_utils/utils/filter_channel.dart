@@ -1,5 +1,6 @@
 import 'package:command_centre/provider/sheet_provider.dart';
 import 'package:command_centre/utils/const/const_array.dart';
+import 'package:command_centre/web_dashboard/utils/pop_up_utils/pop_up_remove.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -12,14 +13,15 @@ import '../../summary_utils/dropdown_widget.dart';
 class FiltersChannel extends StatefulWidget {
   final String selectedMonthList;
   final Function() onTapMonthFilter;
-  final String selectedChannelList;
+  final List selectedChannelList;
   final Function() onTapChannelFilter;
+  final Function() onTapRemoveFilter;
 
   const FiltersChannel({
     Key? key,
     required this.selectedMonthList,
     required this.onTapMonthFilter,
-    required this.selectedChannelList, required this.onTapChannelFilter,
+    required this.selectedChannelList, required this.onTapChannelFilter, required this.onTapRemoveFilter,
   }) : super(key: key);
 
   @override
@@ -29,6 +31,17 @@ class FiltersChannel extends StatefulWidget {
 class _FiltersChannelState extends State<FiltersChannel> {
   bool checked = false;
 
+  void _showLogoutPopup(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => Container(
+        color: Colors.white.withOpacity(0.2), // Set the desired background color and opacity
+        child: Center(
+          child: RemovePopup(onLogout: widget.onTapRemoveFilter),
+        ),
+      ),
+    );
+  }
   @override
   void initState() {
     super.initState();
@@ -37,7 +50,7 @@ class _FiltersChannelState extends State<FiltersChannel> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-
+    final sheetProvider = Provider.of<SheetProvider>(context);
     return Padding(
       padding: const EdgeInsets.all(15),
       child: Container(
@@ -128,51 +141,67 @@ class _FiltersChannelState extends State<FiltersChannel> {
                                   title: 'Channel Filter',
                                   icon: Icons.edit,
                                 ),
-                                // widget.selectedChannelList == "Select.."?Container():
-                                // Padding(
-                                //   padding:
-                                //   const EdgeInsets.only(
-                                //       left: 15.0,
-                                //       right: 15,
-                                //       top: 10),
-                                //   child: Row(
-                                //     mainAxisAlignment:
-                                //     MainAxisAlignment
-                                //         .center,
-                                //     children: [
-                                //       Expanded(
-                                //         child: Text(
-                                //           widget.selectedChannelList.isEmpty?"Select..":widget.selectedChannelList,
-                                //           style: const TextStyle(
-                                //               fontFamily:
-                                //               fontFamily,
-                                //               fontWeight:
-                                //               FontWeight
-                                //                   .w500,
-                                //               fontSize: 14,
-                                //               color: Color(
-                                //                   0xff344C65)),
-                                //         ),
-                                //       ),
-                                //       const Spacer(),
-                                //       InkWell(
-                                //           onTap: widget
-                                //               .onTapRemoveFilter,
-                                //           child: const Icon(
-                                //             Icons.close,
-                                //             size: 16,
-                                //             color: MyColors
-                                //                 .primary,
-                                //           ))
-                                //     ],
-                                //   ),
-                                // ),
+                                widget.selectedChannelList == ["Select.."]?Container():
+                                Padding(
+                                  padding:
+                                  const EdgeInsets.only(
+                                      left: 15.0,
+                                      right: 15,
+                                      top: 10),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                    MainAxisAlignment
+                                        .center,
+                                    children: [
+                                      Expanded(
+                                          child: SizedBox(
+                                            height: widget.selectedChannelList.isEmpty?0:100,
+                                            child: ListView.builder(itemCount: widget.selectedChannelList.length, itemBuilder: (context, index){
+                                              return Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                children: [
+                                                  Text(
+                                                    widget.selectedChannelList.isNotEmpty?"${widget.selectedChannelList[index]}":"Select..",
+                                                    style: const TextStyle(
+                                                        fontFamily:
+                                                        fontFamily,
+                                                        fontWeight:
+                                                        FontWeight
+                                                            .w500,
+                                                        fontSize: 14,
+                                                        color: Color(
+                                                            0xff344C65)),
+                                                  ),
+
+                                                  InkWell(
+                                                    onTap: (){
+                                                      sheetProvider.isCloseSelectCD = index;
+                                                      _showLogoutPopup(
+                                                          context);
+                                                    },                                                      // onTap: widget
+                                                      //     .onTapRemoveFilter,
+                                                      child: const Icon(
+                                                        Icons.close,
+                                                        size: 16,
+                                                        color: MyColors
+                                                            .primary,
+                                                      ))
+                                                ],
+                                              );
+                                            }),
+                                          )
+
+                                      ),
+
+                                    ],
+                                  ),
+                                ),
                                 GestureDetector(
                                   onTap: widget.onTapChannelFilter,
                                   child: Padding(
                                     padding: const EdgeInsets.only(
                                         left: 15, top: 10, right: 15),
-                                    child: Row(
+                                    child:widget.selectedChannelList == ['Select..']?const Text('Select'): Row(
                                       children: [
                                         Flexible(
                                           child: Container(
@@ -185,15 +214,26 @@ class _FiltersChannelState extends State<FiltersChannel> {
                                               borderRadius:
                                               BorderRadius.circular(8.0),
                                             ),
-                                            child: Text(
-                                              widget.selectedChannelList.isEmpty?"Select..":widget.selectedChannelList,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: const TextStyle(
-                                                fontSize: 13.0,
-                                                fontFamily: fontFamily,
-                                                color: Color(0xFF212121),
-                                              ),
-                                            ),
+                                            child: SizedBox(
+                                                height: 40,
+                                                child: ListView.builder(shrinkWrap: true, scrollDirection: Axis.horizontal, itemCount: widget.selectedChannelList.length, itemBuilder: (context, index){
+                                                 print("He111111111111111111111 ${widget.selectedChannelList}");
+                                                  return Row(
+                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                    children: [
+                                                      Text(
+                                                        widget.selectedChannelList == ['Select..']?'Select..':"${widget.selectedChannelList[index]}, ",
+                                                        overflow: TextOverflow.ellipsis,
+                                                        style: const TextStyle(
+                                                          fontSize: 13.0,
+                                                          fontFamily: fontFamily,
+                                                          color: Color(0xFF212121),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  );
+                                                }),
+                                              )
                                           ),
                                         ),
                                       ],

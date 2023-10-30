@@ -21,6 +21,7 @@ import 'package:command_centre/web_dashboard/utils/table/table_site.dart';
 import 'package:command_centre/web_dashboard/utils/table/table_tabs/division_table_tab.dart';
 import 'package:command_centre/web_dashboard/utils/table/table_tabs/site_table_tab.dart';
 import 'package:command_centre/web_dashboard/utils/table/tables_retailing.dart';
+import 'package:excel/excel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../../../activities/coverage_screen.dart';
@@ -28,7 +29,6 @@ import '../../../../../../model/data_table_model.dart';
 import '../../../../../../provider/sheet_provider.dart';
 import '../../../../../../utils/colors/colors.dart';
 import '../../../../../../utils/style/text_style.dart';
-// import 'dart:html' as html;
 
 class CoverageWebSummary extends StatefulWidget {
   final Function() onTap;
@@ -57,6 +57,10 @@ class CoverageWebSummary extends StatefulWidget {
   final Function() onTap2;
   final Function() onTap3;
   final Function() onTap4;
+  final Function() tryAgain;
+  final Function() tryAgain1;
+  final Function() tryAgain2;
+  final Function() tryAgain3;
   final int selectedIndex1;
   final String selectedChannelList;
   final Function() onTapChannelFilter;
@@ -74,7 +78,7 @@ class CoverageWebSummary extends StatefulWidget {
     required this.clusterList,
     required this.onApplyPressedMonth,
     required this.addMonthBool,
-    required this.dataList, required this.onChangedFilter, required this.selectedItemValueChannel, required this.onChangedFilterMonth, required this.selectedItemValueChannelMonth, required this.onApplyPressedMonthCHRTab, required this.dataListTabs, required this.dataListBillingTabs, required this.dataListCCTabs, required this.onClosedTap, required this.selectedMonthList, required this.onTapMonthFilter, required this.onTap1, required this.onTap2, required this.onTap3, required this.onTap4, required this.selectedIndex1, required this.selectedChannelList, required this.onTapChannelFilter, required this.onTapRemoveFilter, required this.selectedIndexLocation})
+    required this.dataList, required this.onChangedFilter, required this.selectedItemValueChannel, required this.onChangedFilterMonth, required this.selectedItemValueChannelMonth, required this.onApplyPressedMonthCHRTab, required this.dataListTabs, required this.dataListBillingTabs, required this.dataListCCTabs, required this.onClosedTap, required this.selectedMonthList, required this.onTapMonthFilter, required this.onTap1, required this.onTap2, required this.onTap3, required this.onTap4, required this.selectedIndex1, required this.selectedChannelList, required this.onTapChannelFilter, required this.onTapRemoveFilter, required this.selectedIndexLocation, required this.tryAgain, required this.tryAgain1, required this.tryAgain2, required this.tryAgain3})
       : super(key: key);
 
   @override
@@ -121,7 +125,94 @@ class _CoverageWebSummaryState extends State<CoverageWebSummary> {
   String selectedValueCategory2 = '';
   String selectedValueCategory3 = '';
   String selectedMonth = '';
-  String selectedChannel = '';
+  List selectedChannel = [];
+
+  postRequest(context) async {
+    if (true) {
+      setState(() {
+
+        final List<String> headers = [
+          'Month',
+          'Division',
+          'Site',
+          'Branch',
+          'Channel',
+          'SubChannel',
+          'filter_key',
+          'billed_sum',
+          'Coverage',
+          'pc_sum',
+          'tc_sum',
+          'billing_per',
+          'productivity_per',
+        ];
+
+        final excel = Excel.createExcel();
+        final sheet = excel['Sheet1'];
+
+        // Write headers to the sheet
+        sheet.appendRow(headers);
+
+        // Iterate through the JSON data and populate the Excel sheet
+        for (var monthData in widget.dataList) {
+          if (monthData is List<dynamic>) {
+            for (var data in monthData) {
+              if (data is Map<String, dynamic>) {
+                _processData(data, sheet, [''], headers);
+              }
+            }
+          }
+        }
+
+        // Save the Excel file
+        excel.save();
+      });
+    } else {
+    }
+  }
+
+  void _processData(
+      Map<String, dynamic> data,
+      Sheet sheet,
+      List<String> path,
+      List<String> headers,
+      ) {
+    for (var entry in data.entries) {
+      var newPath = List<String>.from(path)..add(entry.key);
+
+      if (entry.value is Map<String, dynamic>) {
+        _processData(entry.value, sheet, newPath, headers);
+      } else if (entry.value is List<dynamic>) {
+        for (var nestedData in entry.value) {
+          if (nestedData is Map<String, dynamic>) {
+            _processData(nestedData, sheet, newPath, headers);
+          }
+        }
+      } else {
+        _writeRow(data, sheet, newPath, headers);
+      }
+    }
+  }
+
+  void _writeRow(
+      Map<String, dynamic> data,
+      Sheet sheet,
+      List<String> path,
+      List<String> headers,
+      ) {
+    // Initialize the row with empty values
+    List<String> row = List.filled(headers.length, '');
+
+    // Update the row with the actual data
+    for (int i = 0; i < path.length; i++) {
+      if (headers.contains(path[i])) {
+        row[headers.indexOf(path[i])] = data[path[i]].toString();
+      }
+    }
+
+    // Write the row to the sheet
+    sheet.appendRow(row);
+  }
 
   @override
   void initState() {
@@ -131,6 +222,7 @@ class _CoverageWebSummaryState extends State<CoverageWebSummary> {
     _scrollController1 = ScrollController();
     scrollController2 = ScrollController();
     _scrollControllerTable = ScrollController();
+
     // selectedIndexLocation = widget.selectedIndexLocation;
   }
 
@@ -140,6 +232,7 @@ class _CoverageWebSummaryState extends State<CoverageWebSummary> {
         .of(context)
         .size;
     final sheetProvider = Provider.of<SheetProvider>(context);
+
     return Stack(
       children: [
         Row(
@@ -149,11 +242,17 @@ class _CoverageWebSummaryState extends State<CoverageWebSummary> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   TitleWidget(
-                    title: 'Coverage & Distribution / ${widget.selectedIndex1 == 0?"Consolidated View":widget.selectedIndex1 == 1?"Call Hit Rate":widget.selectedIndex1 == 2?"Productivity":widget.selectedIndex1 == 3?"PxM Billing":""}',
+                    title: 'Coverage & Distribution / ${widget.selectedIndex1 ==
+                        0 ? "Consolidated View" : widget.selectedIndex1 == 1
+                        ? "Call Hit Rate"
+                        : widget.selectedIndex1 == 2 ? "Productivity" : widget
+                        .selectedIndex1 == 3 ? "PxM Billing" : ""}',
                     subTitle: 'Coverage & Distribution',
                     showHide: false,
                     onPressed: () {},
-                    onNewMonth: () {}, showHideRetailing: false,
+                    onNewMonth: () {},
+                    showHideRetailing: false,
+                    onTapDefaultGoe: () {},
                   ),
                   Padding(
                       padding: const EdgeInsets.only(
@@ -219,10 +318,36 @@ class _CoverageWebSummaryState extends State<CoverageWebSummary> {
                               borderRadius: BorderRadius.circular(15)),
                           child: Stack(
                             children: [
-                              sheetProvider.isLoaderActive == true
-                                  ? const Center(
-                                  child: CircularProgressIndicator())
-                                  : Column(
+                              sheetProvider.coverageErrorMsg.isNotEmpty
+                                  ? Center(
+                                child: Column(
+                                  // crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const Text('Something went wrong! Try Again'),
+                                    const SizedBox(height: 20,),
+                                    OutlinedButton(
+                                      onPressed:widget.tryAgain,
+                                      style: ButtonStyle(
+                                        side: MaterialStateProperty.all(
+                                            const BorderSide(
+                                                width: 1.0, color: MyColors.primary)),
+                                        shape: MaterialStateProperty.all(
+                                            RoundedRectangleBorder(
+                                                borderRadius:
+                                                BorderRadius.circular(5.0))),
+                                      ),
+                                      child: const Text(
+                                        "Try Again",
+                                        style: TextStyle(
+                                            fontFamily: fontFamily, color: Colors.black),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )
+                                  :
+                              Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
@@ -234,68 +359,88 @@ class _CoverageWebSummaryState extends State<CoverageWebSummary> {
                                       scrollDirection: Axis.horizontal,
                                       itemCount: widget.dataList.length,
                                       itemBuilder: (context, outerIndex) {
-                                        selectedChannel = widget.dataList[selectedIndexLocation][0]['channel'];
+                                        selectedChannel = widget
+                                            .dataList[selectedIndexLocation][0]['channel'];
                                         print("Selected $selectedChannel");
                                         sheetProvider.selectedChannelSite =
-                                        widget.dataList[selectedIndexLocation][0]['filter'];
+                                        widget
+                                            .dataList[selectedIndexLocation][0]['filter_key'];
                                         sheetProvider.selectedChannelDivision =
-                                            findDatasetName(widget.dataList[selectedIndexLocation][0]['filter']);
-                                        SharedPreferencesUtils.setString('divisionChannelSelected', findDatasetName(widget.dataList[selectedIndexLocation][0]['filter']));
-                                        SharedPreferencesUtils.setString('siteChannelSelected', widget.dataList[selectedIndexLocation][0]['filter']);
-                                        selectedMonth = widget.dataList[selectedIndexLocation][0]['month'];
-                                        sheetProvider.myStringMonth = selectedMonth;
-                                        sheetProvider.selectedChannelIndex = selectedIndexLocation;
-
+                                            findDatasetName(widget
+                                                .dataList[selectedIndexLocation][0]['filter_key']);
+                                        SharedPreferencesUtils.setString(
+                                            'divisionChannelSelected',
+                                            findDatasetName(widget
+                                                .dataList[selectedIndexLocation][0]['filter_key']));
+                                        SharedPreferencesUtils.setString(
+                                            'siteChannelSelected', widget
+                                            .dataList[selectedIndexLocation][0]['filter_key']);
+                                        selectedMonth = widget
+                                            .dataList[selectedIndexLocation][0]['month'];
+                                        sheetProvider.myStringMonth =
+                                            selectedMonth;
+                                        sheetProvider.selectedChannelIndex =
+                                            selectedIndexLocation;
+                                        print("${widget.dataList.length} Ye");
+                                        // print(widget.dataList[selectedIndexLocation]);
                                         return TabsBodyTable(
-                                            onTap: () {
-                                              setState(() {
-
-                                                selectedIndexLocation =
-                                                    outerIndex;
-                                                sheetProvider
-                                                    .selectedChannelIndex =
-                                                    outerIndex;
-                                                sheetProvider
-                                                    .selectedChannelDivision =
-                                                    findDatasetName(widget
-                                                        .dataList[outerIndex][0]['filter']);
-                                                sheetProvider
-                                                    .selectedChannelMonth =
-                                                widget
-                                                    .dataList[outerIndex][0]['month'];
-                                                var channels = widget
-                                                    .dataList[outerIndex][0]['division'][0]['Site'][0]['Branch'][0]['Channel']
-                                                    .length;
-                                                if (channels > 1) {
-                                                  selectedValueCategory =
-                                                  '';
-                                                } else {
-                                                  selectedValueCategory =
-                                                  widget
-                                                      .dataList[outerIndex][0]['division'][0]['Site'][0]['Branch'][0]['Channel'][0]['filter_key'];
-                                                }
-                                                sheetProvider.removeIndexCC = selectedIndexLocation;
-                                                selectedMonth = widget.dataList[selectedIndexLocation][0]['month'];
-                                                selectedChannel = widget.dataList[selectedIndexLocation][0]['channel'];
-                                              });
-                                            },
-                                            onTapGes: () {
-                                              setState(() {
-                                                selectedIndex =
-                                                selectedIndex == outerIndex
-                                                    ? -1
-                                                    : outerIndex;
-                                                sheetProvider.isExpanded ==
-                                                    true;
-                                              });
-                                            },
-                                            selectedIndexLocation:
-                                            selectedIndexLocation,
-                                            outerIndex: outerIndex,
-                                            title:
-                                            "${widget
-                                                .dataList[outerIndex][0]['filter']} / ${widget
-                                                .dataList[outerIndex][0]['month']}", onClosedTap: widget.onClosedTap,);
+                                          onTap: () {
+                                            setState(() {
+                                              selectedIndexLocation =
+                                                  outerIndex;
+                                              sheetProvider
+                                                  .selectedChannelIndex =
+                                                  selectedIndexLocation;
+                                              sheetProvider
+                                                  .selectedChannelDivision =
+                                                  findDatasetName(widget
+                                                      .dataList[outerIndex][0]['filter_key']);
+                                              sheetProvider
+                                                  .selectedChannelMonth =
+                                              widget
+                                                  .dataList[outerIndex][0]['month'];
+                                              // var channels = widget
+                                              //     .dataList[outerIndex][0]['division'][0]['Site'][0]['Branch'][0]['Channel']
+                                              //     .length;
+                                              // if (channels > 1) {
+                                              //   selectedValueCategory =
+                                              //   '';
+                                              // } else {
+                                              //   selectedValueCategory =
+                                              //   widget
+                                              //       .dataList[outerIndex][0]['division'][0]['Site'][0]['Branch'][0]['Channel'][0]['filter_key'];
+                                              // }
+                                              sheetProvider.removeIndexCC =
+                                                  selectedIndexLocation;
+                                              selectedMonth = widget
+                                                  .dataList[selectedIndexLocation][0]['month'];
+                                              selectedChannel = widget
+                                                  .dataList[selectedIndexLocation][0]['channel'];
+                                              sheetProvider.isExpandedDivision = false;
+                                              sheetProvider.isExpanded = false;
+                                              sheetProvider.isExpandedBranch = false;
+                                              sheetProvider.isExpandedChannel = false;
+                                              sheetProvider.isExpandedSubChannel = false;
+                                            });
+                                          },
+                                          onTapGes: () {
+                                            setState(() {
+                                              selectedIndex =
+                                              selectedIndex == outerIndex
+                                                  ? -1
+                                                  : outerIndex;
+                                              sheetProvider.isExpanded ==
+                                                  true;
+                                            });
+                                          },
+                                          selectedIndexLocation:
+                                          selectedIndexLocation,
+                                          outerIndex: outerIndex,
+                                          title:
+                                          "${widget
+                                              .dataList[outerIndex][0]['filter_key']} / ${widget
+                                              .dataList[outerIndex][0]['month']}",
+                                          onClosedTap: widget.onClosedTap,);
                                       },
                                     ),
                                   ),
@@ -303,11 +448,13 @@ class _CoverageWebSummaryState extends State<CoverageWebSummary> {
                                   if (selectedIndexLocation != -1)
                                     Padding(
                                       padding: const EdgeInsets.all(0.0),
-                                      child: widget.dataList.isEmpty
+                                      child:
+                                      widget.dataList.isEmpty
                                           ? const Center(
                                           child:
                                           CircularProgressIndicator())
-                                          : SingleChildScrollView(
+                                          :
+                                      SingleChildScrollView(
                                         child: Container(
                                           width: size.width,
 
@@ -319,15 +466,22 @@ class _CoverageWebSummaryState extends State<CoverageWebSummary> {
                                           child: Column(
                                             children: [
                                               TableHeaderWidget(
-                                                onTap: () {
-                                                  setState(
-                                                          () {
-                                                        addGeoBool =
-                                                        !addGeoBool;
-                                                      });
-                                                },
-                                                title:
-                                                "${widget.dataList[selectedIndexLocation][0]['filter']} / ${widget.dataList[selectedIndexLocation][0]['month']}  ${widget.dataList[selectedIndexLocation][0]['channel'].isEmpty?'': '/ ${widget.dataList[selectedIndexLocation][0]['channel']}'}"),
+                                                  onTap: () {
+                                                    setState(
+                                                            () {
+                                                          addGeoBool =
+                                                          !addGeoBool;
+                                                        });
+                                                  },
+                                                  title:
+                                                  "${widget
+                                                      .dataList[selectedIndexLocation][0]['filter_key']} / ${widget
+                                                      .dataList[selectedIndexLocation][0]['month']}  ${widget
+                                                      .dataList[selectedIndexLocation][0]['channel']
+                                                      .isEmpty
+                                                      ? ''
+                                                      : '/ ${widget
+                                                      .dataList[selectedIndexLocation][0]['channel']}'}"),
                                               Scrollbar(
                                                 controller: _scrollControllerTable,
                                                 child: SingleChildScrollView(
@@ -367,23 +521,28 @@ class _CoverageWebSummaryState extends State<CoverageWebSummary> {
                                                             left: 15.0,
                                                             right: 15.0,
                                                             bottom: 8.0),
-                                                        child: widget
-                                                            .dataList[selectedIndexLocation][0]['filter'] ==
-                                                            'All India' ?
+                                                        child:
+                                                        widget
+                                                            .dataList[selectedIndexLocation][0]['filter_key'] ==
+                                                            'All India' ||
+                                                            widget
+                                                                .dataList[selectedIndexLocation][0]['filter_key'] ==
+                                                                'allIndia' ?
                                                         CoverageTableData(
                                                           newDataList: widget
-                                                              .dataList[selectedIndexLocation],
-                                                        ) : widget
-                                                            .dataList[selectedIndexLocation][0]['filter'] ==
+                                                              .dataList[selectedIndexLocation], key1: 'Coverage', key2: 'billing_per', key3: 'productivity_per',
+                                                        )
+                                                            : widget
+                                                            .dataList[selectedIndexLocation][0]['filter_key'] ==
                                                             'N-E' || widget
-                                                            .dataList[selectedIndexLocation][0]['filter'] ==
+                                                            .dataList[selectedIndexLocation][0]['filter_key'] ==
                                                             'S-W' ?
                                                         CoverageTableDivision(
                                                           newDataList: widget
-                                                              .dataList[selectedIndexLocation],
+                                                              .dataList[selectedIndexLocation], key1: 'Coverage', key2: 'billing_per', key3: 'productivity_per',
                                                         ) : CoverageTableSite(
                                                           newDataList: widget
-                                                              .dataList[selectedIndexLocation],
+                                                              .dataList[selectedIndexLocation], key1: 'Coverage', key2: 'billing_per', key3: 'productivity_per',
                                                         ),
                                                       ),
                                                     ],),
@@ -441,10 +600,35 @@ class _CoverageWebSummaryState extends State<CoverageWebSummary> {
                               borderRadius: BorderRadius.circular(15)),
                           child: Stack(
                             children: [
-                              sheetProvider.isLoaderActive == true
-                                  ? const Center(
-                                  child: CircularProgressIndicator())
-                                  : Column(
+                              sheetProvider.coverage1ErrorMsg.isNotEmpty
+                                  ? Center(
+                                child: Column(
+                                  // crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const Text('Something went wrong! Try Again'),
+                                    const SizedBox(height: 20,),
+                                    OutlinedButton(
+                                      onPressed:widget.tryAgain1,
+                                      style: ButtonStyle(
+                                        side: MaterialStateProperty.all(
+                                            const BorderSide(
+                                                width: 1.0, color: MyColors.primary)),
+                                        shape: MaterialStateProperty.all(
+                                            RoundedRectangleBorder(
+                                                borderRadius:
+                                                BorderRadius.circular(5.0))),
+                                      ),
+                                      child: const Text(
+                                        "Try Again",
+                                        style: TextStyle(
+                                            fontFamily: fontFamily, color: Colors.black),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )
+                                  :Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
@@ -458,67 +642,76 @@ class _CoverageWebSummaryState extends State<CoverageWebSummary> {
                                         sheetProvider.selectedChannelSite =
                                         widget
                                             .dataListCCTabs[selectedIndexLocation1][0]['filter_key'];
-                                        // var channels1 = widget
-                                        //     .dataListCCTabs[outerIndex1][0]['division'][0]['site'][0]['branch'][0]['channel']
-                                        //     .length;
-                                        // if (channels1 > 1) {
-                                        //   selectedValueCategory1 = '';
-                                        // } else {
-                                        //   selectedValueCategory1 = widget
-                                        //       .dataListCCTabs[outerIndex1][0]['division'][0]['site'][0]['branch'][0]['channel'][0]['filter_key'];
-                                        // }
-                                        selectedMonth = widget.dataListCCTabs[selectedIndexLocation1][0]['month1'];
-                                        selectedChannel = widget.dataListCCTabs[selectedIndexLocation1][0]['channel'];
-                                        sheetProvider.selectedChannelFromAPI = widget.dataListCCTabs[selectedIndexLocation1][0]['channel'];
-                                        SharedPreferencesUtils.setString('divisionChannelSelected1', findDatasetName(widget.dataListCCTabs[selectedIndexLocation1][0]['filter_key']));
-                                        SharedPreferencesUtils.setString('siteChannelSelected1', widget.dataListCCTabs[selectedIndexLocation1][0]['filter_key']);
-                                        sheetProvider.selectedChannelIndex = selectedIndexLocation1;
-                                        print( "${sheetProvider.selectedChannelIndex}, $selectedIndexLocation1");
+                                        // var x
+                                        selectedMonth = widget
+                                            .dataListCCTabs[selectedIndexLocation1][0]['month1'];
+                                        selectedChannel = widget
+                                            .dataListCCTabs[selectedIndexLocation1][0]['channel'];
+                                        sheetProvider.selectedChannelFromAPI =
+                                        widget
+                                            .dataListCCTabs[selectedIndexLocation1][0]['channel'];
+                                        SharedPreferencesUtils.setString(
+                                            'divisionChannelSelected1',
+                                            findDatasetName(widget
+                                                .dataListCCTabs[selectedIndexLocation1][0]['filter_key']));
+                                        SharedPreferencesUtils.setString(
+                                            'siteChannelSelected1', widget
+                                            .dataListCCTabs[selectedIndexLocation1][0]['filter_key']);
+                                        sheetProvider.selectedChannelIndex =
+                                            selectedIndexLocation1;
                                         return TabsBodyTable(
-                                            onTap: () {
-                                              setState(() {
-                                                selectedIndexLocation1 =
-                                                    outerIndex1;
-                                                sheetProvider
-                                                    .selectedChannelIndex =
-                                                    outerIndex1;
-                                                print( "${sheetProvider.selectedChannelIndex}, $outerIndex1");
-                                                sheetProvider
-                                                    .selectedChannelDivision =
-                                                    findDatasetName(widget
-                                                        .dataListCCTabs[outerIndex1][0]['filter_key']);
-                                                var formattedMonth = widget
-                                                    .dataListCCTabs[outerIndex1][0]['month1'];
-                                                String year = formattedMonth
-                                                    .substring(2, 6);
-                                                String month = formattedMonth
-                                                    .substring(7);
-                                                var finalMonth = "$month-$year";
-                                                sheetProvider
-                                                    .selectedChannelMonth =
-                                                    finalMonth;
-                                                sheetProvider.removeIndexCC = selectedIndexLocation1;
-                                                selectedMonth = widget.dataListCCTabs[selectedIndexLocation1][0]['month1'];
-                                                selectedChannel = widget.dataListCCTabs[selectedIndexLocation1][0]['channel'];
-                                              });
-                                            },
-                                            onTapGes: () {
-                                              setState(() {
-                                                selectedIndex =
-                                                selectedIndex == outerIndex1
-                                                    ? -1
-                                                    : outerIndex1;
-                                                sheetProvider.isExpanded ==
-                                                    true;
-                                              });
-                                            },
-                                            selectedIndexLocation:
-                                            selectedIndexLocation1,
-                                            outerIndex: outerIndex1,
-                                            title:
-                                            "${widget
-                                                .dataListCCTabs[outerIndex1][0]['filter_key']} / ${widget
-                                                .dataListCCTabs[outerIndex1][0]['month1']}", onClosedTap: widget.onClosedTap,);
+                                          onTap: () {
+                                            setState(() {
+                                              selectedIndexLocation1 =
+                                                  outerIndex1;
+                                              sheetProvider
+                                                  .selectedChannelIndex =
+                                                  selectedIndexLocation1;
+                                              sheetProvider
+                                                  .selectedChannelDivision =
+                                                  findDatasetName(widget
+                                                      .dataListCCTabs[outerIndex1][0]['filter_key']);
+                                              var formattedMonth = widget
+                                                  .dataListCCTabs[outerIndex1][0]['month1'];
+                                              String year = formattedMonth
+                                                  .substring(2, 6);
+                                              String month = formattedMonth
+                                                  .substring(7);
+                                              var finalMonth = "$month-$year";
+                                              sheetProvider
+                                                  .selectedChannelMonth =
+                                                  finalMonth;
+                                              sheetProvider.removeIndexCC =
+                                                  selectedIndexLocation1;
+                                              selectedMonth = widget
+                                                  .dataListCCTabs[selectedIndexLocation1][0]['month1'];
+                                              selectedChannel = widget
+                                                  .dataListCCTabs[selectedIndexLocation1][0]['channel'];
+                                              sheetProvider.isExpandedDivision = false;
+                                              sheetProvider.isExpanded = false;
+                                              sheetProvider.isExpandedBranch = false;
+                                              sheetProvider.isExpandedChannel = false;
+                                              sheetProvider.isExpandedSubChannel = false;
+                                            });
+                                          },
+                                          onTapGes: () {
+                                            setState(() {
+                                              selectedIndex =
+                                              selectedIndex == outerIndex1
+                                                  ? -1
+                                                  : outerIndex1;
+                                              sheetProvider.isExpanded ==
+                                                  true;
+                                            });
+                                          },
+                                          selectedIndexLocation:
+                                          selectedIndexLocation1,
+                                          outerIndex: outerIndex1,
+                                          title:
+                                          "${widget
+                                              .dataListCCTabs[outerIndex1][0]['filter_key']} / ${widget
+                                              .dataListCCTabs[outerIndex1][0]['month1']}",
+                                          onClosedTap: widget.onClosedTap,);
                                       },
                                     ),
                                   ),
@@ -542,18 +735,25 @@ class _CoverageWebSummaryState extends State<CoverageWebSummary> {
                                           child: Column(
                                             children: [
                                               TableHeaderWidget(
-                                                onTap: () {
-                                                  setState(
-                                                          () {
-                                                        addGeoBool =
-                                                        !addGeoBool;
-                                                      });
-                                                },
+                                                  onTap: () {
+                                                    setState(
+                                                            () {
+                                                          addGeoBool =
+                                                          !addGeoBool;
+                                                        });
+                                                  },
 
-                                                title: "${widget.dataListCCTabs[selectedIndexLocation1][0]['filter_key']} / ${widget.dataListCCTabs[selectedIndexLocation1][0]['month1']}  ${widget.dataListCCTabs[selectedIndexLocation1][0]['channel'].isEmpty?'': '/ ${widget.dataListCCTabs[selectedIndexLocation1][0]['channel']}'}"),
-                                                // "${widget
-                                                //     .dataListCCTabs[selectedIndexLocation1][0]['filter_key']} / ${widget
-                                                //     .dataListCCTabs[selectedIndexLocation1][0]['month1']} / $selectedValueCategory1",
+                                                  title: "${widget
+                                                      .dataListCCTabs[selectedIndexLocation1][0]['filter_key']} / ${widget
+                                                      .dataListCCTabs[selectedIndexLocation1][0]['month1']}  ${widget
+                                                      .dataListCCTabs[selectedIndexLocation1][0]['channel']
+                                                      .isEmpty
+                                                      ? ''
+                                                      : '/ ${widget
+                                                      .dataListCCTabs[selectedIndexLocation1][0]['channel']}'}"),
+                                              // "${widget
+                                              //     .dataListCCTabs[selectedIndexLocation1][0]['filter_key']} / ${widget
+                                              //     .dataListCCTabs[selectedIndexLocation1][0]['month1']} / $selectedValueCategory1",
                                               // ),
                                               Scrollbar(
                                                 controller: _scrollControllerTable,
@@ -686,10 +886,35 @@ class _CoverageWebSummaryState extends State<CoverageWebSummary> {
                               borderRadius: BorderRadius.circular(15)),
                           child: Stack(
                             children: [
-                              sheetProvider.isLoaderActive == true
-                                  ? const Center(
-                                  child: CircularProgressIndicator())
-                                  : Column(
+                              sheetProvider.coverage2ErrorMsg.isNotEmpty
+                                  ? Center(
+                                child: Column(
+                                  // crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const Text('Something went wrong! Try Again'),
+                                    const SizedBox(height: 20,),
+                                    OutlinedButton(
+                                      onPressed:widget.tryAgain2,
+                                      style: ButtonStyle(
+                                        side: MaterialStateProperty.all(
+                                            const BorderSide(
+                                                width: 1.0, color: MyColors.primary)),
+                                        shape: MaterialStateProperty.all(
+                                            RoundedRectangleBorder(
+                                                borderRadius:
+                                                BorderRadius.circular(5.0))),
+                                      ),
+                                      child: const Text(
+                                        "Try Again",
+                                        style: TextStyle(
+                                            fontFamily: fontFamily, color: Colors.black),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )
+                                  :Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
@@ -703,56 +928,75 @@ class _CoverageWebSummaryState extends State<CoverageWebSummary> {
                                         sheetProvider.selectedChannelSite =
                                         widget
                                             .dataListTabs[selectedIndexLocation2][0]['filter_key'];
-                                        selectedMonth = widget.dataListTabs[selectedIndexLocation2][0]['month1'];
-                                        selectedChannel = widget.dataListTabs[selectedIndexLocation2][0]['channel'];
-                                        sheetProvider.selectedChannelFromAPI = widget.dataListTabs[selectedIndexLocation2][0]['channel'];
-                                        SharedPreferencesUtils.setString('divisionChannelSelected2', findDatasetName(widget.dataListTabs[selectedIndexLocation2][0]['filter_key']));
-                                        SharedPreferencesUtils.setString('siteChannelSelected2', widget.dataListTabs[selectedIndexLocation2][0]['filter_key']);
-                                        sheetProvider.selectedChannelIndex = selectedIndexLocation2;
+                                        selectedMonth = widget
+                                            .dataListTabs[selectedIndexLocation2][0]['month1'];
+                                        selectedChannel = widget
+                                            .dataListTabs[selectedIndexLocation2][0]['channel'];
+                                        sheetProvider.selectedChannelFromAPI =
+                                        widget
+                                            .dataListTabs[selectedIndexLocation2][0]['channel'];
+                                        SharedPreferencesUtils.setString(
+                                            'divisionChannelSelected2',
+                                            findDatasetName(widget
+                                                .dataListTabs[selectedIndexLocation2][0]['filter_key']));
+                                        SharedPreferencesUtils.setString(
+                                            'siteChannelSelected2', widget
+                                            .dataListTabs[selectedIndexLocation2][0]['filter_key']);
+                                        sheetProvider.selectedChannelIndex =
+                                            selectedIndexLocation2;
                                         return TabsBodyTable(
-                                            onTap: () {
-                                              setState(() {
-                                                selectedIndexLocation2 =
-                                                    outerIndex2;
-                                                sheetProvider
-                                                    .selectedChannelIndex =
-                                                    outerIndex2;
-                                                sheetProvider
-                                                    .selectedChannelDivision =
-                                                    findDatasetName(widget
-                                                        .dataListTabs[outerIndex2][0]['filter_key']);
-                                                var formattedMonth = widget
-                                                    .dataListTabs[outerIndex2][0]['month1'];
-                                                String year = formattedMonth
-                                                    .substring(2, 6);
-                                                String month = formattedMonth
-                                                    .substring(7);
-                                                var finalMonth = "$month-$year";
-                                                sheetProvider
-                                                    .selectedChannelMonth =
-                                                    finalMonth;
-                                                sheetProvider.removeIndexCC = selectedIndexLocation2;
-                                                selectedMonth = widget.dataListTabs[selectedIndexLocation2][0]['month1'];
-                                                selectedChannel = widget.dataListTabs[selectedIndexLocation2][0]['channel'];
-                                              });
-                                            },
-                                            onTapGes: () {
-                                              setState(() {
-                                                selectedIndex =
-                                                selectedIndex == outerIndex2
-                                                    ? -1
-                                                    : outerIndex2;
-                                                sheetProvider.isExpanded ==
-                                                    true;
-                                              });
-                                            },
-                                            selectedIndexLocation:
-                                            selectedIndexLocation2,
-                                            outerIndex: outerIndex2,
-                                            title:
-                                            "${widget
-                                                .dataListTabs[outerIndex2][0]['filter_key']} / ${widget
-                                                .dataListTabs[outerIndex2][0]['month1']}", onClosedTap: widget.onClosedTap,);
+                                          onTap: () {
+                                            setState(() {
+                                              selectedIndexLocation2 =
+                                                  outerIndex2;
+                                              sheetProvider
+                                                  .selectedChannelIndex =
+                                                  selectedIndexLocation2;
+                                              sheetProvider
+                                                  .selectedChannelDivision =
+                                                  findDatasetName(widget
+                                                      .dataListTabs[outerIndex2][0]['filter_key']);
+                                              var formattedMonth = widget
+                                                  .dataListTabs[outerIndex2][0]['month1'];
+                                              String year = formattedMonth
+                                                  .substring(2, 6);
+                                              String month = formattedMonth
+                                                  .substring(7);
+                                              var finalMonth = "$month-$year";
+                                              sheetProvider
+                                                  .selectedChannelMonth =
+                                                  finalMonth;
+                                              sheetProvider.removeIndexCC =
+                                                  selectedIndexLocation2;
+                                              selectedMonth = widget
+                                                  .dataListTabs[selectedIndexLocation2][0]['month1'];
+                                              selectedChannel = widget
+                                                  .dataListTabs[selectedIndexLocation2][0]['channel'];
+                                              sheetProvider.isExpandedDivision = false;
+                                              sheetProvider.isExpanded = false;
+                                              sheetProvider.isExpandedBranch = false;
+                                              sheetProvider.isExpandedChannel = false;
+                                              sheetProvider.isExpandedSubChannel = false;
+                                            });
+                                          },
+                                          onTapGes: () {
+                                            setState(() {
+                                              selectedIndex =
+                                              selectedIndex == outerIndex2
+                                                  ? -1
+                                                  : outerIndex2;
+                                              sheetProvider.isExpanded ==
+                                                  true;
+                                            });
+                                          },
+                                          selectedIndexLocation:
+                                          selectedIndexLocation2,
+                                          outerIndex: outerIndex2,
+                                          title:
+                                          "${widget
+                                              .dataListTabs[outerIndex2][0]['filter_key']} / ${widget
+                                              .dataListTabs[outerIndex2][0]['month1']}",
+                                          onClosedTap: widget.onClosedTap,);
                                       },
                                     ),
                                   ),
@@ -776,14 +1020,21 @@ class _CoverageWebSummaryState extends State<CoverageWebSummary> {
                                           child: Column(
                                             children: [
                                               TableHeaderWidget(
-                                                onTap: () {
-                                                  setState(
-                                                          () {
-                                                        addGeoBool =
-                                                        !addGeoBool;
-                                                      });
-                                                },
-    title: "${widget.dataListTabs[selectedIndexLocation2][0]['filter_key']} / ${widget.dataListTabs[selectedIndexLocation2][0]['month1']}  ${widget.dataListTabs[selectedIndexLocation2][0]['channel'].isEmpty?'': '/ ${widget.dataListTabs[selectedIndexLocation2][0]['channel']}'}"
+                                                  onTap: () {
+                                                    setState(
+                                                            () {
+                                                          addGeoBool =
+                                                          !addGeoBool;
+                                                        });
+                                                  },
+                                                  title: "${widget
+                                                      .dataListTabs[selectedIndexLocation2][0]['filter_key']} / ${widget
+                                                      .dataListTabs[selectedIndexLocation2][0]['month1']}  ${widget
+                                                      .dataListTabs[selectedIndexLocation2][0]['channel']
+                                                      .isEmpty
+                                                      ? ''
+                                                      : '/ ${widget
+                                                      .dataListTabs[selectedIndexLocation2][0]['channel']}'}"
                                                 // title:
                                                 // widget
                                                 //     .dataListTabs[selectedIndexLocation2][0]['filter_key'],
@@ -842,6 +1093,9 @@ class _CoverageWebSummaryState extends State<CoverageWebSummary> {
                                                         CoverageTableDataProductivity(
                                                           newDataList: widget
                                                               .dataListTabs[selectedIndexLocation2],
+                                                          key1: 'productivity_per1',
+                                                          key2: 'productivity_per2',
+                                                          key3: 'productivity_per3',
                                                         ) : widget
                                                             .dataListTabs[selectedIndexLocation2][0]['filter_key'] ==
                                                             'N-E' || widget
@@ -918,10 +1172,35 @@ class _CoverageWebSummaryState extends State<CoverageWebSummary> {
                               borderRadius: BorderRadius.circular(15)),
                           child: Stack(
                             children: [
-                              sheetProvider.isLoaderActive == true
-                                  ? const Center(
-                                  child: CircularProgressIndicator())
-                                  : Column(
+                              sheetProvider.coverage3ErrorMsg.isNotEmpty
+                                  ? Center(
+                                child: Column(
+                                  // crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const Text('Something went wrong! Try Again'),
+                                    const SizedBox(height: 20,),
+                                    OutlinedButton(
+                                      onPressed:widget.tryAgain3,
+                                      style: ButtonStyle(
+                                        side: MaterialStateProperty.all(
+                                            const BorderSide(
+                                                width: 1.0, color: MyColors.primary)),
+                                        shape: MaterialStateProperty.all(
+                                            RoundedRectangleBorder(
+                                                borderRadius:
+                                                BorderRadius.circular(5.0))),
+                                      ),
+                                      child: const Text(
+                                        "Try Again",
+                                        style: TextStyle(
+                                            fontFamily: fontFamily, color: Colors.black),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )
+                                  :Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
@@ -936,57 +1215,76 @@ class _CoverageWebSummaryState extends State<CoverageWebSummary> {
                                         sheetProvider.selectedChannelSite =
                                         widget
                                             .dataListBillingTabs[selectedIndexLocation3][0]['filter_key'];
-                                        selectedMonth = widget.dataListBillingTabs[selectedIndexLocation3][0]['month1'];
-                                        selectedChannel = widget.dataListBillingTabs[selectedIndexLocation3][0]['channel'];
-                                        sheetProvider.selectedChannelFromAPI = widget.dataListBillingTabs[selectedIndexLocation3][0]['channel'];
-                                        SharedPreferencesUtils.setString('divisionChannelSelected3', findDatasetName(widget.dataListBillingTabs[selectedIndexLocation3][0]['filter_key']));
-                                        SharedPreferencesUtils.setString('siteChannelSelected3', widget.dataListBillingTabs[selectedIndexLocation3][0]['filter_key']);
-                                        sheetProvider.selectedChannelIndex = selectedIndexLocation3;
+                                        selectedMonth = widget
+                                            .dataListBillingTabs[selectedIndexLocation3][0]['month1'];
+                                        selectedChannel = widget
+                                            .dataListBillingTabs[selectedIndexLocation3][0]['channel'];
+                                        sheetProvider.selectedChannelFromAPI =
+                                        widget
+                                            .dataListBillingTabs[selectedIndexLocation3][0]['channel'];
+                                        SharedPreferencesUtils.setString(
+                                            'divisionChannelSelected3',
+                                            findDatasetName(widget
+                                                .dataListBillingTabs[selectedIndexLocation3][0]['filter_key']));
+                                        SharedPreferencesUtils.setString(
+                                            'siteChannelSelected3', widget
+                                            .dataListBillingTabs[selectedIndexLocation3][0]['filter_key']);
+                                        sheetProvider.selectedChannelIndex =
+                                            selectedIndexLocation3;
                                         return TabsBodyTable(
-                                            onTap: () {
-                                              setState(() {
-                                                selectedIndexLocation3 =
-                                                    outerIndex3;
+                                          onTap: () {
+                                            setState(() {
+                                              selectedIndexLocation3 =
+                                                  outerIndex3;
 
-                                                sheetProvider
-                                                    .selectedChannelIndex =
-                                                    outerIndex3;
-                                                sheetProvider
-                                                    .selectedChannelDivision =
-                                                    findDatasetName(widget
-                                                        .dataListBillingTabs[selectedIndexLocation3][0]['filter_key']);
-                                                var formattedMonth = widget
-                                                    .dataListBillingTabs[selectedIndexLocation3][0]['month1'];
-                                                String year = formattedMonth
-                                                    .substring(2, 6);
-                                                String month = formattedMonth
-                                                    .substring(7);
-                                                var finalMonth = "$month-$year";
-                                                sheetProvider
-                                                    .selectedChannelMonth =
-                                                    finalMonth;
-                                                sheetProvider.removeIndexCC = selectedIndexLocation3;
-                                                selectedMonth = widget.dataListBillingTabs[selectedIndexLocation3][0]['month1'];
-                                                selectedChannel = widget.dataListBillingTabs[selectedIndexLocation3][0]['channel'];
-                                              });
-                                            },
-                                            onTapGes: () {
-                                              setState(() {
-                                                selectedIndex =
-                                                selectedIndex == outerIndex3
-                                                    ? -1
-                                                    : outerIndex3;
-                                                sheetProvider.isExpanded ==
-                                                    true;
-                                              });
-                                            },
-                                            selectedIndexLocation:
-                                            selectedIndexLocation3,
-                                            outerIndex: outerIndex3,
-                                            title:
-                                            "${widget
-                                                .dataListBillingTabs[outerIndex3][0]['filter_key']} / ${widget
-                                                .dataListBillingTabs[outerIndex3][0]['month1']}", onClosedTap: widget.onClosedTap,);
+                                              sheetProvider
+                                                  .selectedChannelIndex =
+                                                  selectedIndexLocation3;
+                                              sheetProvider
+                                                  .selectedChannelDivision =
+                                                  findDatasetName(widget
+                                                      .dataListBillingTabs[selectedIndexLocation3][0]['filter_key']);
+                                              var formattedMonth = widget
+                                                  .dataListBillingTabs[selectedIndexLocation3][0]['month1'];
+                                              String year = formattedMonth
+                                                  .substring(2, 6);
+                                              String month = formattedMonth
+                                                  .substring(7);
+                                              var finalMonth = "$month-$year";
+                                              sheetProvider
+                                                  .selectedChannelMonth =
+                                                  finalMonth;
+                                              sheetProvider.removeIndexCC =
+                                                  selectedIndexLocation3;
+                                              selectedMonth = widget
+                                                  .dataListBillingTabs[selectedIndexLocation3][0]['month1'];
+                                              selectedChannel = widget
+                                                  .dataListBillingTabs[selectedIndexLocation3][0]['channel'];
+                                              sheetProvider.isExpandedDivision = false;
+                                              sheetProvider.isExpanded = false;
+                                              sheetProvider.isExpandedBranch = false;
+                                              sheetProvider.isExpandedChannel = false;
+                                              sheetProvider.isExpandedSubChannel = false;
+                                            });
+                                          },
+                                          onTapGes: () {
+                                            setState(() {
+                                              selectedIndex =
+                                              selectedIndex == outerIndex3
+                                                  ? -1
+                                                  : outerIndex3;
+                                              sheetProvider.isExpanded ==
+                                                  true;
+                                            });
+                                          },
+                                          selectedIndexLocation:
+                                          selectedIndexLocation3,
+                                          outerIndex: outerIndex3,
+                                          title:
+                                          "${widget
+                                              .dataListBillingTabs[outerIndex3][0]['filter_key']} / ${widget
+                                              .dataListBillingTabs[outerIndex3][0]['month1']}",
+                                          onClosedTap: widget.onClosedTap,);
                                       },
                                     ),
                                   ),
@@ -1010,14 +1308,21 @@ class _CoverageWebSummaryState extends State<CoverageWebSummary> {
                                           child: Column(
                                             children: [
                                               TableHeaderWidget(
-                                                onTap: () {
-                                                  setState(
-                                                          () {
-                                                        addGeoBool =
-                                                        !addGeoBool;
-                                                      });
-                                                },
-                                                  title: "${widget.dataListBillingTabs[selectedIndexLocation3][0]['filter_key']} / ${widget.dataListBillingTabs[selectedIndexLocation3][0]['month1']}  ${widget.dataListBillingTabs[selectedIndexLocation3][0]['channel'].isEmpty?'': '/ ${widget.dataListBillingTabs[selectedIndexLocation3][0]['channel']}'}"
+                                                  onTap: () {
+                                                    setState(
+                                                            () {
+                                                          addGeoBool =
+                                                          !addGeoBool;
+                                                        });
+                                                  },
+                                                  title: "${widget
+                                                      .dataListBillingTabs[selectedIndexLocation3][0]['filter_key']} / ${widget
+                                                      .dataListBillingTabs[selectedIndexLocation3][0]['month1']}  ${widget
+                                                      .dataListBillingTabs[selectedIndexLocation3][0]['channel']
+                                                      .isEmpty
+                                                      ? ''
+                                                      : '/ ${widget
+                                                      .dataListBillingTabs[selectedIndexLocation3][0]['channel']}'}"
                                                 // title:
                                                 // widget
                                                 //     .dataListBillingTabs[selectedIndexLocation3][0]['filter_key'],
@@ -1069,18 +1374,18 @@ class _CoverageWebSummaryState extends State<CoverageWebSummary> {
                                                         child:
                                                         // CoverageTableDataBilling(newDataList: widget.dataListBillingTabs[selectedIndexLocation],)
                                                         widget
-                                                            .dataListBillingTabs[selectedIndexLocation3][0]['filter'] ==
+                                                            .dataListBillingTabs[selectedIndexLocation3][0]['filter_key'] ==
                                                             'All India' ||
                                                             widget
-                                                                .dataListBillingTabs[selectedIndexLocation3][0]['filter'] ==
+                                                                .dataListBillingTabs[selectedIndexLocation3][0]['filter_key'] ==
                                                                 'allIndia' ?
                                                         CoverageTableDataBilling(
                                                           newDataList: widget
                                                               .dataListBillingTabs[selectedIndexLocation3],
                                                         ) : widget
-                                                            .dataListBillingTabs[selectedIndexLocation3][0]['filter'] ==
+                                                            .dataListBillingTabs[selectedIndexLocation3][0]['filter_key'] ==
                                                             'N-E' || widget
-                                                            .dataListBillingTabs[selectedIndexLocation3][0]['filter'] ==
+                                                            .dataListBillingTabs[selectedIndexLocation3][0]['filter_key'] ==
                                                             'S-W'
                                                             ?
                                                         CoverageTableTabDivision(
@@ -1143,7 +1448,11 @@ class _CoverageWebSummaryState extends State<CoverageWebSummary> {
                     ),
                   ) :
                   Container(),
-                  const ExcelImportButton(),
+                  ExcelImportButton(onClickExcel: () async{
+                    print('hello');
+                    setState(() {});
+                    await postRequest(context);
+                  },),
                 ],
               ),
             ),
@@ -1156,29 +1465,49 @@ class _CoverageWebSummaryState extends State<CoverageWebSummary> {
             //   onTapChannelFilter:  widget.onTapChannelFilter, onTapRemoveFilter:  widget.onTapRemoveFilter,
             // )
             FiltersChannel(
-              selectedMonthList:widget.selectedIndex1 == 0?
-              (widget.dataList).isEmpty?'Select..':
-              widget.dataList[0][0]['month']:
-              widget.selectedIndex1 == 1?(widget.dataListCCTabs).isEmpty?'Loading..':
-              widget.dataListCCTabs[0][0]['month1']:
-              widget.selectedIndex1 == 2?(widget.dataListTabs).isEmpty?'Loading..':
-              widget.dataListTabs[0][0]['month1']:
-              widget.selectedIndex1 == 3?(widget.dataListBillingTabs).isEmpty?'Loading..':
-              widget.dataListBillingTabs[0][0]['month1']:"" ,
-              // (widget.dataList).isEmpty?'Loading..':selectedMonth,
-              // widget.dataList[selectedIndexLocation][0]['month'],
+              selectedMonthList: widget.selectedIndex1 == 0
+                  ? (widget.dataList).isEmpty
+                  ? 'Select..'
+                  : widget.dataList[selectedIndexLocation][0]['month']
+                  : widget.selectedIndex1 == 1
+                  ? (widget.dataListCCTabs).isEmpty
+                  ? 'Select..'
+                  : widget.dataListCCTabs[selectedIndexLocation1][0]
+              ['month1']
+                  : widget.selectedIndex1 == 2
+                  ? (widget.dataListTabs).isEmpty
+                  ? 'Select..'
+                  : widget.dataListTabs[selectedIndexLocation2][0]
+              ['month1']
+                  : widget.selectedIndex1 == 3
+                  ? (widget.dataListBillingTabs).isEmpty
+                  ? 'Select..'
+                  : widget.dataListBillingTabs[selectedIndexLocation3]
+              [0]['month1']
+                  : "Select..",
               onTapMonthFilter: widget.onTapMonthFilter,
               selectedChannelList:
-              widget.selectedIndex1 == 0?
-              (widget.dataList).isEmpty?'Select..':
-              widget.dataList[0][0]['channel']:
-              widget.selectedIndex1 == 1?(widget.dataListCCTabs).isEmpty?'Loading..':
-              widget.dataListCCTabs[0][0]['channel']:
-              widget.selectedIndex1 == 2?(widget.dataListTabs).isEmpty?'Loading..':
-              widget.dataListTabs[0][0]['channel']:
-              widget.selectedIndex1 == 3?(widget.dataListBillingTabs).isEmpty?'Loading..':
-              widget.dataListBillingTabs[0][0]['channel']:"" ,
-              onTapChannelFilter:  widget.onTapChannelFilter,
+              widget.selectedIndex1 == 0
+                  ? (widget.dataList).isEmpty
+                  ? ['Select..']
+                  : widget.dataList[selectedIndexLocation][0]['channel']
+                  : widget.selectedIndex1 == 1
+                  ? (widget.dataListCCTabs).isEmpty
+                  ? ['Select..']
+                  : widget.dataListCCTabs[selectedIndexLocation1][0]
+              ['channel']
+                  : widget.selectedIndex1 == 2
+                  ? (widget.dataListTabs).isEmpty
+                  ? ['Select..']
+                  : widget.dataListTabs[selectedIndexLocation2][0]
+              ['channel']
+                  : widget.selectedIndex1 == 3
+                  ? (widget.dataListBillingTabs).isEmpty
+                  ? ['Select..']
+                  : widget.dataListBillingTabs[selectedIndexLocation3]
+              [0]['channel']
+                  : ['Select..'],
+              onTapChannelFilter: widget.onTapChannelFilter, onTapRemoveFilter: widget.onTapRemoveFilter,
             )
           ],
         ),

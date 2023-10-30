@@ -14,8 +14,10 @@ class DivisionSheet extends StatefulWidget {
   final List list;
   final List divisionList;
   final List siteList;
+  final List clusterList;
   final List branchList;
   final int selectedGeo;
+  final Function() onApplyClick;
 
   const DivisionSheet(
       {Key? key,
@@ -23,7 +25,8 @@ class DivisionSheet extends StatefulWidget {
       required this.divisionList,
       required this.siteList,
       required this.branchList,
-      required this.selectedGeo})
+      required this.selectedGeo, required this.clusterList,
+      required this.onApplyClick})
       : super(key: key);
 
   @override
@@ -40,6 +43,11 @@ class _DivisionSheetState extends State<DivisionSheet> {
   List<bool> _checkedItems2 = [];
   List<bool> _checkedItems3 = [];
   List<bool> _checkedItems4 = [];
+  int selectedArrayItemAllIndia = -1;
+  int selectedArrayItemCluster = -1;
+  int selectedArrayItemSite = -1;
+  int selectedArrayItemDivision = -1;
+  int selectedArrayItem = -1;
   bool _myBool = false;
   List<bool> isSelected = List<bool>.generate(10000, (index) => false);
 
@@ -51,10 +59,7 @@ class _DivisionSheetState extends State<DivisionSheet> {
     setState(() {
       _selected = widget.selectedGeo;
     });
-    // _checkedItems1 = List<bool>.generate(160, (index) => false);
-    // _checkedItems2 = List<bool>.generate(widget.divisionList.length, (index) => false);
-    // _checkedItems3 = List<bool>.generate(widget.siteList.length, (index) => false);
-    // _checkedItems4 = List<bool>.generate(widget.branchList.length, (index) => false);
+
   }
 
   @override
@@ -119,6 +124,10 @@ class _DivisionSheetState extends State<DivisionSheet> {
                           child: ListView.builder(
                               itemCount: items.length,
                               itemBuilder: (BuildContext context, index) {
+                                SharedPreferencesUtils.setString(
+                                    'division', items[_selected]);
+                                SharedPreferencesUtils.setString(
+                                    'mobileDivision', items[_selected].toLowerCase());
                                 return Container(
                                   height: 45,
                                   color:
@@ -135,10 +144,11 @@ class _DivisionSheetState extends State<DivisionSheet> {
                                     onTap: () {
                                       setState(() {
                                         _selected = index;
-                                        print("Here ${items[index]}");
                                         sheetProvider.division = items[index];
                                         SharedPreferencesUtils.setString(
                                             'division', items[index]);
+                                        SharedPreferencesUtils.setString(
+                                            'mobileDivision', items[index].toLowerCase());
                                       });
                                     },
                                   ),
@@ -169,169 +179,344 @@ class _DivisionSheetState extends State<DivisionSheet> {
                                       hintStyle: ThemeText.searchHintText),
                                 ),
                               ),
-                              // SizedBox(
-                              //   height: 35,
-                              //   child: Transform.scale(
-                              //     scale: 0.9,
-                              //     child: Row(
-                              //       children: [
-                              //         Checkbox(
-                              //           value: _myBool,
-                              //           checkColor: Colors.white,
-                              //           activeColor: MyColors.primary,
-                              //           shape:
-                              //           const RoundedRectangleBorder(
-                              //             borderRadius:
-                              //             BorderRadius.all(
-                              //               Radius.circular(5.0),
-                              //             ),
-                              //           ),
-                              //           onChanged: (isChecked) {
-                              //             setState(() {
-                              //               _myBool =
-                              //                   isChecked ?? false;
-                              //             });
-                              //           },
-                              //         ),
-                              //         const Text(
-                              //           "Select all",
-                              //           style: ThemeText.sheetText,
-                              //         )
-                              //       ],
-                              //     ),
-                              //   ),
-                              // ),
                               Expanded(
                                 child: Padding(
-                                  padding: const EdgeInsets.only(top: 0.0),
+                                  padding: const EdgeInsets.only(bottom: 30.0, top: 5),
                                   child: ListView.builder(
                                       itemCount: _selected == 0
                                           ? ConstArray().allIndia.length
                                           : _selected == 1
-                                              ? widget.divisionList.length
-                                              : _selected == 2
-                                                  ? widget.list.length
-                                                  : _selected == 3
-                                                      ? widget.siteList.length
-                                                      : widget
-                                                          .branchList.length,
+                                          ? widget.divisionList.length
+                                          : _selected == 2
+                                          ? widget.clusterList.length
+                                          : _selected == 3
+                                          ? widget.siteList.length
+                                          : widget
+                                          .branchList.length,
                                       itemBuilder:
                                           (BuildContext context, index) {
-                                        return Padding(
-                                          padding: const EdgeInsets.only(
-                                              left: 20, top: 7),
-                                          child: InkWell(
-                                            onTap: () {
-                                              setState(() {
-                                                isSelected[index] =
-                                                    !isSelected[index];
-                                              });
-                                            },
-                                            child: SizedBox(
-                                              height: 35,
-                                              child: Transform.scale(
-                                                scale: 0.9,
-                                                child: Row(
-                                                  children: [
-                                                    Checkbox(
-                                                      value:
-                                                          _checkedItems[index],
-                                                      checkColor: Colors.white,
-                                                      activeColor:
-                                                          MyColors.primary,
-                                                      shape:
-                                                          const RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius.all(
-                                                          Radius.circular(5.0),
+                                            // SharedPreferencesUtils.setString(
+                                            //     'site',
+                                            //     _selected == 0
+                                            //         ? allIndia
+                                            //         : _selected == 1
+                                            //         ? widget.divisionList[0]
+                                            //         : _selected == 2
+                                            //         ? widget.list[0]
+                                            //         : _selected == 3
+                                            //         ? widget.siteList[0]
+                                            //         : widget.branchList[0]);
+                                            //
+                                            // SharedPreferencesUtils.setString(
+                                            //     'mobileSite',
+                                            //     _selected == 0
+                                            //         ? allIndia
+                                            //         : _selected == 1
+                                            //         ? widget.divisionList[0]
+                                            //         : _selected == 2
+                                            //         ? widget.list[0]
+                                            //         : _selected == 3
+                                            //         ? widget.siteList[0]
+                                            //         : widget.branchList[0]);
+
+                                            return Row(
+                                          children: [
+                                            Expanded(
+                                              child: InkWell(
+                                                onTap: () {
+                                                  setState(() {
+                                                    // if (selectedArrayItemAllIndia == index || selectedArrayItemDivision == index || selectedArrayItemCluster == index || selectedArrayItemSite == index) {
+                                                    //   selectedArrayItemAllIndia = -1;
+                                                    //   selectedArrayItemCluster = -1;
+                                                    //   selectedArrayItemSite = -1;
+                                                    //   selectedArrayItemDivision = -1;
+                                                    // } else {
+                                                      _selected == 0
+                                                          ? selectedArrayItemAllIndia =
+                                                          index
+                                                          : _selected == 1
+                                                          ? selectedArrayItemDivision =
+                                                          index
+                                                          : _selected == 2
+                                                          ? selectedArrayItemCluster =
+                                                          index
+                                                          : _selected == 3
+                                                          ? selectedArrayItemSite =
+                                                          index
+                                                          : selectedArrayItem =
+                                                          index;
+                                                    // }
+
+                                                    SharedPreferencesUtils.setString(
+                                                        'site',
+                                                        _selected == 0
+                                                            ? allIndia
+                                                            : _selected == 1
+                                                            ? widget.divisionList[index]
+                                                            : _selected == 2
+                                                            ? widget.clusterList[index]
+                                                            : _selected == 3
+                                                            ? widget.siteList[index]
+                                                            : widget.branchList[index]);
+
+                                                    SharedPreferencesUtils.setString(
+                                                        'mobileSite',
+                                                        _selected == 0
+                                                            ? allIndia
+                                                            : _selected == 1
+                                                            ? widget.divisionList[index]
+                                                            : _selected == 2
+                                                            ? widget.clusterList[index]
+                                                            : _selected == 3
+                                                            ? widget.siteList[index]
+                                                            : widget.branchList[index]);
+
+
+                                                  });
+                                                },
+                                                child: Padding(
+                                                  padding:
+                                                  const EdgeInsets.only(
+                                                      left: 20,
+                                                      top: 5,
+                                                      bottom: 4),
+                                                  child: Row(
+                                                    children: [
+                                                      Container(
+                                                          height: 15,
+                                                          width: 15,
+                                                          decoration: BoxDecoration(
+                                                              color: _selected == 0
+                                                                  ? selectedArrayItemAllIndia == index
+                                                                  ? Colors.blue
+                                                                  : MyColors.transparent
+                                                                  : _selected == 1
+                                                                  ? selectedArrayItemDivision == index
+                                                                  ? Colors.blue
+                                                                  : MyColors.transparent
+                                                                  : _selected == 2
+                                                                  ? selectedArrayItemCluster == index
+                                                                  ? Colors.blue
+                                                                  : MyColors.transparent
+                                                                  : _selected == 3
+                                                                  ? selectedArrayItemSite == index
+                                                                  ? Colors.blue
+                                                                  : MyColors.transparent
+                                                                  : MyColors.grey,
+                                                              borderRadius: const BorderRadius.all(Radius.circular(2)),
+                                                              border: Border.all(
+                                                                  color: _selected == 0
+                                                                      ? selectedArrayItemAllIndia == index
+                                                                      ? Colors.blue
+                                                                      : MyColors.grey
+                                                                      : _selected == 1
+                                                                      ? selectedArrayItemDivision == index
+                                                                      ? Colors.blue
+                                                                      : MyColors.grey
+                                                                      : _selected == 2
+                                                                      ? selectedArrayItemCluster == index
+                                                                      ? Colors.blue
+                                                                      : MyColors.grey
+                                                                      : _selected == 3
+                                                                      ? selectedArrayItemSite == index
+                                                                      ? Colors.blue
+                                                                      : MyColors.grey
+                                                                      : MyColors.grey,
+                                                                  // width: selectedArrayItem == index ? 0 : 1)
+                                                                  width: 1)),
+                                                          child: _selected == 0
+                                                              ? selectedArrayItemAllIndia == index
+                                                              ? const Icon(
+                                                            Icons
+                                                                .check,
+                                                            color: MyColors
+                                                                .whiteColor,
+                                                            size: 13,
+                                                          )
+                                                              : null
+                                                              : _selected == 1
+                                                              ? selectedArrayItemDivision == index
+                                                              ? const Icon(
+                                                            Icons
+                                                                .check,
+                                                            color:
+                                                            MyColors.whiteColor,
+                                                            size:
+                                                            13,
+                                                          )
+                                                              : null
+                                                              : _selected == 2
+                                                              ? selectedArrayItemCluster == index
+                                                              ? const Icon(
+                                                            Icons.check,
+                                                            color: MyColors.whiteColor,
+                                                            size: 13,
+                                                          )
+                                                              : null
+                                                              : _selected == 3
+                                                              ? selectedArrayItemSite == index
+                                                              ? const Icon(
+                                                            Icons.check,
+                                                            color: MyColors.whiteColor,
+                                                            size: 13,
+                                                          )
+                                                              : null
+                                                              : null),
+                                                      const SizedBox(
+                                                        width: 8,
+                                                      ),
+                                                      Expanded(
+                                                        child: Text(
+                                                          _selected == 0
+                                                              ? ConstArray()
+                                                              .allIndia[
+                                                          index]
+                                                              : _selected == 1
+                                                              ? widget.divisionList[
+                                                          index]
+                                                              : _selected ==
+                                                              2
+                                                              ? widget.clusterList[
+                                                          index]
+                                                              : _selected ==
+                                                              3
+                                                              ? widget.siteList[
+                                                          index]
+                                                              : widget
+                                                              .branchList[index],
+                                                          maxLines: 2,
+                                                          style: const TextStyle(
+                                                              fontFamily:
+                                                              fontFamily,
+                                                              fontWeight:
+                                                              FontWeight
+                                                                  .w500,
+                                                              fontSize: 14,
+                                                              color: Color(
+                                                                  0xff344C65)),
                                                         ),
                                                       ),
-                                                      onChanged: (isChecked) {
-                                                        setState(() {
-                                                          _checkedItems[index] =
-                                                              isChecked ??
-                                                                  false;
-                                                          // print("Here ${
-                                                          //     _selected == 0
-                                                          //         ? ConstArray()
-                                                          //         .allIndia[
-                                                          //     index]
-                                                          //         : _selected == 1
-                                                          //         ? ConstArray()
-                                                          //         .division[
-                                                          //     index]
-                                                          //         : _selected ==
-                                                          //         2
-                                                          //         ? widget.list[
-                                                          //     index]
-                                                          //         : _selected ==
-                                                          //         3
-                                                          //         ? ConstArray().site[
-                                                          //     index]
-                                                          //         : ConstArray()
-                                                          //         .branch[index]
-                                                          // }");
-                                                          SharedPreferencesUtils.setString(
-                                                              'site',
-                                                              _selected == 0
-                                                                  ? allIndia
-                                                                  : _selected == 1
-                                                                      ? widget.divisionList[index]
-                                                                      : _selected == 2
-                                                                          ? widget.list[index]
-                                                                          : _selected == 3
-                                                                              ? widget.siteList[index]
-                                                                              : widget.branchList[index]);
-                                                          sheetProvider
-                                                              .state = _selected ==
-                                                                  0
-                                                              ? ConstArray()
-                                                                      .allIndia[
-                                                                  index]
-                                                              : _selected == 1
-                                                                  ? widget.divisionList[
-                                                                      index]
-                                                                  : _selected ==
-                                                                          2
-                                                                      ? widget.list[
-                                                                          index]
-                                                                      : _selected ==
-                                                                              3
-                                                                          ? widget.siteList[
-                                                                              index]
-                                                                          : widget
-                                                                              .branchList[index];
-                                                        });
-                                                      },
-                                                    ),
-                                                    Text(
-                                                      _selected == 0
-                                                          ? ConstArray()
-                                                              .allIndia[index]
-                                                          : _selected == 1
-                                                              ? widget.divisionList[
-                                                                  index]
-                                                              : _selected == 2
-                                                                  ? widget.list[
-                                                                      index]
-                                                                  : _selected ==
-                                                                          3
-                                                                      ? widget.siteList[
-                                                                          index]
-                                                                      : widget.branchList[
-                                                                          index],
-                                                      style:
-                                                          ThemeText.sheetText,
-                                                    )
-                                                  ],
+                                                    ],
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                          ),
+                                            )
+                                          ],
                                         );
                                       }),
                                 ),
                               ),
+                              // Expanded(
+                              //   child: Padding(
+                              //     padding: const EdgeInsets.only(top: 0.0),
+                              //     child: ListView.builder(
+                              //         itemCount: _selected == 0
+                              //             ? ConstArray().allIndia.length
+                              //             : _selected == 1
+                              //                 ? widget.divisionList.length
+                              //                 : _selected == 2
+                              //                     ? widget.list.length
+                              //                     : _selected == 3
+                              //                         ? widget.siteList.length
+                              //                         : widget
+                              //                             .branchList.length,
+                              //         itemBuilder:
+                              //             (BuildContext context, index) {
+                              //           return Padding(
+                              //             padding: const EdgeInsets.only(
+                              //                 left: 20, top: 7),
+                              //             child: InkWell(
+                              //               onTap: () {
+                              //                 setState(() {
+                              //                   isSelected[index] =
+                              //                       !isSelected[index];
+                              //                 });
+                              //               },
+                              //               child: SizedBox(
+                              //                 height: 35,
+                              //                 child: Transform.scale(
+                              //                   scale: 0.9,
+                              //                   child: Row(
+                              //                     children: [
+                              //                       Checkbox(
+                              //                         value:
+                              //                             _checkedItems[index],
+                              //                         checkColor: Colors.white,
+                              //                         activeColor:
+                              //                             MyColors.primary,
+                              //                         shape:
+                              //                             const RoundedRectangleBorder(
+                              //                           borderRadius:
+                              //                               BorderRadius.all(
+                              //                             Radius.circular(5.0),
+                              //                           ),
+                              //                         ),
+                              //                         onChanged: (isChecked) {
+                              //                           setState(() {
+                              //                             _checkedItems[index] =
+                              //                                 isChecked ??
+                              //                                     false;
+                              //                             SharedPreferencesUtils.setString(
+                              //                                 'site',
+                              //                                 _selected == 0
+                              //                                     ? allIndia
+                              //                                     : _selected == 1
+                              //                                         ? widget.divisionList[index]
+                              //                                         : _selected == 2
+                              //                                             ? widget.list[index]
+                              //                                             : _selected == 3
+                              //                                                 ? widget.siteList[index]
+                              //                                                 : widget.branchList[index]);
+                              //                             sheetProvider
+                              //                                 .state = _selected ==
+                              //                                     0
+                              //                                 ? ConstArray()
+                              //                                         .allIndia[
+                              //                                     index]
+                              //                                 : _selected == 1
+                              //                                     ? widget.divisionList[
+                              //                                         index]
+                              //                                     : _selected ==
+                              //                                             2
+                              //                                         ? widget.list[
+                              //                                             index]
+                              //                                         : _selected ==
+                              //                                                 3
+                              //                                             ? widget.siteList[
+                              //                                                 index]
+                              //                                             : widget
+                              //                                                 .branchList[index];
+                              //                           });
+                              //                         },
+                              //                       ),
+                              //                       Text(
+                              //                         _selected == 0
+                              //                             ? ConstArray()
+                              //                                 .allIndia[index]
+                              //                             : _selected == 1
+                              //                                 ? widget.divisionList[
+                              //                                     index]
+                              //                                 : _selected == 2
+                              //                                     ? widget.list[
+                              //                                         index]
+                              //                                     : _selected ==
+                              //                                             3
+                              //                                         ? widget.siteList[
+                              //                                             index]
+                              //                                         : widget.branchList[
+                              //                                             index],
+                              //                         style:
+                              //                             ThemeText.sheetText,
+                              //                       )
+                              //                     ],
+                              //                   ),
+                              //                 ),
+                              //               ),
+                              //             ),
+                              //           );
+                              //         }),
+                              //   ),
+                              // ),
                             ],
                           ),
                         ))
@@ -360,9 +545,7 @@ class _DivisionSheetState extends State<DivisionSheet> {
                         ))),
                 Expanded(
                     child: TextButton(
-                        onPressed: () {
-                          Navigator.of(context).pop(true);
-                        },
+                        onPressed: widget.onApplyClick,
                         child: const Text(
                           "Apply Filters",
                           style: ThemeText.sheetallFilterText,

@@ -5,11 +5,30 @@ const util = require("../utill")
     , request = require('request')
     , config = require('../config/secret')
     // , access_groups = require('../config/access_groups')
-const db = require("../connection/db_connection");
+// const db = require("../connection/db_connection");
+const {v4: uuidv4} = require("uuid");
+const {getConnection, getQueryData} = require("../databaseConnection/dbConnection");
 const secretKey = process.env.secretKey;
+// const secretKey = process.env.secretKey;
 // const fs = require('fs');
 //
 // const privateKey = fs.readFileSync('path/to/private-key.pem');
+
+function convertDateString(myDate){
+    // Parse the date string
+    const date = new Date(myDate);
+
+// Get the year, month, and day
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+    const day = String(date.getDate()).padStart(2, '0');
+
+// Create the formatted date string
+    const formattedDate = `${year}-${month}-${day}`;
+
+    // console.log(formattedDate);
+    return (formattedDate);
+}
 
 
 login = async (req, res) => {
@@ -34,36 +53,50 @@ login = async (req, res) => {
 
             if (response.statusCode == 200) {
                 let userData = JSON.parse(body)
-                let user = await db.Users.findOne({where: {email: userData.Email}})
-                if(user){
-                    jwt.sign({user}, secretKey, {expiresIn: '30000s'}, (err, token) => {
+                // console.log("User Data_____", userData)
+                let connection = await getConnection()
+                let sqlQuery = `select top(1) * FROM [dbo].[tbl_command_center_users] where email = '${userData.Email}'`
+                console.log("Check", sqlQuery)
+                let user = await getQueryData(connection, sqlQuery)
+
+                let userInfo = user[0]
+                if(user.length>0){
+                    console.log("User found")
+                    jwt.sign({userInfo}, secretKey, {expiresIn: '30000s'}, (err, token) => {
                         let token_obj = {};
                         token_obj["token"] = token;
-                        token_obj["user"] = user;
+                        token_obj["user"] = userInfo;
                         res.send(token_obj);
                     })
                 }else {
+                    console.log("User Not found")
                     let date = new Date();
-                    let obj ={
-                        last_login : date,
-                        is_superuser : 0,
-                        first_name : userData.FirstName,
-                        last_name : userData.LastName,
-                        email : userData.Email
-                    };
-                    let Data = await db.Users.create(obj);
-                    let resObj = {
-                        id:Data.id,
-                        first_name: Data.first_name,
-                        last_name: Data.last_name,
-                        email: Data.email,
-                        persona_selected: Data.persona_selected,
-                        is_superuser: Data.is_superuser
-                    }
-                    jwt.sign({Data}, secretKey, {expiresIn: '30000s'}, (err, token) => {
+                    date = convertDateString(date)
+                    let id = uuidv4()
+
+                    let createUserQuery = `INSERT INTO [dbo].[tbl_command_center_users] (id, last_login, is_superuser, first_name, last_name, email, createdAt, updatedAt)
+                                            VALUES ('${id}', '${date}', 0, '${userData.FirstName}', '${userData.LastName}', '${userData.Email}', '${date}', '${date}');`
+
+                    // console.log(createUserQuery)
+                    let connection = await getConnection()
+                    let Data = await getQueryData(connection, createUserQuery);
+                    let getUserQuery = `select top(1) * FROM [dbo].[tbl_command_center_users] where email = '${userData.Email}'`
+                    connection = await getConnection()
+                    let user = await getQueryData(connection, getUserQuery)
+                    let userInfo = user[0]
+                    // let Data = await db.Users.create(obj);
+                    // let resObj = {
+                    //     id:Data.id,
+                    //     first_name: Data.first_name,
+                    //     last_name: Data.last_name,
+                    //     email: Data.email,
+                    //     persona_selected: Data.persona_selected,
+                    //     is_superuser: Data.is_superuser
+                    // }
+                    jwt.sign({userInfo}, secretKey, {expiresIn: '30000s'}, (err, token) => {
                         let token_obj = {};
                         token_obj["token"] = token;
-                        token_obj["user"] = Data;
+                        token_obj["user"] = userInfo;
                         res.status(200).send(token_obj);
                     })
                 }

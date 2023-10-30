@@ -37,7 +37,7 @@ class CircularContainer extends StatelessWidget {
     final intResult = double.parse(result) /1000;
     double doubleVar = intResult.toDouble();
     final size = MediaQuery.of(context).size;
-    print("Hello $doubleVar");
+    // print("Hello $doubleVar");
     return Padding(
       padding: const EdgeInsets.only(left: 5, right: 5),
       child: Container(

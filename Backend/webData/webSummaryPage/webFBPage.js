@@ -1,4 +1,5 @@
-const {sequelize} = require('../../databaseConnection/sql_connection');
+// const {sequelize} = require('../../databaseConnection/sql_connection');
+const {getConnection, getQueryData} = require('../../databaseConnection/dbConnection');
 
 
 function getFormatedNumberValue(value){
@@ -54,15 +55,17 @@ let getSummaryPageData = async (req, res) =>{
         }
 
         // let new_fb_query_all_india = `select sum([FB Points achieved Sum]) as fb_achieved_sum, sum([FB Target Sum]) as fb_target_sum FROM [dbo].[tbl_command_center_fb_calculation] where [Division] not in ('') and [Calender Year] like '${current_year_fb}' `
-        let fb_data = await sequelize.query(new_fb_query)
+        let connection = await getConnection()
+        let fb_data = await getQueryData(connection, new_fb_query)
+        // let fb_data = await sequelize.query(new_fb_query)
         // let fb_data_all_india = await sequelize.query(new_fb_query_all_india)
         let fb_achieved_current_year = 0
         let fb_target_current_year = 1
         // let fb_achieved_current_year_all_india = 0
         // let fb_target_current_year_all_india = 1
-        if(fb_data[0][0] !== undefined){
-            fb_achieved_current_year = fb_data[0][0]['fb_achieved_sum']
-            fb_target_current_year = fb_data[0][0]['fb_target_sum']
+        if(fb_data[0] !== undefined && fb_data[0]['fb_achieved_sum'] !== null){
+            fb_achieved_current_year = fb_data[0]['fb_achieved_sum']
+            fb_target_current_year = fb_data[0]['fb_target_sum']
         }
         // if(fb_data_all_india[0][0] !== undefined){
         //     fb_achieved_current_year_all_india = fb_data_all_india[0][0]['fb_achieved_sum']

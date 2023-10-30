@@ -1,12 +1,10 @@
 import 'package:command_centre/web_dashboard/utils/drawer_container/deep_dive_container/summary_Container/summary_container.dart';
 import 'package:flutter/material.dart';
-import 'package:localstorage/localstorage.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:html' as html;
 import '../../../helper/app_urls.dart';
-import '../../../helper/http_call.dart';
 import '../../../model/all_metrics.dart';
 import '../../../provider/sheet_provider.dart';
 import '../../../utils/const/const_array.dart';
@@ -50,6 +48,7 @@ class _SummaryContainerDrawerState extends State<SummaryContainerDrawer> {
   bool initial = false;
   bool showHide = false;
   bool addDataRe = false;
+  bool geoUpdateBool = false;
   int setIndex = 0;
   List<AllMetrics> allMetrics = [];
 
@@ -75,60 +74,6 @@ class _SummaryContainerDrawerState extends State<SummaryContainerDrawer> {
         metricData.add(item);
       }
     }
-  }
-
-  Future<String>? divisionFilterAPI() async {
-    // var url = 'https://run.mocky.io/v3/9aa3f386-5275-4213-9372-dcaf9d068388';
-    var url = '$BASE_URL/api/appData/divisionFilter';
-    var response = await http.get(Uri.parse(url), headers: {
-      'Content-Type': 'application/json; charset=UTF-8',
-      'Accept': 'application/json',
-    });
-    if (response.statusCode == 200) {
-      var jsonResponse = await jsonDecode(response.body)['data'];
-      setState(() {
-        divisionCount = jsonResponse;
-      });
-    } else {
-      print('Request failed with status: ${response.statusCode}.');
-    }
-    return '';
-  }
-
-  Future<String>? clusterFilterAPI() async {
-    // var url = 'https://run.mocky.io/v3/9aa3f386-5275-4213-9372-dcaf9d068388';
-    var url = '$BASE_URL/api/appData/clusterFilter';
-    var response = await http.get(Uri.parse(url), headers: {
-      'Content-Type': 'application/json; charset=UTF-8',
-      'Accept': 'application/json',
-    });
-    if (response.statusCode == 200) {
-      var jsonResponse = await jsonDecode(response.body)['data'];
-      setState(() {
-        clusterCount = jsonResponse;
-      });
-    } else {
-      print('Request failed with status: ${response.statusCode}.');
-    }
-    return '';
-  }
-
-  Future<String>? siteFilterAPI() async {
-    // var url = 'https://run.mocky.io/v3/9aa3f386-5275-4213-9372-dcaf9d068388';
-    var url = '$BASE_URL/api/appData/siteFilter';
-    var response = await http.get(Uri.parse(url), headers: {
-      'Content-Type': 'application/json; charset=UTF-8',
-      'Accept': 'application/json',
-    });
-    if (response.statusCode == 200) {
-      var jsonResponse = await jsonDecode(response.body)['data'];
-      setState(() {
-        siteCount = jsonResponse;
-      });
-    } else {
-      print('Request failed with status: ${response.statusCode}.');
-    }
-    return '';
   }
 
   List<bool> menuBool = [
@@ -202,57 +147,98 @@ class _SummaryContainerDrawerState extends State<SummaryContainerDrawer> {
 
   var dateTime = DateTime.now();
 
+  /////////////////////// API Call for Filters Start//////////////////////
+  Future<String>? divisionFilterAPI() async {
+    // var url = 'https://run.mocky.io/v3/9aa3f386-5275-4213-9372-dcaf9d068388';
+    var url = '$BASE_URL/api/appData/divisionFilter';
+    var response = await http.get(Uri.parse(url), headers: {
+      'Content-Type': 'application/json; charset=UTF-8',
+      'Accept': 'application/json',
+    });
+    if (response.statusCode == 200) {
+      var jsonResponse = await jsonDecode(response.body)['data'];
+      setState(() {
+        divisionCount = jsonResponse;
+      });
+    } else {
+      print('Request failed with status: ${response.statusCode}.');
+    }
+    return '';
+  }
+
+  Future<String>? clusterFilterAPI() async {
+    // var url = 'https://run.mocky.io/v3/9aa3f386-5275-4213-9372-dcaf9d068388';
+    var url = '$BASE_URL/api/appData/clusterFilter';
+    var response = await http.get(Uri.parse(url), headers: {
+      'Content-Type': 'application/json; charset=UTF-8',
+      'Accept': 'application/json',
+    });
+    if (response.statusCode == 200) {
+      var jsonResponse = await jsonDecode(response.body)['data'];
+      setState(() {
+        clusterCount = jsonResponse;
+      });
+    } else {
+      print('Request failed with status: ${response.statusCode}.');
+    }
+    return '';
+  }
+
+  Future<String>? siteFilterAPI() async {
+    // var url = 'https://run.mocky.io/v3/9aa3f386-5275-4213-9372-dcaf9d068388';
+    var url = '$BASE_URL/api/appData/siteFilter';
+    var response = await http.get(Uri.parse(url), headers: {
+      'Content-Type': 'application/json; charset=UTF-8',
+      'Accept': 'application/json',
+    });
+    if (response.statusCode == 200) {
+      var jsonResponse = await jsonDecode(response.body)['data'];
+      setState(() {
+        siteCount = jsonResponse;
+      });
+    } else {
+      print('Request failed with status: ${response.statusCode}.');
+    }
+    return '';
+  }
+
+  /////////////////////// API Call for Filters Start//////////////////////
+
+  /////////////////////// API Call for All Cards End//////////////////////
   Future<http.Response> postRequest(context) async {
-    var url =
-        '$BASE_URL/api/webSummary/allDefaultData';
+    var url = '$BASE_URL/api/webSummary/allDefaultData';
     // var url = 'https://run.mocky.io/v3/311f279a-7619-4c71-a7cd-d03b889abb63';
 
-  var  body = json.encode(
-      localList.isEmpty
+    var body = json.encode(localList.isEmpty
         ? [
-            {
-              "filter_key": "retailing",
-              "query": flattenedListRetailing
-            },
-            {
-              "filter_key": "gp",
-              "query": flattenedListGP
-            },
-            {
-              "filter_key": "fb",
-              "query": flattenedListFB
-            },
-            {
-              "filter_key": "cc",
-              "query": flattenedListCC
-            },
-            {
-              "filter_key": "coverage",
-              "query": flattenedListCoverage
-            },
-            {
-              "filter_key": "productivity",
-              "query": flattenedListProd
-            }
+            {"filter_key": "retailing", "query": flattenedListRetailing},
+            {"filter_key": "gp", "query": flattenedListGP},
+            {"filter_key": "fb", "query": flattenedListFB},
+            {"filter_key": "cc", "query": flattenedListCC},
+            {"filter_key": "coverage", "query": flattenedListCoverage},
+            {"filter_key": "productivity", "query": flattenedListProd}
           ]
-       : localList[0]);
-    print("Body! Summary $body");
+        : localList);
+    print("Summary Body ${json.encode(localList)}");
     var response = await http.post(Uri.parse(url),
         headers: {"Content-Type": "application/json"}, body: body);
     if (response.statusCode == 200) {
-      // SharedPreferencesUtils.setBool('firstTime', false);
       setState(() {
         dataListCoverage = jsonDecode(response.body);
+        print("Summary Response $dataListCoverage");
       });
     } else {
       var snackBar = SnackBar(content: Text(response.body));
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
-      print(response.body);
     }
 
     return response;
   }
 
+  /////////////////////// API Call for All Cards End//////////////////////
+
+  /////////////////////// Local Storage for All Cards Start//////////////////////
+// TODO: Here
   void saveDataCoverageAll() {
     final jsonData = jsonEncode(localList);
     html.window.localStorage['dataListSummaryAll'] = jsonData;
@@ -265,7 +251,6 @@ class _SummaryContainerDrawerState extends State<SummaryContainerDrawer> {
       if (decodedData is List<dynamic>) {
         setState(() {
           localList = decodedData;
-          print("Local Local $localList");
         });
       }
     }
@@ -280,62 +265,68 @@ class _SummaryContainerDrawerState extends State<SummaryContainerDrawer> {
       setState(() {
         if (localList.isEmpty) {
           flattenedListCC = [
-            {findDatasetName(SharedPreferencesUtils.getString('webRetailingSite')!): SharedPreferencesUtils.getString('webRetailingSite'), "date": finalMonth}
+            {
+              findDatasetName(
+                      SharedPreferencesUtils.getString('webRetailingSite')!):
+                  SharedPreferencesUtils.getString('webRetailingSite'),
+              "date": finalMonth
+            }
           ];
           flattenedListFB = [
-            {findDatasetName(SharedPreferencesUtils.getString('webRetailingSite')!): SharedPreferencesUtils.getString('webRetailingSite'), "date": finalMonth}
+            {
+              findDatasetName(
+                      SharedPreferencesUtils.getString('webRetailingSite')!):
+                  SharedPreferencesUtils.getString('webRetailingSite'),
+              "date": finalMonth
+            }
           ];
           flattenedListRetailing = [
-            {findDatasetName(SharedPreferencesUtils.getString('webRetailingSite')!): SharedPreferencesUtils.getString('webRetailingSite'), "date": finalMonth}
+            {
+              findDatasetName(
+                      SharedPreferencesUtils.getString('webRetailingSite')!):
+                  SharedPreferencesUtils.getString('webRetailingSite'),
+              "date": finalMonth
+            }
           ];
           flattenedListGP = [
-            {findDatasetName(SharedPreferencesUtils.getString('webRetailingSite')!): SharedPreferencesUtils.getString('webRetailingSite'), "date": finalMonth}
+            {
+              findDatasetName(
+                      SharedPreferencesUtils.getString('webRetailingSite')!):
+                  SharedPreferencesUtils.getString('webRetailingSite'),
+              "date": finalMonth
+            }
           ];
           flattenedListCoverage = [
-            {findDatasetName(SharedPreferencesUtils.getString('webRetailingSite')!): SharedPreferencesUtils.getString('webRetailingSite'), "date": finalMonth}
+            {
+              findDatasetName(
+                      SharedPreferencesUtils.getString('webRetailingSite')!):
+                  SharedPreferencesUtils.getString('webRetailingSite'),
+              "date": finalMonth
+            }
           ];
           flattenedListProd = [
-            {findDatasetName(SharedPreferencesUtils.getString('webRetailingSite')!): SharedPreferencesUtils.getString('webRetailingSite'), "date": finalMonth}
+            {
+              findDatasetName(
+                      SharedPreferencesUtils.getString('webRetailingSite')!):
+                  SharedPreferencesUtils.getString('webRetailingSite'),
+              "date": finalMonth
+            }
           ];
-          localList
-              .add([{
-            "filter_key": "retailing",
-            "query": flattenedListRetailing
-          },
-            {
-              "filter_key": "gp",
-              "query": flattenedListGP
-            },
-            {
-              "filter_key": "fb",
-              "query": flattenedListFB
-            },
-            {
-              "filter_key": "cc",
-              "query": flattenedListCC
-            },
-            {
-              "filter_key": "coverage",
-              "query": flattenedListCoverage
-            },
-            {
-              "filter_key": "productivity",
-              "query": flattenedListProd
-            }]);
+          localList.add([
+            {"filter_key": "retailing", "query": flattenedListRetailing},
+            {"filter_key": "gp", "query": flattenedListGP},
+            {"filter_key": "fb", "query": flattenedListFB},
+            {"filter_key": "cc", "query": flattenedListCC},
+            {"filter_key": "coverage", "query": flattenedListCoverage},
+            {"filter_key": "productivity", "query": flattenedListProd}
+          ]);
         } else {
           if (bosData.isExpandedMonthFilter) {
-            print("No");
             localList[bosData.selectedChannelIndex] = jsonToAdd[0];
             bosData.isExpandedMonthFilter = false;
           } else {
-            print("Yes");
             if (jsonToAdd.isNotEmpty) {
-              // if(SharedPreferencesUtils.getBool('firstTime')!){
-              //   localList =jsonToAdd[0];
-              //   SharedPreferencesUtils.setBool('firstTime', false);
-              // }else{
-                localList =jsonToAdd;
-              // }
+              localList = jsonToAdd;
             }
           }
         }
@@ -345,6 +336,7 @@ class _SummaryContainerDrawerState extends State<SummaryContainerDrawer> {
     await postRequest(context);
   }
 
+// TODO: Here
   void saveDataRetailing() {
     final jsonData = jsonEncode(flattenedListRetailing);
     html.window.localStorage['dataListRetailingAll'] = jsonData;
@@ -357,7 +349,6 @@ class _SummaryContainerDrawerState extends State<SummaryContainerDrawer> {
       if (decodedData is List<dynamic>) {
         setState(() {
           flattenedListRetailing = decodedData;
-          print("Saved $flattenedListRetailing");
         });
       }
     }
@@ -369,26 +360,28 @@ class _SummaryContainerDrawerState extends State<SummaryContainerDrawer> {
     if (decodedRetailing is List<dynamic>) {
       List<dynamic> retailingObject = decodedRetailing;
       final jsonToAdd = retailingObject;
-      // bool shouldAdd = true;
-      // for (var item in flattenedListRetailing) {
-      //   if (item["allIndia"] == jsonToAdd[0]["allIndia"] && item["date"] == jsonToAdd[0]["date"]) {
-      //     shouldAdd = false;
-      //     break; // No need to continue checking
-      //   }
-      // }
       setState(() {
         if (flattenedListRetailing.isEmpty) {
-          flattenedListRetailing
-              .add({findDatasetName(SharedPreferencesUtils.getString('webRetailingSite')!): SharedPreferencesUtils.getString('webRetailingSite'), "date": finalMonth});
+          flattenedListRetailing.add({
+            findDatasetName(
+                    SharedPreferencesUtils.getString('webRetailingSite')!):
+                SharedPreferencesUtils.getString('webRetailingSite'),
+            "date": finalMonth
+          });
         } else {
           if (bosData.isExpandedMonthFilter) {
             flattenedListRetailing[bosData.selectedChannelIndex] = jsonToAdd[0];
             bosData.isExpandedMonthFilter = false;
           } else {
             if (jsonToAdd.isNotEmpty) {
-              // if (!flattenedListRetailing.contains(jsonToAdd[0])) {
+              print("1. $flattenedListRetailing");
+              print("2. ${jsonToAdd[0]}");
+              print("3. $jsonToAdd");
+              if (geoUpdateBool) {
+                flattenedListRetailing[0] = jsonToAdd[0];
+              } else {
                 flattenedListRetailing.add(jsonToAdd[0]);
-              // }
+              }
             }
           }
         }
@@ -397,6 +390,7 @@ class _SummaryContainerDrawerState extends State<SummaryContainerDrawer> {
     }
   }
 
+// TODO: Here
   void saveDataGP() {
     final jsonData = jsonEncode(flattenedListGP);
     html.window.localStorage['dataListGPAll'] = jsonData;
@@ -409,7 +403,6 @@ class _SummaryContainerDrawerState extends State<SummaryContainerDrawer> {
       if (decodedData is List<dynamic>) {
         setState(() {
           flattenedListGP = decodedData;
-          print("Saved $flattenedListGP");
         });
       }
     }
@@ -423,16 +416,23 @@ class _SummaryContainerDrawerState extends State<SummaryContainerDrawer> {
       final jsonToAdd = retailingObject;
       setState(() {
         if (flattenedListGP.isEmpty) {
-          flattenedListGP
-              .add({findDatasetName(SharedPreferencesUtils.getString('webRetailingSite')!): SharedPreferencesUtils.getString('webRetailingSite'), "date": finalMonth});
+          flattenedListGP.add({
+            findDatasetName(
+                    SharedPreferencesUtils.getString('webRetailingSite')!):
+                SharedPreferencesUtils.getString('webRetailingSite'),
+            "date": finalMonth
+          });
         } else {
           if (bosData.isExpandedMonthFilter) {
             flattenedListGP[bosData.selectedChannelIndex] = jsonToAdd[0];
             bosData.isExpandedMonthFilter = false;
           } else {
-            print("Yes Yes Yes");
             if (jsonToAdd.isNotEmpty) {
-              flattenedListGP.add(jsonToAdd[0]);
+              if (geoUpdateBool) {
+                flattenedListGP[0] = jsonToAdd[0];
+              } else {
+                flattenedListGP.add(jsonToAdd[0]);
+              }
             }
           }
         }
@@ -441,6 +441,7 @@ class _SummaryContainerDrawerState extends State<SummaryContainerDrawer> {
     }
   }
 
+// TODO: Here
   void saveDataFB() {
     final jsonData = jsonEncode(flattenedListFB);
     html.window.localStorage['dataListFBAll'] = jsonData;
@@ -453,7 +454,6 @@ class _SummaryContainerDrawerState extends State<SummaryContainerDrawer> {
       if (decodedData is List<dynamic>) {
         setState(() {
           flattenedListFB = decodedData;
-          print("Saved $flattenedListFB");
         });
       }
     }
@@ -467,15 +467,23 @@ class _SummaryContainerDrawerState extends State<SummaryContainerDrawer> {
       final jsonToAdd = retailingObject;
       setState(() {
         if (flattenedListFB.isEmpty) {
-          flattenedListFB
-              .add({findDatasetName(SharedPreferencesUtils.getString('webRetailingSite')!): SharedPreferencesUtils.getString('webRetailingSite'), "date": finalMonth});
+          flattenedListFB.add({
+            findDatasetName(
+                    SharedPreferencesUtils.getString('webRetailingSite')!):
+                SharedPreferencesUtils.getString('webRetailingSite'),
+            "date": finalMonth
+          });
         } else {
           if (bosData.isExpandedMonthFilter) {
             flattenedListFB[bosData.selectedChannelIndex] = jsonToAdd[0];
             bosData.isExpandedMonthFilter = false;
           } else {
             if (jsonToAdd.isNotEmpty) {
-              flattenedListFB.add(jsonToAdd[0]);
+              if (geoUpdateBool) {
+                flattenedListFB[0] = jsonToAdd[0];
+              } else {
+                flattenedListFB.add(jsonToAdd[0]);
+              }
             }
           }
         }
@@ -484,6 +492,7 @@ class _SummaryContainerDrawerState extends State<SummaryContainerDrawer> {
     }
   }
 
+// TODO: Here
   void saveDataCoverage() {
     final jsonData = jsonEncode(flattenedListCoverage);
     html.window.localStorage['dataListCoverageAll'] = jsonData;
@@ -496,7 +505,6 @@ class _SummaryContainerDrawerState extends State<SummaryContainerDrawer> {
       if (decodedData is List<dynamic>) {
         setState(() {
           flattenedListCoverage = decodedData;
-          print("Saved $flattenedListCoverage");
         });
       }
     }
@@ -510,15 +518,23 @@ class _SummaryContainerDrawerState extends State<SummaryContainerDrawer> {
       final jsonToAdd = retailingObject;
       setState(() {
         if (flattenedListCoverage.isEmpty) {
-          flattenedListCoverage
-              .add({findDatasetName(SharedPreferencesUtils.getString('webRetailingSite')!): SharedPreferencesUtils.getString('webRetailingSite'), "date": finalMonth});
+          flattenedListCoverage.add({
+            findDatasetName(
+                    SharedPreferencesUtils.getString('webRetailingSite')!):
+                SharedPreferencesUtils.getString('webRetailingSite'),
+            "date": finalMonth
+          });
         } else {
           if (bosData.isExpandedMonthFilter) {
             flattenedListCoverage[bosData.selectedChannelIndex] = jsonToAdd[0];
             bosData.isExpandedMonthFilter = false;
           } else {
             if (jsonToAdd.isNotEmpty) {
-              flattenedListCoverage.add(jsonToAdd[0]);
+              if (geoUpdateBool) {
+                flattenedListCoverage[0] = jsonToAdd[0];
+              } else {
+                flattenedListCoverage.add(jsonToAdd[0]);
+              }
             }
           }
         }
@@ -527,6 +543,7 @@ class _SummaryContainerDrawerState extends State<SummaryContainerDrawer> {
     }
   }
 
+// TODO: Here
   void saveDataProd() {
     final jsonData = jsonEncode(flattenedListProd);
     html.window.localStorage['dataListProdAll'] = jsonData;
@@ -539,7 +556,6 @@ class _SummaryContainerDrawerState extends State<SummaryContainerDrawer> {
       if (decodedData is List<dynamic>) {
         setState(() {
           flattenedListProd = decodedData;
-          print("Saved $flattenedListProd");
         });
       }
     }
@@ -553,15 +569,23 @@ class _SummaryContainerDrawerState extends State<SummaryContainerDrawer> {
       final jsonToAdd = retailingObject;
       setState(() {
         if (flattenedListProd.isEmpty) {
-          flattenedListProd
-              .add({findDatasetName(SharedPreferencesUtils.getString('webRetailingSite')!): SharedPreferencesUtils.getString('webRetailingSite'), "date": finalMonth});
+          flattenedListProd.add({
+            findDatasetName(
+                    SharedPreferencesUtils.getString('webRetailingSite')!):
+                SharedPreferencesUtils.getString('webRetailingSite'),
+            "date": finalMonth
+          });
         } else {
           if (bosData.isExpandedMonthFilter) {
             flattenedListProd[bosData.selectedChannelIndex] = jsonToAdd[0];
             bosData.isExpandedMonthFilter = false;
           } else {
             if (jsonToAdd.isNotEmpty) {
-              flattenedListProd.add(jsonToAdd[0]);
+              if (geoUpdateBool) {
+                flattenedListProd[0] = jsonToAdd[0];
+              } else {
+                flattenedListProd.add(jsonToAdd[0]);
+              }
             }
           }
         }
@@ -570,6 +594,7 @@ class _SummaryContainerDrawerState extends State<SummaryContainerDrawer> {
     }
   }
 
+// TODO: Here
   void saveDataCC() {
     final jsonData = jsonEncode(flattenedListCC);
     html.window.localStorage['dataListCCAll'] = jsonData;
@@ -582,7 +607,6 @@ class _SummaryContainerDrawerState extends State<SummaryContainerDrawer> {
       if (decodedData is List<dynamic>) {
         setState(() {
           flattenedListCC = decodedData;
-          print("Saved $flattenedListCC");
         });
       }
     }
@@ -596,15 +620,23 @@ class _SummaryContainerDrawerState extends State<SummaryContainerDrawer> {
       final jsonToAdd = retailingObject;
       setState(() {
         if (flattenedListCC.isEmpty) {
-          flattenedListCC
-              .add({findDatasetName(SharedPreferencesUtils.getString('webRetailingSite')!): SharedPreferencesUtils.getString('webRetailingSite'), "date": finalMonth});
+          flattenedListCC.add({
+            findDatasetName(
+                    SharedPreferencesUtils.getString('webRetailingSite')!):
+                SharedPreferencesUtils.getString('webRetailingSite'),
+            "date": finalMonth
+          });
         } else {
           if (bosData.isExpandedMonthFilter) {
             flattenedListCC[bosData.selectedChannelIndex] = jsonToAdd[0];
             bosData.isExpandedMonthFilter = false;
           } else {
             if (jsonToAdd.isNotEmpty) {
-              flattenedListCC.add(jsonToAdd[0]);
+              if (geoUpdateBool) {
+                flattenedListCC[0] = jsonToAdd[0];
+              } else {
+                flattenedListCC.add(jsonToAdd[0]);
+              }
             }
           }
         }
@@ -613,7 +645,9 @@ class _SummaryContainerDrawerState extends State<SummaryContainerDrawer> {
     }
   }
 
+  /////////////////////// Local Storage for All Cards End //////////////////////
 
+  /////////////////////// Remove Local Storage for All Cards One By One Start//////////////////////
   void removeDataRetailing(int index) {
     if (index >= 0 && index < flattenedListRetailing.length) {
       setState(() {
@@ -622,6 +656,7 @@ class _SummaryContainerDrawerState extends State<SummaryContainerDrawer> {
       });
     }
   }
+
   void removeDataGP(int index) {
     if (index >= 0 && index < flattenedListGP.length) {
       setState(() {
@@ -630,6 +665,7 @@ class _SummaryContainerDrawerState extends State<SummaryContainerDrawer> {
       });
     }
   }
+
   void removeDataFB(int index) {
     if (index >= 0 && index < flattenedListFB.length) {
       setState(() {
@@ -638,6 +674,7 @@ class _SummaryContainerDrawerState extends State<SummaryContainerDrawer> {
       });
     }
   }
+
   void removeDataCoverage(int index) {
     if (index >= 0 && index < flattenedListCoverage.length) {
       setState(() {
@@ -646,6 +683,7 @@ class _SummaryContainerDrawerState extends State<SummaryContainerDrawer> {
       });
     }
   }
+
   void removeDataProd(int index) {
     if (index >= 0 && index < flattenedListProd.length) {
       setState(() {
@@ -654,6 +692,7 @@ class _SummaryContainerDrawerState extends State<SummaryContainerDrawer> {
       });
     }
   }
+
   void removeDataCC(int index) {
     if (index >= 0 && index < flattenedListCC.length) {
       setState(() {
@@ -663,6 +702,8 @@ class _SummaryContainerDrawerState extends State<SummaryContainerDrawer> {
     }
   }
 
+  /////////////////////// Remove Local Storage for All Cards One By One End//////////////////////
+
   @override
   void initState() {
     // TODO: implement initState
@@ -670,12 +711,10 @@ class _SummaryContainerDrawerState extends State<SummaryContainerDrawer> {
     divisionFilterAPI();
     clusterFilterAPI();
     siteFilterAPI();
-    var selectedMonth =
-        SharedPreferencesUtils.getString('webDefaultMonth') ??
-            ConstArray().month[dateTime.month - 4];
-    var selectedYear =
-        SharedPreferencesUtils.getString('webDefaultYear') ??
-            '${dateTime.year}';
+    var selectedMonth = SharedPreferencesUtils.getString('webDefaultMonth') ??
+        ConstArray().month[dateTime.month - 4];
+    var selectedYear = SharedPreferencesUtils.getString('webDefaultYear') ??
+        '${dateTime.year}';
     finalMonth = "$selectedMonth-$selectedYear";
     SharedPreferencesUtils.setInt('int', setIndex);
     initial = widget.initial;
@@ -773,7 +812,6 @@ class _SummaryContainerDrawerState extends State<SummaryContainerDrawer> {
       AllMetrics(name: '', isEnabled: true, subtitle: '')
     ];
     populateLists();
-
     loadDataRetailing();
     addDataRetailing();
     loadDataCoverage();
@@ -788,19 +826,6 @@ class _SummaryContainerDrawerState extends State<SummaryContainerDrawer> {
     addDataCC();
     loadDataCoverageAll();
     addDataCoverageAll();
-    print("Locallist ${localList}");
-  }
-
-  void removeFirstQueryForRetailing(int index) {
-    for (int i = 0; i < localList[0].length; i++) {
-      if (localList[0][i]["filter_key"] == "retailing") {
-        List<dynamic> queryList = localList[0][i]["query"];
-        if (queryList.isNotEmpty) {
-          queryList.removeAt(index); // Remove the first item
-        }
-        break; // Exit the loop after finding and updating the "retailing" filter
-      }
-    }
   }
 
   @override
@@ -830,29 +855,30 @@ class _SummaryContainerDrawerState extends State<SummaryContainerDrawer> {
                 ),
                 SummaryContainer(
                   widgetList: allMetrics,
+                  ////// For Navigation //////
                   onTapContainer: () {
                     setState(() {
                       if (sheetProvider.selectedCard == "Retailing") {
-                        Navigator.of(context).pushNamed('/retailingContainer');
+                        Navigator.of(context).pushNamed('/retailingsummary');
                       } else if (sheetProvider.selectedCard == "PXM billing") {
-                        Navigator.of(context).pushNamed('/cndContainer');
+                        Navigator.of(context).pushNamed('/cndsummary');
                       }
                       if (sheetProvider.selectedCard == "Golden Points") {
-                        Navigator.of(context).pushNamed('/gpContainer');
+                        Navigator.of(context).pushNamed('/gpsummary');
                       } else if (sheetProvider.selectedCard == "Focus Brand") {
-                        Navigator.of(context).pushNamed('/fbContainer');
+                        Navigator.of(context).pushNamed('/fbsummary');
                       }
                       if (sheetProvider.selectedCard == "Distribution") {
-                        Navigator.of(context).pushNamed('/cndContainer');
+                        Navigator.of(context).pushNamed('/cndsummary');
                       } else if (sheetProvider.selectedCard == "Productivity") {
-                        Navigator.of(context).pushNamed('/commonContainer');
+                        Navigator.of(context).pushNamed('/commonsummary');
                       }
                       if (sheetProvider.selectedCard == "Call Compliance") {
-                        Navigator.of(context).pushNamed('/ccContainer');
+                        Navigator.of(context).pushNamed('/ccsummary');
                       } else if (sheetProvider.selectedCard == "Shipment") {
-                        Navigator.of(context).pushNamed('/commonContainer');
+                        Navigator.of(context).pushNamed('/commonsummary');
                       } else if (sheetProvider.selectedCard == "Inventory") {
-                        Navigator.of(context).pushNamed('/commonContainer');
+                        Navigator.of(context).pushNamed('/commonsummary');
                       } else {}
                     });
                   },
@@ -870,6 +896,7 @@ class _SummaryContainerDrawerState extends State<SummaryContainerDrawer> {
                   divisionBool: divisionBool,
                   removeBool: removeBool,
                   firstIsHovering: firstIsHovering,
+                  ////// Hide All Open Pop Up //////
                   onGestureTap: () {
                     setState(() {
                       showHide = false;
@@ -930,6 +957,7 @@ class _SummaryContainerDrawerState extends State<SummaryContainerDrawer> {
                   fbDataList: fbDataList,
                   prodDataList: prodDataList,
                   ccDataList: ccDataList,
+                  ////// Add new Geo According to Cards //////
                   onApplyPressedMonth: () async {
                     menuBool = [
                       false,
@@ -970,9 +998,10 @@ class _SummaryContainerDrawerState extends State<SummaryContainerDrawer> {
                     setIndex = 1;
                     SharedPreferencesUtils.setInt('int', setIndex);
                     initial = false;
-
-                    var selectedKey = SharedPreferencesUtils.getString('keyName');
+                    var selectedKey =
+                        SharedPreferencesUtils.getString('keyName');
                     if (selectedKey == "Retailing") {
+                      sheetProvider.isLoadingPage = true;
                       updatedListRetailing = [];
                       var newElement =
                           '{"${SharedPreferencesUtils.getString('webRetailingDivision')}": "${SharedPreferencesUtils.getString('webRetailingSite')}", "date": "$finalMonth"}';
@@ -984,54 +1013,9 @@ class _SummaryContainerDrawerState extends State<SummaryContainerDrawer> {
                           "filter_key": "retailing",
                           "query": flattenedListRetailing
                         },
-                        {
-                          "filter_key": "gp",
-                          "query":flattenedListGP
-                        },
-                        {
-                          "filter_key": "fb",
-                          "query": flattenedListFB
-                        },
-                        {
-                          "filter_key": "cc",
-                          "query": flattenedListCC
-                        },
-                        {
-                          "filter_key": "coverage",
-                          "query": flattenedListCoverage
-                        },
-                        {
-                          "filter_key": "productivity",
-                          "query": flattenedListProd
-                        }];
-                      addDataCoverageAll();
-                      updatedListRetailing = [];
-                      setState(() {});
-                    }
-                    else if (selectedKey == "PXM billing") {
-                      updatedListCoverage = [];
-                      var newElement =
-                          '{"${SharedPreferencesUtils.getString('webCoverageDivision')}": "${SharedPreferencesUtils.getString('webCoverageSite')}", "date": "$finalMonth"}';
-                      var ele = json.decode(newElement);
-                      updatedListCoverage.add(ele);
-                      addDataCoverage();
-                      localList = [
-                        {
-                          "filter_key": "retailing",
-                          "query": flattenedListRetailing
-                        },
-                        {
-                          "filter_key": "gp",
-                          "query":flattenedListGP
-                        },
-                        {
-                          "filter_key": "fb",
-                          "query": flattenedListFB
-                        },
-                        {
-                          "filter_key": "cc",
-                          "query": flattenedListCC
-                        },
+                        {"filter_key": "gp", "query": flattenedListGP},
+                        {"filter_key": "fb", "query": flattenedListFB},
+                        {"filter_key": "cc", "query": flattenedListCC},
                         {
                           "filter_key": "coverage",
                           "query": flattenedListCoverage
@@ -1040,15 +1024,51 @@ class _SummaryContainerDrawerState extends State<SummaryContainerDrawer> {
                           "filter_key": "productivity",
                           "query": flattenedListProd
                         }
-                        ];
+                      ];
                       addDataCoverageAll();
+                      await postRequest(context);
+                      sheetProvider.isLoadingPage = false;
+                      updatedListRetailing = [];
+                      setState(() {});
+                    } else if (selectedKey == "PXM billing") {
+                      updatedListCoverage = [];
+                      sheetProvider.isLoadingPage = true;
+                      print(SharedPreferencesUtils.getString(
+                          'webCoverageDivision'));
+                      print(
+                          SharedPreferencesUtils.getString('webCoverageSite'));
+                      var newElement =
+                          '{"${SharedPreferencesUtils.getString('webCoverageDivision')}": "${SharedPreferencesUtils.getString('webCoverageSite')}", "date": "$finalMonth"}';
+                      var ele = json.decode(newElement);
+                      updatedListCoverage.add(ele);
+                      print("Coverage $updatedListCoverage");
+                      addDataCoverage();
+                      localList = [
+                        {
+                          "filter_key": "retailing",
+                          "query": flattenedListRetailing
+                        },
+                        {"filter_key": "gp", "query": flattenedListGP},
+                        {"filter_key": "fb", "query": flattenedListFB},
+                        {"filter_key": "cc", "query": flattenedListCC},
+                        {
+                          "filter_key": "coverage",
+                          "query": flattenedListCoverage
+                        },
+                        {
+                          "filter_key": "productivity",
+                          "query": flattenedListProd
+                        }
+                      ];
+                      addDataCoverageAll();
+                      await postRequest(context);
+                      sheetProvider.isLoadingPage = false;
                       updatedListCoverage = [];
                       // await postRequest(context);
                       setState(() {});
-                    }
-                    else if (selectedKey == "Golden Points") {
+                    } else if (selectedKey == "Golden Points") {
                       updatedListGP = [];
-                      print("Selected Key $selectedKey");
+                      sheetProvider.isLoadingPage = true;
                       var newElement =
                           '{"${SharedPreferencesUtils.getString('webGPDivision')}": "${SharedPreferencesUtils.getString('webGPSite')}", "date": "$finalMonth"}';
                       var ele = json.decode(newElement);
@@ -1059,18 +1079,9 @@ class _SummaryContainerDrawerState extends State<SummaryContainerDrawer> {
                           "filter_key": "retailing",
                           "query": flattenedListRetailing
                         },
-                        {
-                          "filter_key": "gp",
-                          "query":flattenedListGP
-                        },
-                        {
-                          "filter_key": "fb",
-                          "query": flattenedListFB
-                        },
-                        {
-                          "filter_key": "cc",
-                          "query": flattenedListCC
-                        },
+                        {"filter_key": "gp", "query": flattenedListGP},
+                        {"filter_key": "fb", "query": flattenedListFB},
+                        {"filter_key": "cc", "query": flattenedListCC},
                         {
                           "filter_key": "coverage",
                           "query": flattenedListCoverage
@@ -1078,16 +1089,18 @@ class _SummaryContainerDrawerState extends State<SummaryContainerDrawer> {
                         {
                           "filter_key": "productivity",
                           "query": flattenedListProd
-                        }];
+                        }
+                      ];
                       addDataCoverageAll();
                       updatedListGP = [];
+                      await postRequest(context);
+                      sheetProvider.isLoadingPage = false;
                       // await postRequest(context);
 
                       setState(() {});
-                    }
-                    else if (selectedKey == "Focus Brand") {
+                    } else if (selectedKey == "Focus Brand") {
                       updatedListFB = [];
-                      print("Selected Key1 $selectedKey");
+                      sheetProvider.isLoadingPage = true;
                       var newElement =
                           '{"${SharedPreferencesUtils.getString('webFBDivision')}": "${SharedPreferencesUtils.getString('webFBSite')}", "date": "$finalMonth"}';
                       var ele = json.decode(newElement);
@@ -1098,18 +1111,9 @@ class _SummaryContainerDrawerState extends State<SummaryContainerDrawer> {
                           "filter_key": "retailing",
                           "query": flattenedListRetailing
                         },
-                        {
-                          "filter_key": "gp",
-                          "query":flattenedListGP
-                        },
-                        {
-                          "filter_key": "fb",
-                          "query": flattenedListFB
-                        },
-                        {
-                          "filter_key": "cc",
-                          "query": flattenedListCC
-                        },
+                        {"filter_key": "gp", "query": flattenedListGP},
+                        {"filter_key": "fb", "query": flattenedListFB},
+                        {"filter_key": "cc", "query": flattenedListCC},
                         {
                           "filter_key": "coverage",
                           "query": flattenedListCoverage
@@ -1117,16 +1121,17 @@ class _SummaryContainerDrawerState extends State<SummaryContainerDrawer> {
                         {
                           "filter_key": "productivity",
                           "query": flattenedListProd
-                        }];
+                        }
+                      ];
                       addDataCoverageAll();
                       updatedListFB = [];
+                      await postRequest(context);
+                      sheetProvider.isLoadingPage = false;
                       // await postRequest(context);
                       setState(() {});
-
-                    }
-                    else if (selectedKey == "Productivity") {
+                    } else if (selectedKey == "Productivity") {
                       updatedListProd = [];
-                      print("Selected Key2 $selectedKey");
+                      sheetProvider.isLoadingPage = true;
                       var newElement =
                           '{"${SharedPreferencesUtils.getString('webProductivityDivision')}": "${SharedPreferencesUtils.getString('webProductivitySite')}", "date": "$finalMonth"}';
                       var ele = json.decode(newElement);
@@ -1137,18 +1142,9 @@ class _SummaryContainerDrawerState extends State<SummaryContainerDrawer> {
                           "filter_key": "retailing",
                           "query": flattenedListRetailing
                         },
-                        {
-                          "filter_key": "gp",
-                          "query":flattenedListGP
-                        },
-                        {
-                          "filter_key": "fb",
-                          "query": flattenedListFB
-                        },
-                        {
-                          "filter_key": "cc",
-                          "query": flattenedListCC
-                        },
+                        {"filter_key": "gp", "query": flattenedListGP},
+                        {"filter_key": "fb", "query": flattenedListFB},
+                        {"filter_key": "cc", "query": flattenedListCC},
                         {
                           "filter_key": "coverage",
                           "query": flattenedListCoverage
@@ -1156,15 +1152,16 @@ class _SummaryContainerDrawerState extends State<SummaryContainerDrawer> {
                         {
                           "filter_key": "productivity",
                           "query": flattenedListProd
-                        }];
+                        }
+                      ];
                       addDataCoverageAll();
                       updatedListProd = [];
-                      // await postRequest(context);
+                      await postRequest(context);
+                      sheetProvider.isLoadingPage = false;
                       setState(() {});
-                    }
-                    else if (selectedKey ==
-                        "Call Compliance") {
+                    } else if (selectedKey == "Call Compliance") {
                       updatedListCCC = [];
+                      sheetProvider.isLoadingPage = true;
                       var newElement =
                           '{"${SharedPreferencesUtils.getString('webCallComplianceDivision')}": "${SharedPreferencesUtils.getString('webCallComplianceSite')}", "date": "$finalMonth"}';
                       var ele = json.decode(newElement);
@@ -1175,18 +1172,9 @@ class _SummaryContainerDrawerState extends State<SummaryContainerDrawer> {
                           "filter_key": "retailing",
                           "query": flattenedListRetailing
                         },
-                        {
-                          "filter_key": "gp",
-                          "query":flattenedListGP
-                        },
-                        {
-                          "filter_key": "fb",
-                          "query": flattenedListFB
-                        },
-                        {
-                          "filter_key": "cc",
-                          "query": flattenedListCC
-                        },
+                        {"filter_key": "gp", "query": flattenedListGP},
+                        {"filter_key": "fb", "query": flattenedListFB},
+                        {"filter_key": "cc", "query": flattenedListCC},
                         {
                           "filter_key": "coverage",
                           "query": flattenedListCoverage
@@ -1194,24 +1182,72 @@ class _SummaryContainerDrawerState extends State<SummaryContainerDrawer> {
                         {
                           "filter_key": "productivity",
                           "query": flattenedListProd
-                        }];
+                        }
+                      ];
                       addDataCoverageAll();
                       updatedListCCC = [];
-                      // await postRequest(context);
+                      await postRequest(context);
+                      sheetProvider.isLoadingPage = false;
                       setState(() {});
                     } else {
-                      var snackBar = const SnackBar(content: Text('Something went wrong!'));
+                      var snackBar = const SnackBar(
+                          content: Text('Something went wrong!'));
                       ScaffoldMessenger.of(context).showSnackBar(snackBar);
                     }
                   },
                   updateDefault: showHide,
-                  onPressed: () {
-                    setState(() {
-                      showHide = !showHide;
-                    });
+                  // Clear Filter
+                  onPressed: () {},
+                  ////// Update Default Geo //////
+                  onPressedGeo: () async {
+                    sheetProvider.isLoadingPage = true;
+                    geoUpdateBool = true;
+                    updatedListRetailing = [];
+                    var newElement =
+                        '{"${findDatasetName(sheetProvider.selectedValue)}": "${sheetProvider.selectedValue}", "date": "$finalMonth"}';
+                    var ele = json.decode(newElement);
+                    updatedListRetailing.add(ele);
+                    updatedListCoverage.add(ele);
+                    updatedListFB.add(ele);
+                    updatedListGP.add(ele);
+                    updatedListCCC.add(ele);
+                    updatedListProd.add(ele);
+
+                    addDataRetailing();
+                    addDataCoverage();
+                    addDataFB();
+                    addDataGP();
+                    addDataCC();
+                    addDataProd();
+                    localList = [
+                      {
+                        "filter_key": "retailing",
+                        "query": flattenedListRetailing
+                      },
+                      {"filter_key": "gp", "query": flattenedListGP},
+                      {"filter_key": "fb", "query": flattenedListFB},
+                      {"filter_key": "cc", "query": flattenedListCC},
+                      {
+                        "filter_key": "coverage",
+                        "query": flattenedListCoverage
+                      },
+                      {"filter_key": "productivity", "query": flattenedListProd}
+                    ];
+                    addDataCoverageAll();
+                    showHide = !showHide;
+                    updatedListRetailing = [];
+                    updatedListCoverage = [];
+                    updatedListFB = [];
+                    updatedListGP = [];
+                    updatedListCCC = [];
+                    updatedListProd = [];
+                    geoUpdateBool = false;
+                    await postRequest(context);
+                    sheetProvider.isLoadingPage = false;
+                    setState(() {});
                   },
-                  onPressedGeo: () {},
-                  onRemoveGeoPressed: () async{
+                  ////// Remove geo according to cards //////
+                  onRemoveGeoPressed: () async {
                     removeBool = [
                       false,
                       false,
@@ -1234,7 +1270,8 @@ class _SummaryContainerDrawerState extends State<SummaryContainerDrawer> {
                       false,
                       false,
                     ];
-                    var selectedKey = SharedPreferencesUtils.getString('keyName');
+                    var selectedKey =
+                        SharedPreferencesUtils.getString('keyName');
                     if (selectedKey == "Retailing") {
                       removeDataRetailing(sheetProvider.removeIndexRetailing);
                       sheetProvider.isLoadingPage = true;
@@ -1244,18 +1281,9 @@ class _SummaryContainerDrawerState extends State<SummaryContainerDrawer> {
                           "filter_key": "retailing",
                           "query": flattenedListRetailing
                         },
-                        {
-                          "filter_key": "gp",
-                          "query":flattenedListGP
-                        },
-                        {
-                          "filter_key": "fb",
-                          "query": flattenedListFB
-                        },
-                        {
-                          "filter_key": "cc",
-                          "query": flattenedListCC
-                        },
+                        {"filter_key": "gp", "query": flattenedListGP},
+                        {"filter_key": "fb", "query": flattenedListFB},
+                        {"filter_key": "cc", "query": flattenedListCC},
                         {
                           "filter_key": "coverage",
                           "query": flattenedListCoverage
@@ -1263,13 +1291,13 @@ class _SummaryContainerDrawerState extends State<SummaryContainerDrawer> {
                         {
                           "filter_key": "productivity",
                           "query": flattenedListProd
-                        }];
+                        }
+                      ];
                       addDataCoverageAll();
                       await postRequest(context);
                       setState(() {});
                       sheetProvider.isLoadingPage = false;
-                    }
-                    else if (selectedKey == "PXM billing") {
+                    } else if (selectedKey == "PXM billing") {
                       removeDataCoverage(sheetProvider.removeIndexCoverage);
                       sheetProvider.isLoadingPage = true;
                       addDataCoverage();
@@ -1278,18 +1306,9 @@ class _SummaryContainerDrawerState extends State<SummaryContainerDrawer> {
                           "filter_key": "retailing",
                           "query": flattenedListRetailing
                         },
-                        {
-                          "filter_key": "gp",
-                          "query":flattenedListGP
-                        },
-                        {
-                          "filter_key": "fb",
-                          "query": flattenedListFB
-                        },
-                        {
-                          "filter_key": "cc",
-                          "query": flattenedListCC
-                        },
+                        {"filter_key": "gp", "query": flattenedListGP},
+                        {"filter_key": "fb", "query": flattenedListFB},
+                        {"filter_key": "cc", "query": flattenedListCC},
                         {
                           "filter_key": "coverage",
                           "query": flattenedListCoverage
@@ -1297,13 +1316,13 @@ class _SummaryContainerDrawerState extends State<SummaryContainerDrawer> {
                         {
                           "filter_key": "productivity",
                           "query": flattenedListProd
-                        }];
+                        }
+                      ];
                       addDataCoverageAll();
                       await postRequest(context);
                       setState(() {});
                       sheetProvider.isLoadingPage = false;
-                    }
-                    else if (selectedKey == "Golden Points") {
+                    } else if (selectedKey == "Golden Points") {
                       removeDataGP(sheetProvider.removeIndexGoldenPoint);
                       sheetProvider.isLoadingPage = true;
                       addDataGP();
@@ -1312,18 +1331,9 @@ class _SummaryContainerDrawerState extends State<SummaryContainerDrawer> {
                           "filter_key": "retailing",
                           "query": flattenedListRetailing
                         },
-                        {
-                          "filter_key": "gp",
-                          "query":flattenedListGP
-                        },
-                        {
-                          "filter_key": "fb",
-                          "query": flattenedListFB
-                        },
-                        {
-                          "filter_key": "cc",
-                          "query": flattenedListCC
-                        },
+                        {"filter_key": "gp", "query": flattenedListGP},
+                        {"filter_key": "fb", "query": flattenedListFB},
+                        {"filter_key": "cc", "query": flattenedListCC},
                         {
                           "filter_key": "coverage",
                           "query": flattenedListCoverage
@@ -1331,13 +1341,13 @@ class _SummaryContainerDrawerState extends State<SummaryContainerDrawer> {
                         {
                           "filter_key": "productivity",
                           "query": flattenedListProd
-                        }];
+                        }
+                      ];
                       addDataCoverageAll();
                       await postRequest(context);
                       setState(() {});
                       sheetProvider.isLoadingPage = false;
-                    }
-                    else if (selectedKey == "Focus Brand") {
+                    } else if (selectedKey == "Focus Brand") {
                       removeDataFB(sheetProvider.removeIndexFocusBrand);
                       sheetProvider.isLoadingPage = true;
                       addDataFB();
@@ -1346,18 +1356,9 @@ class _SummaryContainerDrawerState extends State<SummaryContainerDrawer> {
                           "filter_key": "retailing",
                           "query": flattenedListRetailing
                         },
-                        {
-                          "filter_key": "gp",
-                          "query":flattenedListGP
-                        },
-                        {
-                          "filter_key": "fb",
-                          "query": flattenedListFB
-                        },
-                        {
-                          "filter_key": "cc",
-                          "query": flattenedListCC
-                        },
+                        {"filter_key": "gp", "query": flattenedListGP},
+                        {"filter_key": "fb", "query": flattenedListFB},
+                        {"filter_key": "cc", "query": flattenedListCC},
                         {
                           "filter_key": "coverage",
                           "query": flattenedListCoverage
@@ -1365,13 +1366,13 @@ class _SummaryContainerDrawerState extends State<SummaryContainerDrawer> {
                         {
                           "filter_key": "productivity",
                           "query": flattenedListProd
-                        }];
+                        }
+                      ];
                       addDataCoverageAll();
                       await postRequest(context);
                       setState(() {});
                       sheetProvider.isLoadingPage = false;
-                    }
-                    else if (selectedKey == "Productivity") {
+                    } else if (selectedKey == "Productivity") {
                       sheetProvider.isLoadingPage = true;
                       removeDataProd(sheetProvider.removeIndexProductivity);
                       addDataProd();
@@ -1380,18 +1381,9 @@ class _SummaryContainerDrawerState extends State<SummaryContainerDrawer> {
                           "filter_key": "retailing",
                           "query": flattenedListRetailing
                         },
-                        {
-                          "filter_key": "gp",
-                          "query":flattenedListGP
-                        },
-                        {
-                          "filter_key": "fb",
-                          "query": flattenedListFB
-                        },
-                        {
-                          "filter_key": "cc",
-                          "query": flattenedListCC
-                        },
+                        {"filter_key": "gp", "query": flattenedListGP},
+                        {"filter_key": "fb", "query": flattenedListFB},
+                        {"filter_key": "cc", "query": flattenedListCC},
                         {
                           "filter_key": "coverage",
                           "query": flattenedListCoverage
@@ -1399,14 +1391,13 @@ class _SummaryContainerDrawerState extends State<SummaryContainerDrawer> {
                         {
                           "filter_key": "productivity",
                           "query": flattenedListProd
-                        }];
+                        }
+                      ];
                       addDataCoverageAll();
                       await postRequest(context);
                       setState(() {});
                       sheetProvider.isLoadingPage = false;
-                    }
-                    else if (selectedKey ==
-                        "Call Compliance") {
+                    } else if (selectedKey == "Call Compliance") {
                       removeDataCC(sheetProvider.removeIndexCallC);
                       sheetProvider.isLoadingPage = true;
                       addDataCC();
@@ -1415,18 +1406,9 @@ class _SummaryContainerDrawerState extends State<SummaryContainerDrawer> {
                           "filter_key": "retailing",
                           "query": flattenedListRetailing
                         },
-                        {
-                          "filter_key": "gp",
-                          "query":flattenedListGP
-                        },
-                        {
-                          "filter_key": "fb",
-                          "query": flattenedListFB
-                        },
-                        {
-                          "filter_key": "cc",
-                          "query": flattenedListCC
-                        },
+                        {"filter_key": "gp", "query": flattenedListGP},
+                        {"filter_key": "fb", "query": flattenedListFB},
+                        {"filter_key": "cc", "query": flattenedListCC},
                         {
                           "filter_key": "coverage",
                           "query": flattenedListCoverage
@@ -1434,77 +1416,21 @@ class _SummaryContainerDrawerState extends State<SummaryContainerDrawer> {
                         {
                           "filter_key": "productivity",
                           "query": flattenedListProd
-                        }];
+                        }
+                      ];
                       addDataCoverageAll();
                       await postRequest(context);
                       setState(() {});
                       sheetProvider.isLoadingPage = false;
                     } else {}
-                    // setState(() {
-                    //   // showHide = !showHide;
-                    // });
                   },
-                  onNewMonth: () async{
-                    // storeDataInLocalStorage(
-                    // [{
-                    //   "filter_key": "retailing",
-                    //   "query": updatedListRetailing
-                    //   // [
-                    //   //   {"allIndia": "allIndia", "date": finalMonth},
-                    //   //   {"division": "North-East", "date": finalMonth}
-                    //   // ]
-                    // },
-                    //   {
-                    //     "filter_key": "gp",
-                    //     "query": updatedListGP
-                    //     // [
-                    //     //   {"allIndia": "allIndia", "date": finalMonth},
-                    //     //   {"division": "N-E", "date": finalMonth}
-                    //     // ]
-                    //   },
-                    //   {
-                    //     "filter_key": "fb",
-                    //     "query": updatedListFB
-                    //   },
-                    //   {
-                    //     "filter_key": "cc",
-                    //     "query": updatedListCCC
-                    //     // [
-                    //     //   {"allIndia": "allIndia", "date": finalMonth},
-                    //     //   {"division": "N-E", "date": finalMonth},
-                    //     //   {"cluster": "HR", "date": finalMonth}
-                    //     // ]
-                    //   },
-                    //   {
-                    //     "filter_key": "coverage",
-                    //     "query": updatedListCoverage
-                    //     // [
-                    //     //   {"allIndia": "allIndia", "date": finalMonth},
-                    //     //   {"division": "N-E", "date": finalMonth}
-                    //     // ]
-                    //   },
-                    //   {
-                    //     "filter_key": "productivity",
-                    //     "query": updatedListProd
-                    //     // [
-                    //     //   {"allIndia": "allIndia", "date": finalMonth},
-                    //     //   {"division": "N-E", "date": finalMonth}
-                    //     // ]
-                    //   }]
-                    // );
-                    // localList = [];
-                    // print("You are right");
-                    // var newElement = '{"division":"South-West","date":"Jun-2023"}';
-                    //     // '{"${SharedPreferencesUtils.getString('webRetailingDivision')}": "${SharedPreferencesUtils.getString('webRetailingSite')}", "date": "$finalMonth"}';
-                    // var ele = json.decode(newElement);
-                    // updatedListRetailing.add(ele);
-                    // await postRequest(context);
-                    // addDataCoverageAll();
-                    // setState(() {});
+                  ////// Open default month popup //////
+                  onNewMonth: () async {
                     sheetProvider.isDefaultMonth =
                         !sheetProvider.isDefaultMonth;
                   },
                   updateMonth: sheetProvider.isDefaultMonth,
+                  ////// Update default month for all the Geo and Cards //////
                   onApplyPressedMonthDefault: () async {
                     var selectedMonth =
                         SharedPreferencesUtils.getString('webDefaultMonth') ??
@@ -1515,20 +1441,10 @@ class _SummaryContainerDrawerState extends State<SummaryContainerDrawer> {
                     finalMonth = "$selectedMonth-$selectedYear";
                     sheetProvider.isDefaultMonth =
                         !sheetProvider.isDefaultMonth;
-                    // localListAdd = localList;
-                    //
-                    // for (var item in localList) {
-                    //   if (item.containsKey('query')) {
-                    //     for (var queryItem in item['query']) {
-                    //       queryItem['date'] = finalMonth;
-                    //     }
-                    //   }
-                    // }
-                    // print(localListAdd);
+
                     for (var entry in flattenedListCC) {
                       entry["date"] = finalMonth;
                     }
-                    print("CC $flattenedListCC");
 
                     for (var entry in flattenedListProd) {
                       entry["date"] = finalMonth;
@@ -1561,33 +1477,27 @@ class _SummaryContainerDrawerState extends State<SummaryContainerDrawer> {
                         "filter_key": "retailing",
                         "query": flattenedListRetailing
                       },
-                      {
-                        "filter_key": "gp",
-                        "query":flattenedListGP
-                      },
-                      {
-                        "filter_key": "fb",
-                        "query": flattenedListFB
-                      },
-                      {
-                        "filter_key": "cc",
-                        "query": flattenedListCC
-                      },
+                      {"filter_key": "gp", "query": flattenedListGP},
+                      {"filter_key": "fb", "query": flattenedListFB},
+                      {"filter_key": "cc", "query": flattenedListCC},
                       {
                         "filter_key": "coverage",
                         "query": flattenedListCoverage
                       },
-                      {
-                        "filter_key": "productivity",
-                        "query": flattenedListProd
-                      }];
+                      {"filter_key": "productivity", "query": flattenedListProd}
+                    ];
                     addDataCoverageAll();
-                    // await postRequest(context);
-                    // setState(() {});
+                    await postRequest(context);
                     sheetProvider.isLoadingPage = false;
                     setState(() {});
                   },
                   allSummary: dataListCoverage,
+                  ////// Open Default Geo Pop up //////
+                  onTapDefaultGoe: () {
+                    setState(() {
+                      showHide = !showHide;
+                    });
+                  },
                 )
               ],
             ),
@@ -1597,53 +1507,7 @@ class _SummaryContainerDrawerState extends State<SummaryContainerDrawer> {
     );
   }
 
-  Future<void> callAPIWithFilters(listSite, filter, apiName) async {
-    var dateTime = DateTime.now();
-    var selectedMonth = SharedPreferencesUtils.getString('webDefaultMonth') ??
-        ConstArray().month[dateTime.month - 2];
-    var selectedYear = SharedPreferencesUtils.getString('webDefaultYear') ??
-        '${dateTime.year}';
-    String apiEndpoint =
-        '$BASE_URL/api/webSummary/$apiName?date=$selectedMonth-$selectedYear';
-    final Uri apiUrl = Uri.parse('$apiEndpoint&$listSite=$filter');
-    // print(apiUrl);
-
-    try {
-      final response = await http.get(apiUrl);
-
-      if (response.statusCode == 200) {
-        final parsedData = jsonDecode(response.body);
-
-        addDataRe = true;
-        if (apiName == "retailingData") {
-          String jsonRetailing = jsonEncode(parsedData) ?? '';
-          SharedPreferencesUtils.setString("jsonRetailing", jsonRetailing);
-        } else if (apiName == "CBPData") {
-          String jsonCoverage = jsonEncode(parsedData) ?? '';
-          SharedPreferencesUtils.setString("jsonCoverage", jsonCoverage);
-        } else if (apiName == "GPData") {
-          String jsonGP = jsonEncode(parsedData) ?? '';
-          SharedPreferencesUtils.setString("jsonGP", jsonGP);
-        } else if (apiName == "FBData") {
-          String jsonFB = jsonEncode(parsedData) ?? '';
-          SharedPreferencesUtils.setString("jsonFB", jsonFB);
-        } else if (apiName == "ProductivityData") {
-          String jsonProd = jsonEncode(parsedData) ?? '';
-          SharedPreferencesUtils.setString("jsonProd", jsonProd);
-        } else if (apiName == "ccData") {
-          String jsonCC = jsonEncode(parsedData) ?? '';
-          SharedPreferencesUtils.setString("jsonCC", jsonCC);
-        }
-
-        // print("ParsedData $parsedData");
-      } else {
-        print('API call failed with status code: ${response.statusCode}');
-      }
-    } catch (e) {
-      print('Error occurred: $e');
-    }
-  }
-
+  ////// Get Geo category according to Geo //////
   findDatasetName(String selectedKey) {
     List<dynamic> cluster = ConstArray().clusterNewList;
     List<dynamic> site = ConstArray().siteNewList;
@@ -1667,4 +1531,3 @@ class _SummaryContainerDrawerState extends State<SummaryContainerDrawer> {
     }
   }
 }
-

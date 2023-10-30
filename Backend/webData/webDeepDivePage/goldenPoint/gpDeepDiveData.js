@@ -1,11 +1,30 @@
-const {sequelize} = require('../../../databaseConnection/sql_connection');
-
+// const {sequelize} = require('../../../databaseConnection/sql_connection');
+const {getConnection, getQueryData} = require('../../../databaseConnection/dbConnection');
+const { v4: uuidv4 } = require('uuid');
 const cache = require("memory-cache");
 
 function copyObject(obj) {
     return JSON.parse(JSON.stringify(obj));
 }
 
+function getFormattedNo(number){
+    if(number>100000){
+        number=(number/100000).toFixed(2)+"MM"
+    }else if(number>1000){
+        number=(number/1000).toFixed(2)+"M"
+    }else {
+        number = number.toFixed(2)
+    }
+    return number
+}
+
+function getFormattedNoObj(data){
+    for(let i in data){
+        data[i]['gp_gf_p3m_sum'] = getFormattedNo(data[i]['gp_gf_p3m_sum'])
+        data[i]['gp_target_sum'] = getFormattedNo(data[i]['gp_target_sum'])
+    }
+    return data
+}
 function sanitizeInput(input) {
     const sanitizedInput = input.trim();
     if (/^[a-zA-Z0-9\s\W_]+$/.test(sanitizedInput)) {
@@ -133,14 +152,12 @@ async function getTableData (bodyData) {
 
             }
             // console.time("Data Fetching")
-
-            let categories_data_gp = await sequelize.query(channel_query_gp)
+            let connection = await getConnection()
+            let categories_data_gp = await getQueryData(connection, channel_query_gp)
+            // let categories_data_gp = await sequelize.query(channel_query_gp)
             // console.timeEnd("Data Fetching")
-            mergedArr = categories_data_gp[0]
-            if(mergedArr.length<=0){
-                res.status(400).send({successful: false, message: "DB do not have data for this filter"})
-                return 0
-            }
+            mergedArr = categories_data_gp
+
             let DivisionObj = {}
             for (let i in mergedArr) {
 
@@ -317,6 +334,12 @@ async function getTableData (bodyData) {
                 }
             }
 
+            DivisionObj = getFormattedNoObj(DivisionObj)
+            SiteObj = getFormattedNoObj(SiteObj)
+            BranchObj = getFormattedNoObj(BranchObj)
+            ChannelObj = getFormattedNoObj(ChannelObj)
+            subChannelObj = getFormattedNoObj(subChannelObj)
+
             for (let i in subChannelObj) {
                 let key = i
                 key = i.split("/")
@@ -382,8 +405,9 @@ async function getTableData (bodyData) {
                 }
 
             }
-
-            let gp_data = await sequelize.query(sql_query_no_of_gp_current_year)
+            connection = await getConnection()
+            let gp_data = await getQueryData(connection, sql_query_no_of_gp_current_year)
+            // let gp_data = await sequelize.query(sql_query_no_of_gp_current_year)
             let gp_call = 0
             let gp_target = 1
             let gp_target_base = 1
@@ -393,9 +417,9 @@ async function getTableData (bodyData) {
                 gp_target_base = parseFloat((gp_target_base + DivisionObj[i]['gp_target_base_sum']).toFixed(2))
             }
 
-            if (gp_data[0][0] !== undefined) {
-                gp_call = parseFloat((gp_data[0][0]['gp_gf_p3m_sum']).toFixed(2))
-                gp_target = parseFloat((gp_data[0][0]['gp_target_sum']).toFixed(2))
+            if (gp_data[0] !== undefined) {
+                gp_call = parseFloat((gp_data[0]['gp_gf_p3m_sum']).toFixed(2))
+                gp_target = parseFloat((gp_data[0]['gp_target_sum']).toFixed(2))
             }
 
             if (gp_call === null) {
@@ -424,10 +448,12 @@ async function getTableData (bodyData) {
             }
             objData['filter_key'] = `${filter_1['filter_data']}`
             objData['filter_key2'] = `${filter_2['filter_data'] ? filter_2['filter_data'] : ''}`
-            objData['channel'] = channel_list.map(item => item).join("/")
+            objData['channel'] = channel_list
             objData['month'] = `${calendar_month_cy}`
-            objData['gp_gf_p3m_sum'] = parseFloat(`${gp_call}`)
-            objData['gp_target_sum'] = parseFloat(`${gp_target}`)
+            // objData['gp_gf_p3m_sum'] = parseFloat(`${gp_call}`)
+            objData['gp_gf_p3m_sum'] = getFormattedNo(gp_call)
+            // objData['gp_target_sum'] = parseFloat(`${gp_target}`)
+            objData['gp_target_sum'] = getFormattedNo(gp_target)
             objData["division"] = divList
             final_data.push(objData)
             if (filter_data === 'All India') {
@@ -461,6 +487,7 @@ let getDeepDivePageData = async (req, res) => {
                         for(let n = 0; n<cachebodyData.length; n++){
                             if (deepEqual(cachebodyData[n], curReq[i])) {
                                 if((cachebodyData[n]['channel'].map(item => `'${item}'`).join(", ")) === (curReq[i]['channel'].map(item => `'${item}'`).join(", "))){
+                                    cacheData[k]['resData'][n][0]['id'] = uuidv4()
                                     matchedDataList.push(cacheData[k]['resData'][n])
                                     matched = true
                                     console.log("Data fetched from cache")
@@ -480,6 +507,7 @@ let getDeepDivePageData = async (req, res) => {
             let finalData = await getTableData(nonMatchedIndex)
             for(let i in nonMatchedIndex){
                 if(finalData.length>0){
+                    finalData[i][0]['id'] = uuidv4()
                     matchedDataList.push(finalData[i])
                     cacheData[0]['reqBody'].push(nonMatchedIndex[i])
                     cacheData[0]['resData'].push(finalData[i])
@@ -488,7 +516,16 @@ let getDeepDivePageData = async (req, res) => {
                     console.log("There is no data for this query");
                 }
             }
-            res.status(200).json(matchedDataList);
+            let checkDublicate = {}
+            for(let i in matchedDataList){
+                let key = matchedDataList[i][0]['id']
+                checkDublicate[key] = matchedDataList[i]
+            }
+            let nonDulbicateList = []
+            for(let i in checkDublicate){
+                nonDulbicateList.push(checkDublicate[i])
+            }
+            res.status(200).json(nonDulbicateList);
         }else {
             final_result = await getTableData(req.body)
             if(final_result.length>0){

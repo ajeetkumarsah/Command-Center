@@ -28,10 +28,10 @@ class _CoverageTableTabSiteState extends State<CoverageTableTabSite> {
   @override
   Widget build(BuildContext context) {
     final sheetProvider = Provider.of<SheetProvider>(context);
-    return FutureBuilder(
-        future: getTableCoverageSummary(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
+    // return FutureBuilder(
+    //     future: getTableCoverageSummary(),
+    //     builder: (context, snapshot) {
+    //       if (snapshot.hasData) {
             return SingleChildScrollView(
               child: Column(
                 children: [
@@ -72,7 +72,7 @@ class _CoverageTableTabSiteState extends State<CoverageTableTabSite> {
                                     ? MyColors.dark500
                                     : MyColors.dark400,
                                 title: SizedBox(
-                                  height: 20,
+                                  height: 40,
                                   child: Row(
                                     // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
@@ -261,7 +261,7 @@ class _CoverageTableTabSiteState extends State<CoverageTableTabSite> {
                                           left: 113.0),
                                       child: Column(
                                         children: [
-                                          ListView.builder(
+                                          (widget.newDataList[0]['division']).isEmpty?Container(): ListView.builder(
                                               shrinkWrap:
                                               true,
                                               itemCount: widget
@@ -326,7 +326,7 @@ class _CoverageTableTabSiteState extends State<CoverageTableTabSite> {
                                                     title:
                                                     SizedBox(
                                                       height:
-                                                      20,
+                                                      40,
                                                       child:
                                                       Row(
                                                         children: [
@@ -436,7 +436,7 @@ class _CoverageTableTabSiteState extends State<CoverageTableTabSite> {
                                                                         collapsedBackgroundColor: branch2Index % 2 == 0 ? MyColors.dark500 : MyColors.dark400,
                                                                         backgroundColor: branch2Index % 2 == 0 ? MyColors.dark500 : MyColors.dark400,
                                                                         title: SizedBox(
-
+height: 40,
                                                                           child: Row(
                                                                             children: [
                                                                               Padding(
@@ -524,7 +524,7 @@ class _CoverageTableTabSiteState extends State<CoverageTableTabSite> {
                                                                                             collapsedBackgroundColor: channelIndex % 2 == 0 ? MyColors.dark600 : MyColors.dark300,
                                                                                             backgroundColor: channelIndex % 2 == 0 ? MyColors.dark600 : MyColors.dark300,
                                                                                             title: SizedBox(
-                                                                                              height: 20,
+                                                                                              height: 40,
                                                                                               child: Row(
                                                                                                 children: [
                                                                                                   Padding(
@@ -913,9 +913,9 @@ class _CoverageTableTabSiteState extends State<CoverageTableTabSite> {
                 ],
               ),
             );
-          } else {
-            return const Center(child: CircularProgressIndicator());
-          }
-        });
+        //   } else {
+        //     return const Center(child: CircularProgressIndicator());
+        //   }
+        // });
   }
 }

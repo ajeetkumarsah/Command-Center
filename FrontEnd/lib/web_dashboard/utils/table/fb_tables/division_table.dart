@@ -28,10 +28,10 @@ class _FBTableDivisionState extends State<FBTableDivision> {
   @override
   Widget build(BuildContext context) {
     final sheetProvider = Provider.of<SheetProvider>(context);
-    return FutureBuilder(
-        future: getTableCoverageSummary(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
+    // return FutureBuilder(
+    //     future: getTableCoverageSummary(),
+    //     builder: (context, snapshot) {
+    //       if (snapshot.hasData) {
             return SingleChildScrollView(
               child: Column(
                 children: [
@@ -73,7 +73,7 @@ class _FBTableDivisionState extends State<FBTableDivision> {
                                     ? MyColors.dark500
                                     : MyColors.dark400,
                                 title: SizedBox(
-                                  height: 20,
+                                  height: 40,
                                   child: Row(
                                     // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
@@ -327,7 +327,7 @@ class _FBTableDivisionState extends State<FBTableDivision> {
                                                     title:
                                                     SizedBox(
                                                       height:
-                                                      20,
+                                                      40,
                                                       child:
                                                       Row(
                                                         children: [
@@ -525,7 +525,7 @@ class _FBTableDivisionState extends State<FBTableDivision> {
                                                                                             collapsedBackgroundColor: channelIndex % 2 == 0 ? MyColors.dark600 : MyColors.dark300,
                                                                                             backgroundColor: channelIndex % 2 == 0 ? MyColors.dark600 : MyColors.dark300,
                                                                                             title: SizedBox(
-                                                                                              height: 20,
+                                                                                              height: 40,
                                                                                               child: Row(
                                                                                                 children: [
                                                                                                   Padding(
@@ -914,9 +914,9 @@ class _FBTableDivisionState extends State<FBTableDivision> {
                 ],
               ),
             );
-          } else {
-            return const Center(child: CircularProgressIndicator());
-          }
-        });
+        //   } else {
+        //     return const Center(child: CircularProgressIndicator());
+        //   }
+        // });
   }
 }

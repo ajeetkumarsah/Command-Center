@@ -1,5 +1,6 @@
-const {sequelize} = require('../../../databaseConnection/sql_connection');
-
+// const {sequelize} = require('../../../databaseConnection/sql_connection');
+const {getConnection, getQueryData} = require('../../../databaseConnection/dbConnection');
+const { v4: uuidv4 } = require('uuid');
 const cache = require("memory-cache");
 
 function copyObject(obj) {
@@ -175,6 +176,7 @@ async function getTableData (bodyData){
             let channel_list = []
             channel = data.channel
             channel_list = data.channel
+            channel_list = [...new Set(channel_list)];
             channel = channel.map(item => `'${item}'`).join(", ")
             delete filter_type.date;
             delete filter_type.channel;
@@ -215,10 +217,11 @@ async function getTableData (bodyData){
                 }
             }
             // console.time("Data Fetching")
-
-            let categories_data_productivity = await sequelize.query(channel_query_productivity)
+            let connection = await getConnection()
+            let categories_data_productivity = await getQueryData(connection, channel_query_productivity)
+            // let categories_data_productivity = await sequelize.query(channel_query_productivity)
             // console.timeEnd("Data Fetching")
-            mergedArr = categories_data_productivity[0]
+            mergedArr = categories_data_productivity
 
             let P3M = getPNMList2(date, 3)
             for (let i in P3M) {
@@ -472,14 +475,15 @@ async function getTableData (bodyData){
                             sql_query_no_of_productivity_current_year = `select sum([Productive Calls]) as pro_sum , sum([Target Calls]) as target_sum FROM [dbo].[tbl_command_center_productivity_new] where [Calendar Month] = '${current_month}' and [${filter_key}] = '${filter_data}' and [ChannelName] in (${channel}) `
                         }
                     }
-
-                    let productivity_data = await sequelize.query(sql_query_no_of_productivity_current_year)
+                    connection = await getConnection()
+                    let productivity_data = await getQueryData(connection, sql_query_no_of_productivity_current_year)
+                    // let productivity_data = await sequelize.query(sql_query_no_of_productivity_current_year)
                     let productivity_call = 0
                     let productivity_target = 1
                     let coverage = 1
-                    if (productivity_data[0][0] !== undefined) {
-                        productivity_call = productivity_data[0][0]['pro_sum']
-                        productivity_target = productivity_data[0][0]['target_sum']
+                    if (productivity_data[0] !== undefined) {
+                        productivity_call = productivity_data[0]['pro_sum']
+                        productivity_target = productivity_data[0]['target_sum']
                     }
 
                     if (productivity_call === null) {
@@ -522,7 +526,7 @@ async function getTableData (bodyData){
             let allMonths = getPNMList2(reqDate, 3)
             let mergeObjAllIndia = {}
             mergeObjAllIndia['filter_key'] = final_data[0]['filter']
-            mergeObjAllIndia['channel'] = channel_list.map(item => item).join("/")
+            mergeObjAllIndia['channel'] = channel_list
             mergeObjAllIndia['month1'] = allMonths[0]
             mergeObjAllIndia['month2'] = allMonths[1]
             mergeObjAllIndia['month3'] = allMonths[2]
@@ -622,11 +626,69 @@ async function getTableData (bodyData){
     }
 }
 
+async function checkCacheData(cacheKey, currentReq){
+    if(cache.get(cacheKey)){
+        let cacheData = cache.get(cacheKey)
+        let nonMatchedIndex = []
+        let matchedDataList = []
+        for(let k in cacheData){
+            let cachebodyData = cacheData[k]['reqBody']
+            let curReq = currentReq
+            if (Array.isArray(curReq)){
+                for(let i=0; i<curReq.length; i++){
+                    let matched = false
+                    for(let n = 0; n<cachebodyData.length; n++){
+                        if (deepEqual(cachebodyData[n], curReq[i])) {
+                            if((cachebodyData[n]['channel'].map(item => `'${item}'`).join(", ")) === (curReq[i]['channel'].map(item => `'${item}'`).join(", "))){
+                                cacheData[k]['resData'][n][0]['id'] = uuidv4()
+                                matchedDataList.push(cacheData[k]['resData'][n])
+                                matched = true
+                                console.log("Data fetched from cache")
+                            }
+                        }
+                    }
+                    if(!matched){
+                        nonMatchedIndex.push(curReq[i])
+                    }
+                }
+            }
+            else{
+                console.log("No data in Cache")
+            }
+        }
+
+        let finalData = await getTableData(nonMatchedIndex)
+        for(let i in nonMatchedIndex){
+            if(finalData.length>0){
+                finalData[i][0]['id'] = uuidv4()
+                matchedDataList.push(finalData[i])
+                cacheData[0]['reqBody'].push(nonMatchedIndex[i])
+                cacheData[0]['resData'].push(finalData[i])
+                console.log("Putting data into cache")
+            }else{
+                console.log("There is no data for this query");
+            }
+        }
+        let checkDublicate = {}
+        for(let i in matchedDataList){
+            let key = matchedDataList[i][0]['id']
+            checkDublicate[key] = matchedDataList[i]
+        }
+        let nonDulbicateList = []
+        for(let i in checkDublicate){
+            nonDulbicateList.push(checkDublicate[i])
+        }
+        return (nonDulbicateList);
+    }
+}
+
+
 let getDeepDivePageData = async (req, res) => {
     try {
         let time_to_live = 7*24*60*60*1000 // Time in milliseconds for 7 days
         let cacheKey = 'productivityMonthlyDeepDiveData'
         let final_result = []
+        let cacheDataCheck = false
         if(cache.get(cacheKey)){
             let cacheData = cache.get(cacheKey)
             let nonMatchedIndex = []
@@ -640,6 +702,7 @@ let getDeepDivePageData = async (req, res) => {
                         for(let n = 0; n<cachebodyData.length; n++){
                             if (deepEqual(cachebodyData[n], curReq[i])) {
                                 if((cachebodyData[n]['channel'].map(item => `'${item}'`).join(", ")) === (curReq[i]['channel'].map(item => `'${item}'`).join(", "))){
+                                    cacheData[k]['resData'][n][0]['id'] = uuidv4()
                                     matchedDataList.push(cacheData[k]['resData'][n])
                                     matched = true
                                     console.log("Data fetched from cache")
@@ -659,6 +722,7 @@ let getDeepDivePageData = async (req, res) => {
             let finalData = await getTableData(nonMatchedIndex)
             for(let i in nonMatchedIndex){
                 if(finalData.length>0){
+                    finalData[i][0]['id'] = uuidv4()
                     matchedDataList.push(finalData[i])
                     cacheData[0]['reqBody'].push(nonMatchedIndex[i])
                     cacheData[0]['resData'].push(finalData[i])
@@ -667,8 +731,18 @@ let getDeepDivePageData = async (req, res) => {
                     console.log("There is no data for this query");
                 }
             }
-            res.status(200).json(matchedDataList);
-        }else {
+            let checkDublicate = {}
+            for(let i in matchedDataList){
+                let key = matchedDataList[i][0]['id']
+                checkDublicate[key] = matchedDataList[i]
+            }
+            let nonDulbicateList = []
+            for(let i in checkDublicate){
+                nonDulbicateList.push(checkDublicate[i])
+            }
+            res.status(200).json(nonDulbicateList);
+        }
+        else {
             final_result = await getTableData(req.body)
             if(final_result.length>0){
                 let obj ={

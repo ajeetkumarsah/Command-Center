@@ -1,4 +1,5 @@
-const {sequelize} = require('../../databaseConnection/sql_connection');
+// const {sequelize} = require('../../databaseConnection/sql_connection');
+const {getConnection, getQueryData} = require('../../databaseConnection/dbConnection');
 
 var cache = require('memory-cache');
 
@@ -81,7 +82,7 @@ function getFormatedNumberValue_FB_GP(value){
 
 function getFormatedNumberValue_RT(value){
     let formatedValue = '0'
-    console.log("Your Value Before Format", value)
+    // console.log("Your Value Before Format", value)
     if(value>=10000000 ){
         formatedValue = ((value/10000000).toFixed(2).split(".")[0])+'Cr'
     }
@@ -89,7 +90,10 @@ function getFormatedNumberValue_RT(value){
     else if(value>=100000 && value<10000000){
         formatedValue = ((value/100000).toFixed(2).split(".")[0])+'Lk'
     }
-    console.log("Your Value After Format", formatedValue)
+    else {
+        formatedValue = ((value).toFixed(2).split(".")[0])
+    }
+    // console.log("Your Value After Format", formatedValue)
     return formatedValue
 }
 
@@ -114,6 +118,8 @@ async function getRetailingObj(dataObj){
     // let previous_year_rt = `CY${parseInt(date.split("-")[1])-1}-${date.split("-")[0]}`
 
     if(filter_key==="site"){filter_key="SiteName"}
+    if(filter_data==="North-East"){filter_data="N-E"}
+    if(filter_data==="South-West"){filter_data="S-W"}
     if(filter_key==="branch"){filter_key="BranchName"}
     if(filter_key==="allIndia"){filter_key="Division"
         filter_data = "allIndia"
@@ -128,19 +134,24 @@ async function getRetailingObj(dataObj){
         new_rt_query_previous_month = `select sum([Retailing]) as Retailing_Sum from [dbo].[tbl_command_center_rt_Division_cluster_site_branch] where [MonthYear] = ${previous_year_rt} and [Division] in ('N-E', 'S-W') `
     }
     else{
-        new_rt_query_current_month = `select [Retailing] as Retailing_Sum from [dbo].[tbl_command_center_rt_Division_cluster_site_branch] where [${filter_key}] = '${filter_data}' and [MonthYear] = ${current_year_rt}`
-        new_rt_query_previous_month = `select [Retailing] as Retailing_Sum from [dbo].[tbl_command_center_rt_Division_cluster_site_branch] where [${filter_key}] = '${filter_data}' and [MonthYear] = ${previous_year_rt}`
+        new_rt_query_current_month = `select sum([Retailing]) as Retailing_Sum from [dbo].[tbl_command_center_rt_Division_cluster_site_branch] where [${filter_key}] = '${filter_data}' and [MonthYear] = ${current_year_rt}`
+        new_rt_query_previous_month = `select sum([Retailing]) as Retailing_Sum from [dbo].[tbl_command_center_rt_Division_cluster_site_branch] where [${filter_key}] = '${filter_data}' and [MonthYear] = ${previous_year_rt}`
     }
 
-    let rt_data_current_month = await sequelize.query(new_rt_query_current_month)
-    let rt_data_previous_month = await sequelize.query(new_rt_query_previous_month)
+    let connection = await getConnection()
+    let rt_data_current_month = await getQueryData(connection, new_rt_query_current_month)
+    // let rt_data_current_month = await sequelize.query(new_rt_query_current_month)
+    // if(rt_data_current_month[0] === undefined || rt_data_current_month[0]['Retailing_Sum'] === null){return []}
+    connection = await getConnection()
+    let rt_data_previous_month = await getQueryData(connection, new_rt_query_previous_month)
+    // let rt_data_previous_month = await sequelize.query(new_rt_query_previous_month)
     let retailing_sum_current_month = 0
     let retailing_sum_previous_month = 1
-    if(rt_data_current_month[0][0] !== undefined){
-        retailing_sum_current_month = rt_data_current_month[0][0]['Retailing_Sum']
+    if(rt_data_current_month[0] !== undefined && rt_data_current_month[0]['Retailing_Sum'] !== null){
+        retailing_sum_current_month = rt_data_current_month[0]['Retailing_Sum']
     }
-    if(rt_data_previous_month[0][0] !== undefined){
-        retailing_sum_previous_month = rt_data_previous_month[0][0]['Retailing_Sum']
+    if(rt_data_previous_month[0] !== undefined && rt_data_previous_month[0]['Retailing_Sum'] !== null){
+        retailing_sum_previous_month = rt_data_previous_month[0]['Retailing_Sum']
     }
 
     if(retailing_sum_previous_month===null || retailing_sum_previous_month===0 || retailing_sum_previous_month===undefined){retailing_sum_previous_month=1}
@@ -201,25 +212,29 @@ async function getGPObj(dataObj){
         gp_new_query_previous_year = `select sum([Golden Points Gap Filled - P3M]) as gp_gap_fill_sum , sum([Golden Points Target]) as gp_target_sum from [dbo].[tbl_command_center_gp_geo_site] where [${filter_key}] = '${filter_data}' and [Calendar Month] = '${previous_year_gp}'`
     }
 
-    let gp_gf_p3m_current_year = await sequelize.query(gp_new_query_current_year)
+    let connection = await getConnection()
+    let gp_gf_p3m_current_year = await getQueryData(connection, gp_new_query_current_year)
+    // let gp_gf_p3m_current_year = await sequelize.query(gp_new_query_current_year)
 
     let gp_target_current_year = 1
-    if(gp_gf_p3m_current_year[0][0] === undefined){
+    if(gp_gf_p3m_current_year[0] === undefined){
         gp_gf_p3m_current_year = 0
     }else {
-        gp_target_current_year = gp_gf_p3m_current_year[0][0]['gp_target_sum']
-        gp_gf_p3m_current_year = gp_gf_p3m_current_year[0][0]['gp_gap_fill_sum']
+        gp_target_current_year = gp_gf_p3m_current_year[0]['gp_target_sum']
+        gp_gf_p3m_current_year = gp_gf_p3m_current_year[0]['gp_gap_fill_sum']
     }
 
     let gp_target_previous_year = 1
-    let gp_gf_p3m_previous_year = await sequelize.query(gp_new_query_previous_year)
-    if(gp_gf_p3m_previous_year[0][0] === undefined){
+    connection = await getConnection()
+    let gp_gf_p3m_previous_year = await getQueryData(connection, gp_new_query_previous_year)
+    // let gp_gf_p3m_previous_year = await sequelize.query(gp_new_query_previous_year)
+    if(gp_gf_p3m_previous_year[0] === undefined){
         gp_target_previous_year = 1
         gp_gf_p3m_previous_year = 1
     }
     else {
-        gp_target_previous_year = gp_gf_p3m_previous_year[0][0]['gp_target_sum']
-        gp_gf_p3m_previous_year = gp_gf_p3m_previous_year[0][0]['gp_gap_fill_sum']
+        gp_target_previous_year = gp_gf_p3m_previous_year[0]['gp_target_sum']
+        gp_gf_p3m_previous_year = gp_gf_p3m_previous_year[0]['gp_gap_fill_sum']
     }
 
     if(gp_gf_p3m_current_year === null || gp_gf_p3m_current_year === undefined){ gp_gf_p3m_current_year = 0 }
@@ -279,13 +294,15 @@ async function getFBObj(dataObj){
         new_fb_query = `select sum([FB Points achieved]) as fb_achieved_sum , sum([FB Target]) as fb_target_sum  FROM [dbo].[tbl_command_center_fb_new2] where [${filter_key}] = '${filter_data}' and [Calendar Month] like '${current_year_fb}'`
     }
 
-    let fb_data = await sequelize.query(new_fb_query)
+    let connection = await getConnection()
+    let fb_data = await getQueryData(connection, new_fb_query)
+    // let fb_data = await sequelize.query(new_fb_query)
     let fb_achieved_current_year = 0
     let fb_target_current_year = 1
 
-    if(fb_data[0][0] !== undefined){
-        fb_achieved_current_year = fb_data[0][0]['fb_achieved_sum']
-        fb_target_current_year = fb_data[0][0]['fb_target_sum']
+    if(fb_data[0] !== undefined && fb_data[0]['fb_achieved_sum'] !== null){
+        fb_achieved_current_year = fb_data[0]['fb_achieved_sum']
+        fb_target_current_year = fb_data[0]['fb_target_sum']
     }
 
     if(fb_target_current_year === 0){fb_target_current_year = 1}
@@ -347,22 +364,26 @@ async function getCCObj(dataObj){
         cc_new_query_previous_year = `select sum([Calls Made]) as calls_made_sum, sum([Target Calls]) as target_calls_sum from [dbo].[tbl_command_center_cc_new] where [${filter_key}] = '${filter_data}' and [Calendar Month] = '${previous_year_cc}' `
     }
 
-    let cc_achieved_current_year = await sequelize.query(cc_new_query_current_year)
+    let connection = await getConnection()
+    let cc_achieved_current_year = await getQueryData(connection, cc_new_query_current_year)
+    // let cc_achieved_current_year = await sequelize.query(cc_new_query_current_year)
 
     let cc_target_current_year = 1
-    if(cc_achieved_current_year[0][0] !== undefined){
-        cc_target_current_year = cc_achieved_current_year[0][0]['target_calls_sum']
-        cc_achieved_current_year = cc_achieved_current_year[0][0]['calls_made_sum']
+    if(cc_achieved_current_year[0] !== undefined && cc_achieved_current_year[0]['calls_made_sum'] !== null){
+        cc_target_current_year = cc_achieved_current_year[0]['target_calls_sum']
+        cc_achieved_current_year = cc_achieved_current_year[0]['calls_made_sum']
     }else{
         cc_achieved_current_year = 0
     }
 
 
     let cc_target_previous_year = 1
-    let cc_achieved_previous_year = await sequelize.query(cc_new_query_previous_year)
-    if(cc_achieved_previous_year[0][0] !== undefined){
-        cc_target_previous_year = cc_achieved_previous_year[0][0]['target_calls_sum']
-        cc_achieved_previous_year = cc_achieved_previous_year[0][0]['calls_made_sum']
+    connection = await getConnection()
+    let cc_achieved_previous_year = await getQueryData(connection, cc_new_query_previous_year)
+    // let cc_achieved_previous_year = await sequelize.query(cc_new_query_previous_year)
+    if(cc_achieved_previous_year[0] !== undefined && cc_achieved_previous_year[0]['calls_made_sum'] !== null){
+        cc_target_previous_year = cc_achieved_previous_year[0]['target_calls_sum']
+        cc_achieved_previous_year = cc_achieved_previous_year[0]['calls_made_sum']
     }else{
         cc_achieved_previous_year = 1
     }
@@ -432,16 +453,17 @@ async function getCBPObj(dataObj){
         sql_query_no_of_billing_current_year = `select sum([No of stores billed atleast once]) as billed_sum , sum([Coverage]) as coverage_sum from [dbo].[tbl_command_center_billing_new] where [${filter_key}] = '${filter_data}' and [Calendar Month] = '${calendar_month_cy}' `
     }
 
-
-    let billing_and_coverage_data = await sequelize.query(sql_query_no_of_billing_current_year)
+    let connection = await getConnection()
+    let billing_and_coverage_data = await getQueryData(connection, sql_query_no_of_billing_current_year)
+    // let billing_and_coverage_data = await sequelize.query(sql_query_no_of_billing_current_year)
 
     let billing = 0
     let coverage = 1
     let target_calls = 1
 
-    if(billing_and_coverage_data[0][0] !== undefined){
-        billing = billing_and_coverage_data[0][0]['billed_sum']
-        coverage = billing_and_coverage_data[0][0]['coverage_sum']
+    if(billing_and_coverage_data[0] !== undefined && billing_and_coverage_data[0]['billed_sum'] !== null){
+        billing = billing_and_coverage_data[0]['billed_sum']
+        coverage = billing_and_coverage_data[0]['coverage_sum']
     }
 
     if(coverage === 0){coverage = 1}
@@ -498,14 +520,16 @@ async function getProductivityObj(dataObj){
         new_producitivity_query_current_month = `select sum ([Productive Calls]) as productivity_calls, sum([Target Calls]) as target_calls FROM [dbo].[tbl_command_center_productivity_new] where [${filter_key}] = '${filter_data}' and [Calendar Month] = '${calendar_month_cy}' `
     }
 
-    let productivity_data = await sequelize.query(new_producitivity_query_current_month)
+    let connection = await getConnection()
+    let productivity_data = await getQueryData(connection, new_producitivity_query_current_month)
+    // let productivity_data = await sequelize.query(new_producitivity_query_current_month)
 
     let productive_calls = 0
     let target_calls = 1
 
-    if(productivity_data[0][0] !== undefined) {
-        productive_calls = productivity_data[0][0]['productivity_calls']
-        target_calls = productivity_data[0][0]['target_calls']
+    if(productivity_data[0] !== undefined && productivity_data[0]['productivity_calls'] !== null) {
+        productive_calls = productivity_data[0]['productivity_calls']
+        target_calls = productivity_data[0]['target_calls']
     }
 
 

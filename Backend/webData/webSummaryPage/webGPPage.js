@@ -1,4 +1,5 @@
-const {sequelize} = require('../../databaseConnection/sql_connection');
+// const {sequelize} = require('../../databaseConnection/sql_connection');
+const {getConnection, getQueryData} = require('../../databaseConnection/dbConnection');
 
 function getFormatedNumberValue(value){
     let formatedValue = '0'
@@ -74,15 +75,17 @@ let getSummaryPageData = async (req, res) =>{
         // let gp_new_query_previous_year = `select [Golden Points Gap Filled - P3M], [Golden Points Target] from [dbo].[tbl_command_center_gp_calculation] where [${filter_key}] = '${filter_data}' and [Calender Year] = '${previous_year_gp}'`
         // // let gp_new_query_previous_year_all_india = `select sum([Golden Points Gap Filled - P3M]) as gp_gap_fill_sum , sum([Golden Points Target]) as gp_target_sum from [dbo].[tbl_command_center_gp_calculation] where [Calender Year] = '${previous_year_gp}' and [Division] not in ('')`
 
-        let gp_gf_p3m_current_year = await sequelize.query(gp_new_query_current_year)
+        let connection = await getConnection()
+        let gp_gf_p3m_current_year = await getQueryData(connection, gp_new_query_current_year)
+        // let gp_gf_p3m_current_year = await sequelize.query(gp_new_query_current_year)
         // let gp_gf_p3m_current_year_all_india = await sequelize.query(gp_new_query_current_year_all_india)
 
         let gp_target_current_year = 1
-        if(gp_gf_p3m_current_year[0][0] === undefined){
+        if(gp_gf_p3m_current_year[0] === undefined){
             gp_gf_p3m_current_year = 0
         }else {
-            gp_target_current_year = gp_gf_p3m_current_year[0][0]['gp_target_sum']
-            gp_gf_p3m_current_year = gp_gf_p3m_current_year[0][0]['gp_gap_fill_sum']
+            gp_target_current_year = gp_gf_p3m_current_year[0]['gp_target_sum']
+            gp_gf_p3m_current_year = gp_gf_p3m_current_year[0]['gp_gap_fill_sum']
         }
 
         // let gp_target_current_year_all_india = 1
@@ -95,14 +98,16 @@ let getSummaryPageData = async (req, res) =>{
 
 
         let gp_target_previous_year = 1
-        let gp_gf_p3m_previous_year = await sequelize.query(gp_new_query_previous_year)
-        if(gp_gf_p3m_previous_year[0][0] === undefined){
+        connection = await getConnection()
+        let gp_gf_p3m_previous_year = await getQueryData(connection, gp_new_query_previous_year)
+        // let gp_gf_p3m_previous_year = await sequelize.query(gp_new_query_previous_year)
+        if(gp_gf_p3m_previous_year[0] === undefined){
             gp_target_previous_year = 1
             gp_gf_p3m_previous_year = 1
         }
         else {
-            gp_target_previous_year = gp_gf_p3m_previous_year[0][0]['gp_target_sum']
-            gp_gf_p3m_previous_year = gp_gf_p3m_previous_year[0][0]['gp_gap_fill_sum']
+            gp_target_previous_year = gp_gf_p3m_previous_year[0]['gp_target_sum']
+            gp_gf_p3m_previous_year = gp_gf_p3m_previous_year[0]['gp_gap_fill_sum']
         }
 
         // let gp_target_previous_year_all_india = 1

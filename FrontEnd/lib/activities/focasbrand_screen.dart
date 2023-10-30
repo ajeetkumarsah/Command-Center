@@ -38,32 +38,34 @@ class _FocusBrandScreenState extends State<FocusBrandScreen> {
       ),
       body: SingleChildScrollView(
         child: SafeArea(
-          child: Stack(children: [
-            Container(
-              height: size.height,
-              decoration: const BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage('assets/images/app_bar/background.png'),
-                  fit: BoxFit.fill,
+          child: Stack(
+            children: [
+              Container(
+                height: size.height,
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage('assets/images/app_bar/background.png'),
+                    fit: BoxFit.fill,
+                  ),
                 ),
               ),
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const HeaderText(title: "Focus Brand Summary | CM"),
-                FocusBrandTable(onTap: () {}, rowData: rowData, sort: sort),
-                const FocusBrandCategory(),
-                const FocusBrandChannel(),
-                FocusBrandTrends(
-                  isExpanded: isExpanded,
-                  onExpansionChanged: (bool expanded) {
-                    setState(() => isExpanded = expanded);
-                  },
-                )
-              ],
-            )
-          ],),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const HeaderText(title: "Focus Brand Summary | CM"),
+                  FocusBrandTable(onTap: () {}, rowData: rowData, sort: sort),
+                  const FocusBrandCategory(),
+                  const FocusBrandChannel(),
+                  FocusBrandTrends(
+                    isExpanded: isExpanded,
+                    onExpansionChanged: (bool expanded) {
+                      setState(() => isExpanded = expanded);
+                    },
+                  )
+                ],
+              )
+            ],
+          ),
         ),
       ),
     );

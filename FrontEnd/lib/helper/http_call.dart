@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:command_centre/helper/env/env_utils.dart';
 import 'package:command_centre/helper/hive/hime_manager.dart';
 import 'package:command_centre/provider/sheet_provider.dart';
 import 'package:command_centre/web_dashboard/model/summary_model.dart';
@@ -37,8 +38,8 @@ Future<DataModel> fetchMtdRetailing(BuildContext context) async {
     selectedIndia = selectedDivision.toLowerCase();
   }
   final response = await http.get(Uri.parse(
-      'https://run.mocky.io/v3/f215bdf8-d06b-4d14-91a6-45f1bc081417'));
-  // '$BASE_URL/api/appData?$selectedIndia=$selectedSite&date=$selectedMonth'));
+      // 'https://run.mocky.io/v3/f215bdf8-d06b-4d14-91a6-45f1bc081417'));
+  '${EnvUtils.baseURL}/appData?$selectedIndia=$selectedSite&date=$selectedMonth'), headers: header);
   // print("$BASE_URL/api/appData?$selectedIndia=$selectedSite&date=$selectedMonth");
   if (response.statusCode == 200) {
     final jsonBody = jsonDecode(response.body);

@@ -1,4 +1,5 @@
-const {sequelize} = require('../../databaseConnection/sql_connection');
+// const {sequelize} = require('../../databaseConnection/sql_connection');
+const {getConnection, getQueryData} = require('../../databaseConnection/dbConnection');
 
 let getSummaryPageData = async (req, res) =>{
     try {
@@ -45,8 +46,9 @@ let getSummaryPageData = async (req, res) =>{
         // let sql_query_no_of_billing_current_year = `select [No of stores billed atleast once] as billed_sum , [Coverage] as coverage_sum from [dbo].[tbl_command_center_billing_calculation] where [${filter_key}] = '${filter_data}' and [Calendar Month] = '${calendar_month_cy}' and ChannelName is NULL`
         // let new_producitivity_query_current_month = `select [Productive Calls] as productivity_calls, [Target Calls] as target_calls FROM [dbo].[tbl_command_center_productivity_calculation] where [${filter_key}] = '${filter_data}' and [Calendar Month] = '${calendar_month_cy}'`
 
-
-        let billing_and_coverage_data = await sequelize.query(sql_query_no_of_billing_current_year)
+        let connection = await getConnection()
+        let billing_and_coverage_data = await getQueryData(connection, sql_query_no_of_billing_current_year)
+        // let billing_and_coverage_data = await sequelize.query(sql_query_no_of_billing_current_year)
         // let productivity_data = await sequelize.query(new_producitivity_query_current_month)
 
         // let billing_and_coverage_data_all_india = await sequelize.query(sql_query_no_of_billing_current_year_all_india)
@@ -64,9 +66,9 @@ let getSummaryPageData = async (req, res) =>{
         // let target_calls_all_india = 1
 
 
-        if(billing_and_coverage_data[0][0] !== undefined){
-            billing = billing_and_coverage_data[0][0]['billed_sum']
-            coverage = billing_and_coverage_data[0][0]['coverage_sum']
+        if(billing_and_coverage_data[0] !== undefined && billing_and_coverage_data[0]['billed_sum'] !== null){
+            billing = billing_and_coverage_data[0]['billed_sum']
+            coverage = billing_and_coverage_data[0]['coverage_sum']
         }
         // if(productivity_data[0][0] !== undefined) {
         //     productive_calls = productivity_data[0][0]['productivity_calls']
