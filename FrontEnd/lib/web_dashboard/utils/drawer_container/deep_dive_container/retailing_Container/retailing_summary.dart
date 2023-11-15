@@ -1,5 +1,4 @@
-import 'dart:io';
-
+import 'dart:math';
 import 'package:command_centre/helper/app_urls.dart';
 import 'package:command_centre/utils/sharedpreferences/sharedpreferences_utils.dart';
 import 'package:command_centre/web_dashboard/utils/comman_utils/excel_button.dart';
@@ -107,8 +106,7 @@ class RetailingWebSummary extends StatefulWidget {
       required this.tryAgain,
       required this.tryAgain1,
       required this.tryAgain2,
-      required this.tryAgain3
-      })
+      required this.tryAgain3})
       : super(key: key);
 
   @override
@@ -177,9 +175,9 @@ class _RetailingWebSummaryState extends State<RetailingWebSummary> {
   bool addGeoBool = false;
   late ScrollController _scrollController3;
   ScrollController _controller = ScrollController();
-
   ScrollController _controller1 = ScrollController();
   ScrollController _controller2 = ScrollController();
+  ScrollController _controller3 = ScrollController();
 
   Color getColor(Set<MaterialState> states) {
     return const Color(0x397992D2);
@@ -510,128 +508,120 @@ class _RetailingWebSummaryState extends State<RetailingWebSummary> {
                                                                                 ],
                                                                               ),
                                                                             ),
-                                                                            Stack(
-                                                                              children: [
-                                                                                // SizedBox(
-                                                                                //   width: MediaQuery.of(context).size.width - 400,
-                                                                                //   height: MediaQuery.of(context).size.height - 440,
-                                                                                //   child: ListView.builder(itemBuilder: (context, index) {
-                                                                                //     return Container(
-                                                                                //       height: 35.52,
-                                                                                //       color: index % 2 == 0 ? MyColors.dark500 : MyColors.dark600,
-                                                                                //     );
-                                                                                //   }),
-                                                                                // ),
-                                                                                Scrollbar(
-                                                                                  controller: _scrollControllerTable1,
-                                                                                  child: SingleChildScrollView(
+                                                                            SizedBox(
+                                                                              height: size.height - 440,
+                                                                              width: size.width - 540,
+                                                                              child: Scrollbar(
+                                                                                controller: _scrollControllerTable1,
+                                                                                child: ListView.builder(
                                                                                     controller: _scrollControllerTable1,
-                                                                                    child: Row(
-                                                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                      children: [
-                                                                                        Expanded(
-                                                                                          child: SizedBox(
-                                                                                            width: 140,
-                                                                                            height: size.height - 440,
-                                                                                            child: ListView.builder(
-                                                                                                itemCount: 31,
-                                                                                                controller: _controller1,
-                                                                                                physics: const NeverScrollableScrollPhysics(),
-                                                                                                itemBuilder: (context, index) {
-                                                                                                  return Padding(
-                                                                                                    padding: const EdgeInsets.only(left: 15.0),
-                                                                                                    child: Container(
-                                                                                                      decoration: BoxDecoration(
-                                                                                                        color: index % 2 == 0
-                                                                                                            ? MyColors.dark500
-                                                                                                            : MyColors.dark600,
-                                                                                                        // border: Border(
-                                                                                                        //   bottom: BorderSide(width: 0.2, color: MyColors.whiteColor),
-                                                                                                        //   top: BorderSide(width: 0.2, color: MyColors.whiteColor),
-                                                                                                        // ),
-                                                                                                      ),
-                                                                                                      child: Center(
-                                                                                                        child: Padding(
-                                                                                                          padding: const EdgeInsets.all(8.0),
-                                                                                                          child: Text(
-                                                                                                            "${index + 1}",
-                                                                                                            style: ThemeText.sheetText,
-                                                                                                          ),
-                                                                                                        ),
-                                                                                                      ),
-                                                                                                    ),
-                                                                                                  );
-                                                                                                }),
-                                                                                          ),
-                                                                                        ),
-                                                                                        SizedBox(
-                                                                                          height: size.height - 440,
-                                                                                          width: size.width - 540,
-                                                                                          child: ListView.builder(
-                                                                                              // controller: _controller,
-                                                                                              physics: const NeverScrollableScrollPhysics(),
-                                                                                              shrinkWrap: true,
-                                                                                              scrollDirection: Axis.horizontal,
-                                                                                              itemCount:
-                                                                                                  widget.dataList[selectedIndexLocation].length,
-                                                                                              itemBuilder: (context, index) {
-                                                                                                return SizedBox(
+                                                                                    // itemCount: [widget.dataList[selectedIndexLocation][0]['data'].length, widget.dataList[selectedIndexLocation][1]['data'].length].reduce((current, next) => current > next ? current : next),
+                                                                                    itemCount: 31,
+                                                                                    scrollDirection: Axis.vertical,
+                                                                                    itemBuilder: (context, index1) {
+                                                                                      // print("${[widget.dataList[selectedIndexLocation][0]['data'].length, widget.dataList[selectedIndexLocation][1]['data'].length].reduce((current, next) => current > next ? current : next)}");
+                                                                                      return Column(
+                                                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                        children: [
+                                                                                          Row(
+                                                                                            mainAxisSize: MainAxisSize.min,
+                                                                                            children: [
+                                                                                              //For indexing
+                                                                                              SizedBox(
+                                                                                                child: Container(
                                                                                                   height: 40,
                                                                                                   width: 140,
-                                                                                                  child: Row(
-                                                                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                                    children: [
-                                                                                                      Expanded(
-                                                                                                        child: ListView.builder(
-                                                                                                            shrinkWrap: true,
-                                                                                                            controller: _controller2,
-                                                                                                            physics:
-                                                                                                                const NeverScrollableScrollPhysics(),
-                                                                                                            itemCount: widget
-                                                                                                                .dataList[selectedIndexLocation]
-                                                                                                                    [index]['data']
-                                                                                                                .length,
-                                                                                                            scrollDirection: Axis.vertical,
-                                                                                                            itemBuilder: (context, indx) {
-                                                                                                              return Row(
-                                                                                                                children: [
-                                                                                                                  Container(
-                                                                                                                      width: 140,
-                                                                                                                      decoration: BoxDecoration(
-                                                                                                                        color: indx % 2 == 0
-                                                                                                                            ? MyColors.dark500
-                                                                                                                            : MyColors.dark600,
-                                                                                                                        // border: const Border(
-                                                                                                                        //   bottom: BorderSide(width: 0.2, color: MyColors.whiteColor),
-                                                                                                                        //   top: BorderSide(width: 0.2, color: MyColors.whiteColor),
-                                                                                                                        // ),
-                                                                                                                      ),
-                                                                                                                      child: Padding(
-                                                                                                                        padding:
-                                                                                                                            const EdgeInsets.all(8.0),
-                                                                                                                        child: Text(
-                                                                                                                          "${widget.dataList[selectedIndexLocation][index]['data'][indx]['retailing']}",
-                                                                                                                          textAlign: TextAlign.center,
-                                                                                                                          style: const TextStyle(
-                                                                                                                              fontSize: 16,
-                                                                                                                              fontFamily: fontFamily),
-                                                                                                                        ),
-                                                                                                                      ))
-                                                                                                                ],
-                                                                                                              );
-                                                                                                            }),
-                                                                                                      )
-                                                                                                    ],
+                                                                                                  decoration: BoxDecoration(
+                                                                                                    color: index1 % 2 == 0
+                                                                                                        ? MyColors.dark500
+                                                                                                        : MyColors.dark600,
+                                                                                                    // border: const Border(
+                                                                                                    //   bottom: BorderSide(width: 0.2, color: MyColors.whiteColor),
+                                                                                                    //   top: BorderSide(width: 0.2, color: MyColors.whiteColor),
+                                                                                                    // ),
                                                                                                   ),
-                                                                                                );
-                                                                                              }),
-                                                                                        ),
-                                                                                      ],
-                                                                                    ),
-                                                                                  ),
-                                                                                )
-                                                                              ],
-                                                                            )
+                                                                                                  child: Padding(
+                                                                                                    padding: const EdgeInsets.all(8.0),
+                                                                                                    child: Text(
+                                                                                                      '${index1 + 1}',
+                                                                                                      textAlign: TextAlign.center,
+                                                                                                      style: const TextStyle(
+                                                                                                          fontSize: 16,
+                                                                                                          fontFamily: fontFamily),
+                                                                                                    ),
+                                                                                                  ),
+                                                                                                ),
+                                                                                              ),
+                                                                                              Container(
+                                                                                                height: 40,
+                                                                                                decoration: BoxDecoration(
+                                                                                                  color: index1 % 2 == 0
+                                                                                                      ? MyColors.dark500
+                                                                                                      : MyColors.dark600,
+                                                                                                ),
+                                                                                                child: ListView.builder(
+                                                                                                    controller: _controller,
+                                                                                                    physics: const NeverScrollableScrollPhysics(),
+                                                                                                    shrinkWrap: true,
+                                                                                                    scrollDirection: Axis.horizontal,
+                                                                                                    itemCount: widget.dataList[selectedIndexLocation].length,
+                                                                                                    itemBuilder: (context, index) {
+                                                                                                      return SizedBox(
+                                                                                                        height: 40,
+                                                                                                        width: 140,
+                                                                                                        child: Row(
+                                                                                                          crossAxisAlignment:
+                                                                                                              CrossAxisAlignment.start,
+                                                                                                          children: [
+                                                                                                            Expanded(
+                                                                                                              child: ListView.builder(
+                                                                                                                  shrinkWrap: true,
+                                                                                                                  controller: _controller2,
+                                                                                                                  physics:
+                                                                                                                      const NeverScrollableScrollPhysics(),
+                                                                                                                  itemCount: widget.dataList[selectedIndexLocation][index]['data'].length,
+                                                                                                                  scrollDirection: Axis.vertical,
+                                                                                                                  itemBuilder: (context, indx) {
+                                                                                                                    return Row(
+                                                                                                                      children: [
+                                                                                                                        Container(
+                                                                                                                          width: 140,
+                                                                                                                          decoration: BoxDecoration(
+                                                                                                                            color: index1 % 2 == 0
+                                                                                                                                ? MyColors.dark500
+                                                                                                                                : MyColors.dark600,
+                                                                                                                          ),
+                                                                                                                          child: Padding(
+                                                                                                                            padding:
+                                                                                                                                const EdgeInsets.all(
+                                                                                                                                    8.0),
+                                                                                                                            child: Text(
+                                                                                                                              "${widget.dataList[selectedIndexLocation][index]['data'][index1]['retailing']}",
+                                                                                                                              textAlign:
+                                                                                                                                  TextAlign.center,
+                                                                                                                              style: const TextStyle(
+                                                                                                                                  fontSize: 16,
+                                                                                                                                  fontFamily:
+                                                                                                                                      fontFamily),
+                                                                                                                            ),
+                                                                                                                          ),
+                                                                                                                        ),
+                                                                                                                      ],
+                                                                                                                    );
+                                                                                                                  }),
+                                                                                                            )
+                                                                                                          ],
+                                                                                                        ),
+                                                                                                      );
+                                                                                                    }),
+                                                                                              ),
+                                                                                            ],
+                                                                                          ),
+                                                                                        ],
+                                                                                      );
+                                                                                    }),
+                                                                              ),
+                                                                            ),
                                                                           ],
                                                                         ),
                                                                       ),

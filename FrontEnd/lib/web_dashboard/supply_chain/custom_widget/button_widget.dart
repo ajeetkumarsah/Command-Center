@@ -23,9 +23,10 @@ class ButtonWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size.width;
     return SizedBox(
       height: height,
-      width: width,
+      width: size == 1728? 150: width,
       child: Material(
         color: Colors.white,
         shape: RoundedRectangleBorder(
@@ -59,11 +60,7 @@ class MenuWidget extends StatefulWidget {
 
 class _MenuWidgetState extends State<MenuWidget> {
   int selectedIndex = 0;
-  List<dynamic> selectedCategoryIndices = [];
-  List<dynamic> selectedSourceIndices = [];
-  List<dynamic> selectedDestinationIndices = [];
-  List<dynamic> selectedVehicleIndices = [];
-  List<dynamic> selectedSbfIndices = [];
+
   bool selectAll = false;
   TextEditingController searchController = TextEditingController();
 
@@ -76,8 +73,13 @@ class _MenuWidgetState extends State<MenuWidget> {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<TransportationProvider>(context);
+    print(searchController.text);
     List<dynamic>? filteredList = widget.list?.where((item) => item.toLowerCase().contains(searchController.text.toLowerCase())).toList();
-
+    List<dynamic> selectedCategoryIndices = provider.catFilter;
+    List<dynamic> selectedSourceIndices = provider.sourceFilter;
+    List<dynamic> selectedDestinationIndices = provider.destinationFilter;
+    List<dynamic> selectedVehicleIndices = provider.vehicleFilter;
+    List<dynamic> selectedSbfIndices = provider.sbfFilter;
     return Container(
       width: 200,
       height: 300,
@@ -111,9 +113,15 @@ class _MenuWidgetState extends State<MenuWidget> {
                   ),
                 ),
                 onChanged: (value) {
+                  // print(value);
                   setState(() {
                     // Filter the list based on the search query
                     // Reset selected indices and "Select All" when searching
+                    // selectedCategoryIndices.clear();
+                    // selectedSourceIndices.clear();
+                    // selectedDestinationIndices.clear();
+                    // selectedVehicleIndices.clear();
+                    // selectedSbfIndices.clear();
                     selectAll = false;
                   });
                 },
@@ -130,7 +138,7 @@ class _MenuWidgetState extends State<MenuWidget> {
                   )
                 : Expanded(
                     child: ListView.builder(
-                      itemCount: (filteredList?.length ?? 0), // +1 for "Select All" option
+                      itemCount: (filteredList?.length ?? 0) + 1, // +1 for "Select All" option
                       itemBuilder: (context, index) {
                         if (index == 0) {
                           // "Select All" option
@@ -215,20 +223,24 @@ class _MenuWidgetState extends State<MenuWidget> {
                           );
                         } else {
                           // Regular list item
-                          final actualIndex = filteredList[index];
-                          print("HERE $filteredList");
+                          final actualIndex = filteredList[index-1];
+                          // print("HERE $filteredList");
+                          // print("HERE $actualIndex");
                           return Padding(
                             padding: const EdgeInsets.only(left: 30, top: 10),
                             child: InkWell(
                               onTap: () {
                                 setState(() {
+                                  selectAll = false;
                                   if (widget.SelectedDropdownindex == 1) {
                                     if (selectedCategoryIndices.contains(actualIndex)) {
                                       selectedCategoryIndices.remove(actualIndex);
                                     } else {
                                       selectedCategoryIndices.add(actualIndex);
                                     }
+                                    print(selectedCategoryIndices);
                                     provider.setCatFilter(selectedCategoryIndices);
+                                    print(provider.catFilter);
                                   }
 
                                   if (widget.SelectedDropdownindex == 2) {
@@ -310,7 +322,7 @@ class _MenuWidgetState extends State<MenuWidget> {
                                   SizedBox(
                                     width: 120.0,
                                     child: Text(
-                                      filteredList[index],
+                                      filteredList[index-1],
                                       maxLines: 1,
                                       overflow: TextOverflow.clip,
                                       softWrap: false,

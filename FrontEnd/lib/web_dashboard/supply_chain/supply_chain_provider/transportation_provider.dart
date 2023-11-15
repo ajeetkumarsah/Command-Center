@@ -7,16 +7,18 @@ class TransportationProvider extends ChangeNotifier {
   String? _selectedFilterIndexName;
   String? selectedFilter;
 
-  List<dynamic>? _catFilter = [];
-  List<dynamic>? _sourceFilter = [];
-  List<dynamic>? _destinationFilter = [];
-  List<dynamic>? _vehicleFilter = [];
-  List<dynamic>? _sbfFilter = [];
+  List<dynamic> masterdata = [];
+
+  List<dynamic> _catFilter = [];
+  List<dynamic> _sourceFilter = [];
+  List<dynamic> _destinationFilter = [];
+  List<dynamic> _vehicleFilter = [];
+  List<dynamic> _sbfFilter = [];
   String? _movementFilter = '';
 
   List<dynamic> _graphDataList = [] ;
 
-  String? _filterDate = '';
+  List<dynamic> _filterDate = [];
 
   bool _load = false;
   bool _graphLoad = false;
@@ -26,19 +28,24 @@ class TransportationProvider extends ChangeNotifier {
   String? get selectedGraph => this._selectedGraph;
   String? get selectedFilterIndexName => this._selectedFilterIndexName;
 
-  List<dynamic>? get catFilter => this._catFilter;
-  List<dynamic>? get sourceFilter => this._sourceFilter;
-  List<dynamic>? get destinationFilter => this._destinationFilter;
-  List<dynamic>? get vehicleFilter => this._vehicleFilter;
-  List<dynamic>? get sbfFilter => this._sbfFilter;
+  List<dynamic> get catFilter => this._catFilter;
+  List<dynamic> get sourceFilter => this._sourceFilter;
+  List<dynamic> get destinationFilter => this._destinationFilter;
+  List<dynamic> get vehicleFilter => this._vehicleFilter;
+  List<dynamic> get sbfFilter => this._sbfFilter;
   String? get movementFilter => this._movementFilter;
-  String? get filterDate => this._filterDate;
+  List<dynamic> get filterDate => this._filterDate;
 
   List<dynamic>? get graphDataList => this._graphDataList;
 
   bool get graphVisible => this._graphVisible;
   bool get load => this._load;
   bool get graphLoad => this._graphLoad;
+
+  void setMasterData(value){
+    masterdata = value;
+    notifyListeners();
+  }
 
   void setSelectedGraph(value) {
     _selectedGraph = value;
@@ -93,7 +100,8 @@ class TransportationProvider extends ChangeNotifier {
   }
 
    void setFilterDate(value){
-    _filterDate = value;
+    _filterDate.clear();
+    _filterDate.add(value);
     notifyListeners();
    }
 
@@ -115,7 +123,7 @@ class TransportationProvider extends ChangeNotifier {
   void setDefault(){
     selectedFilter = '';
     _selectedGraph = '';
-    _filterDate = '';
+    _filterDate = [];
     _selectedFilterIndexName = '';
     _sbfFilter = [];
     _vehicleFilter = [];

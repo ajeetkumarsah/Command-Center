@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../utils/colors/colors.dart';
-import '../summary_utils/morning_container.dart';
+import '../../utils/summary_utils/morning_container.dart';
 
 class DrawerAlerts extends StatefulWidget {
   final int indexNew;
@@ -58,29 +58,44 @@ class _DrawerWidgetState extends State<DrawerAlerts> {
     print('Logged out');
   }
 
-  void _showLogoutPopup(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => Container(
-        color: Colors.white.withOpacity(0.2), // Set the desired background color and opacity
-        child: Center(
-          child: LogoutPopup(onLogout: _handleLogout),
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final sheetProvider = Provider.of<SheetProvider>(context);
     return Padding(
-      padding: const EdgeInsets.only(top: 31, bottom: 24),
+      padding: const EdgeInsets.only(top: 45, bottom: 24),
       child: Column(
         children: [
+          Padding(
+            padding: const EdgeInsets.only(bottom: 18,top: 5),
+            child: SizedBox (
+              height: 35,
+              width: 200,
+              child: OutlinedButton(
+                onPressed: (){
+                  Navigator.of(context).pushNamed('/profilescreen');
+                },
+                style: ButtonStyle(
+                  side: MaterialStateProperty.all(
+                      const BorderSide(
+                          width: 1.0, color: MyColors.whiteColor)),
+                  shape: MaterialStateProperty.all(
+                      RoundedRectangleBorder(
+                          borderRadius:
+                          BorderRadius.circular(20.0))),
+                ),
+                child: const Text(
+                  "Change Profile",
+                  style: TextStyle(
+                      fontFamily: fontFamily, color: MyColors.whiteColor),
+                ),
+              ),
+            ),
+          ),
+
           Container(
             width: 250,
-            height: size.height,
+            height: size.height - 130,
             decoration: BoxDecoration(
               color: MyColors.toggleColorWhite,
               borderRadius: const BorderRadius.only(topLeft: Radius.circular(10.0), bottomLeft: Radius.circular(10.0)),

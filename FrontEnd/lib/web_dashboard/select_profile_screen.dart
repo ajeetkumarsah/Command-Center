@@ -84,7 +84,7 @@ class _SelectProfileScreenWebState extends State<SelectProfileScreenWeb>
   @override
   void initState() {
     super.initState();
-    checkLogin();
+    // checkLogin();
   }
 
   @override
