@@ -1,9 +1,7 @@
-import 'package:command_centre/activities/retailing_screen.dart';
 import 'package:flutter/material.dart';
 
 import '../model/data_table_model.dart';
 import '../utils/colors/colors.dart';
-import 'package:charts_flutter/flutter.dart' as charts;
 
 import '../utils/comman/app_bar.dart';
 import '../utils/comman/dgp_compliance/dgp_category.dart';
@@ -40,32 +38,34 @@ class _DGPComplianceScreenState extends State<DGPComplianceScreen> {
       ),
       body: SingleChildScrollView(
         child: SafeArea(
-          child: Stack(children: [
-            Container(
-              height: size.height,
-              decoration: const BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage('assets/images/app_bar/background.png'),
-                  fit: BoxFit.fill,
+          child: Stack(
+            children: [
+              Container(
+                height: size.height,
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage('assets/images/app_bar/background.png'),
+                    fit: BoxFit.fill,
+                  ),
                 ),
               ),
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const HeaderText(title: "Golden Points Summary | P3M"),
-                DGPTable(rowData: rowData),
-                const DGPCategory(),
-                const DGPChannel(),
-                DGPTrends(
-                  isExpanded: isExpanded,
-                  onExpansionChanged: (bool expanded) {
-                    setState(() => isExpanded = expanded);
-                  },
-                )
-              ],
-            )
-          ],),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const HeaderText(title: "Golden Points Summary | P3M"),
+                  DGPTable(rowData: rowData),
+                  const DGPCategory(),
+                  const DGPChannel(),
+                  DGPTrends(
+                    isExpanded: isExpanded,
+                    onExpansionChanged: (bool expanded) {
+                      setState(() => isExpanded = expanded);
+                    },
+                  )
+                ],
+              )
+            ],
+          ),
         ),
       ),
     );

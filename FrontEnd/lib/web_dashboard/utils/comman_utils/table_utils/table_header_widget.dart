@@ -24,7 +24,7 @@ class TableHeaderWidget extends StatelessWidget {
             child: Row(
               children: [
                 Container(
-                  width: MediaQuery.of(context).size.width - 650,
+                  width: MediaQuery.of(context).size.width - 750,
                   child: Text(
                     title,
                     maxLines: 1,

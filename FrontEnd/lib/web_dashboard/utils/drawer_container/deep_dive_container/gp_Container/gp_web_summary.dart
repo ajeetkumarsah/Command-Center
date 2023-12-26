@@ -19,6 +19,7 @@ import 'package:command_centre/web_dashboard/utils/table/fb_tables/month_wise_ta
 import 'package:command_centre/web_dashboard/utils/table/fb_tables/site_table.dart';
 import 'package:command_centre/web_dashboard/utils/table/table_tabs/division_table_tab.dart';
 import 'package:command_centre/web_dashboard/utils/table/table_tabs/site_table_tab.dart';
+import 'package:excel/excel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -27,7 +28,6 @@ import '../../../../../../model/data_table_model.dart';
 import '../../../../../../provider/sheet_provider.dart';
 import '../../../../../../utils/colors/colors.dart';
 import '../../../../../../utils/style/text_style.dart';
-// import 'dart:html' as html;
 
 class GPWebSummary extends StatefulWidget {
   final Function() onTap;
@@ -59,10 +59,14 @@ class GPWebSummary extends StatefulWidget {
   final Function() onTap2;
   final Function() onTap3;
   final Function() onTap4;
+  final Function() tryAgain;
+  final Function() tryAgain1;
+  final Function() tryAgain2;
   final int selectedIndex1;
   final Function() onRemoveFilterTap;
   final Function() onRemoveFilterCategory;
   final Function() onTapChannelFilter;
+  final Function() onTapRemoveFilter;
   final List<String> selectedItemValueCategory;
   final List<String> selectedItemValueBrand;
   final List<String> selectedItemValueBrandForm;
@@ -91,7 +95,7 @@ class GPWebSummary extends StatefulWidget {
       required this.dataListCCTabs,
       required this.onChangedFilterBrand,
       required this.selectedItemValueChannelBrand,
-      required this.categoryApply, required this.onClosedTap, required this.selectedMonthList, required this.onTapMonthFilter, required this.onTap1, required this.onTap2, required this.onTap3, required this.onTap4, required this.selectedIndex1, required this.onRemoveFilterTap, required this.onRemoveFilterCategory, required this.selectedItemValueCategory, required this.selectedItemValueBrand, required this.selectedItemValueBrandForm, required this.selectedItemValueBrandFromGroup, required this.onTapChannelFilter})
+      required this.categoryApply, required this.onClosedTap, required this.selectedMonthList, required this.onTapMonthFilter, required this.onTap1, required this.onTap2, required this.onTap3, required this.onTap4, required this.selectedIndex1, required this.onRemoveFilterTap, required this.onRemoveFilterCategory, required this.selectedItemValueCategory, required this.selectedItemValueBrand, required this.selectedItemValueBrandForm, required this.selectedItemValueBrandFromGroup, required this.onTapChannelFilter, required this.onTapRemoveFilter, required this.tryAgain, required this.tryAgain1, required this.tryAgain2})
       : super(key: key);
 
   @override
@@ -117,6 +121,53 @@ class _GPWebSummaryState extends State<GPWebSummary> {
   List clusterCount = [];
   late ScrollController _scrollControllerTable;
   String selectedMonth = '';
+
+  postRequest(context) async {
+    if (true) {
+      setState(() {
+
+        final Map<String, Map<String, String>> excelData = {};
+        final Set<String> uniqueMonths = {};
+        final List<String> allDates = [];
+
+        // Iterate through the JSON data and populate the excelData map
+        for (var monthData in widget.dataList) {
+          for (var monthEntry in monthData) {
+            final month = monthEntry['month'];
+            uniqueMonths.add(month);
+            final data = monthEntry['data'];
+            for (var dateEntry in data) {
+              final date = dateEntry['date'];
+              final retailing = dateEntry['retailing'];
+              final key = '$date';
+              allDates.add(key);
+              if (!excelData.containsKey(key)) {
+                excelData[key] = {'Date': date};
+              }
+              excelData[key]![month] = retailing;
+            }
+          }
+        }
+        // Get sorted list of dates
+        final sortedDates = allDates.toSet().toList()..sort();
+        // Create an Excel workbook and sheet
+        final excel = Excel.createExcel();
+        final sheet = excel['Sheet1'];
+        // Write headers
+        final headers = ['Date', ...uniqueMonths];
+        sheet.appendRow(headers);
+        // Write sorted data to the sheet
+        for (var date in sortedDates) {
+          final entry = excelData[date]!;
+          sheet.appendRow(headers.map((header) => entry[header] ?? '').toList());
+        }
+        // Save the Excel file
+        excel.save();
+        print('Excel file saved successfully.');
+      });
+    } else {
+    }
+  }
 
   // final TextEditingController _textController = TextEditingController();
   // String _displayText = '';
@@ -218,7 +269,7 @@ class _GPWebSummaryState extends State<GPWebSummary> {
                     subTitle: 'Golden Points',
                     showHide: false,
                     onPressed: () {},
-                    onNewMonth: () {}, showHideRetailing: false,
+                    onNewMonth: () {}, showHideRetailing: false, onTapDefaultGoe: () {  },
                   ),
                   Padding(
                       padding: const EdgeInsets.only(
@@ -285,10 +336,34 @@ class _GPWebSummaryState extends State<GPWebSummary> {
                                     borderRadius: BorderRadius.circular(15)),
                                 child: Stack(
                                   children: [
-                                    sheetProvider.isLoaderActive == true
-                                        ? const Center(
-                                            child: CircularProgressIndicator())
-                                        : Column(
+                                    sheetProvider.gpErrorMsg.isNotEmpty
+                                        ? Center(
+                                      child: Column(
+                                        // crossAxisAlignment: CrossAxisAlignment.center,
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          const Text('Something went wrong! Try Again'),
+                                          const SizedBox(height: 20,),
+                                          OutlinedButton(
+                                            onPressed:widget.tryAgain,
+                                            style: ButtonStyle(
+                                              side: MaterialStateProperty.all(
+                                                  const BorderSide(
+                                                      width: 1.0, color: MyColors.primary)),
+                                              shape: MaterialStateProperty.all(
+                                                  RoundedRectangleBorder(
+                                                      borderRadius:
+                                                      BorderRadius.circular(5.0))),
+                                            ),
+                                            child: const Text(
+                                              "Try Again",
+                                              style: TextStyle(
+                                                  fontFamily: fontFamily, color: Colors.black),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ) : Column(
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             mainAxisAlignment:
@@ -523,11 +598,34 @@ class _GPWebSummaryState extends State<GPWebSummary> {
                                                 BorderRadius.circular(15)),
                                         child: Stack(
                                           children: [
-                                            sheetProvider.isLoaderActive == true
-                                                ? const Center(
-                                                    child:
-                                                        CircularProgressIndicator())
-                                                : Column(
+                                            sheetProvider.gp1ErrorMsg.isNotEmpty
+                                                ? Center(
+                                              child: Column(
+                                                // crossAxisAlignment: CrossAxisAlignment.center,
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: [
+                                                  const Text('Something went wrong! Try Again'),
+                                                  const SizedBox(height: 20,),
+                                                  OutlinedButton(
+                                                    onPressed:widget.tryAgain1,
+                                                    style: ButtonStyle(
+                                                      side: MaterialStateProperty.all(
+                                                          const BorderSide(
+                                                              width: 1.0, color: MyColors.primary)),
+                                                      shape: MaterialStateProperty.all(
+                                                          RoundedRectangleBorder(
+                                                              borderRadius:
+                                                              BorderRadius.circular(5.0))),
+                                                    ),
+                                                    child: const Text(
+                                                      "Try Again",
+                                                      style: TextStyle(
+                                                          fontFamily: fontFamily, color: Colors.black),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ) : Column(
                                                     crossAxisAlignment:
                                                         CrossAxisAlignment
                                                             .start,
@@ -757,12 +855,34 @@ class _GPWebSummaryState extends State<GPWebSummary> {
                                                     BorderRadius.circular(15)),
                                             child: Stack(
                                               children: [
-                                                sheetProvider.isLoaderActive ==
-                                                        true
-                                                    ? const Center(
-                                                        child:
-                                                            CircularProgressIndicator())
-                                                    : Column(
+                                                sheetProvider.gp2ErrorMsg.isNotEmpty
+                                                    ? Center(
+                                                  child: Column(
+                                                    // crossAxisAlignment: CrossAxisAlignment.center,
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    children: [
+                                                      const Text('Something went wrong! Try Again'),
+                                                      const SizedBox(height: 20,),
+                                                      OutlinedButton(
+                                                        onPressed:widget.tryAgain2,
+                                                        style: ButtonStyle(
+                                                          side: MaterialStateProperty.all(
+                                                              const BorderSide(
+                                                                  width: 1.0, color: MyColors.primary)),
+                                                          shape: MaterialStateProperty.all(
+                                                              RoundedRectangleBorder(
+                                                                  borderRadius:
+                                                                  BorderRadius.circular(5.0))),
+                                                        ),
+                                                        child: const Text(
+                                                          "Try Again",
+                                                          style: TextStyle(
+                                                              fontFamily: fontFamily, color: Colors.black),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ) : Column(
                                                         crossAxisAlignment:
                                                             CrossAxisAlignment
                                                                 .start,
@@ -978,55 +1098,63 @@ class _GPWebSummaryState extends State<GPWebSummary> {
                                       ),
                                     )
                                   : Container(),
-                  const ExcelImportButton(),
+                  ExcelImportButton(onClickExcel: () async{
+                    print('hello');
+                    setState(() {});
+                    await postRequest(context);
+                  },),
                 ],
               ),
             ),
             FiltersAllCategory(
               // FiltersChannel(
-              selectedMonthList:widget.selectedIndex1 == 0?
-              (widget.dataList).isEmpty?'Select..':
-              widget.dataList[0][0]['month']:
-              widget.selectedIndex1 == 1?(widget.dataListCCTabs).isEmpty?'Loading..':
-              widget.dataListCCTabs[0][0]['month']:
-              widget.selectedIndex1 == 2?(widget.dataListTabs).isEmpty?'Loading..':
-              widget.dataListTabs[0][0]['month1']:
-              widget.selectedIndex1 == 3?(widget.dataListBillingTabs).isEmpty?'Loading..':
-              widget.dataListBillingTabs[0][0]['month1']:"" ,
+              selectedMonthList: widget.selectedIndex1 == 0
+                  ? (widget.dataList).isEmpty
+                  ? 'Select..'
+                  : widget.dataList[selectedIndexLocation][0]['month']
+                  : widget.selectedIndex1 == 3
+                  ? (widget.dataListCCTabs).isEmpty
+                  ? 'Select..'
+                  : widget.dataListCCTabs[selectedIndexLocation1][0]
+              ['month1']
+                  : widget.selectedIndex1 == 1
+                  ? (widget.dataListTabs).isEmpty
+                  ? 'Select..'
+                  : widget.dataListTabs[selectedIndexLocation2][0]
+              ['month1']
+                  : widget.selectedIndex1 == 2
+                  ? (widget.dataListBillingTabs).isEmpty
+                  ? 'Select..'
+                  : widget.dataListBillingTabs[
+              selectedIndexLocation][0]['month1']
+                  : "Select.." ,
               // (widget.dataList).isEmpty?'Loading..':selectedMonth,
               // widget.dataList[selectedIndexLocation][0]['month'],
               onTapMonthFilter: widget.onTapMonthFilter,
               selectedChannelList:
-              widget.selectedIndex1 == 0?
-              (widget.dataList).isEmpty?'Select..':
-              widget.dataList[0][0]['channel']:
-              widget.selectedIndex1 == 1?(widget.dataListCCTabs).isEmpty?'Loading..':
-              widget.dataListCCTabs[0][0]['channel']:
-              widget.selectedIndex1 == 2?(widget.dataListTabs).isEmpty?'Loading..':
-              widget.dataListTabs[0][0]['channel']:
-              widget.selectedIndex1 == 3?(widget.dataListBillingTabs).isEmpty?'Loading..':
-              widget.dataListBillingTabs[0][0]['channel']:"" ,
-              onTapChannelFilter:  widget.onTapChannelFilter, attributeName: 'FB', categoryApply: widget.categoryApply,
+              widget.selectedIndex1 == 0
+                  ? (widget.dataList).isEmpty
+                  ? ['Select..']
+                  : widget.dataList[selectedIndexLocation][0]['channel']
+                  : widget.selectedIndex1 == 3
+                  ? (widget.dataListCCTabs).isEmpty
+                  ? ['Select..']
+                  : widget.dataListCCTabs[selectedIndexLocation1][0]
+              ['channel']
+                  : widget.selectedIndex1 == 1
+                  ? (widget.dataListTabs).isEmpty
+                  ? ['Select..']
+                  : widget.dataListTabs[selectedIndexLocation2][0]
+              ['channel']
+                  : widget.selectedIndex1 == 2
+                  ? (widget.dataListBillingTabs).isEmpty
+                  ? ['Select..']
+                  : widget.dataListBillingTabs[
+              selectedIndexLocation][0]['channel']
+                  : ["Select.."],
+              onTapChannelFilter:  widget.onTapChannelFilter, attributeName: 'FB', categoryApply: widget.categoryApply, onTapRemoveFilter: widget.onTapRemoveFilter,
             )
-            // FiltersRetailing(
-            //   clusterCount: clusterCount,
-            //   onChangedFilter: widget.onChangedFilter,
-            //   selectedItemValueChannel: widget.selectedItemValueChannel,
-            //   onChangedFilterMonth: widget.onChangedFilterMonth,
-            //   selectedItemValueChannelMonth:
-            //       widget.selectedItemValueChannelMonth,
-            //   onChangedFilterBrand: widget.onChangedFilterBrand,
-            //   selectedItemValueChannelBrand:
-            //       widget.selectedItemValueChannelBrand,
-            //   categoryApply: widget.categoryApply,
-            //   fbFilter: 'FB',selectedMonth: selectedMonth.isEmpty ?"Select..": selectedMonth,
-            //   onRemoveFilter: widget.onRemoveFilterTap, selectedMonthList: selectedMonth.isEmpty ?"Select..": selectedMonth, onTapMonthFilter: widget.onTapMonthFilter,
-            //   onRemoveFilterCategory: widget.onRemoveFilterCategory, selectedCategoryList: '',
-            //   selectedItemValueCategory: widget.selectedItemValueCategory,
-            //   selectedItemValueBrand: widget.selectedItemValueBrand,
-            //   selectedItemValueBrandForm: widget.selectedItemValueBrandForm,
-            //   selectedItemValueBrandFromGroup: widget.selectedItemValueBrandFromGroup,
-            // )
+
           ],
         ),
       ],

@@ -1,10 +1,8 @@
 import 'package:command_centre/activities/retailing_screen.dart';
-import 'package:command_centre/helper/app_urls.dart';
 import 'package:command_centre/utils/comman/coverage/coverage_table.dart';
 import 'package:command_centre/utils/comman/coverage/coverage_trends.dart';
 import 'package:flutter/material.dart';
 
-import '../helper/http_call.dart';
 import '../model/data_table_model.dart';
 import '../utils/colors/colors.dart';
 import '../utils/comman/app_bar.dart';
@@ -12,11 +10,7 @@ import '../utils/comman/coverage/coverage_category.dart';
 import '../utils/comman/coverage/coverage_channel.dart';
 import '../utils/comman/coverage/coverage_utils/coverage_table_sheet.dart';
 import '../utils/const/header_text.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
 
-import '../utils/sharedpreferences/sharedpreferences_utils.dart';
-import '../utils/style/text_style.dart';
 
 class CityData {
   final int id;
@@ -46,7 +40,8 @@ class CoverageScreen extends StatefulWidget {
       required this.itemCount,
       required this.divisionCount,
       required this.siteCount,
-      required this.branchCount, required this.channelCount})
+      required this.branchCount,
+      required this.channelCount})
       : super(key: key);
 
   @override
@@ -73,40 +68,12 @@ class _CoverageScreenState extends State<CoverageScreen> {
     xAlign = loginAlign;
     loginColor = selectedColor;
     signInColor = normalColor;
-    fetchData();
+
     super.initState();
   }
 
   List<CityData> data = [];
   List<CityData1> dataa = [];
-
-  Future<void> fetchData() async {
-    var geoDivision =
-        "${SharedPreferencesUtils.getString('coverageGeoD') ?? 'division'}=${SharedPreferencesUtils.getString('coverageGeoDS') ?? 'South-West'}";
-    var geoSite =
-        "${SharedPreferencesUtils.getString('coverageGeoS') ?? 'cluster'}=${SharedPreferencesUtils.getString('coverageGeoSS') ?? 'HR'}";
-    var geoCluster =
-        "${SharedPreferencesUtils.getString('coverageGeoC') ?? 'site' }=${SharedPreferencesUtils.getString('coverageGeoCS') ?? "Pune"}";
-
-    var selectedDivision = SharedPreferencesUtils.getString('division') ?? '';
-    var selectedSite = SharedPreferencesUtils.getString('site') ?? '';
-    var selectedMonth = SharedPreferencesUtils.getString('fullMonth') ?? '';
-
-    print("$geoDivision, $geoCluster, $geoSite");
-    final response = await http.get(Uri.parse(
-        'https://run.mocky.io/v3/1dcd3b7b-5a95-4647-9467-c60de2d35a38'));
-        // '$BASE_URL/api/appData/CBPData?$geoDivision&$geoSite&date=May-2023&$geoCluster'));
-    if (response.statusCode == 200) {
-      final jsonData = json.decode(response.body) as List<dynamic>;
-      data =
-          jsonData.map((jsonObject) => CityData.fromJson(jsonObject)).toList();
-      // dataa =
-      //     jsonData.map((jsonObject) => CityData1.fromJson(jsonObject)).toList();
-    } else {
-      print('Failed to fetch data. Error: ${response.statusCode}');
-    }
-    setState(() {});
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -156,13 +123,11 @@ class _CoverageScreenState extends State<CoverageScreen> {
                                 divisionList: widget.divisionCount,
                                 siteList: widget.siteCount,
                                 branchList: widget.branchCount,
-                                selectedGeo: selectedDivision == 'Channel'
-                                                ? 0
-                                                : 0,
+                                selectedGeo:
+                                    selectedDivision == 'Channel' ? 0 : 0,
                                 onPressed: () {
                                   setState(() {
                                     Navigator.pop(context);
-                                    fetchData();
                                   });
                                 },
                               );
@@ -173,9 +138,16 @@ class _CoverageScreenState extends State<CoverageScreen> {
                     },
                   ),
                   const CoverageCategory(),
-                  CoverageChannel( rowData: rowData,
+                  CoverageChannel(
+                    rowData: rowData,
                     data: dataa,
-                    rowsItems: rowsItems, itemCount: widget.itemCount, divisionCount: widget.divisionCount, siteCount: widget.siteCount, branchCount: widget.branchCount, channelCount: widget.channelCount,),
+                    rowsItems: rowsItems,
+                    itemCount: widget.itemCount,
+                    divisionCount: widget.divisionCount,
+                    siteCount: widget.siteCount,
+                    branchCount: widget.branchCount,
+                    channelCount: widget.channelCount,
+                  ),
                   CoverageTrends(
                     isExpanded: isExpanded,
                     onExpansionChanged: (bool expanded) {

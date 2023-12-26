@@ -95,10 +95,13 @@ class MetricsFragment extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   HeaderTitleMetrics(
-                                      onPressed: () {}, title: value, icon: Icons.arrow_outward_outlined,),
+                                    onPressed: () {},
+                                    title: value,
+                                    icon: Icons.arrow_outward_outlined,
+                                  ),
                                   Padding(
-                                    padding:
-                                    const EdgeInsets.only(top: 10, left: 15),
+                                    padding: const EdgeInsets.only(
+                                        top: 10, left: 15),
                                     child: Text(
                                       value,
                                       style: const TextStyle(
@@ -123,7 +126,10 @@ class MetricsFragment extends StatelessWidget {
                     ),
                   ),
                   const Padding(
-                    padding: EdgeInsets.only(left: 20, top: 30,),
+                    padding: EdgeInsets.only(
+                      left: 20,
+                      top: 30,
+                    ),
                     child: Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
@@ -165,7 +171,6 @@ class MetricsFragment extends StatelessWidget {
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-
                                       Text(
                                         listActive[index],
                                         style: const TextStyle(
@@ -191,7 +196,6 @@ class MetricsFragment extends StatelessWidget {
                           }),
                     ),
                   ),
-
                 ],
               ),
             ),

@@ -13,16 +13,17 @@ import 'dart:convert';
 class FiltersAllCategory extends StatefulWidget {
   final String selectedMonthList;
   final Function() onTapMonthFilter;
-  final String selectedChannelList;
+  final List selectedChannelList;
   final Function() onTapChannelFilter;
   final Function() categoryApply;
+  final Function() onTapRemoveFilter;
   final String attributeName;
 
   const FiltersAllCategory({
     Key? key,
     required this.selectedMonthList,
     required this.onTapMonthFilter,
-    required this.selectedChannelList, required this.onTapChannelFilter, required this.attributeName, required this.categoryApply,
+    required this.selectedChannelList, required this.onTapChannelFilter, required this.attributeName, required this.categoryApply, required this.onTapRemoveFilter,
   }) : super(key: key);
 
   @override
@@ -186,11 +187,11 @@ class _FiltersAllCategoryState extends State<FiltersAllCategory> {
                 padding: const EdgeInsets.only(top: 8.0, bottom: 20),
                 child: SingleChildScrollView(
                   child: Padding(
-                    padding: const EdgeInsets.only(top: 50.0),
+                    padding: const EdgeInsets.only(top: 40.0),
                     child: Column(
                       children: [
                         Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 8.0),
                           child: Container(
                             height: 120,
                             decoration: const BoxDecoration(
@@ -233,7 +234,7 @@ class _FiltersAllCategoryState extends State<FiltersAllCategory> {
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 8.0),
                           child: Container(
                             decoration: const BoxDecoration(
                               color: MyColors.whiteColor,
@@ -250,45 +251,45 @@ class _FiltersAllCategoryState extends State<FiltersAllCategory> {
                                   title: 'Channel Filter',
                                   icon: Icons.edit,
                                 ),
-                                // widget.selectedChannelList == "Select.."?Container():
-                                // Padding(
-                                //   padding:
-                                //   const EdgeInsets.only(
-                                //       left: 15.0,
-                                //       right: 15,
-                                //       top: 10),
-                                //   child: Row(
-                                //     mainAxisAlignment:
-                                //     MainAxisAlignment
-                                //         .center,
-                                //     children: [
-                                //       Expanded(
-                                //         child: Text(
-                                //           widget.selectedChannelList.isEmpty?"Select..":widget.selectedChannelList,
-                                //           style: const TextStyle(
-                                //               fontFamily:
-                                //               fontFamily,
-                                //               fontWeight:
-                                //               FontWeight
-                                //                   .w500,
-                                //               fontSize: 14,
-                                //               color: Color(
-                                //                   0xff344C65)),
-                                //         ),
-                                //       ),
-                                //       const Spacer(),
-                                //       InkWell(
-                                //           onTap: widget
-                                //               .onTapRemoveFilter,
-                                //           child: const Icon(
-                                //             Icons.close,
-                                //             size: 16,
-                                //             color: MyColors
-                                //                 .primary,
-                                //           ))
-                                //     ],
-                                //   ),
-                                // ),
+                                widget.selectedChannelList == ["Select.."]?Container():
+                                Padding(
+                                  padding:
+                                  const EdgeInsets.only(
+                                      left: 15.0,
+                                      right: 15,
+                                      top: 10),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                    MainAxisAlignment
+                                        .center,
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          widget.selectedChannelList.isEmpty?"Select..":widget.selectedChannelList[0],
+                                          style: const TextStyle(
+                                              fontFamily:
+                                              fontFamily,
+                                              fontWeight:
+                                              FontWeight
+                                                  .w500,
+                                              fontSize: 14,
+                                              color: Color(
+                                                  0xff344C65)),
+                                        ),
+                                      ),
+                                      const Spacer(),
+                                      InkWell(
+                                          onTap: widget
+                                              .onTapRemoveFilter,
+                                          child: const Icon(
+                                            Icons.close,
+                                            size: 16,
+                                            color: MyColors
+                                                .primary,
+                                          ))
+                                    ],
+                                  ),
+                                ),
                                 GestureDetector(
                                   onTap: widget.onTapChannelFilter,
                                   child: Padding(
@@ -308,7 +309,7 @@ class _FiltersAllCategoryState extends State<FiltersAllCategory> {
                                               BorderRadius.circular(8.0),
                                             ),
                                             child: Text(
-                                              widget.selectedChannelList.isEmpty?"Select..":widget.selectedChannelList,
+                                              widget.selectedChannelList.isEmpty?"Select..":widget.selectedChannelList[0],
                                               overflow: TextOverflow.ellipsis,
                                               style: const TextStyle(
                                                 fontSize: 13.0,
@@ -327,117 +328,134 @@ class _FiltersAllCategoryState extends State<FiltersAllCategory> {
                             ),
                           ),
                         ),
-                        widget.attributeName == "FB"?DropDownWidget(
-                          title: 'Category',
-                          selectedValue: selectedValue1,
-                          onChanged: (String? newValue) async {
-                            setState(() {
-                              selectedValue1 =
-                                  newValue;
-                              selectedValue2 = null;
-                              selectedValue3 = null;
-                              selectedValue4 = null;
-                              sheetProvider
-                                  .selectedCategoryFilter =
-                                  newValue!;
-                            });
-                            await fetchData2(context, '', selectedValue1);
-                            setState(() {});
-                          },
-                          dropDownItem: categoryFilter.map((String item) {
-                            return DropdownMenuItem<String>(
-                              value: item,
-                              child: Text(item),
-                            );
-                          }).toList(),
-                          secondIndex: 0,
-                        ):Container(),
-                        widget.attributeName == "FB"?const SizedBox(height: 20.0):Container(),
-                        widget.attributeName == "FB"?DropDownWidget(
-                          title: 'Brand',
-                          selectedValue: selectedValue2,
-                          onChanged: (String? newValue) async {
-                            setState(() {
-                              selectedValue2 = newValue;
-                              selectedValue3 = null;
-                              selectedValue4 = null;
-                            });
-                            await fetchData3(context,
-                                '', selectedValue1, selectedValue2);
-                            setState(() {});
-                          },
-                          dropDownItem: brandFilter.map((String item) {
-                            return DropdownMenuItem<String>(
-                              value: item,
-                              child: Text(item),
-                            );
-                          }).toList(),
-                          secondIndex: 0,
-                        ):Container(),
-                        widget.attributeName == "FB"?const SizedBox(height: 20.0):Container(),
-                        widget.attributeName == "FB"?DropDownWidget(
-                          title: 'BrandForm',
-                          selectedValue: selectedValue3,
-                          onChanged: (String? newValue) async {
-                            setState(() {
-                              selectedValue3 =
-                                  newValue;
-                              selectedValue4 = null;
-                            });
-                            await fetchData4(context, '', selectedValue1,
-                                selectedValue2, selectedValue3);
-                            setState(() {});
-                          },
-                          dropDownItem: brandFormFilter.map((String item) {
-                            return DropdownMenuItem<String>(
-                              value: item,
-                              child: Text(item),
-                            );
-                          }).toList(),
-                          secondIndex: 0,
-                        ):Container(),
-                        widget.attributeName == "FB"?const SizedBox(height: 20.0):Container(),
-                        widget.attributeName == "FB"?DropDownWidget(
-                          selectedValue: selectedValue4,
-                          onChanged: (String? newValue) async {
-                            setState(() {
-                              selectedValue4 =
-                                  newValue; // Update selectedValue0 with the new value
-                            });
-                          },
-                          title: 'Sub BrandForm',
-                          dropDownItem: subBrandFormFilter.map((String item) {
-                            return DropdownMenuItem<String>(
-                              value: item,
-                              child: Text(item),
-                            );
-                          }).toList(),
-                          secondIndex: 0,
-                        ):Container(),
-                        widget.attributeName == "FB"?const SizedBox(height: 20.0):Container(),
                         widget.attributeName == "FB"?Padding(
-                          padding: const EdgeInsets.all(25),
+                          padding: const EdgeInsets.only(left: 8.0, right: 8.0),
                           child: Container(
-                              height: 40,
-                              width: size.width / 2,
-                              child: ElevatedButton(
-                                onPressed: widget.categoryApply,
-                                style: ElevatedButton.styleFrom(
-                                    backgroundColor:
-                                    MyColors.toggletextColor,
-                                    elevation: 0,
-                                    shape: const StadiumBorder()),
-                                child: const Text(
-                                  'Apply',
-                                  style: TextStyle(
-                                      letterSpacing: 0.8,
-                                      fontSize: 14,
-                                      fontFamily: fontFamily,
-                                      fontWeight:
-                                      FontWeight.w700),
-                                ),
-                              )),
+                            decoration: const BoxDecoration(
+                              color: MyColors.whiteColor,
+                              borderRadius: BorderRadius.only(
+                                  topRight: Radius.circular(20),
+                                  topLeft: Radius.circular(20),
+                                  bottomLeft: Radius.circular(20),
+                                  bottomRight: Radius.circular(20)),
+                            ),
+                            child: Column(children: [
+                              HeaderTitleMetrics(
+                                onPressed: () {},
+                                title: 'Category Filter',
+                                icon: Icons.edit,
+                              ),
+                              DropDownWidget(
+                                title: 'Category',
+                                selectedValue: selectedValue1,
+                                onChanged: (String? newValue) async {
+                                  setState(() {
+                                    selectedValue1 =
+                                        newValue;
+                                    selectedValue2 = null;
+                                    selectedValue3 = null;
+                                    selectedValue4 = null;
+                                    sheetProvider
+                                        .selectedCategoryFilter =
+                                    newValue!;
+                                  });
+                                  await fetchData2(context, '', selectedValue1);
+                                  setState(() {});
+                                },
+                                dropDownItem: categoryFilter.map((String item) {
+                                  return DropdownMenuItem<String>(
+                                    value: item,
+                                    child: Text(item),
+                                  );
+                                }).toList(),
+                                secondIndex: 0,
+                              ),
+                              DropDownWidget(
+                                title: 'Brand',
+                                selectedValue: selectedValue2,
+                                onChanged: (String? newValue) async {
+                                  setState(() {
+                                    selectedValue2 = newValue;
+                                    selectedValue3 = null;
+                                    selectedValue4 = null;
+                                  });
+                                  await fetchData3(context,
+                                      '', selectedValue1, selectedValue2);
+                                  setState(() {});
+                                },
+                                dropDownItem: brandFilter.map((String item) {
+                                  return DropdownMenuItem<String>(
+                                    value: item,
+                                    child: Text(item),
+                                  );
+                                }).toList(),
+                                secondIndex: 0,
+                              ),
+                              DropDownWidget(
+                                title: 'BrandForm',
+                                selectedValue: selectedValue3,
+                                onChanged: (String? newValue) async {
+                                  setState(() {
+                                    selectedValue3 =
+                                        newValue;
+                                    selectedValue4 = null;
+                                  });
+                                  await fetchData4(context, '', selectedValue1,
+                                      selectedValue2, selectedValue3);
+                                  setState(() {});
+                                },
+                                dropDownItem: brandFormFilter.map((String item) {
+                                  return DropdownMenuItem<String>(
+                                    value: item,
+                                    child: Text(item),
+                                  );
+                                }).toList(),
+                                secondIndex: 0,
+                              ),
+                              DropDownWidget(
+                                selectedValue: selectedValue4,
+                                onChanged: (String? newValue) async {
+                                  setState(() {
+                                    selectedValue4 =
+                                        newValue; // Update selectedValue0 with the new value
+                                  });
+                                },
+                                title: 'Sub BrandForm',
+                                dropDownItem: subBrandFormFilter.map((String item) {
+                                  return DropdownMenuItem<String>(
+                                    value: item,
+                                    child: Text(item),
+                                  );
+                                }).toList(),
+                                secondIndex: 0,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(25),
+                                child: Container(
+                                    height: 40,
+                                    width: size.width / 2,
+                                    child: ElevatedButton(
+                                      onPressed: widget.categoryApply,
+                                      style: ElevatedButton.styleFrom(
+                                          backgroundColor:
+                                          MyColors.toggletextColor,
+                                          elevation: 0,
+                                          shape: const StadiumBorder()),
+                                      child: const Text(
+                                        'Apply',
+                                        style: TextStyle(
+                                            letterSpacing: 0.8,
+                                            fontSize: 14,
+                                            fontFamily: fontFamily,
+                                            fontWeight:
+                                            FontWeight.w700),
+                                      ),
+                                    )),
+                              )
+                            ],),
+                          ),
                         ):Container(),
+
                       ],
                     ),
                   ),

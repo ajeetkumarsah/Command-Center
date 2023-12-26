@@ -1,4 +1,5 @@
-const {sequelize} = require('../../databaseConnection/sql_connection');
+// const {sequelize} = require('../../databaseConnection/sql_connection');
+const {getConnection, getQueryData} = require('../../databaseConnection/dbConnection');
 
 function getFormatedNumberValue(value){
     let formatedValue = '0'
@@ -72,16 +73,20 @@ let getSummaryPageData = async (req, res) =>{
         // // let new_rt_query_current_month_all_india = `select sum([Retailing]) as Retailing_Sum from [dbo].[tbl_command_center_retailing_calculation] where [Calendar Month] = '${current_year_rt}' and [Division] not in ('') `
         // // let new_rt_query_previous_month_all_india = `select sum([Retailing]) as Retailing_Sum from [dbo].[tbl_command_center_retailing_calculation] where [Calendar Month] = '${previous_year_rt}' and [Division] not in ('') `
         // let new_rt_query_previous_month = `select [Retailing] as Retailing_Sum from [dbo].[tbl_command_center_retailing_calculation] where [${filter_key}] = '${filter_data}' and [Calendar Month] = '${previous_year_rt}'`
-        let rt_data_current_month = await sequelize.query(new_rt_query_current_month)
+        let connection = await getConnection()
+        let rt_data_current_month = await getQueryData(connection, new_rt_query_current_month)
+        // let rt_data_current_month = await sequelize.query(new_rt_query_current_month)
         // let rt_data_current_month_all_india = await sequelize.query(new_rt_query_current_month_all_india)
         // let rt_data_previous_month_all_india = await sequelize.query(new_rt_query_previous_month_all_india)
-        let rt_data_previous_month = await sequelize.query(new_rt_query_previous_month)
+        connection = await getConnection()
+        let rt_data_previous_month = await getQueryData(connection, new_rt_query_previous_month)
+        // let rt_data_previous_month = await sequelize.query(new_rt_query_previous_month)
         let retailing_sum_current_month = 0
         // let retailing_sum_current_month_all_india = 1
         // let retailing_sum_previous_month_all_india = 1
         let retailing_sum_previous_month = 1
-        if(rt_data_current_month[0][0] !== undefined){
-            retailing_sum_current_month = rt_data_current_month[0][0]['Retailing_Sum']
+        if(rt_data_current_month[0] !== undefined){
+            retailing_sum_current_month = rt_data_current_month[0]['Retailing_Sum']
         }
         // if(rt_data_current_month_all_india[0][0] !== undefined){
         //     retailing_sum_current_month_all_india = rt_data_current_month_all_india[0][0]['Retailing_Sum']
@@ -89,8 +94,8 @@ let getSummaryPageData = async (req, res) =>{
         // if(rt_data_previous_month_all_india[0][0] !== undefined){
         //     retailing_sum_previous_month_all_india = rt_data_previous_month_all_india[0][0]['Retailing_Sum']
         // }
-        if(rt_data_previous_month[0][0] !== undefined){
-            retailing_sum_previous_month = rt_data_previous_month[0][0]['Retailing_Sum']
+        if(rt_data_previous_month[0] !== undefined && rt_data_previous_month[0]['Retailing_Sum'] !== null){
+            retailing_sum_previous_month = rt_data_previous_month[0]['Retailing_Sum']
         }
 
         // if(retailing_sum_current_month_all_india === 0 || retailing_sum_current_month_all_india === null){

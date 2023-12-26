@@ -1,6 +1,7 @@
-const {sequelize} = require('../../../databaseConnection/sql_connection');
+// const {sequelize} = require('../../../databaseConnection/sql_connection');
+const {getConnection, getQueryData} = require('../../../databaseConnection/dbConnection');
 const cache = require("memory-cache");
-
+const { v4: uuidv4 } = require('uuid');
 function copyObject(obj) {
     return JSON.parse(JSON.stringify(obj));
 }
@@ -22,6 +23,26 @@ function deepEqual(obj1, obj2) {
     return json1 === json2;
 }
 
+function getFormattedNo(number){
+    if(number>100000){
+        number=(number/100000).toFixed(2)+"MM"
+    }else if(number>1000){
+        number=(number/1000).toFixed(2)+"M"
+    }else {
+        number = number.toFixed(2)
+    }
+    return number
+}
+
+function getFormattedNoObj(data){
+    for(let i in data){
+        data[i]['fb_achieve_sum'] = getFormattedNo(data[i]['fb_achieve_sum'])
+        data[i]['fb_target_sum'] = getFormattedNo(data[i]['fb_target_sum'])
+        data[i]['fb_target_base_sum'] = getFormattedNo(data[i]['fb_target_base_sum'])
+    }
+    return data
+}
+
 async function getTableData(bodyData){
     let reqDate = ''
     let all_data = copyObject(bodyData);
@@ -40,6 +61,7 @@ async function getTableData(bodyData){
         let channel_list = []
         channel = data.channel
         channel_list = data.channel
+        channel_list = [...new Set(channel_list)];
         channel = channel.map(item => `'${item}'`).join(", ")
         let all_india_filter = data.allIndia ? data.allIndia : ''
         let division_filter = data.division ? data.division : ''
@@ -130,14 +152,12 @@ async function getTableData(bodyData){
 
         }
         // console.time("Data Fetching")
-
-        let categories_data_fb = await sequelize.query(channel_query_fb)
+        let connection = await getConnection()
+        let categories_data_fb = await getQueryData(connection, channel_query_fb)
+        // let categories_data_fb = await sequelize.query(channel_query_fb)
         // console.timeEnd("Data Fetching")
-        mergedArr = categories_data_fb[0]
-        if(mergedArr.length<=0){
-            // res.status(400).send({successful: false, message: "DB do not have data for this filter"})
-            return []
-        }
+        mergedArr = categories_data_fb
+
         let DivisionObj = {}
         for (let i in mergedArr) {
             let fb_target_base = 0
@@ -351,6 +371,13 @@ async function getTableData(bodyData){
             }
         }
 
+        let copyDivisionObj = JSON.parse(JSON.stringify(DivisionObj));
+        DivisionObj = getFormattedNoObj(DivisionObj)
+        SiteObj = getFormattedNoObj(SiteObj)
+        BranchObj = getFormattedNoObj(BranchObj)
+        ChannelObj = getFormattedNoObj(ChannelObj)
+        subChannelObj = getFormattedNoObj(subChannelObj)
+
         for (let i in subChannelObj) {
             let key = i
             key = i.split("/")
@@ -416,31 +443,37 @@ async function getTableData(bodyData){
             }
 
         }
-
-        let fb_data = await sequelize.query(sql_query_no_of_fb_current_year)
+        // connection = await getConnection()
+        // let fb_data = await getQueryData(connection, sql_query_no_of_fb_current_year)
+        // let fb_data = await sequelize.query(sql_query_no_of_fb_current_year)
         let fb_call = 0
-        let fb_target = 1
-        let fb_target_base = 1
-        let coverage = 1
+        let fb_target = 0
+        let fb_target_base = 0
+        let coverage = 0
 
         for (let i in DivisionObj) {
-            fb_target_base = parseFloat((fb_target_base + DivisionObj[i]['fb_target_base_sum']).toFixed(2))
+            fb_target_base = parseFloat((fb_target_base + parseFloat(DivisionObj[i]['fb_target_base_sum'])).toFixed(2))
+            fb_call = parseFloat((fb_call + parseFloat(DivisionObj[i]['fb_achieve_sum'])).toFixed(2))
+            fb_target = parseFloat((fb_target + parseFloat(DivisionObj[i]['fb_target_sum'])).toFixed(2))
         }
 
-        if (fb_data[0][0] !== undefined) {
-            if(fb_data[0][0]['fb_achieve_sum'] !== null && fb_data[0][0]['fb_target_sum'] !== null){
-                fb_call = parseFloat((fb_data[0][0]['fb_achieve_sum']).toFixed(2))
-                fb_target = parseFloat((fb_data[0][0]['fb_target_sum']).toFixed(2))
-            }
-        }
+        // if (fb_data[0] !== undefined) {
+        //     if(fb_data[0]['fb_achieve_sum'] !== null && fb_data[0]['fb_target_sum'] !== null){
+        //         fb_call = parseFloat((fb_data[0]['fb_achieve_sum']).toFixed(2))
+        //         fb_target = parseFloat((fb_data[0]['fb_target_sum']).toFixed(2))
+        //     }
+        // }
 
-        if (fb_call === null) {
+        if (fb_call === null && fb_call === 0 && fb_call === undefined) {
             fb_call = 0
         }
-        if (fb_target === null) {
+        if (fb_target === null && fb_target === 0 && fb_target === undefined) {
             fb_target = 1
         }
-        if (coverage === 0) {
+        if (fb_target_base === null && fb_target_base === 0 && fb_target_base === undefined) {
+            fb_target = 1
+        }
+        if (coverage === 0 ) {
             coverage = 1
         }
         let fb_per = (fb_call / fb_target_base) * 100
@@ -460,11 +493,14 @@ async function getTableData(bodyData){
         }
         objData['filter_key'] = `${filter_1['filter_data']}`
         objData['filter_key2'] = `${filter_2['filter_data'] ? filter_2['filter_data'] : ''}`
-        objData['channel'] = channel_list.map(item => item).join("/")
+        objData['channel'] = channel_list
         objData['month'] = `${calendar_month_cy}`
-        objData['fb_achieve_sum'] = parseFloat(`${fb_call}`)
-        objData['fb_target_sum'] = parseFloat(`${fb_target}`)
-        objData['fb_target_base_sum'] = parseFloat(`${fb_target_base}`)
+        // objData['fb_achieve_sum'] = parseFloat(`${fb_call}`)
+        objData['fb_achieve_sum'] = getFormattedNo(fb_call)
+        // objData['fb_target_sum'] = parseFloat(`${fb_target}`)
+        objData['fb_target_sum'] = getFormattedNo(fb_target)
+        // objData['fb_target_base_sum'] = parseFloat(`${fb_target_base}`)
+        objData['fb_target_base_sum'] = getFormattedNo(fb_target_base)
         objData["division"] = divList
         final_data.push(objData)
         if (filter_data === 'All India') {
@@ -476,7 +512,7 @@ async function getTableData(bodyData){
 }
 
 let getDeepDivePageData = async (req, res) => {
-
+    console.log("FB Deep Dive Invoked......")
     try {
         let time_to_live = 7*24*60*60*1000 // Time in milliseconds for 7 days
         let cacheKey = 'fbDeepDiveData'
@@ -494,6 +530,7 @@ let getDeepDivePageData = async (req, res) => {
                         for(let n = 0; n<cachebodyData.length; n++){
                             if (deepEqual(cachebodyData[n], curReq[i])) {
                                 if((cachebodyData[n]['channel'].map(item => `'${item}'`).join(", ")) === (curReq[i]['channel'].map(item => `'${item}'`).join(", "))){
+                                    cacheData[k]['resData'][n][0]['id'] = uuidv4()
                                     matchedDataList.push(cacheData[k]['resData'][n])
                                     matched = true
                                     console.log("Data fetched from cache")
@@ -513,6 +550,7 @@ let getDeepDivePageData = async (req, res) => {
             let finalData = await getTableData(nonMatchedIndex)
             for(let i in nonMatchedIndex){
                 if(finalData.length>0){
+                    finalData[i][0]['id'] = uuidv4()
                     matchedDataList.push(finalData[i])
                     cacheData[0]['reqBody'].push(nonMatchedIndex[i])
                     cacheData[0]['resData'].push(finalData[i])
@@ -521,7 +559,16 @@ let getDeepDivePageData = async (req, res) => {
                     console.log("There is no data for this query");
                 }
             }
-            res.status(200).json(matchedDataList);
+            let checkDublicate = {}
+            for(let i in matchedDataList){
+                let key = matchedDataList[i][0]['id']
+                checkDublicate[key] = matchedDataList[i]
+            }
+            let nonDulbicateList = []
+            for(let i in checkDublicate){
+                nonDulbicateList.push(checkDublicate[i])
+            }
+            res.status(200).json(nonDulbicateList);
         }else {
             final_result = await getTableData(req.body)
             if(final_result.length>0){

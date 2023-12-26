@@ -10,10 +10,13 @@ import '../comman_utils/text_header_widget.dart';
 
 class CoverageTableSite extends StatefulWidget {
   final List newDataList;
+  final String key1;
+  final String key2;
+  final String key3;
 
   const CoverageTableSite({
     super.key,
-    required this.newDataList,
+    required this.newDataList, required this.key1, required this.key2, required this.key3,
   });
 
   @override
@@ -24,10 +27,6 @@ class _CoverageTableSiteState extends State<CoverageTableSite> {
   @override
   Widget build(BuildContext context) {
     final sheetProvider = Provider.of<SheetProvider>(context);
-    return FutureBuilder(
-        future: getTableCoverageSummary(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
             return SingleChildScrollView(
               child: Column(
                 children: [
@@ -68,7 +67,7 @@ class _CoverageTableSiteState extends State<CoverageTableSite> {
                                     ? MyColors.dark500
                                     : MyColors.dark400,
                                 title: SizedBox(
-                                  height: 20,
+                                  height: 40,
                                   child: Row(
                                     // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
@@ -77,7 +76,7 @@ class _CoverageTableSiteState extends State<CoverageTableSite> {
                                       ),
                                       TextHeaderWidgetWithIcon(
                                         title:
-                                        "${sites['filter']}",
+                                        "${sites['filter_key']}",
                                         align:
                                         TextAlign.start, isRequired: false, isExpanded:  sheetProvider.isExpanded,
                                       ),
@@ -222,7 +221,7 @@ class _CoverageTableSiteState extends State<CoverageTableSite> {
                                       ),
                                       TextHeaderWidget(
                                         title:
-                                        "${sites['Coverage']}",
+                                        "${sites[widget.key1]}",
                                         align:
                                         TextAlign.center,
                                       ),
@@ -231,7 +230,7 @@ class _CoverageTableSiteState extends State<CoverageTableSite> {
                                       ),
                                       TextHeaderWidget(
                                         title:
-                                        "${sites['Billing_Per']}",
+                                        "${sites[widget.key2]}",
                                         align:
                                         TextAlign.center,
                                       ),
@@ -240,7 +239,7 @@ class _CoverageTableSiteState extends State<CoverageTableSite> {
                                       ),
                                       TextHeaderWidget(
                                         title:
-                                        "${sites['Productivity']}",
+                                        "${sites[widget.key3]}",
                                         align:
                                         TextAlign.center,
                                       ),
@@ -322,7 +321,7 @@ class _CoverageTableSiteState extends State<CoverageTableSite> {
                                                     title:
                                                     SizedBox(
                                                       height:
-                                                      20,
+                                                      40,
                                                       child:
                                                       Row(
                                                         children: [
@@ -376,21 +375,21 @@ class _CoverageTableSiteState extends State<CoverageTableSite> {
                                                             width: sheetProvider.isExpandedSubChannel == true ? 3 : 0,
                                                           ),
                                                           TextHeaderWidget(
-                                                            title: "${branches['coverage_sum']}",
+                                                            title: "${branches[widget.key1]}",
                                                             align: TextAlign.center,
                                                           ),
                                                           const SizedBox(
                                                             width: 3,
                                                           ),
                                                           TextHeaderWidget(
-                                                            title: "${branches['billing_per']}",
+                                                            title: "${branches[widget.key2]}",
                                                             align: TextAlign.center,
                                                           ),
                                                           const SizedBox(
                                                             width: 3,
                                                           ),
                                                           TextHeaderWidget(
-                                                            title: "${branches['productivity_per']}",
+                                                            title: "${branches[widget.key3]}",
                                                             align: TextAlign.center,
                                                           ),
                                                         ],
@@ -432,7 +431,7 @@ class _CoverageTableSiteState extends State<CoverageTableSite> {
                                                                         collapsedBackgroundColor: branch2Index % 2 == 0 ? MyColors.dark500 : MyColors.dark400,
                                                                         backgroundColor: branch2Index % 2 == 0 ? MyColors.dark500 : MyColors.dark400,
                                                                         title: SizedBox(
-
+height: 40,
                                                                           child: Row(
                                                                             children: [
                                                                               Padding(
@@ -469,21 +468,21 @@ class _CoverageTableSiteState extends State<CoverageTableSite> {
                                                                                 },
                                                                               ),
                                                                               TextHeaderWidget(
-                                                                                title: "${branchesSite['coverage_sum']}",
+                                                                                title: "${branchesSite[widget.key1]}",
                                                                                 align: TextAlign.center,
                                                                               ),
                                                                               const SizedBox(
                                                                                 width: 3,
                                                                               ),
                                                                               TextHeaderWidget(
-                                                                                title: "${branchesSite['billing_per']}",
+                                                                                title: "${branchesSite[widget.key2]}",
                                                                                 align: TextAlign.center,
                                                                               ),
                                                                               const SizedBox(
                                                                                 width: 3,
                                                                               ),
                                                                               TextHeaderWidget(
-                                                                                title: "${branchesSite['productivity_per']}",
+                                                                                title: "${branchesSite[widget.key3]}",
                                                                                 align: TextAlign.center,
                                                                               ),
                                                                             ],
@@ -520,7 +519,7 @@ class _CoverageTableSiteState extends State<CoverageTableSite> {
                                                                                             collapsedBackgroundColor: channelIndex % 2 == 0 ? MyColors.dark600 : MyColors.dark300,
                                                                                             backgroundColor: channelIndex % 2 == 0 ? MyColors.dark600 : MyColors.dark300,
                                                                                             title: SizedBox(
-                                                                                              height: 20,
+                                                                                              height: 40,
                                                                                               child: Row(
                                                                                                 children: [
                                                                                                   Padding(
@@ -552,21 +551,21 @@ class _CoverageTableSiteState extends State<CoverageTableSite> {
                                                                                                     },
                                                                                                   ),
                                                                                                   TextHeaderWidget(
-                                                                                                    title: "${channels['coverage_sum']}",
+                                                                                                    title: "${channels[widget.key1]}",
                                                                                                     align: TextAlign.center,
                                                                                                   ),
                                                                                                   const SizedBox(
                                                                                                     width: 3,
                                                                                                   ),
                                                                                                   TextHeaderWidget(
-                                                                                                    title: "${channels['billing_per']}",
+                                                                                                    title: "${channels[widget.key2]}",
                                                                                                     align: TextAlign.center,
                                                                                                   ),
                                                                                                   const SizedBox(
                                                                                                     width: 3,
                                                                                                   ),
                                                                                                   TextHeaderWidget(
-                                                                                                    title: "${channels['productivity_per']}",
+                                                                                                    title: "${channels[widget.key3]}",
                                                                                                     align: TextAlign.center,
                                                                                                   ),
                                                                                                 ],
@@ -598,58 +597,27 @@ class _CoverageTableSiteState extends State<CoverageTableSite> {
                                                                                                                     ),
                                                                                                                   ),
                                                                                                                   TextHeaderWidget(
-                                                                                                                    title: "${subChannels['coverage_sum']}",
+                                                                                                                    title: "${subChannels[widget.key1]}",
                                                                                                                     align: TextAlign.center,
                                                                                                                   ),
                                                                                                                   const SizedBox(
                                                                                                                     width: 3,
                                                                                                                   ),
                                                                                                                   TextHeaderWidget(
-                                                                                                                    title: "${subChannels['billing_per']}",
+                                                                                                                    title: "${subChannels[widget.key2]}",
                                                                                                                     align: TextAlign.center,
                                                                                                                   ),
                                                                                                                   const SizedBox(
                                                                                                                     width: 3,
                                                                                                                   ),
                                                                                                                   TextHeaderWidget(
-                                                                                                                    title: "${subChannels['productivity_per']}",
+                                                                                                                    title: "${subChannels[widget.key3]}",
                                                                                                                     align: TextAlign.center,
                                                                                                                   ),
                                                                                                                 ],
                                                                                                               ),
                                                                                                             );
-                                                                                                            // ListTileTheme(
-                                                                                                            //   dense:
-                                                                                                            //   true,
-                                                                                                            //   contentPadding:
-                                                                                                            //   EdgeInsets
-                                                                                                            //       .zero,
-                                                                                                            //   child:
-                                                                                                            //   ExpansionTile(
-                                                                                                            //
-                                                                                                            //     // tilePadding: const EdgeInsets.only(left: 10),
-                                                                                                            //     controlAffinity:
-                                                                                                            //     ListTileControlAffinity
-                                                                                                            //         .leading,
-                                                                                                            //     collapsedBackgroundColor: branchIndex %
-                                                                                                            //         2 ==
-                                                                                                            //         0
-                                                                                                            //         ? MyColors
-                                                                                                            //         .dark600
-                                                                                                            //         : MyColors
-                                                                                                            //         .dark400,
-                                                                                                            //     backgroundColor: branchIndex %
-                                                                                                            //         2 ==
-                                                                                                            //         0
-                                                                                                            //         ? MyColors
-                                                                                                            //         .dark600
-                                                                                                            //         : MyColors
-                                                                                                            //         .dark400,
-                                                                                                            //     title:
-                                                                                                            //
-                                                                                                            //
-                                                                                                            //   ),
-                                                                                                            // );
+
                                                                                                           }),
                                                                                                     ],
                                                                                                   ),
@@ -683,235 +651,9 @@ class _CoverageTableSiteState extends State<CoverageTableSite> {
                               ),
                             );
                           })
-                    // ListView.builder(
-                    //     shrinkWrap: true,
-                    //     itemCount: widget.newDataList.length,
-                    //     itemBuilder: (context, index) {
-                    //       var coverage1 = widget.newDataList[index];
-                    //       return ListTileTheme(
-                    //         dense: true,
-                    //         contentPadding: EdgeInsets.zero,
-                    //         child: ExpansionTile(
-                    //           trailing: const Text(''),
-                    //           textColor: MyColors.textColor,
-                    //           onExpansionChanged: (val) {
-                    //             setState(() {
-                    //               sheetProvider.isExpandedDivision = val;
-                    //               sheetProvider.isExpanded = false;
-                    //               sheetProvider.isExpandedBranch = false;
-                    //               sheetProvider.isExpandedChannel = false;
-                    //               sheetProvider.isExpandedSubChannel = false;
-                    //             });
-                    //           },
-                    //           // controlAffinity: ListTileControlAffinity.leading,
-                    //           collapsedBackgroundColor: index % 2 == 0
-                    //               ? MyColors.dark600
-                    //               : MyColors.dark400,
-                    //           backgroundColor: index % 2 == 0
-                    //               ? MyColors.dark600
-                    //               : MyColors.dark400,
-                    //           title: Padding(
-                    //             padding: const EdgeInsets.only(
-                    //                 left: 10.0, top: 5, bottom: 5, right: 5),
-                    //             child: SizedBox(
-                    //               height: 20,
-                    //               child: Row(
-                    //                 children: [
-                    //                   TextHeaderWidgetWithIcon(
-                    //                     title: '${coverage1['filter']}',
-                    //                     align: TextAlign.start, isRequired: false, isExpanded: sheetProvider.isExpandedDivision,
-                    //                   ),
-                    //                   const SizedBox(
-                    //                     width: 3,
-                    //                   ),
-                    //                   Consumer<SheetProvider>(
-                    //                     builder: (context, state, child) {
-                    //                       return Padding(
-                    //                         padding: const EdgeInsets.only(
-                    //                             left: 0.0),
-                    //                         child: SizedBox(
-                    //                             width: sheetProvider
-                    //                                 .isExpandedDivision ==
-                    //                                 true
-                    //                                 ? 110
-                    //                                 : 0,
-                    //                             child: Text(
-                    //                               sheetProvider
-                    //                                   .isExpandedDivision ==
-                    //                                   true
-                    //                                   ? ""
-                    //                                   : "",
-                    //                               textAlign: TextAlign.center,
-                    //                             )),
-                    //                       );
-                    //                     },
-                    //                   ),
-                    //                   SizedBox(
-                    //                     width:
-                    //                     sheetProvider.isExpandedDivision ==
-                    //                         true
-                    //                         ? 3
-                    //                         : 0,
-                    //                   ),
-                    //                   Consumer<SheetProvider>(
-                    //                     builder: (context, state, child) {
-                    //                       return SizedBox(
-                    //                           width: sheetProvider.isExpanded ==
-                    //                               true
-                    //                               ? 110
-                    //                               : 0,
-                    //                           child: Text(
-                    //                             sheetProvider.isExpanded == true
-                    //                                 ? ""
-                    //                                 : "",
-                    //                             textAlign: TextAlign.center,
-                    //                           ));
-                    //                     },
-                    //                   ),
-                    //                   SizedBox(
-                    //                     width: sheetProvider.isExpanded == true
-                    //                         ? 3
-                    //                         : 0,
-                    //                   ),
-                    //                   Consumer<SheetProvider>(
-                    //                     builder: (context, state, child) {
-                    //                       return Padding(
-                    //                         padding: const EdgeInsets.only(
-                    //                             left: 0.0),
-                    //                         child: SizedBox(
-                    //                             width: sheetProvider
-                    //                                 .isExpandedBranch ==
-                    //                                 true
-                    //                                 ? 110
-                    //                                 : 0,
-                    //                             child: Text(
-                    //                               sheetProvider
-                    //                                   .isExpandedBranch ==
-                    //                                   true
-                    //                                   ? ""
-                    //                                   : "",
-                    //                               textAlign: TextAlign.center,
-                    //                             )),
-                    //                       );
-                    //                     },
-                    //                   ),
-                    //                   SizedBox(
-                    //                     width: sheetProvider.isExpandedBranch ==
-                    //                         true
-                    //                         ? 3
-                    //                         : 0,
-                    //                   ),
-                    //                   Consumer<SheetProvider>(
-                    //                     builder: (context, state, child) {
-                    //                       return SizedBox(
-                    //                           width: sheetProvider
-                    //                               .isExpandedChannel ==
-                    //                               true
-                    //                               ? 110
-                    //                               : 0,
-                    //                           child: Text(
-                    //                             sheetProvider
-                    //                                 .isExpandedChannel ==
-                    //                                 true
-                    //                                 ? ""
-                    //                                 : "",
-                    //                             textAlign: TextAlign.center,
-                    //                           ));
-                    //                     },
-                    //                   ),
-                    //                   SizedBox(
-                    //                     width:
-                    //                     sheetProvider.isExpandedChannel ==
-                    //                         true
-                    //                         ? 3
-                    //                         : 0,
-                    //                   ),
-                    //                   Consumer<SheetProvider>(
-                    //                     builder: (context, state, child) {
-                    //                       return Padding(
-                    //                         padding: const EdgeInsets.only(
-                    //                             left: 0.0),
-                    //                         child: SizedBox(
-                    //                             width: sheetProvider
-                    //                                 .isExpandedSubChannel ==
-                    //                                 true
-                    //                                 ? 110
-                    //                                 : 0,
-                    //                             child: Text(
-                    //                               sheetProvider
-                    //                                   .isExpandedSubChannel ==
-                    //                                   true
-                    //                                   ? ""
-                    //                                   : "",
-                    //                               textAlign: TextAlign.center,
-                    //                             )),
-                    //                       );
-                    //                     },
-                    //                   ),
-                    //                   SizedBox(
-                    //                     width: sheetProvider
-                    //                         .isExpandedSubChannel ==
-                    //                         true
-                    //                         ? 3
-                    //                         : 0,
-                    //                   ),
-                    //                   Padding(
-                    //                     padding:
-                    //                     const EdgeInsets.only(left: 0.0),
-                    //                     child: TextHeaderWidget(
-                    //                       title: '${coverage1['Coverage']}', //Billing Percentage
-                    //                       align: TextAlign.center,
-                    //                     ),
-                    //                   ),
-                    //                   const SizedBox(
-                    //                     width: 3,
-                    //                   ),
-                    //                   Padding(
-                    //                     padding:
-                    //                     const EdgeInsets.only(left: 0.0),
-                    //                     child: TextHeaderWidget(
-                    //                       title: '${coverage1['Billing_Per']}', //IYA
-                    //                       align: TextAlign.center,
-                    //                     ),
-                    //                   ),
-                    //                   const SizedBox(
-                    //                     width: 3,
-                    //                   ),
-                    //                   Padding(
-                    //                     padding:
-                    //                     const EdgeInsets.only(left: 0.0),
-                    //                     child: TextHeaderWidget(
-                    //                       title: '${coverage1['Productivity']}', //IYA
-                    //                       align: TextAlign.center,
-                    //                     ),
-                    //                   ),
-                    //                 ],
-                    //               ),
-                    //             ),
-                    //           ),
-                    //           children: <Widget>[
-                    //             //Sites
-                    //             SingleChildScrollView(
-                    //               child: Padding(
-                    //                 padding: const EdgeInsets.only(left: 120.0),
-                    //                 child: Column(
-                    //                   children: [
-                    //                     ,
-                    //                   ],
-                    //                 ),
-                    //               ),
-                    //             ),
-                    //           ],
-                    //         ),
-                    //       );
-                    //     }),
                   ),
                 ],
               ),
             );
-          } else {
-            return const Center(child: CircularProgressIndicator());
-          }
-        });
   }
 }

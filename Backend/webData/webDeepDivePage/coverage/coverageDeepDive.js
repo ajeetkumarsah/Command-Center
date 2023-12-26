@@ -1,9 +1,11 @@
-const {sequelize} = require('../../../databaseConnection/sql_connection');
+// const {sequelize} = require('../../../databaseConnection/sql_connection');
+const {getConnection, getQueryData} = require('../../../databaseConnection/dbConnection');
 // const {sequelize2} = require('../../../databaseConnection/sql_connection2');
 const lodash = require("lodash");
-const {QueryTypes} = require('sequelize')
+// const {QueryTypes} = require('sequelize')
 
 const cache = require("memory-cache");
+const {v4: uuidv4} = require("uuid");
 
 function copyObject(obj) {
     return JSON.parse(JSON.stringify(obj));
@@ -26,33 +28,49 @@ function deepEqual(obj1, obj2) {
     return json1 === json2;
 }
 
-
-
-async function getSiteList(filter_type, filter_data) {
-    try {
-        let data
-
-        if(filter_data === 'allIndia'){
-            data = await sequelize.query(`select distinct [SiteName] FROM [da].[locationHierarchy_updated] where Division in ('DIV_0001', 'DIV_0002')`)
-        }
-        else{
-            if(filter_data === 'N-E'){filter_data = 'DIV_0002'}
-            if(filter_data === 'S-W'){filter_data = 'DIV_0001'}
-            if(filter_type === 'cluster'){filter_type = '[ClusterName]'}
-            data = await sequelize.query(`select distinct [SiteName] FROM [da].[locationHierarchy_updated] where ${filter_type} = '${filter_data}'`)
-        }
-
-        let sites = []
-        for(let site in data[0]){
-            sites.push(data[0][site]['SiteName'])
-            console.log((data[0][site]['SiteName']))
-        }
-        return sites
-    }catch (e){
-        console.log('error',e)
-        return []
+function getFormattedNo(number){
+    if(number>100000){
+        number=(number/100000).toFixed(2)+"MM"
+    }else if(number>1000){
+        number=(number/1000).toFixed(2)+"M"
+    }else {
+        number = number.toFixed(2)
     }
+    return number
 }
+
+function getFormattedNoObj(data){
+    for(let i in data){
+        data[i]['Coverage'] = getFormattedNo(data[i]['Coverage'])
+    }
+    return data
+}
+
+// async function getSiteList(filter_type, filter_data) {
+//     try {
+//         let data
+//
+//         if(filter_data === 'allIndia'){
+//             data = await sequelize.query(`select distinct [SiteName] FROM [da].[locationHierarchy_updated] where Division in ('DIV_0001', 'DIV_0002')`)
+//         }
+//         else{
+//             if(filter_data === 'N-E'){filter_data = 'DIV_0002'}
+//             if(filter_data === 'S-W'){filter_data = 'DIV_0001'}
+//             if(filter_type === 'cluster'){filter_type = '[ClusterName]'}
+//             data = await sequelize.query(`select distinct [SiteName] FROM [da].[locationHierarchy_updated] where ${filter_type} = '${filter_data}'`)
+//         }
+//
+//         let sites = []
+//         for(let site in data[0]){
+//             sites.push(data[0][site]['SiteName'])
+//             console.log((data[0][site]['SiteName']))
+//         }
+//         return sites
+//     }catch (e){
+//         console.log('error',e)
+//         return []
+//     }
+// }
 
 function addArrays(array1, array2) {
     if (array1.length !== array2.length) {
@@ -63,35 +81,35 @@ function addArrays(array1, array2) {
     return result;
 }
 
-async function getBranchList(filter_type, filter_data, site) {
-    try {
-        let data
+// async function getBranchList(filter_type, filter_data, site) {
+//     try {
+//         let data
+//
+//         if(filter_data === 'allIndia'){
+//             data = await sequelize.query(`select distinct [BranchName] FROM [da].[locationHierarchy_updated] where Division in ('DIV_0001', 'DIV_0002') and SiteName = '${site}' `)
+//         }
+//         else{
+//             if(filter_data === 'N-E'){filter_data = 'DIV_0002'}
+//             if(filter_data === 'S-W'){filter_data = 'DIV_0001'}
+//             if(filter_type === 'cluster'){filter_type = '[ClusterName]'}
+//             data = await sequelize.query(`select distinct [BranchName] FROM [da].[locationHierarchy_updated] where ${filter_type} = '${filter_data}' and SiteName = '${site}'`)
+//         }
+//
+//         let branch_list = []
+//         for(let branch in data[0]){
+//             branch_list.push(data[0][branch]['BranchName'])
+//             console.log((data[0][branch]['BranchName']))
+//         }
+//         return branch_list
+//     }catch (e){
+//         console.log('error',e)
+//         return []
+//     }
+// }
 
-        if(filter_data === 'allIndia'){
-            data = await sequelize.query(`select distinct [BranchName] FROM [da].[locationHierarchy_updated] where Division in ('DIV_0001', 'DIV_0002') and SiteName = '${site}' `)
-        }
-        else{
-            if(filter_data === 'N-E'){filter_data = 'DIV_0002'}
-            if(filter_data === 'S-W'){filter_data = 'DIV_0001'}
-            if(filter_type === 'cluster'){filter_type = '[ClusterName]'}
-            data = await sequelize.query(`select distinct [BranchName] FROM [da].[locationHierarchy_updated] where ${filter_type} = '${filter_data}' and SiteName = '${site}'`)
-        }
-
-        let branch_list = []
-        for(let branch in data[0]){
-            branch_list.push(data[0][branch]['BranchName'])
-            console.log((data[0][branch]['BranchName']))
-        }
-        return branch_list
-    }catch (e){
-        console.log('error',e)
-        return []
-    }
-}
-
-function getUniqueSiteNames(data) {
-    return Object.keys(data);
-}
+// function getUniqueSiteNames(data) {
+//     return Object.keys(data);
+// }
 
 let getDeepDivePageData = async (req, res) =>{
 
@@ -126,13 +144,21 @@ let getDeepDivePageData = async (req, res) =>{
         else{
             site_query = `select sum([No of stores billed atleast once])as billed_sum, sum([Coverage]) as coverage_sum , [Site Name] FROM [dbo].[tbl_command_center_billing] where [Calendar Month] = '${calendar_month_cy}' and [${filter_key}] = '${filter_data}' group by [Site Name]`
         }
-        let sites_data = await sequelize.query(site_query)
-        for(let i in sites_data[0]){
+        let connection = await getConnection()
+        let sites_data = await getQueryData(connection, site_query)
+        // let sites_data = await sequelize.query(site_query)
+
+        if(sites_data.length === 0 || sites_data[0]['billed_sum'] === null){
+            res.status(200).json([]);
+            return 0
+        }
+
+        for(let i in sites_data){
             let billing = 0
             let coverage = 1
             let site = ''
-            let site_data = sites_data[0][i]
-            if(sites_data[0][i] !== undefined){
+            let site_data = sites_data[i]
+            if(sites_data[i] !== undefined){
                 billing = site_data['billed_sum']
                 coverage = site_data['coverage_sum']
                 site = site_data['Site Name']
@@ -161,15 +187,25 @@ let getDeepDivePageData = async (req, res) =>{
         else{
             sql_query_no_of_billing_current_year = `select sum([No of stores billed atleast once]) as billed_sum , sum([Coverage]) as coverage_sum from [dbo].[tbl_command_center_billing] where [${filter_key}] = '${filter_data}' and [Calendar Month] = '${calendar_month_cy}'`
         }
-        let billing_and_coverage_data = await sequelize.query(sql_query_no_of_billing_current_year)
+
+        connection = await getConnection()
+        let billing_and_coverage_data = await getQueryData(connection, sql_query_no_of_billing_current_year)
+        // let billing_and_coverage_data = await sequelize.query(sql_query_no_of_billing_current_year)
+
+        if(billing_and_coverage_data.length === 0 || billing_and_coverage_data[0]['billed_sum'] === null){
+            res.status(200).json([]);
+            return 0
+        }
+
         let billing = 0
         let coverage = 1
         let target_calls = 1
 
-        if(billing_and_coverage_data[0][0] !== undefined){
-            billing = billing_and_coverage_data[0][0]['billed_sum']
-            coverage = billing_and_coverage_data[0][0]['coverage_sum']
+        if(billing_and_coverage_data[0] !== undefined && billing_and_coverage_data[0]['billed_sum'] !== null){
+            billing = billing_and_coverage_data[0]['billed_sum']
+            coverage = billing_and_coverage_data[0]['coverage_sum']
         }
+
 
         if(billing === null){billing = 0}
         if(coverage === null){coverage = 1}
@@ -181,7 +217,7 @@ let getDeepDivePageData = async (req, res) =>{
             "Billing_Per": parseInt(`${billing_per}`.split(".")[0]),
             "Coverage": parseInt(coverage.toFixed(2).split(".")[0])
         }
-        objData['filter'] = `${filter_data}`
+        objData['filter_key'] = `${filter_data}`
         objData['month'] = `${date}`
         objData["sites"] = siteObj
         data["coverage"]=(objData)
@@ -231,33 +267,37 @@ let getDeepDivePageDataByBranch = async (req, res) =>{
             site_query_billing = `select sum([No of stores billed atleast once])as billed_sum, sum([Coverage]) as coverage_sum , [Site Name], [Branch Name] FROM [dbo].[tbl_command_center_billing_new] where [Calendar Month] = '${calendar_month_cy}' and [${filter_key}] = '${filter_data}' group by [Site Name], [Branch Name] order by [Site Name] ASC`
             site_query_productivity = `select sum([Productive Calls]) as pro_sum , sum([Target Calls]) as target_sum , [Site Name], [Branch Name] FROM [dbo].[tbl_command_center_productivity_new] where [Calendar Month] = '${calendar_month_cy}' and [${filter_key}] = '${filter_data}' group by [Site Name], [Branch Name] order by [Site Name] ASC`
         }
-        let sites_data_billing = await sequelize.query(site_query_billing)
-        let sites_data_productivity = await sequelize.query(site_query_productivity)
+        let connection = await getConnection()
+        let sites_data_billing = await getQueryData(connection, site_query_billing)
+        // let sites_data_billing = await sequelize.query(site_query_billing)
+        connection = await getConnection()
+        let sites_data_productivity = await getQueryData(connection, site_query_productivity)
+        // let sites_data_productivity = await sequelize.query(site_query_productivity)
 
         const siteNames = []
         let siteNamesSet
 
         let branchMap = {}
-        for (let i = 0; i < sites_data_productivity[0].length; i++) {
-            branchMap[`${sites_data_productivity[0][i]['Site Name']}/${sites_data_productivity[0][i]['Branch Name']}`] = (sites_data_productivity[0][i]['pro_sum']/sites_data_productivity[0][i]['target_sum'])*100
+        for (let i = 0; i < sites_data_productivity.length; i++) {
+            branchMap[`${sites_data_productivity[i]['Site Name']}/${sites_data_productivity[i]['Branch Name']}`] = (sites_data_productivity[i]['pro_sum']/sites_data_productivity[i]['target_sum'])*100
         }
         let mergedArr = []
-        for (let i = 0; i < sites_data_billing[0].length; i++) {
+        for (let i = 0; i < sites_data_billing.length; i++) {
             let obj = {
-               'Site Name' :   sites_data_billing[0][i]['Site Name'],
-               'Branch Name' :   sites_data_billing[0][i]['Branch Name'],
-               'billed_sum' :   sites_data_billing[0][i]['billed_sum'],
-               'coverage_sum' :   sites_data_billing[0][i]['coverage_sum'],
-                'productivity_per' : branchMap[`${sites_data_billing[0][i]['Site Name']}/${sites_data_billing[0][i]['Branch Name']}`]
+               'Site Name' :   sites_data_billing[i]['Site Name'],
+               'Branch Name' :   sites_data_billing[i]['Branch Name'],
+               'billed_sum' :   sites_data_billing[i]['billed_sum'],
+               'coverage_sum' :   sites_data_billing[i]['coverage_sum'],
+                'productivity_per' : branchMap[`${sites_data_billing[i]['Site Name']}/${sites_data_billing[i]['Branch Name']}`]
             }
             mergedArr.push(obj)
         }
 
         // console.log(branchMap)
 
-        for(let i in sites_data_billing[0]){
-            if(sites_data_billing[0][i] !== undefined){
-                siteNames.push(sites_data_billing[0][i]['Site Name'])
+        for(let i in sites_data_billing){
+            if(sites_data_billing[i] !== undefined){
+                siteNames.push(sites_data_billing[i]['Site Name'])
             }
         }
 
@@ -324,22 +364,27 @@ let getDeepDivePageDataByBranch = async (req, res) =>{
             sql_query_no_of_billing_current_year = `select sum([No of stores billed atleast once]) as billed_sum , sum([Coverage]) as coverage_sum from [dbo].[tbl_command_center_billing] where [${filter_key}] = '${filter_data}' and [Calendar Month] = '${calendar_month_cy}'`
             sql_query_no_of_productivity_current_year = `select sum([Productive Calls]) as pro_sum , sum([Target Calls]) as target_sum FROM [dbo].[tbl_command_center_productivity_new] where [Calendar Month] = '${calendar_month_cy}' and [${filter_key}] = '${filter_data}'`
         }
-        let billing_and_coverage_data = await sequelize.query(sql_query_no_of_billing_current_year)
-        let productivity_data = await sequelize.query(sql_query_no_of_productivity_current_year)
+
+        connection = await getConnection()
+        let billing_and_coverage_data = await getQueryData(connection, sql_query_no_of_billing_current_year)
+        // let billing_and_coverage_data = await sequelize.query(sql_query_no_of_billing_current_year)
+        connection = await getConnection()
+        let productivity_data = await getQueryData(connection, sql_query_no_of_productivity_current_year)
+        // let productivity_data = await sequelize.query(sql_query_no_of_productivity_current_year)
         let billing = 0
         let productivity_call = 0
         let productivity_target = 1
         let coverage = 1
         let target_calls = 1
 
-        if(billing_and_coverage_data[0][0] !== undefined){
-            billing = billing_and_coverage_data[0][0]['billed_sum']
-            coverage = billing_and_coverage_data[0][0]['coverage_sum']
+        if(billing_and_coverage_data[0] !== undefined){
+            billing = billing_and_coverage_data[0]['billed_sum']
+            coverage = billing_and_coverage_data[0]['coverage_sum']
         }
 
-        if(productivity_data[0][0] !== undefined){
-            productivity_call = productivity_data[0][0]['pro_sum']
-            productivity_target = productivity_data[0][0]['target_sum']
+        if(productivity_data[0] !== undefined){
+            productivity_call = productivity_data[0]['pro_sum']
+            productivity_target = productivity_data[0]['target_sum']
         }
 
         if(billing === null){billing = 0}
@@ -357,7 +402,7 @@ let getDeepDivePageDataByBranch = async (req, res) =>{
             "Productivity": parseInt(productivity_per.toFixed(2).split(".")[0])
         }
         if(filter_data === 'allIndia'){filter_data = 'All India'}
-        objData['filter'] = `${filter_data}`
+        objData['filter_key'] = `${filter_data}`
         objData['month'] = `${date}`
         objData["sites"] = siteObj
         // data["coverage"]=(objData)
@@ -410,33 +455,38 @@ let getDeepDivePageDataBySubChannel = async (req, res) =>{
             channel_query_billing = `select sum([No of stores billed atleast once])as billed_sum, sum([Coverage]) as coverage_sum , [ChannelName], [SubChannelName] FROM [dbo].[tbl_command_center_billing_new] where [Calendar Month] = '${calendar_month_cy}' and [${filter_key}] = '${filter_data}' and ChannelName = '${channel}' group by [ChannelName], [SubChannelName] order by [ChannelName] ASC`
             channel_query_productivity = `select sum([Productive Calls]) as pro_sum , sum([Target Calls]) as target_sum , [ChannelName], [SubChannelName] FROM [dbo].[tbl_command_center_productivity_new] where [Calendar Month] = '${calendar_month_cy}' and [${filter_key}] = '${filter_data}' and ChannelName = '${channel}' group by [ChannelName], [SubChannelName] order by [ChannelName] ASC`
         }
-        let channels_data_billing = await sequelize.query(channel_query_billing)
-        let channels_data_productivity = await sequelize.query(channel_query_productivity)
+
+        let connection = await getConnection()
+        let channels_data_billing = await getQueryData(connection, channel_query_billing)
+        // let channels_data_billing = await sequelize.query(channel_query_billing)
+        connection = await getConnection()
+        let channels_data_productivity = await getQueryData(connection, channel_query_productivity)
+        // let channels_data_productivity = await sequelize.query(channel_query_productivity)
 
         const channelNames = []
         let channelNamesSet
 
         let subChannelMap = {}
-        for (let i = 0; i < channels_data_productivity[0].length; i++) {
-            subChannelMap[`${channels_data_productivity[0][i]['ChannelName']}/${channels_data_productivity[0][i]['SubChannelName']}`] = (channels_data_productivity[0][i]['pro_sum']/channels_data_productivity[0][i]['target_sum'])*100
+        for (let i = 0; i < channels_data_productivity.length; i++) {
+            subChannelMap[`${channels_data_productivity[i]['ChannelName']}/${channels_data_productivity[i]['SubChannelName']}`] = (channels_data_productivity[i]['pro_sum']/channels_data_productivity[i]['target_sum'])*100
         }
         let mergedArr = []
-        for (let i = 0; i < channels_data_billing[0].length; i++) {
+        for (let i = 0; i < channels_data_billing.length; i++) {
             let obj = {
-                'ChannelName' :   channels_data_billing[0][i]['ChannelName'],
-                'SubChannelName' :   channels_data_billing[0][i]['SubChannelName'],
-                'billed_sum' :   channels_data_billing[0][i]['billed_sum'],
-                'coverage_sum' :   channels_data_billing[0][i]['coverage_sum'],
-                'productivity_per' : subChannelMap[`${channels_data_billing[0][i]['ChannelName']}/${channels_data_billing[0][i]['SubChannelName']}`]
+                'ChannelName' :   channels_data_billing[i]['ChannelName'],
+                'SubChannelName' :   channels_data_billing[i]['SubChannelName'],
+                'billed_sum' :   channels_data_billing[i]['billed_sum'],
+                'coverage_sum' :   channels_data_billing[i]['coverage_sum'],
+                'productivity_per' : subChannelMap[`${channels_data_billing[i]['ChannelName']}/${channels_data_billing[i]['SubChannelName']}`]
             }
             mergedArr.push(obj)
         }
 
         // console.log(subChannelMap)
 
-        for(let i in channels_data_billing[0]){
-            if(channels_data_billing[0][i] !== undefined){
-                channelNames.push(channels_data_billing[0][i]['ChannelName'])
+        for(let i in channels_data_billing){
+            if(channels_data_billing[i] !== undefined){
+                channelNames.push(channels_data_billing[i]['ChannelName'])
             }
         }
 
@@ -503,22 +553,26 @@ let getDeepDivePageDataBySubChannel = async (req, res) =>{
             sql_query_no_of_billing_current_year = `select sum([No of stores billed atleast once]) as billed_sum , sum([Coverage]) as coverage_sum from [dbo].[tbl_command_center_billing_new] where [${filter_key}] = '${filter_data}' and [Calendar Month] = '${calendar_month_cy}'`
             sql_query_no_of_productivity_current_year = `select sum([Productive Calls]) as pro_sum , sum([Target Calls]) as target_sum FROM [dbo].[tbl_command_center_productivity_new] where [Calendar Month] = '${calendar_month_cy}' and [${filter_key}] = '${filter_data}'`
         }
-        let billing_and_coverage_data = await sequelize.query(sql_query_no_of_billing_current_year)
-        let productivity_data = await sequelize.query(sql_query_no_of_productivity_current_year)
+        connection = await getConnection()
+        let billing_and_coverage_data = await getQueryData(connection, sql_query_no_of_billing_current_year)
+        // let billing_and_coverage_data = await sequelize.query(sql_query_no_of_billing_current_year)
+        connection = await getConnection()
+        let productivity_data = await getQueryData(connection, sql_query_no_of_productivity_current_year)
+        // let productivity_data = await sequelize.query(sql_query_no_of_productivity_current_year)
         let billing = 0
         let productivity_call = 0
         let productivity_target = 1
         let coverage = 1
         let target_calls = 1
 
-        if(billing_and_coverage_data[0][0] !== undefined){
-            billing = billing_and_coverage_data[0][0]['billed_sum']
-            coverage = billing_and_coverage_data[0][0]['coverage_sum']
+        if(billing_and_coverage_data !== undefined){
+            billing = billing_and_coverage_data[0]['billed_sum']
+            coverage = billing_and_coverage_data[0]['coverage_sum']
         }
 
-        if(productivity_data[0][0] !== undefined){
-            productivity_call = productivity_data[0][0]['pro_sum']
-            productivity_target = productivity_data[0][0]['target_sum']
+        if(productivity_data !== undefined){
+            productivity_call = productivity_data[0]['pro_sum']
+            productivity_target = productivity_data[0]['target_sum']
         }
 
         if(billing === null){billing = 0}
@@ -536,7 +590,7 @@ let getDeepDivePageDataBySubChannel = async (req, res) =>{
             "Productivity": parseInt(productivity_per.toFixed(2).split(".")[0])
         }
         if(filter_data === 'allIndia'){filter_data = 'All India'}
-        objData['filter'] = `${filter_data}`
+        objData['filter_key'] = `${filter_data}`
         objData['month'] = `${date}`
         objData["channels"] = channelObj
         // data["coverage"]=(objData)
@@ -565,6 +619,7 @@ async function getTableData (bodyData){
             let channel_list = []
             channel = data.channel
             channel_list = data.channel
+            channel_list = [...new Set(channel_list)];
             channel = channel.map(item => `'${item}'`).join(", ")
             delete filter_type.date;
             delete filter_type.channel;
@@ -584,15 +639,21 @@ async function getTableData (bodyData){
             if(filter_data === "allIndia"){
                 let data_query_ne = `select top(5) * FROM [dbo].[tbl_coverageDeepDiveData] where [Calendar Month] = '${calendar_month_cy}' and Division = 'N-E' `
                 let data_query_sw = `select top(5) * FROM [dbo].[tbl_coverageDeepDiveData] where [Calendar Month] = '${calendar_month_cy}' and Division = 'S-W' `
-                let db_data_ne = await sequelize.query(data_query_ne);
-                let db_data_sw = await sequelize.query(data_query_sw);
-                db_data = [...db_data_ne[0], ...db_data_sw[0]]
+                let connection = await getConnection()
+                let db_data_ne = await getQueryData(connection, data_query_ne);
+                // let db_data_ne = await sequelize.query(data_query_ne);
+                connection = await getConnection()
+                let db_data_sw = await getQueryData(connection, data_query_sw);
+                // let db_data_sw = await sequelize.query(data_query_sw);
+                db_data = [...db_data_ne, ...db_data_sw]
                 // db_data=(db_data_ne)
                 // db_data[0].push(db_data_sw[0])
             }else {
                 let data_query = `select top(10) * FROM [dbo].[tbl_coverageDeepDiveData] where [Calendar Month] = '${calendar_month_cy}' and [${filter_key}] = '${filter_data}' `
-                let db_data_filter = await sequelize.query(data_query);
-                db_data=(db_data_filter[0])
+                let connection = await getConnection()
+                let db_data_filter = await getQueryData(connection, data_query);
+                // let db_data_filter = await sequelize.query(data_query);
+                db_data=(db_data_filter)
             }
 
             let mergedArr = []
@@ -604,8 +665,10 @@ async function getTableData (bodyData){
                     }else{
                         data_query = `select * FROM [dbo].[tbl_coverageDeepDiveData] where [Calendar Month] = '${calendar_month_cy}' and Division in ('N-E', 'S-W')  and [ChannelName] in (${channel})`
                     }
-                    let db_data = await sequelize.query(data_query);
-                    mergedArr = db_data[0]
+                    let connection = await getConnection()
+                    let db_data = await getQueryData(connection, data_query);
+                    // let db_data = await sequelize.query(data_query);
+                    mergedArr = db_data
                 }else {
                     let data_query = ''
                     if(channel.length === 0){
@@ -613,8 +676,10 @@ async function getTableData (bodyData){
                     }else{
                         data_query = `select * FROM [dbo].[tbl_coverageDeepDiveData] where [Calendar Month] = '${calendar_month_cy}' and [${filter_key}] = '${filter_data}' and [ChannelName] in (${channel})`
                     }
-                    let db_data = await sequelize.query(data_query);
-                    mergedArr = db_data[0]
+                    let connection = await getConnection()
+                    let db_data = await getQueryData(connection, data_query);
+                    // let db_data = await sequelize.query(data_query);
+                    mergedArr = db_data
                 }
                 console.log("Data is already inserted.....")
             }
@@ -623,7 +688,7 @@ async function getTableData (bodyData){
                 let channel_query_billing
                 let channel_query_productivity
                 let exist_data_query = `delete FROM [dbo].[tbl_coverageDeepDiveData] where [Calendar Month] = '${calendar_month_cy}'`
-                let delete_data = await sequelize.query(exist_data_query);
+                // let delete_data = await sequelize.query(exist_data_query);
 
                 if(channel.length === 0){
                     if(filter_data === 'allIndia'){
@@ -651,32 +716,37 @@ async function getTableData (bodyData){
                     }
                 }
 
-                let categories_data_coverage = await sequelize.query(channel_query_billing)
-                let categories_data_productivity = await sequelize.query(channel_query_productivity)
+                let connection = await getConnection()
+                let categories_data_coverage = await getQueryData(connection, channel_query_billing)
+
+                // let categories_data_coverage = await sequelize.query(channel_query_billing)
+                connection = getConnection()
+                let categories_data_productivity = await getQueryData(connection, channel_query_productivity)
+                // let categories_data_productivity = await sequelize.query(channel_query_productivity)
 
                 let subChannelMap = {}
-                for (let i = 0; i < categories_data_productivity[0].length; i++) {
-                    subChannelMap[`${categories_data_productivity[0][i]['Division']}/${categories_data_productivity[0][i]['Site Name']}/${categories_data_productivity[0][i]['Branch Name']}/${categories_data_productivity[0][i]['ChannelName']}/${categories_data_productivity[0][i]['SubChannelName']}/'pc'`] = (categories_data_productivity[0][i]['pro_sum'])
-                    subChannelMap[`${categories_data_productivity[0][i]['Division']}/${categories_data_productivity[0][i]['Site Name']}/${categories_data_productivity[0][i]['Branch Name']}/${categories_data_productivity[0][i]['ChannelName']}/${categories_data_productivity[0][i]['SubChannelName']}/'tc'`] = (categories_data_productivity[0][i]['target_sum'])
+                for (let i = 0; i < categories_data_productivity.length; i++) {
+                    subChannelMap[`${categories_data_productivity[i]['Division']}/${categories_data_productivity[i]['Site Name']}/${categories_data_productivity[i]['Branch Name']}/${categories_data_productivity[i]['ChannelName']}/${categories_data_productivity[i]['SubChannelName']}/'pc'`] = (categories_data_productivity[i]['pro_sum'])
+                    subChannelMap[`${categories_data_productivity[i]['Division']}/${categories_data_productivity[i]['Site Name']}/${categories_data_productivity[i]['Branch Name']}/${categories_data_productivity[i]['ChannelName']}/${categories_data_productivity[i]['SubChannelName']}/'tc'`] = (categories_data_productivity[i]['target_sum'])
                 }
                 let channelFilter = false
                 if(channel.length === 0){channelFilter = false}
                 else{channelFilter = true}
-                for (let i = 0; i < categories_data_coverage[0].length; i++) {
+                for (let i = 0; i < categories_data_coverage.length; i++) {
                     let obj = {
                         'Calendar Month': calendar_month_cy,
-                        'Division' :   categories_data_coverage[0][i]['Division'],
-                        'Site Name' :   categories_data_coverage[0][i]['Site Name'],
-                        'Branch Name' :   categories_data_coverage[0][i]['Branch Name'],
-                        'ChannelName' :   categories_data_coverage[0][i]['ChannelName'],
-                        'SubChannelName' :   categories_data_coverage[0][i]['SubChannelName'],
-                        'billed_sum' :   categories_data_coverage[0][i]['billed_sum'],
-                        'coverage_sum' :   categories_data_coverage[0][i]['coverage_sum'],
-                        'pc' : subChannelMap[`${categories_data_coverage[0][i]['Division']}/${categories_data_coverage[0][i]['Site Name']}/${categories_data_coverage[0][i]['Branch Name']}/${categories_data_coverage[0][i]['ChannelName']}/${categories_data_coverage[0][i]['SubChannelName']}/'pc'`] ? subChannelMap[`${categories_data_coverage[0][i]['Division']}/${categories_data_coverage[0][i]['Site Name']}/${categories_data_coverage[0][i]['Branch Name']}/${categories_data_coverage[0][i]['ChannelName']}/${categories_data_coverage[0][i]['SubChannelName']}/'pc'`] : 0,
-                        'tc' : subChannelMap[`${categories_data_coverage[0][i]['Division']}/${categories_data_coverage[0][i]['Site Name']}/${categories_data_coverage[0][i]['Branch Name']}/${categories_data_coverage[0][i]['ChannelName']}/${categories_data_coverage[0][i]['SubChannelName']}/'tc'`] ? subChannelMap[`${categories_data_coverage[0][i]['Division']}/${categories_data_coverage[0][i]['Site Name']}/${categories_data_coverage[0][i]['Branch Name']}/${categories_data_coverage[0][i]['ChannelName']}/${categories_data_coverage[0][i]['SubChannelName']}/'tc'`] : 0,
+                        'Division' :   categories_data_coverage[i]['Division'],
+                        'Site Name' :   categories_data_coverage[i]['Site Name'],
+                        'Branch Name' :   categories_data_coverage[i]['Branch Name'],
+                        'ChannelName' :   categories_data_coverage[i]['ChannelName'],
+                        'SubChannelName' :   categories_data_coverage[i]['SubChannelName'],
+                        'billed_sum' :   categories_data_coverage[i]['billed_sum'],
+                        'coverage_sum' :   categories_data_coverage[i]['coverage_sum'],
+                        'pc' : subChannelMap[`${categories_data_coverage[i]['Division']}/${categories_data_coverage[i]['Site Name']}/${categories_data_coverage[i]['Branch Name']}/${categories_data_coverage[i]['ChannelName']}/${categories_data_coverage[i]['SubChannelName']}/'pc'`] ? subChannelMap[`${categories_data_coverage[i]['Division']}/${categories_data_coverage[i]['Site Name']}/${categories_data_coverage[i]['Branch Name']}/${categories_data_coverage[i]['ChannelName']}/${categories_data_coverage[i]['SubChannelName']}/'pc'`] : 0,
+                        'tc' : subChannelMap[`${categories_data_coverage[i]['Division']}/${categories_data_coverage[i]['Site Name']}/${categories_data_coverage[i]['Branch Name']}/${categories_data_coverage[i]['ChannelName']}/${categories_data_coverage[i]['SubChannelName']}/'tc'`] ? subChannelMap[`${categories_data_coverage[i]['Division']}/${categories_data_coverage[i]['Site Name']}/${categories_data_coverage[i]['Branch Name']}/${categories_data_coverage[i]['ChannelName']}/${categories_data_coverage[i]['SubChannelName']}/'tc'`] : 0,
                         'user_id' : 1,
                         'channelFilter': channelFilter,
-                        'Cluster' :   categories_data_coverage[0][i]['Cluster']
+                        'Cluster' :   categories_data_coverage[i]['Cluster']
                     }
                     mergedArr.push(obj)
                 }
@@ -704,8 +774,10 @@ async function getTableData (bodyData){
                         return Object.values(obj);
                     });
                     const flattenedValues = values.flat();
+                    let connection = await getConnection()
                     const query = `INSERT INTO [dbo].[tbl_coverageDeepDiveData] (${columns.join(',')}) VALUES ${valuePlaceholders}`;
-                    sequelize.query(query, {replacements: flattenedValues, type: QueryTypes.INSERT});
+                    getQueryData(connection,query);
+                    // sequelize.query(query, {replacements: flattenedValues, type: QueryTypes.INSERT});
                 }
                 // console.timeEnd('making chunks')
             }
@@ -724,7 +796,7 @@ async function getTableData (bodyData){
                 if(mergedArr[i]['productivity_per'] == null){mergedArr[i]['productivity_per'] = 0}
                 if (key in DivisionObj){
                     DivisionObj[`${key}`]['billed_sum'] += mergedArr[i]['billed_sum']
-                    DivisionObj[`${key}`]['coverage_sum'] += mergedArr[i]['coverage_sum']
+                    DivisionObj[`${key}`]['Coverage'] += mergedArr[i]['coverage_sum']
                     DivisionObj[`${key}`]['pc_sum'] += mergedArr[i]['pc_sum']
                     DivisionObj[`${key}`]['tc_sum'] += mergedArr[i]['tc_sum']
                     if(DivisionObj[`${key}`]['tc_sum'] === 0){
@@ -733,12 +805,12 @@ async function getTableData (bodyData){
                         DivisionObj[`${key}`]['productivity_per'] = parseFloat(((((DivisionObj[`${key}`]['pc_sum'])/(DivisionObj[`${key}`]['tc_sum']) * 100))).toFixed(2))
                     }
                     if(mergedArr[i]['coverage_sum'] === 0){mergedArr[i]['coverage_sum'] = 1}
-                    DivisionObj[`${key}`]['billing_per'] = parseFloat(((((DivisionObj[`${key}`]['billed_sum'])/(DivisionObj[`${key}`]['coverage_sum']) * 100))).toFixed(2))
+                    DivisionObj[`${key}`]['billing_per'] = parseFloat(((((DivisionObj[`${key}`]['billed_sum'])/(DivisionObj[`${key}`]['Coverage']) * 100))).toFixed(2))
                 }else{
                     obj={
                         'filter_key': mergedArr[i]['Division'],
                         'billed_sum': mergedArr[i]['billed_sum'],
-                        'coverage_sum': mergedArr[i]['coverage_sum'],
+                        'Coverage': mergedArr[i]['coverage_sum'],
                         'pc_sum': mergedArr[i]['tc_sum'],
                         'tc_sum': mergedArr[i]['tc_sum'],
                         'Site' : []
@@ -765,7 +837,7 @@ async function getTableData (bodyData){
                 if(mergedArr[i]['productivity_per'] == null){mergedArr[i]['productivity_per'] = 0}
                 if (key in SiteObj){
                     SiteObj[`${key}`]['billed_sum'] += mergedArr[i]['billed_sum']
-                    SiteObj[`${key}`]['coverage_sum'] += mergedArr[i]['coverage_sum']
+                    SiteObj[`${key}`]['Coverage'] += mergedArr[i]['coverage_sum']
                     SiteObj[`${key}`]['pc_sum'] += mergedArr[i]['pc_sum']
                     SiteObj[`${key}`]['tc_sum'] += mergedArr[i]['tc_sum']
                     if(SiteObj[`${key}`]['tc_sum'] === 0){
@@ -774,12 +846,12 @@ async function getTableData (bodyData){
                         SiteObj[`${key}`]['productivity_per'] = parseFloat(((((SiteObj[`${key}`]['pc_sum'])/(SiteObj[`${key}`]['tc_sum']) * 100))).toFixed(2))
                     }
                     if(mergedArr[i]['coverage_sum'] === 0){mergedArr[i]['coverage_sum'] = 1}
-                    SiteObj[`${key}`]['billing_per'] = parseFloat(((((SiteObj[`${key}`]['billed_sum'])/(SiteObj[`${key}`]['coverage_sum']) * 100))).toFixed(2))
+                    SiteObj[`${key}`]['billing_per'] = parseFloat(((((SiteObj[`${key}`]['billed_sum'])/(SiteObj[`${key}`]['Coverage']) * 100))).toFixed(2))
                 }else{
                     obj={
                         'filter_key': mergedArr[i]['Site Name'],
                         'billed_sum': mergedArr[i]['billed_sum'],
-                        'coverage_sum': mergedArr[i]['coverage_sum'],
+                        'Coverage': mergedArr[i]['coverage_sum'],
                         'pc_sum': mergedArr[i]['pc_sum'],
                         'tc_sum': mergedArr[i]['tc_sum'],
                         'Branch' : []
@@ -807,7 +879,7 @@ async function getTableData (bodyData){
                 if(mergedArr[i]['productivity_per'] == null){mergedArr[i]['productivity_per'] = 0}
                 if (key in BranchObj){
                     BranchObj[`${key}`]['billed_sum'] += mergedArr[i]['billed_sum']
-                    BranchObj[`${key}`]['coverage_sum'] += mergedArr[i]['coverage_sum']
+                    BranchObj[`${key}`]['Coverage'] += mergedArr[i]['coverage_sum']
                     BranchObj[`${key}`]['pc_sum'] += mergedArr[i]['pc_sum']
                     BranchObj[`${key}`]['tc_sum'] += mergedArr[i]['tc_sum']
                     if(BranchObj[`${key}`]['tc_sum'] === 0){
@@ -816,12 +888,12 @@ async function getTableData (bodyData){
                         BranchObj[`${key}`]['productivity_per'] = parseFloat(((((BranchObj[`${key}`]['pc_sum'])/(BranchObj[`${key}`]['tc_sum']) * 100))).toFixed(2))
                     }
                     if(mergedArr[i]['coverage_sum'] === 0){mergedArr[i]['coverage_sum'] = 1}
-                    BranchObj[`${key}`]['billing_per'] = parseFloat(((((BranchObj[`${key}`]['billed_sum'])/(BranchObj[`${key}`]['coverage_sum']) * 100))).toFixed(2))
+                    BranchObj[`${key}`]['billing_per'] = parseFloat(((((BranchObj[`${key}`]['billed_sum'])/(BranchObj[`${key}`]['Coverage']) * 100))).toFixed(2))
                 }else{
                     obj={
                         'filter_key': mergedArr[i]['Branch Name'],
                         'billed_sum': mergedArr[i]['billed_sum'],
-                        'coverage_sum': mergedArr[i]['coverage_sum'],
+                        'Coverage': mergedArr[i]['coverage_sum'],
                         'pc_sum': mergedArr[i]['pc_sum'],
                         'tc_sum': mergedArr[i]['tc_sum'],
                         'Channel' : []
@@ -851,7 +923,7 @@ async function getTableData (bodyData){
                 if(mergedArr[i]['productivity_per'] == null){mergedArr[i]['productivity_per'] = 0}
                 if (key in ChannelObj){
                     ChannelObj[`${key}`]['billed_sum'] += mergedArr[i]['billed_sum']
-                    ChannelObj[`${key}`]['coverage_sum'] += mergedArr[i]['coverage_sum']
+                    ChannelObj[`${key}`]['Coverage'] += mergedArr[i]['coverage_sum']
                     ChannelObj[`${key}`]['pc_sum'] += mergedArr[i]['pc_sum']
                     ChannelObj[`${key}`]['tc_sum'] += mergedArr[i]['tc_sum']
                     if(ChannelObj[`${key}`]['tc_sum'] === 0){
@@ -860,12 +932,12 @@ async function getTableData (bodyData){
                         ChannelObj[`${key}`]['productivity_per'] = parseFloat(((((ChannelObj[`${key}`]['pc_sum'])/(ChannelObj[`${key}`]['tc_sum']) * 100))).toFixed(2))
                     }
                     if(mergedArr[i]['coverage_sum'] === 0){mergedArr[i]['coverage_sum'] = 1}
-                    ChannelObj[`${key}`]['billing_per'] = parseFloat(((((ChannelObj[`${key}`]['billed_sum'])/(ChannelObj[`${key}`]['coverage_sum']) * 100))).toFixed(2))
+                    ChannelObj[`${key}`]['billing_per'] = parseFloat(((((ChannelObj[`${key}`]['billed_sum'])/(ChannelObj[`${key}`]['Coverage']) * 100))).toFixed(2))
                 }else{
                     obj={
                         'filter_key': mergedArr[i]['ChannelName'],
                         'billed_sum': mergedArr[i]['billed_sum'],
-                        'coverage_sum': mergedArr[i]['coverage_sum'],
+                        'Coverage': mergedArr[i]['coverage_sum'],
                         'pc_sum': mergedArr[i]['pc_sum'],
                         'tc_sum': mergedArr[i]['tc_sum'],
                         'SubChannel' : []
@@ -896,7 +968,7 @@ async function getTableData (bodyData){
                 if(mergedArr[i]['productivity_per'] == null){mergedArr[i]['productivity_per'] = 0}
                 if (key in subChannelObj){
                     subChannelObj[`${key}`]['billed_sum'] += mergedArr[i]['billed_sum']
-                    subChannelObj[`${key}`]['coverage_sum'] += mergedArr[i]['coverage_sum']
+                    subChannelObj[`${key}`]['Coverage'] += mergedArr[i]['coverage_sum']
                     subChannelObj[`${key}`]['pc_sum'] += mergedArr[i]['pc_sum']
                     subChannelObj[`${key}`]['tc_sum'] += mergedArr[i]['tc_sum']
                     if(subChannelObj[`${key}`]['tc_sum'] === 0){
@@ -905,12 +977,12 @@ async function getTableData (bodyData){
                         subChannelObj[`${key}`]['productivity_per'] = parseFloat(((((subChannelObj[`${key}`]['pc_sum'])/(subChannelObj[`${key}`]['tc_sum']) * 100))).toFixed(2))
                     }
                     if(mergedArr[i]['coverage_sum'] === 0){mergedArr[i]['coverage_sum'] = 1}
-                    subChannelObj[`${key}`]['billing_per'] = parseFloat(((((subChannelObj[`${key}`]['billed_sum'])/(subChannelObj[`${key}`]['coverage_sum']) * 100))).toFixed(2))
+                    subChannelObj[`${key}`]['billing_per'] = parseFloat(((((subChannelObj[`${key}`]['billed_sum'])/(subChannelObj[`${key}`]['Coverage']) * 100))).toFixed(2))
                 }else{
                     obj={
                         'filter_key': mergedArr[i]['SubChannelName'],
                         'billed_sum': mergedArr[i]['billed_sum'],
-                        'coverage_sum': mergedArr[i]['coverage_sum'],
+                        'Coverage': mergedArr[i]['coverage_sum'],
                         'pc_sum': mergedArr[i]['pc_sum'],
                         'tc_sum': mergedArr[i]['tc_sum']
                     }
@@ -921,6 +993,13 @@ async function getTableData (bodyData){
                         subChannelObj[key] = obj
                 }
             }
+
+
+            DivisionObj = getFormattedNoObj(DivisionObj)
+            SiteObj = getFormattedNoObj(SiteObj)
+            BranchObj = getFormattedNoObj(BranchObj)
+            ChannelObj = getFormattedNoObj(ChannelObj)
+            subChannelObj = getFormattedNoObj(subChannelObj)
 
             for( let i in subChannelObj){
                 let key = i
@@ -984,23 +1063,26 @@ async function getTableData (bodyData){
                     sql_query_no_of_productivity_current_year = `select sum([Productive Calls]) as pro_sum , sum([Target Calls]) as target_sum FROM [dbo].[tbl_command_center_productivity_new] where [Calendar Month] = '${calendar_month_cy}' and [${filter_key}] = '${filter_data}' and [ChannelName] in (${channel}) `
                 }
             }
-
-            let billing_and_coverage_data = await sequelize.query(sql_query_no_of_billing_current_year)
-            let productivity_data = await sequelize.query(sql_query_no_of_productivity_current_year)
+            let connection = await getConnection()
+            let billing_and_coverage_data = await getQueryData(connection, sql_query_no_of_billing_current_year)
+            // let billing_and_coverage_data = await sequelize.query(sql_query_no_of_billing_current_year)
+            connection = await getConnection()
+            let productivity_data = await getQueryData(connection, sql_query_no_of_productivity_current_year)
+            // let productivity_data = await sequelize.query(sql_query_no_of_productivity_current_year)
             let billing = 0
             let productivity_call = 0
             let productivity_target = 1
             let coverage = 1
             let target_calls = 1
 
-            if(billing_and_coverage_data[0][0] !== undefined){
-                billing = billing_and_coverage_data[0][0]['billed_sum']
-                coverage = billing_and_coverage_data[0][0]['coverage_sum']
+            if(billing_and_coverage_data !== undefined){
+                billing = billing_and_coverage_data[0]['billed_sum']
+                coverage = billing_and_coverage_data[0]['coverage_sum']
             }
 
-            if(productivity_data[0][0] !== undefined){
-                productivity_call = productivity_data[0][0]['pro_sum']
-                productivity_target = productivity_data[0][0]['target_sum']
+            if(productivity_data !== undefined){
+                productivity_call = productivity_data[0]['pro_sum']
+                productivity_target = productivity_data[0]['target_sum']
             }
 
             if(billing === null){billing = 0}
@@ -1014,12 +1096,12 @@ async function getTableData (bodyData){
 
             let objData = {
                 "billing_per": parseInt(`${billing_per}`.split(".")[0]),
-                "Coverage": parseInt(coverage.toFixed(2).split(".")[0]),
+                "Coverage": getFormattedNo(coverage),
                 "productivity_per": parseInt(productivity_per.toFixed(2).split(".")[0])
             }
             if(filter_data === 'allIndia'){filter_data = 'All India'}
-            objData['filter'] = `${filter_data}`
-            objData['channel'] = channel_list.map(item => item).join("/")
+            objData['filter_key'] = `${filter_data}`
+            objData['channel'] = channel_list
             objData['month'] = `${date}`
             objData["division"] = divList
             final_data.push([objData])
@@ -1056,6 +1138,7 @@ let getDeepDivePageDataBySubChannel2 = async (req, res) => {
                         for(let n = 0; n<cachebodyData.length; n++){
                             if (deepEqual(cachebodyData[n], curReq[i])) {
                                 if((cachebodyData[n]['channel'].map(item => `'${item}'`).join(", ")) === (curReq[i]['channel'].map(item => `'${item}'`).join(", "))){
+                                    cacheData[k]['resData'][n][0]['id'] = uuidv4()
                                     matchedDataList.push(cacheData[k]['resData'][n])
                                     matched = true
                                     console.log("Data fetched from cache")
@@ -1075,6 +1158,7 @@ let getDeepDivePageDataBySubChannel2 = async (req, res) => {
             let finalData = await getTableData(nonMatchedIndex)
             for(let i in nonMatchedIndex){
                 if(finalData.length>0){
+                    finalData[i][0]['id'] = uuidv4()
                     matchedDataList.push(finalData[i])
                     cacheData[0]['reqBody'].push(nonMatchedIndex[i])
                     cacheData[0]['resData'].push(finalData[i])
@@ -1083,7 +1167,16 @@ let getDeepDivePageDataBySubChannel2 = async (req, res) => {
                     console.log("There is no data for this query");
                 }
             }
-            res.status(200).json(matchedDataList);
+            let checkDublicate = {}
+            for(let i in matchedDataList){
+                let key = matchedDataList[i][0]['id']
+                checkDublicate[key] = matchedDataList[i]
+            }
+            let nonDulbicateList = []
+            for(let i in checkDublicate){
+                nonDulbicateList.push(checkDublicate[i])
+            }
+            res.status(200).json(nonDulbicateList);
         }else {
             final_result = await getTableData(req.body)
             if(final_result.length>0){

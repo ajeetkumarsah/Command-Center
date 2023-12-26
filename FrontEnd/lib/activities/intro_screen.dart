@@ -1,13 +1,11 @@
 import 'dart:async';
 
-import 'package:command_centre/activities/login/fedauth_login.dart';
-import 'package:command_centre/activities/select_profile_screen.dart';
+import 'package:command_centre/activities/pglogin/fedauth_login.dart';
 import 'package:command_centre/utils/colors/colors.dart';
 import 'package:command_centre/utils/routes/routes_name.dart';
 import 'package:command_centre/utils/style/text_style.dart';
 import 'package:flutter/material.dart';
 
-import '../utils/routes/routes.dart';
 import '../utils/sharedpreferences/sharedpreferences_utils.dart';
 
 class IntroScreen extends StatefulWidget {
@@ -24,9 +22,10 @@ class _IntroScreenState extends State<IntroScreen> {
 
   Future<void> _onIntroEnd(context) async {
     SharedPreferencesUtils.setBool('seen', true);
-    Navigator.pushReplacement(context,
-        MaterialPageRoute(builder: (BuildContext context) => SelectProfile()));
-    // Navigator.pushReplacementNamed(context, RoutesName.login);
+    Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+            builder: (BuildContext context) => FedAuthLoginPage()));
   }
 
   @override
@@ -125,8 +124,8 @@ class _IntroScreenState extends State<IntroScreen> {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.only(
-                      left: 60, right: 60, top: 4, bottom: 33),
+                  padding:
+                      EdgeInsets.only(left: 60, right: 60, top: 4, bottom: 33),
                   child: Text(
                     'Anytime, Anywhere',
                     textAlign: TextAlign.center,
@@ -157,7 +156,6 @@ class _IntroScreenState extends State<IntroScreen> {
                     child: GestureDetector(
                       onTap: () {
                         setState(() {
-                          // _outArrow = !_outArrow;
                           _flag = !_flag;
                           _onIntroEnd(context);
                         });
@@ -186,12 +184,6 @@ class _IntroScreenState extends State<IntroScreen> {
                                   ? 1.0
                                   : 0.0
                               : 0.0,
-                          // Show/hide the arrow
-                          // child: const Icon(
-                          //   Icons.arrow_forward,
-                          //   color: MyColors.primary,
-                          //   size: 39,
-                          // ),
                           child: Image.asset(
                             'assets/icon/arrow_left.png',
                           ),

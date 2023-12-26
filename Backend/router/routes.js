@@ -4,7 +4,10 @@ module.exports = (app)=>{
     app.use('/api', require('./filterData/filterData'));
     app.use('/api', require('./users/user'));
     app.use('/api', require('./webPageRouter/webPageRoutes'));
-    // app.use('/api', require('./filterData/filterData'));
+    app.use('/api', require('./supplyChain/supplyChainRouter'));
+    // app.use('/public', require('./employeeRouter/employeeRoutes'));
+    // app.use('/testing', require('./employeeRouter/employeeRoutes'));
+    app.use('/api', require('./employeeRouter/employeeRoutes'));
 }
 
 

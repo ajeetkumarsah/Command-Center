@@ -24,10 +24,10 @@ class _CoverageTableDataCCState extends State<CoverageTableDataCC> {
   @override
   Widget build(BuildContext context) {
     final sheetProvider = Provider.of<SheetProvider>(context);
-    return FutureBuilder(
-        future: getTableCoverageSummary(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
+    // return FutureBuilder(
+    //     future: getTableCoverageSummary(),
+    //     builder: (context, snapshot) {
+    //       if (snapshot.hasData) {
             return SingleChildScrollView(
               child: Column(
                 children: [
@@ -310,7 +310,7 @@ class _CoverageTableDataCCState extends State<CoverageTableDataCC> {
                                                       ? MyColors.dark500
                                                       : MyColors.dark400,
                                                   title: SizedBox(
-                                                    height: 20,
+                                                    height: 40,
                                                     child: Row(
                                                       // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                       children: [
@@ -568,7 +568,7 @@ class _CoverageTableDataCCState extends State<CoverageTableDataCC> {
                                                                       title:
                                                                       SizedBox(
                                                                         height:
-                                                                        20,
+                                                                        40,
                                                                         child:
                                                                         Row(
                                                                           children: [
@@ -933,9 +933,9 @@ class _CoverageTableDataCCState extends State<CoverageTableDataCC> {
                 ],
               ),
             );
-          } else {
-            return const Center(child: CircularProgressIndicator());
-          }
-        });
+        //   } else {
+        //     return const Center(child: CircularProgressIndicator());
+        //   }
+        // });
   }
 }

@@ -40,8 +40,8 @@ class DivisionDropDown extends StatelessWidget {
                           division=='allIndia'?'All India':division,
                           style: ThemeText.monthText,
                         ),
-                        SizedBox(width: 10,),
-                        Icon(
+                        const SizedBox(width: 10,),
+                        const Icon(
                           Icons.arrow_drop_down,
                           color: Colors.black,
                         ),
@@ -76,7 +76,7 @@ class DivisionDropDown extends StatelessWidget {
                   border: Border.all(
                       width: 0.1, color: MyColors.whiteColor)),
               child: Padding(
-                padding: EdgeInsets.only(left: 10, right: 10),
+                padding: const EdgeInsets.only(left: 10, right: 10),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -84,7 +84,7 @@ class DivisionDropDown extends StatelessWidget {
                       month,
                       style: ThemeText.monthText,
                     ),
-                    Icon(
+                    const Icon(
                       Icons.arrow_drop_down,
                       color: Colors.black,
                     ),

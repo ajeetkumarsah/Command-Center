@@ -8,16 +8,13 @@ import 'package:command_centre/utils/colors/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../helper/app_urls.dart';
 import '../model/all_metrics.dart';
 import '../provider/sheet_provider.dart';
 import '../utils/comman/bottom_sheet/division_sheet.dart';
 import '../utils/comman/bottom_sheet/month_sheet.dart';
-import '../utils/const/const_array.dart';
 import '../utils/sharedpreferences/sharedpreferences_utils.dart';
-import '../utils/style/text_style.dart';
 import 'package:http/http.dart' as http;
 
 class HomePage extends StatefulWidget {
@@ -48,7 +45,6 @@ class _HomePageState extends State<HomePage>
   void selectContainer(int index) {
     setState(() {
       if (selectedContainerIndex == index) {
-        // Deselect the container if it was already selected
         selectedContainerIndex = 2;
       } else {
         selectedContainerIndex = index;
@@ -58,36 +54,14 @@ class _HomePageState extends State<HomePage>
 
   List itemCount = [];
   List channelCount = [];
+  List clusterCount = [];
   List divisionCount = [];
   List siteCount = [];
   List branchCount = [];
-  var list = [
-    {
-      "successful": true,
-      "data": [
-        "null",
-        "Nepal",
-        "HR",
-        "MH.GJ.GA.NAG",
-        "TN",
-        "NE",
-        "RJ.MP.CG",
-        "KL",
-        "PUN.HP.JK.UK",
-        "WB.OR",
-        "MUM.PUNE",
-        "DL.NCR",
-        "KA",
-        "AP.TL",
-        "UP.BR.JH",
-        "Sri Lanka"
-      ]
-    }
-  ];
 
-  Future<void> channelFilterAPI() async {
-    // var url = 'https://run.mocky.io/v3/64496a8b-11ff-414b-b0ca-d7d861653287';
-    var url = '${BASE_URL}/api/appData/channelFilter';
+  Future<void> clusterFilterAPI() async {
+    var url = 'https://run.mocky.io/v3/64496a8b-11ff-414b-b0ca-d7d861653287';
+    // var url = '${BASE_URL}/api/appData/clusterFilter';
     var response = await http.get(Uri.parse(url), headers: {
       'Content-Type': 'application/json; charset=UTF-8',
       'Accept': 'application/json',
@@ -96,27 +70,8 @@ class _HomePageState extends State<HomePage>
       var jsonResponse = await json.decode(response.body);
       // print(jsonResponse["data"]);
       setState(() {
-        channelCount = jsonResponse["data"];
-        print(channelCount);
-      });
-    } else {
-      print('Request failed with status: ${response.statusCode}.');
-    }
-  }
-
-  Future<void> branchFilterAPI() async {
-    // var url = 'https://run.mocky.io/v3/64496a8b-11ff-414b-b0ca-d7d861653287';
-    var url = '${BASE_URL}/api/appData/branchFilter';
-    var response = await http.get(Uri.parse(url), headers: {
-      'Content-Type': 'application/json; charset=UTF-8',
-      'Accept': 'application/json',
-    });
-    if (response.statusCode == 200) {
-      var jsonResponse = await json.decode(response.body);
-      // print(jsonResponse["data"]);
-      setState(() {
-        branchCount = jsonResponse["data"];
-        print(branchCount);
+        clusterCount = jsonResponse["data"];
+        print(clusterCount);
       });
     } else {
       print('Request failed with status: ${response.statusCode}.');
@@ -152,39 +107,111 @@ class _HomePageState extends State<HomePage>
   void initState() {
     // TODO: implement initState
     super.initState();
-    // clusterFilterAPI();
-    // divisionFilterAPI();
-    // siteFilterAPI();
-    // branchFilterAPI();
-    // channelFilterAPI();
+    clusterFilterAPI();
     year = "${now.year}";
     var checkProfile = SharedPreferencesUtils.getString('selectedProfile');
     allMetrics = [
-      AllMetrics(name: 'Retailing', isEnabled: checkProfile == "Sales"? true: false, subtitle: ''),
-      AllMetrics(name: 'Coverage',  isEnabled: checkProfile == "Sales"? true: false, subtitle: ''),
-      AllMetrics(name: 'Golden Points', isEnabled: checkProfile == "Sales"? true: false, subtitle: ''),
-      AllMetrics(name: 'Focus Brand', isEnabled: checkProfile == "Sales"? true: false, subtitle: ''),
-      AllMetrics(name: 'Productivity', isEnabled: checkProfile == "Sales"? true: false, subtitle: ''),
-      AllMetrics(name: 'Call Compliance', isEnabled: checkProfile == "Sales"? true: false, subtitle: ''),
-      AllMetrics(name: 'Shipment', isEnabled: checkProfile == "Sales"? true: false, subtitle: ''),
-      AllMetrics(name: 'Inventory', isEnabled: checkProfile == "Sales"? true: false, subtitle: ''),
-      AllMetrics(name: 'Billing', isEnabled: checkProfile == "Sales"? true: false, subtitle: ''),
-      AllMetrics(name: 'Cost/MSU', isEnabled: checkProfile == "Supply Chain"? true: false, subtitle: ''),
-      AllMetrics(name: 'Shortages/Damages (Rs.)', isEnabled: checkProfile == "Supply Chain"? true: false, subtitle: ''),
-      AllMetrics(name: 'VFR', isEnabled: checkProfile == "Supply Chain"? true: false, subtitle: ''),
-      AllMetrics(name: 'MSU/Truck', isEnabled: checkProfile == "Supply Chain"? true: false, subtitle: ''),
-      AllMetrics(name: 'Debits (Rs.)', isEnabled: checkProfile == "Supply Chain"? true: false, subtitle: ''),
-      AllMetrics(name: 'CFR', isEnabled: checkProfile == "Supply Chain"? true: false, subtitle: ''),
-      AllMetrics(name: 'SRN', isEnabled: checkProfile == "Supply Chain"? true: false, subtitle: ''),
-      AllMetrics(name: 'BT%', isEnabled: checkProfile == "Finance"? true: false, subtitle: ''),
-      AllMetrics(name: 'NOS (MM)', isEnabled: checkProfile == "Finance"? true: false, subtitle: ''),
-      AllMetrics(name: 'MSE%', isEnabled: checkProfile == "Finance"? true: false, subtitle: ''),
-      AllMetrics(name: 'CTS%', isEnabled: checkProfile == "Finance"? true: false, subtitle: ''),
-      AllMetrics(name: 'SD%', isEnabled: checkProfile == "Finance"? true: false, subtitle: ''),
-      AllMetrics(name: 'SRA%', isEnabled: checkProfile == "Finance"? true: false, subtitle: ''),
-      AllMetrics(name: 'TDC%', isEnabled: checkProfile == "Finance"? true: false, subtitle: ''),
-      AllMetrics(name: 'GOS%', isEnabled: checkProfile == "Finance"? true: false, subtitle: ''),
-      AllMetrics(name: 'GM%', isEnabled: checkProfile == "Finance"? true: false, subtitle: ''),
+      AllMetrics(
+          name: 'Retailing',
+          isEnabled: checkProfile == "Sales" ? true : false,
+          subtitle: ''),
+
+      AllMetrics(
+          name: 'Coverage',
+          isEnabled: checkProfile == "Sales" ? true : false,
+          subtitle: ''),
+      AllMetrics(
+          name: 'Golden Points',
+          isEnabled: checkProfile == "Sales" ? true : false,
+          subtitle: ''),
+      AllMetrics(
+          name: 'Focus Brand',
+          isEnabled: checkProfile == "Sales" ? true : false,
+          subtitle: ''),
+      AllMetrics(
+          name: 'Productivity',
+          isEnabled: checkProfile == "Sales" ? true : false,
+          subtitle: ''),
+      AllMetrics(
+          name: 'Call Compliance',
+          isEnabled: checkProfile == "Sales" ? true : false,
+          subtitle: ''),
+      AllMetrics(
+          name: 'Shipment',
+          isEnabled: checkProfile == "Sales" ? true : false,
+          subtitle: ''),
+      AllMetrics(
+          name: 'Inventory',
+          isEnabled: checkProfile == "Sales" ? true : false,
+          subtitle: ''),
+      AllMetrics(
+          name: 'Billing',
+          isEnabled: checkProfile == "Sales" ? true : false,
+          subtitle: ''),
+      AllMetrics(
+          name: 'Cost/MSU',
+          isEnabled: checkProfile == "Supply Chain" ? true : false,
+          subtitle: ''),
+      AllMetrics(
+          name: 'Shortages/Damages (Rs.)',
+          isEnabled: checkProfile == "Supply Chain" ? true : false,
+          subtitle: ''),
+      AllMetrics(
+          name: 'VFR',
+          isEnabled: checkProfile == "Supply Chain" ? true : false,
+          subtitle: ''),
+      AllMetrics(
+          name: 'MSU/Truck',
+          isEnabled: checkProfile == "Supply Chain" ? true : false,
+          subtitle: ''),
+      AllMetrics(
+          name: 'Debits (Rs.)',
+          isEnabled: checkProfile == "Supply Chain" ? true : false,
+          subtitle: ''),
+      AllMetrics(
+          name: 'CFR',
+          isEnabled: checkProfile == "Supply Chain" ? true : false,
+          subtitle: ''),
+      AllMetrics(
+          name: 'SRN',
+          isEnabled: checkProfile == "Supply Chain" ? true : false,
+          subtitle: ''),
+      AllMetrics(
+          name: 'BT%',
+          isEnabled: checkProfile == "Finance" ? true : false,
+          subtitle: ''),
+      AllMetrics(
+          name: 'NOS (MM)',
+          isEnabled: checkProfile == "Finance" ? true : false,
+          subtitle: ''),
+      AllMetrics(
+          name: 'MSE%',
+          isEnabled: checkProfile == "Finance" ? true : false,
+          subtitle: ''),
+      AllMetrics(
+          name: 'CTS%',
+          isEnabled: checkProfile == "Finance" ? true : false,
+          subtitle: ''),
+      AllMetrics(
+          name: 'SD%',
+          isEnabled: checkProfile == "Finance" ? true : false,
+          subtitle: ''),
+      AllMetrics(
+          name: 'SRA%',
+          isEnabled: checkProfile == "Finance" ? true : false,
+          subtitle: ''),
+      AllMetrics(
+          name: 'TDC%',
+          isEnabled: checkProfile == "Finance" ? true : false,
+          subtitle: ''),
+      AllMetrics(
+          name: 'GOS%',
+          isEnabled: checkProfile == "Finance" ? true : false,
+          subtitle: ''),
+      AllMetrics(
+          name: 'GM%',
+          isEnabled: checkProfile == "Finance" ? true : false,
+          subtitle: ''),
     ];
     populateLists();
     itemCount =
@@ -192,9 +219,6 @@ class _HomePageState extends State<HomePage>
     divisionCount =
         jsonDecode(SharedPreferencesUtils.getString('divisionCount') ?? "");
     siteCount = jsonDecode(SharedPreferencesUtils.getString('siteCount') ?? "");
-
-
-
   }
 
   void populateLists() {
@@ -211,17 +235,17 @@ class _HomePageState extends State<HomePage>
     return (await showDialog(
           context: context,
           builder: (context) => AlertDialog(
-            title: Text('Are you sure?'),
-            content: Text('Do you want to exit an App'),
+            title: const Text('Are you sure?'),
+            content: const Text('Do you want to exit an App'),
             actions: <Widget>[
               TextButton(
                 onPressed: () => Navigator.of(context).pop(false),
-                child: Text('No'),
+                child: const Text('No'),
               ),
               TextButton(
                 // onPressed: () => Navigator.of(context).pop(true),
                 onPressed: () => exit(0),
-                child: Text('Yes'),
+                child: const Text('Yes'),
               ),
             ],
           ),
@@ -279,6 +303,7 @@ class _HomePageState extends State<HomePage>
                                     : selectedDivision == 'Branch'
                                         ? 4
                                         : 0,
+                    clusterList: clusterCount, onApplyClick: () {  },
                   );
                 });
               }).then((value) {
@@ -295,7 +320,7 @@ class _HomePageState extends State<HomePage>
                     topRight: Radius.circular(15.0)),
               ),
               builder: (context) {
-                return MonthSheet();
+                return const MonthSheet();
               }).then((value) {
             setState(() {});
           });

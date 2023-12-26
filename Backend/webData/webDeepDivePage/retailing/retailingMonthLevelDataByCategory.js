@@ -1,4 +1,5 @@
-const {sequelize} = require('../../../databaseConnection/sql_connection');
+// const {sequelize} = require('../../../databaseConnection/sql_connection');
+const {getConnection, getQueryData} = require('../../../databaseConnection/dbConnection');
 
 function sanitizeInput(input) {
     const sanitizedInput = input.trim();
@@ -145,6 +146,7 @@ let getDeepDivePageData = async (req, res) =>{
             let channel_list = []
             channel = data.channel
             channel_list = data.channel
+            channel_list = [...new Set(channel_list)];
             channel = channel.map(item => `'${item}'`).join(", ")
             let all_india_filter = data.allIndia ? data.allIndia : ''
             let division_filter = data.division ? data.division : ''
@@ -212,53 +214,61 @@ let getDeepDivePageData = async (req, res) =>{
             let channel_query_rt_cy = getQuery(calendar_month_cy, filter_2, filter_1, channel)
             let channel_query_rt_py = getQuery(calendar_month_py, filter_2, filter_1, channel)
 
-            let categories_data_rt_cy = await sequelize.query(channel_query_rt_cy)
-            let categories_data_rt_py = await sequelize.query(channel_query_rt_py)
+            let connection = await getConnection()
+            let categories_data_rt_cy = await getQueryData(connection, channel_query_rt_cy)
+            // let categories_data_rt_cy = await sequelize.query(channel_query_rt_cy)
+            connection = await getConnection()
+            let categories_data_rt_py = await getQueryData(connection, channel_query_rt_py)
+            // let categories_data_rt_py = await sequelize.query(channel_query_rt_py)
 
+            // if(categories_data_rt_cy.length === 0 || categories_data_rt_cy[0]['Retailing_Sum'] === null){
+            //     res.status(200).json([]);
+            //     return 0
+            // }
 
             let cy_key = {}
-            for(let i in categories_data_rt_cy[0]){
-                cy_key[`${categories_data_rt_cy[0][i]['MonthYear']}/${categories_data_rt_cy[0][i]['Category']}/${categories_data_rt_cy[0][i]['brand_name']}/${categories_data_rt_cy[0][i]['brandform_name']}/${categories_data_rt_cy[0][i]['sbf_name']}`] = categories_data_rt_cy[0][i]['Retailing_Sum']
+            for(let i in categories_data_rt_cy){
+                cy_key[`${categories_data_rt_cy[i]['MonthYear']}/${categories_data_rt_cy[i]['Category']}/${categories_data_rt_cy[i]['brand_name']}/${categories_data_rt_cy[i]['brandform_name']}/${categories_data_rt_cy[i]['sbf_name']}`] = categories_data_rt_cy[i]['Retailing_Sum']
             }
 
 
             let cy_key_list = []
-            for(let i in categories_data_rt_py[0]){
-                let month = (categories_data_rt_py[0][i]['MonthYear']).slice(0,2)
-                let year = (categories_data_rt_py[0][i]['MonthYear']).slice(2)
+            for(let i in categories_data_rt_py){
+                let month = (categories_data_rt_py[i]['MonthYear']).slice(0,2)
+                let year = (categories_data_rt_py[i]['MonthYear']).slice(2)
                 let monthYear = month+(parseInt(year)+ 1)
-                if(!cy_key[`${monthYear}/${categories_data_rt_py[0][i]['channel_name']}/${categories_data_rt_py[0][i]['CustName']}`]){
+                if(!cy_key[`${monthYear}/${categories_data_rt_py[i]['channel_name']}/${categories_data_rt_py[i]['CustName']}`]){
                     let obj = {
                         'Retailing_Sum': 0,
-                        'MonthYear': categories_data_rt_cy[0][i]['MonthYear'],
-                        'Category': categories_data_rt_py[0][i]['Category'],
-                        'brand_name': categories_data_rt_py[0][i]['brand_name'],
-                        'brandform_name': categories_data_rt_py[0][i]['brandform_name'],
-                        'sbf_name': categories_data_rt_py[0][i]['sbf_name']
+                        'MonthYear': categories_data_rt_cy[i]['MonthYear'],
+                        'Category': categories_data_rt_py[i]['Category'],
+                        'brand_name': categories_data_rt_py[i]['brand_name'],
+                        'brandform_name': categories_data_rt_py[i]['brandform_name'],
+                        'sbf_name': categories_data_rt_py[i]['sbf_name']
                     }
                     cy_key_list.push(obj)
                 }
             }
 
             for(let i in cy_key_list){
-                categories_data_rt_cy[0].push(cy_key_list[i])
+                categories_data_rt_cy.push(cy_key_list[i])
             }
 
 
             let subCategoryMap = {}
-            for(let i in categories_data_rt_py[0]){
-                let month = (categories_data_rt_py[0][i]['MonthYear']).slice(0,2)
-                let year = (categories_data_rt_py[0][i]['MonthYear']).slice(2)
+            for(let i in categories_data_rt_py){
+                let month = (categories_data_rt_py[i]['MonthYear']).slice(0,2)
+                let year = (categories_data_rt_py[i]['MonthYear']).slice(2)
                 let monthYear = month+(parseInt(year)+ 1)
-                subCategoryMap[`${monthYear}//${categories_data_rt_py[0][i]['channel_name']}//${categories_data_rt_py[0][i]['CustName']}`] = categories_data_rt_py[0][i]['Retailing_Sum']
+                subCategoryMap[`${monthYear}//${categories_data_rt_py[i]['channel_name']}//${categories_data_rt_py[i]['CustName']}`] = categories_data_rt_py[i]['Retailing_Sum']
             }
-            for(let i in categories_data_rt_cy[0]){
+            for(let i in categories_data_rt_cy){
                 let obj = {
-                    'cy_retailing_sum': categories_data_rt_cy[0][i]['Retailing_Sum'],
-                    'py_retailing_sum': subCategoryMap[`${categories_data_rt_cy[0][i]['MonthYear']}//${categories_data_rt_cy[0][i]['channel_name']}//${categories_data_rt_cy[0][i]['CustName']}`] ? subCategoryMap[`${categories_data_rt_cy[0][i]['MonthYear']}//${categories_data_rt_cy[0][i]['channel_name']}//${categories_data_rt_cy[0][i]['CustName']}`] : 0,
-                    'MonthYear': categories_data_rt_cy[0][i]['MonthYear'],
-                    'channel_name': categories_data_rt_cy[0][i]['channel_name'],
-                    'CustName': categories_data_rt_cy[0][i]['CustName']
+                    'cy_retailing_sum': categories_data_rt_cy[i]['Retailing_Sum'],
+                    'py_retailing_sum': subCategoryMap[`${categories_data_rt_cy[i]['MonthYear']}//${categories_data_rt_cy[i]['channel_name']}//${categories_data_rt_cy[i]['CustName']}`] ? subCategoryMap[`${categories_data_rt_cy[i]['MonthYear']}//${categories_data_rt_cy[i]['channel_name']}//${categories_data_rt_cy[i]['CustName']}`] : 0,
+                    'MonthYear': categories_data_rt_cy[i]['MonthYear'],
+                    'channel_name': categories_data_rt_cy[i]['channel_name'],
+                    'CustName': categories_data_rt_cy[i]['CustName']
                 }
                 mergedArr.push(obj)
             }

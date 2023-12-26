@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router();
 
 const filter = require('../../appData/filterData')
+const supplyChainFilter = require('../../appData/supplyChainFilterData')
 
 // ======================== Home Page ========================//
 router.get('/appData/divisionFilter', filter.getDivisionFilterData);
@@ -18,5 +19,13 @@ router.post('/appData/subBrandFormFilter/channel', filter.getSBFGroupFilterDataB
 router.get('/appData/brandFilter', filter.getBrandFilterData);
 router.get('/appData/brandFormFilter', filter.getBrandFormFilterData);
 router.get('/appData/subBrandGroupFilter', filter.getSubBrandFormGroupFilterData);
+
+// Supply Chain Filters
+router.post('/appData/supply/sbfFilter', supplyChainFilter.getSBFGroupFilterData);
+router.post('/appData/supply/sourceCityFilter', supplyChainFilter.getSourceCityFilterData);
+router.post('/appData/supply/categoryFilter', supplyChainFilter.getCategoryFilterData);
+router.post('/appData/supply/vehicleTypeFilter', supplyChainFilter.getVehicleTypeFilterData);
+router.get('/appData/supply/movementFilter', supplyChainFilter.getMovementFilterData);
+router.post('/appData/supply/destinationFilter', supplyChainFilter.getDestinationCityFilterData);
 
 module.exports = router;

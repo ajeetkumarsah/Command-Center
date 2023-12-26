@@ -1,8 +1,9 @@
-const {sequelize} = require('../../../databaseConnection/sql_connection');
+// const {sequelize} = require('../../../databaseConnection/sql_connection');
+const {getConnection, getQueryData} = require('../../../databaseConnection/dbConnection');
 
 function getTableName(data, table_name){
     if(data === 'Category'){table_name = table_name+"_category"}
-    if(data === 'brand_name'){table_name = table_name+"_Brand"}
+    if(data === 'brand_name'){table_name = table_name+"_brand"}
     if(data === 'brandform_name'){table_name = table_name+"_BF"}
     if(data === 'sbf_name'){table_name = table_name+"_SBF"}
     return table_name
@@ -17,6 +18,9 @@ function getFormatedNumberValue_RT(value){
 
     else if(value>=100000 && value<10000000){
         formatedValue = ((value/100000).toFixed(2).split(".")[0])+'Lk'
+    }
+    else {
+        formatedValue = ((value).toFixed(2).split(".")[0])
     }
     // console.log("Your Value After Format", formatedValue)
     return formatedValue
@@ -56,54 +60,67 @@ function getFinancialYearList(month, year) {
 }
 
 function getFinalDataOfPNMSet(cy_data, py_data, filter_1, filter_2, channel_list){
-    let geo_filter = filter_1['filter_key'] === 'allIndia' ? 'division' : filter_1['filter_key']
     let mergedArr = []
     let subCategoryMap = {}
+    let finalSet = {}
     for(let i in py_data){
-        let key = `${py_data[i][geo_filter]}`
-        subCategoryMap[key] = py_data[i]['Retailing_Sum']
+        let key = `${py_data[i]['CustName']}`
+        if(subCategoryMap[key]){
+            subCategoryMap[key] += py_data[i]['Retailing_Sum'] ? py_data[i]['Retailing_Sum'] : 0
+        }else {
+            subCategoryMap[key] = py_data[i]['Retailing_Sum']
+        }
+
     }
     for(let i in cy_data){
-        let key = `${cy_data[i][geo_filter]}`
-        if(filter_1 ['filter_key'] === 'division' || filter_1['filter_key'] === 'allIndia'){
+        let key = `${cy_data[i]['CustName']}`
+        if(finalSet[key]){
+            finalSet[key]['cy_retailing_sum'] += cy_data[i]['Retailing_Sum'] ? cy_data[i]['Retailing_Sum'] : 0
+            // finalSet[key]['py_retailing_sum'] += subCategoryMap[key] ? subCategoryMap[key] : 0
+        }else {
             let obj = {
-                'cy_retailing_sum': cy_data[i]['Retailing_Sum'],
+                'cy_retailing_sum': (cy_data[i]['Retailing_Sum']),
                 'py_retailing_sum': subCategoryMap[key] ? subCategoryMap[key] : 0,
                 'MonthYear': cy_data[i]['MonthYear'],
                 'division': cy_data[i]['division'],
                 'site': cy_data[i]['SiteName'],
                 'branch': cy_data[i]['BranchName'],
                 'channel': cy_data[i]['channel_name'],
-                'subChannel': cy_data[i]['sub_channel_name'],
+                'storeName': cy_data[i]['CustName'],
                 'filter_key': `${filter_1['filter_data']}`,
                 'filter_key2': `${filter_2['filter_data'] ? filter_2['filter_data'] : ''}`
             }
             obj['IYA'] = ((obj['cy_retailing_sum'] ? obj['cy_retailing_sum'] : 0) / (obj['py_retailing_sum'] ? obj['py_retailing_sum'] : 1)) * 100
             obj['IYA'] = parseInt((obj['IYA'].toFixed(2)).split(".")[0])
             while(obj['IYA']>200){obj['IYA'] = parseInt(((obj['IYA']/10).toFixed(2)).split(".")[0])}
-            mergedArr.push(obj)
+            // obj['cy_retailing_sum'] = getFormatedNumberValue_RT(obj['cy_retailing_sum'])
+            // obj['py_retailing_sum'] = getFormatedNumberValue_RT(obj['py_retailing_sum'])
+            finalSet[key] = obj
         }
-        if(filter_1['filter_key'] === 'cluster'){
-            let obj = {
-                'cy_retailing_sum': cy_data[i]['Retailing_Sum'],
-                'py_retailing_sum': subCategoryMap[key] ? subCategoryMap[key] : 0,
-                'MonthYear': cy_data[i]['MonthYear'],
-                'cluster': `${filter_1['filter_data']}`,
-                'site': cy_data[i]['SiteName'],
-                'branch': cy_data[i]['BranchName'],
-                'channel': cy_data[i]['channel_name'],
-                'subChannel': cy_data[i]['sub_channel_name'],
-                'filter_key': `${filter_1['filter_data']}`,
-                'filter_key2': `${filter_2['filter_data'] ? filter_2['filter_data'] : ''}`
-            }
-            obj['IYA'] = ((obj['cy_retailing_sum'] ? obj['cy_retailing_sum'] : 0) / (obj['py_retailing_sum'] ? obj['py_retailing_sum'] : 1)) * 100
-            obj['IYA'] = parseInt((obj['IYA'].toFixed(2)).split(".")[0])
-            while(obj['IYA']>200){obj['IYA'] = parseInt(((obj['IYA']/10).toFixed(2)).split(".")[0])}
-            mergedArr.push(obj)
-        }
-
+        // let obj = {
+        //     'cy_retailing_sum': (cy_data[i]['Retailing_Sum']),
+        //     'py_retailing_sum': subCategoryMap[key] ? subCategoryMap[key] : 0,
+        //     'MonthYear': cy_data[i]['MonthYear'],
+        //     'division': cy_data[i]['division'],
+        //     'site': cy_data[i]['SiteName'],
+        //     'branch': cy_data[i]['BranchName'],
+        //     'channel': cy_data[i]['channel_name'],
+        //     'storeName': cy_data[i]['CustName'],
+        //     'filter_key': `${filter_1['filter_data']}`,
+        //     'filter_key2': `${filter_2['filter_data'] ? filter_2['filter_data'] : ''}`
+        // }
+        // obj['IYA'] = ((obj['cy_retailing_sum'] ? obj['cy_retailing_sum'] : 0) / (obj['py_retailing_sum'] ? obj['py_retailing_sum'] : 1)) * 100
+        // obj['IYA'] = parseInt((obj['IYA'].toFixed(2)).split(".")[0])
+        // while(obj['IYA']>200){obj['IYA'] = parseInt(((obj['IYA']/10).toFixed(2)).split(".")[0])}
+        // obj['cy_retailing_sum'] = getFormatedNumberValue_RT(obj['cy_retailing_sum'])
+        // obj['py_retailing_sum'] = getFormatedNumberValue_RT(obj['py_retailing_sum'])
+        // mergedArr.push(obj)
     }
-
+    for(let i in finalSet){
+        finalSet[i]['cy_retailing_sum'] = getFormatedNumberValue_RT(finalSet[i]['cy_retailing_sum'])
+        finalSet[i]['py_retailing_sum'] = getFormatedNumberValue_RT(finalSet[i]['py_retailing_sum'])
+        mergedArr.push(finalSet[i])
+    }
     return mergedArr
 }
 
@@ -135,32 +152,33 @@ function getQuery(calendar_month, filter_2, filter_1, channel, site, branch){
         // and [SiteName] like '' and [BranchName] = ''
         if(channel === ''){
             if (filter_1['filter_data'] === 'allIndia') {
-                channel_query_rt_cy = `select sum([Retailing]) as Retailing_Sum, [MonthYear], [sub_channel_name] from [dbo].[tbl_command_center_rt_Division_cluster_site_branch_channel_subChannel] where [MonthYear] in (${calendar_month}) and Division in ('N-E', 'S-W') and [SiteName] like '${siteName}' and [BranchName] like '${branchName}' and  [channel_name] not in ('Aggregator SubD', 'SubD', 'SubD A', 'SubD B') group by [MonthYear], [sub_channel_name] order by [MonthYear] desc`
+                channel_query_rt_cy = `select sum([Retailing]) as Retailing_Sum, [MonthYear], [channel_name], [CustName] from [dbo].[tbl_command_center_rt_Division_cluster_site_branch_channel_custName_BF] where [MonthYear] in (${calendar_month}) and Division in ('N-E', 'S-W') and [SiteName] like '${siteName}' and [BranchName] like '${branchName}' and  [channel_name] not in ('Aggregator SubD', 'SubD', 'SubD A', 'SubD B') group by [MonthYear], [channel_name], [CustName] order by [MonthYear] desc`
             } else {
-                channel_query_rt_cy = `select sum([Retailing]) as Retailing_Sum, [MonthYear], [sub_channel_name] from [dbo].[tbl_command_center_rt_Division_cluster_site_branch_channel_subChannel] where [MonthYear] in (${calendar_month}) and [${filter_1['filter_key']}] = '${filter_1['filter_data']}' and [SiteName] like '${siteName}' and [BranchName] like '${branchName}' and  [channel_name] not in ('Aggregator SubD', 'SubD', 'SubD A', 'SubD B') group by [MonthYear], [sub_channel_name] order by [MonthYear] desc`
+                channel_query_rt_cy = `select sum([Retailing]) as Retailing_Sum, [MonthYear], [channel_name], [CustName] from [dbo].[tbl_command_center_rt_Division_cluster_site_branch_channel_custName_BF] where [MonthYear] in (${calendar_month}) and [${filter_1['filter_key']}] = '${filter_1['filter_data']}' and [SiteName] like '${siteName}' and [BranchName] like '${branchName}' and  [channel_name] not in ('Aggregator SubD', 'SubD', 'SubD A', 'SubD B') group by [MonthYear], [channel_name], [CustName] order by [MonthYear] desc`
             }
         }else{
             if (filter_1['filter_data'] === 'allIndia') {
-                channel_query_rt_cy = `select sum([Retailing]) as Retailing_Sum, [MonthYear], [sub_channel_name] from [dbo].[tbl_command_center_rt_Division_cluster_site_branch_channel_subChannel] where [MonthYear] in (${calendar_month}) and Division in ('N-E', 'S-W') and [SiteName] like '${siteName}' and [BranchName] like '${branchName}' and  [channel_name] in (${channel}) group by [MonthYear], [sub_channel_name] order by [MonthYear] desc`
+                channel_query_rt_cy = `select sum([Retailing]) as Retailing_Sum, [MonthYear], [channel_name], [CustName] from [dbo].[tbl_command_center_rt_Division_cluster_site_branch_channel_custName_BF] where [MonthYear] in (${calendar_month}) and Division in ('N-E', 'S-W') and [SiteName] like '${siteName}' and [BranchName] like '${branchName}' and  [channel_name] in (${channel}) group by [MonthYear], [channel_name], [CustName] order by [MonthYear] desc`
             } else {
-                channel_query_rt_cy = `select sum([Retailing]) as Retailing_Sum, [MonthYear], [sub_channel_name] from [dbo].[tbl_command_center_rt_Division_cluster_site_branch_channel_subChannel] where [MonthYear] in (${calendar_month}) and [${filter_1['filter_key']}] = '${filter_1['filter_data']}' and [SiteName] like '${siteName}' and [BranchName] like '${branchName}' and  [channel_name] in (${channel}) group by [MonthYear], [sub_channel_name] order by [MonthYear] desc`
+                channel_query_rt_cy = `select sum([Retailing]) as Retailing_Sum, [MonthYear], [channel_name], [CustName] from [dbo].[tbl_command_center_rt_Division_cluster_site_branch_channel_custName_BF] where [MonthYear] in (${calendar_month}) and [${filter_1['filter_key']}] = '${filter_1['filter_data']}' and [SiteName] like '${siteName}' and [BranchName] like '${branchName}' and  [channel_name] in (${channel}) group by [MonthYear], [channel_name], [CustName] order by [MonthYear] desc`
             }
         }
 
     } else {
-        let table_name = 'tbl_command_center_rt_Division_cluster_site_branch_channel_subChannel'
+        let table_name = 'tbl_command_center_rt_Division_cluster_site_branch_channel_custName'
         table_name = getTableName(filter_2['filter_key'], table_name)
+        // console.log(table_name)
         if(channel === ''){
             if (filter_1['filter_data'] === 'allIndia') {
-                channel_query_rt_cy = `select sum([Retailing]) as Retailing_Sum, [MonthYear], [sub_channel_name] from [dbo].[${table_name}] where [MonthYear] in (${calendar_month}) and Division in ('N-E', 'S-W') and [${filter_2['filter_key']}] = '${filter_2['filter_data']}' and [SiteName] like '${siteName}' and [BranchName] like '${branchName}' and  [channel_name] not in ('Aggregator SubD', 'SubD', 'SubD A', 'SubD B') group by [MonthYear], [sub_channel_name] order by [MonthYear] desc`
+                channel_query_rt_cy = `select sum([Retailing]) as Retailing_Sum, [MonthYear], [channel_name], [CustName] from [dbo].[${table_name}] where [MonthYear] in (${calendar_month}) and Division in ('N-E', 'S-W') and [${filter_2['filter_key']}] = '${filter_2['filter_data']}' and [SiteName] like '${siteName}' and [BranchName] like '${branchName}' and  [channel_name] not in ('Aggregator SubD', 'SubD', 'SubD A', 'SubD B') group by [MonthYear], [channel_name], [CustName] order by [MonthYear] desc`
             } else {
-                channel_query_rt_cy = `select sum([Retailing]) as Retailing_Sum, [MonthYear], [sub_channel_name] from [dbo].[${table_name}] where [MonthYear] in (${calendar_month}) and [${filter_1['filter_key']}] = '${filter_1['filter_data']}' and [${filter_2['filter_key']}] = '${filter_2['filter_data']}' and [SiteName] like '${siteName}' and [BranchName] like '${branchName}' and  [channel_name] not in ('Aggregator SubD', 'SubD', 'SubD A', 'SubD B') group by [MonthYear], [sub_channel_name] order by [MonthYear] desc`
+                channel_query_rt_cy = `select sum([Retailing]) as Retailing_Sum, [MonthYear], [channel_name], [CustName] from [dbo].[${table_name}] where [MonthYear] in (${calendar_month}) and [${filter_1['filter_key']}] = '${filter_1['filter_data']}' and [${filter_2['filter_key']}] = '${filter_2['filter_data']}' and [SiteName] like '${siteName}' and [BranchName] like '${branchName}' and  [channel_name] not in ('Aggregator SubD', 'SubD', 'SubD A', 'SubD B') group by [MonthYear], [channel_name], [CustName] order by [MonthYear] desc`
             }
         }else {
             if (filter_1['filter_data'] === 'allIndia') {
-                channel_query_rt_cy = `select sum([Retailing]) as Retailing_Sum, [MonthYear], [sub_channel_name] from [dbo].[${table_name}] where [MonthYear] in (${calendar_month}) and Division in ('N-E', 'S-W') and [${filter_2['filter_key']}] = '${filter_2['filter_data']}' and [SiteName] like '${siteName}' and [BranchName] like '${branchName}' and  [channel_name] in (${channel}) group by [MonthYear], [sub_channel_name] order by [MonthYear] desc`
+                channel_query_rt_cy = `select sum([Retailing]) as Retailing_Sum, [MonthYear], [channel_name], [CustName] from [dbo].[${table_name}] where [MonthYear] in (${calendar_month}) and Division in ('N-E', 'S-W') and [${filter_2['filter_key']}] = '${filter_2['filter_data']}' and [SiteName] like '${siteName}' and [BranchName] like '${branchName}' and  [channel_name] in (${channel}) group by [MonthYear], [channel_name], [CustName] order by [MonthYear] desc`
             } else {
-                channel_query_rt_cy = `select sum([Retailing]) as Retailing_Sum, [MonthYear], [sub_channel_name] from [dbo].[${table_name}] where [MonthYear] in (${calendar_month}) and [${filter_1['filter_key']}] = '${filter_1['filter_data']}' and [${filter_2['filter_key']}] = '${filter_2['filter_data']}' and [SiteName] like '${siteName}' and [BranchName] like '${branchName}' and  [channel_name] in (${channel}) group by [MonthYear], [sub_channel_name] order by [MonthYear] desc`
+                channel_query_rt_cy = `select sum([Retailing]) as Retailing_Sum, [MonthYear], [channel_name], [CustName] from [dbo].[${table_name}] where [MonthYear] in (${calendar_month}) and [${filter_1['filter_key']}] = '${filter_1['filter_data']}' and [${filter_2['filter_key']}] = '${filter_2['filter_data']}' and [SiteName] like '${siteName}' and [BranchName] like '${branchName}' and  [channel_name] in (${channel}) group by [MonthYear], [channel_name], [CustName] order by [MonthYear] desc`
             }
         }
     }
@@ -266,6 +284,7 @@ let getDeepDivePageData = async (req, res) =>{
             let channel_list = []
             channel = data.channel
             channel_list = data.channel
+            channel_list = [...new Set(channel_list)];
             channel = channel.map(item => `'${item}'`).join(", ")
             let all_india_filter = data.allIndia ? data.allIndia : ''
             let division_filter = data.division ? data.division : ''
@@ -333,68 +352,78 @@ let getDeepDivePageData = async (req, res) =>{
             let channel_query_rt_cy = getQuery(calendar_month_cy, filter_2, filter_1, channel, site, branch)
             let channel_query_rt_py = getQuery(calendar_month_py, filter_2, filter_1, channel, site, branch)
 
-            let categories_data_rt_cy = await sequelize.query(channel_query_rt_cy)
-            let categories_data_rt_py = await sequelize.query(channel_query_rt_py)
+            let connection = await getConnection()
+            let categories_data_rt_cy = await getQueryData(connection, channel_query_rt_cy)
+            // let categories_data_rt_cy = await sequelize.query(channel_query_rt_cy)
+            connection = await getConnection()
+            let categories_data_rt_py = await getQueryData(connection, channel_query_rt_py)
+            // let categories_data_rt_py = await sequelize.query(channel_query_rt_py)
+
+            if(categories_data_rt_cy.length === 0 || categories_data_rt_cy[0]['Retailing_Sum'] === null){
+                res.status(200).json([]);
+                return 0
+            }
 
             let cy_key = {}
-            for(let i in categories_data_rt_cy[0]){
-                cy_key[`${categories_data_rt_cy[0][i]['MonthYear']}/${categories_data_rt_cy[0][i]['channel_name']}/${categories_data_rt_cy[0][i]['CustName']}`] = categories_data_rt_cy[0][i]['Retailing_Sum']
+            for(let i in categories_data_rt_cy){
+                // cy_key[`${categories_data_rt_cy[i]['MonthYear']}/${categories_data_rt_cy[i]['channel_name']}/${categories_data_rt_cy[i]['CustName']}`] = categories_data_rt_cy[i]['Retailing_Sum']
+                cy_key[`${categories_data_rt_cy[i]['MonthYear']}/${categories_data_rt_cy[i]['CustName']}`] = categories_data_rt_cy[i]['Retailing_Sum']
             }
 
             let cy_key_list = []
-            for(let i in categories_data_rt_py[0]){
-                let month = (categories_data_rt_py[0][i]['MonthYear']).slice(0,2)
-                let year = (categories_data_rt_py[0][i]['MonthYear']).slice(2)
+            for(let i in categories_data_rt_py){
+                let month = (categories_data_rt_py[i]['MonthYear']).slice(0,2)
+                let year = (categories_data_rt_py[i]['MonthYear']).slice(2)
                 let monthYear = month+(parseInt(year)+ 1)
-                if(!cy_key[`${monthYear}/${categories_data_rt_py[0][i]['channel_name']}/${categories_data_rt_py[0][i]['CustName']}`]){
+                if(!cy_key[`${monthYear}/${categories_data_rt_py[i]['CustName']}`]){
                     let obj = {
                         'Retailing_Sum': 0,
                         'MonthYear': monthYear,
-                        'channel_name': categories_data_rt_py[0][i]['channel_name'],
-                        'CustName': categories_data_rt_py[0][i]['CustName']
+                        // 'channel_name': categories_data_rt_py[i]['channel_name'],
+                        'CustName': categories_data_rt_py[i]['CustName']
                     }
                     cy_key_list.push(obj)
                 }
             }
 
             for(let i in cy_key_list){
-                categories_data_rt_cy[0].push(cy_key_list[i])
+                categories_data_rt_cy.push(cy_key_list[i])
             }
 
-            let cm_set_cy = getPNMSet(categories_data_rt_cy[0], monthsList_cy, 1, 0)
-            let cm_set_py = getPNMSet(categories_data_rt_py[0], monthsList_py, 1, 0)
+            let cm_set_cy = getPNMSet(categories_data_rt_cy, monthsList_cy, 1, 0)
+            let cm_set_py = getPNMSet(categories_data_rt_py, monthsList_py, 1, 0)
             let cmDataSetList = getFinalDataOfPNMSet(cm_set_cy, cm_set_py, filter_1, filter_2, channel_list)
             let cm_obj = {
                 "name" : "cm",
                 "data" : cmDataSetList
             }
 
-            let p1m_set_cy = getPNMSet(categories_data_rt_cy[0], monthsList_cy, 2, 1)
-            let p1m_set_py = getPNMSet(categories_data_rt_py[0], monthsList_py, 2, 1)
+            let p1m_set_cy = getPNMSet(categories_data_rt_cy, monthsList_cy, 2, 1)
+            let p1m_set_py = getPNMSet(categories_data_rt_py, monthsList_py, 2, 1)
             let p1mDataSetList = getFinalDataOfPNMSet(p1m_set_cy, p1m_set_py, filter_1, filter_2, channel_list)
             let p1m_obj = {
                 "name" : "p1m",
                 "data" : p1mDataSetList
             }
 
-            let p3m_set_cy = getPNMSet(categories_data_rt_cy[0], monthsList_cy, 3, 0)
-            let p3m_set_py = getPNMSet(categories_data_rt_py[0], monthsList_py, 3, 0)
+            let p3m_set_cy = getPNMSet(categories_data_rt_cy, monthsList_cy, 3, 0)
+            let p3m_set_py = getPNMSet(categories_data_rt_py, monthsList_py, 3, 0)
             let p3mDataSetList = getFinalDataOfPNMSet(p3m_set_cy, p3m_set_py, filter_1, filter_2, channel_list)
             let p3m_obj = {
                 "name" : "p3m",
                 "data" : p3mDataSetList
             }
 
-            let p6m_set_cy = getPNMSet(categories_data_rt_cy[0], monthsList_cy, 6, 0)
-            let p6m_set_py = getPNMSet(categories_data_rt_py[0], monthsList_py, 6, 0)
+            let p6m_set_cy = getPNMSet(categories_data_rt_cy, monthsList_cy, 6, 0)
+            let p6m_set_py = getPNMSet(categories_data_rt_py, monthsList_py, 6, 0)
             let p6mDataSetList = getFinalDataOfPNMSet(p6m_set_cy, p6m_set_py, filter_1, filter_2, channel_list)
             let p6m_obj = {
                 "name" : "p6m",
                 "data" : p6mDataSetList
             }
 
-            let p12m_set_cy = getPNMSet(categories_data_rt_cy[0], monthsList_cy, 12, 0)
-            let p12m_set_py = getPNMSet(categories_data_rt_py[0], monthsList_py, 12, 0)
+            let p12m_set_cy = getPNMSet(categories_data_rt_cy, monthsList_cy, 12, 0)
+            let p12m_set_py = getPNMSet(categories_data_rt_py, monthsList_py, 12, 0)
             let p12mDataSetList = getFinalDataOfPNMSet(p12m_set_cy, p12m_set_py, filter_1, filter_2, channel_list)
             let p12m_obj = {
                 "name" : "p12m",
@@ -403,8 +432,8 @@ let getDeepDivePageData = async (req, res) =>{
 
             let financialYearCount = getFinancialYearList(parseInt(getMonthDigit(date.split("-")[0]))-1, date.split("-")[1])
 
-            let py_set_cy = getPNMSet(categories_data_rt_cy[0], monthsList_cy, financialYearCount, 0)
-            let py_set_py = getPNMSet(categories_data_rt_py[0], monthsList_py, financialYearCount, 0)
+            let py_set_cy = getPNMSet(categories_data_rt_cy, monthsList_cy, financialYearCount, 0)
+            let py_set_py = getPNMSet(categories_data_rt_py, monthsList_py, financialYearCount, 0)
             let pyDataSetList = getFinalDataOfPNMSet(py_set_cy, py_set_py, filter_1, filter_2, channel_list)
             let py_obj = {
                 "name" : "financial_year",

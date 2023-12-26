@@ -25,12 +25,15 @@ class SheetProvider extends ChangeNotifier {
   String selectedCategoryFiltersbfg = '';
   String selectedCategoryBodyFilter = '';
   int selectedChannelIndex = 0;
+  int selectedChannelIndexFB = 0;
+  int selectedChannelIndexGP = 0;
 
   int removeIndexFB = 0;
   int removeIndexGP = 0;
   int removeIndexCC = 0;
   int removeIndexRe = 0;
 
+  int removeIndexRetailingSummary = 0;
   int removeIndexRetailing = 0;
   int removeIndexGoldenPoint = 0;
   int removeIndexFocusBrand = 0;
@@ -46,6 +49,10 @@ class SheetProvider extends ChangeNotifier {
   bool selectMonth = false;
   bool isLoaderActive = false;
 
+  bool isMenuActive = false;
+  bool isDivisionActive = false;
+  bool isRemoveActive = false;
+
   List<dynamic> allSummaryGPList = [];
   List<dynamic> allSummaryFBList = [];
   List<dynamic> allSummaryRetailingList = [];
@@ -60,6 +67,22 @@ class SheetProvider extends ChangeNotifier {
   List<dynamic> fbList = [];
   List<dynamic> productivityList = [];
   List<dynamic> ccList = [];
+  List<dynamic> fbErrorMsg = [];
+  List<dynamic> fb1ErrorMsg = [];
+  List<dynamic> fb2ErrorMsg = [];
+  List<dynamic> fb3ErrorMsg = [];
+  List<dynamic> retailingErrorMsg = [];
+  List<dynamic> retailing1ErrorMsg = [];
+  List<dynamic> retailing2ErrorMsg = [];
+  List<dynamic> retailing3ErrorMsg = [];
+  List<dynamic> coverageErrorMsg = [];
+  List<dynamic> coverage1ErrorMsg = [];
+  List<dynamic> coverage2ErrorMsg = [];
+  List<dynamic> coverage3ErrorMsg = [];
+  List<dynamic> gpErrorMsg = [];
+  List<dynamic> gp1ErrorMsg = [];
+  List<dynamic> gp2ErrorMsg = [];
+  List<dynamic> gp3ErrorMsg = [];
 
   List get getRetailingItem => retailingList;
 
@@ -72,6 +95,86 @@ class SheetProvider extends ChangeNotifier {
   List get getproductivityItem => productivityList;
 
   List get getccItem => ccList;
+
+  void setFbErrorMsg(value){
+    fbErrorMsg = value;
+    notifyListeners();
+  }
+
+  void setFb1ErrorMsg(value){
+    fb1ErrorMsg = value;
+    notifyListeners();
+  }
+
+  void setFb2ErrorMsg(value){
+    fb2ErrorMsg = value;
+    notifyListeners();
+  }
+
+  void setFb3ErrorMsg(value){
+    fb3ErrorMsg = value;
+    notifyListeners();
+  }
+
+  void setRetailingErrorMsg(value){
+    retailingErrorMsg = value;
+    notifyListeners();
+  }
+
+  void setRetailing1ErrorMsg(value){
+    retailing1ErrorMsg = value;
+    notifyListeners();
+  }
+
+  void setRetailing2ErrorMsg(value){
+    retailing2ErrorMsg = value;
+    notifyListeners();
+  }
+
+  void setRetailing3ErrorMsg(value){
+    retailing3ErrorMsg = value;
+    notifyListeners();
+  }
+
+  void setCoverageErrorMsg(value){
+    coverageErrorMsg = value;
+    notifyListeners();
+  }
+
+  void setCoverage1ErrorMsg(value){
+    coverage1ErrorMsg = value;
+    notifyListeners();
+  }
+
+  void setCoverage2ErrorMsg(value){
+    coverage2ErrorMsg = value;
+    notifyListeners();
+  }
+
+  void setCoverage3ErrorMsg(value){
+    coverage3ErrorMsg = value;
+    notifyListeners();
+  }
+
+  void setGpErrorMsg(value){
+    gpErrorMsg = value;
+    notifyListeners();
+  }
+
+  void setGp1ErrorMsg(value){
+    gp1ErrorMsg = value;
+    notifyListeners();
+  }
+
+  void setGp2ErrorMsg(value){
+    gp2ErrorMsg = value;
+    notifyListeners();
+  }
+
+  void setGp3ErrorMsg(value){
+    gp3ErrorMsg = value;
+    notifyListeners();
+  }
 
   void addRetailingItem(item) {
     retailingList.add(item);
@@ -231,6 +334,24 @@ class SheetProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  bool _isExpandedCategoryFilter = false;
+
+  bool get isExpandedCategoryFilter => _isExpandedCategoryFilter;
+
+  set isExpandedCategoryFilter(bool value) {
+    _isExpandedCategoryFilter = value;
+    notifyListeners();
+  }
+
+  bool _isExpandedMonthCDFilter = false;
+
+  bool get isExpandedMonthCDFilter => _isExpandedMonthCDFilter;
+
+  set isExpandedMonthCDFilter(bool value) {
+    _isExpandedMonthCDFilter = value;
+    notifyListeners();
+  }
+
   String _selectedChannelFilter = 'Select..';
 
   String get selectedChannelFilter => _selectedChannelFilter;
@@ -240,11 +361,11 @@ class SheetProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  String _selectedChannelCategory = 'Select..';
+  List _selectedChannelCategory = ['Select..'];
 
-  String get selectedChannelCategory => _selectedChannelCategory;
+  List get selectedChannelCategory => _selectedChannelCategory;
 
-  set selectedChannelCategory(String value) {
+  set selectedChannelCategory(List value) {
     _selectedChannelCategory = value;
     notifyListeners();
   }
@@ -275,7 +396,25 @@ class SheetProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  int _isCloseSelect = 0;
+
+  int get isCloseSelect => _isCloseSelect;
+
+  set isCloseSelect(int value) {
+    _isCloseSelect = value;
+    notifyListeners();
+  }
+
+  int _isCloseSelectCD = 0;
+
+  int get isCloseSelectCD => _isCloseSelectCD;
+
+  set isCloseSelectCD(int value) {
+    _isCloseSelectCD = value;
+    notifyListeners();
+  }
+
   String channelFilterSelected = '';
 
-  String selectedChannelFromAPI = '';
+  List selectedChannelFromAPI = [];
 }

@@ -1,15 +1,17 @@
-const {sequelize} = require('../databaseConnection/sql_connection');
+// const {sequelize} = require('../databaseConnection/sql_connection');
+const {getConnection, getQueryData} = require('../databaseConnection/dbConnection');
 // const {sequelize2} = require('../databaseConnection/sql_connection2');
 
 let getDivisionFilterData = async (req, res) =>{
     try {
         // console.log("getDivisionFilterData invoked")
-        let data = await sequelize.query(`select distinct Division FROM [da].[locationHierarchy_updated]`)
+        let connection = await getConnection()
+        let data = await getQueryData(connection, `select distinct Division FROM [da].[locationHierarchy_updated]`)
         // console.log("getDivisionFilterData invoked2")
         let division = []
-        for(let div in data[0]){
-            if(data[0][div]['Division'] === 'DIV_0001'){ data[0][div]['Division'] = 'South-West'; division.push(data[0][div]['Division'])}
-            if(data[0][div]['Division'] === 'DIV_0002'){ data[0][div]['Division'] = 'North-East'; division.push(data[0][div]['Division'])}
+        for(let div in data){
+            if(data[div]['Division'] === 'DIV_0001'){ data[div]['Division'] = 'South-West'; division.push(data[div]['Division'])}
+            if(data[div]['Division'] === 'DIV_0002'){ data[div]['Division'] = 'North-East'; division.push(data[div]['Division'])}
         }
         // console.log("getDivisionFilterData fetched data successfully")
         res.status(200).send({successful: true, data: division})
@@ -21,11 +23,12 @@ let getDivisionFilterData = async (req, res) =>{
 
 let getSiteFilterData = async (req, res) =>{
     try {
-        let data = await sequelize.query(`select distinct [SiteName] FROM [da].[locationHierarchy_updated]`)
+        let connection = await getConnection()
+        let data = await getQueryData(connection, `select distinct [SiteName] FROM [da].[locationHierarchy_updated]`)
         let site = []
-        for(let div in data[0]){
-            site.push(data[0][div]['SiteName'])
-            console.log((data[0][div]['SiteName']))
+        for(let div in data){
+            site.push(data[div]['SiteName'])
+            console.log((data[div]['SiteName']))
         }
         res.status(200).send({successful: true, data: site})
     }catch (e){
@@ -36,11 +39,12 @@ let getSiteFilterData = async (req, res) =>{
 
 let getCategoryFilterData = async (req, res) =>{
     try {
-        let data = await sequelize.query(`select distinct [CategoryName] from [sdm].[productMaster]`)
+        let connection = await getConnection()
+        let data = await getQueryData(connection, `select distinct [CategoryName] from [sdm].[productMaster]`)
         let category = []
-        for(let i in data[0]){
-            category.push(data[0][i]['CategoryName'])
-            console.log((data[0][i]['CategoryName']))
+        for(let i in data){
+            category.push(data[i]['CategoryName'])
+            console.log((data[i]['CategoryName']))
         }
         res.status(200).send({successful: true, data: category})
     }catch (e){
@@ -51,11 +55,12 @@ let getCategoryFilterData = async (req, res) =>{
 
 let getBrandFilterData = async (req, res) =>{
     try {
-        let data = await sequelize.query(`select distinct [BrandName] from [sdm].[productMaster]`)
+        let connection = await getConnection()
+        let data = await getQueryData(connection, `select distinct [BrandName] from [sdm].[productMaster]`)
         let brand = []
-        for(let i in data[0]){
-            brand.push(data[0][i]['BrandName'])
-            console.log((data[0][i]['BrandName']))
+        for(let i in data){
+            brand.push(data[i]['BrandName'])
+            console.log((data[i]['BrandName']))
         }
         res.status(200).send({successful: true, data: brand})
     }catch (e){
@@ -66,11 +71,12 @@ let getBrandFilterData = async (req, res) =>{
 
 let getBrandFormFilterData = async (req, res) =>{
     try {
-        let data = await sequelize.query(`select distinct [BrandformName] from [sdm].[productMaster]`)
+        let connection = await getConnection()
+        let data = await getQueryData(connection, `select distinct [BrandformName] from [sdm].[productMaster]`)
         let brandForm = []
-        for(let i in data[0]){
-            brandForm.push(data[0][i]['BrandformName'])
-            console.log((data[0][i]['BrandformName']))
+        for(let i in data){
+            brandForm.push(data[i]['BrandformName'])
+            console.log((data[i]['BrandformName']))
         }
         res.status(200).send({successful: true, data: brandForm})
     }catch (e){
@@ -81,11 +87,12 @@ let getBrandFormFilterData = async (req, res) =>{
 
 let getSubBrandFormFilterData = async (req, res) =>{
     try {
-        let data = await sequelize.query(`select distinct [SubbfName] from [sdm].[productMaster]`)
+        let connection = await getConnection()
+        let data = await getQueryData(connection, `select distinct [SubbfName] from [sdm].[productMaster]`)
         let subBrandForm = []
-        for(let i in data[0]){
-            subBrandForm.push(data[0][i]['SubbfName'])
-            console.log((data[0][i]['SubbfName']))
+        for(let i in data){
+            subBrandForm.push(data[i]['SubbfName'])
+            console.log((data[i]['SubbfName']))
         }
         res.status(200).send({successful: true, data: subBrandForm})
     }catch (e){
@@ -96,12 +103,13 @@ let getSubBrandFormFilterData = async (req, res) =>{
 
 let getBranchFilterData = async (req, res) =>{
     try {
-        let data = await sequelize.query(`select distinct [BranchName] FROM [da].[locationHierarchy_updated]`)
+        let connection = await getConnection()
+        let data = await getQueryData(connection, `select distinct [BranchName] FROM [da].[locationHierarchy_updated]`)
         let branch = []
-        for(let div in data[0]){
+        for(let div in data){
             // Here we are using replace because there is more <""> are there in data so to remove that
-            branch.push(data[0][div]['BranchName'].replace(/^"|"$/g, ''))
-            console.log((data[0][div]['BranchName']))
+            branch.push(data[div]['BranchName'].replace(/^"|"$/g, ''))
+            console.log((data[div]['BranchName']))
         }
         res.status(200).send({successful: true, data: branch})
     }catch (e){
@@ -166,14 +174,15 @@ let getChannelFilterData = async (req, res) =>{
 
 let getClusterFilterData = async (req, res) =>{
     try {
-        let data = await sequelize.query(`select distinct [ClusterName] FROM [da].[locationHierarchy_updated]`)
+        let connection = await getConnection()
+        let data = await getQueryData(connection, `select distinct [ClusterName] FROM [da].[locationHierarchy_updated]`)
         let cluster = []
-        for(let div in data[0]){
-            if(data[0][div]['ClusterName'] === null){
-                data[0][div]['ClusterName'] = "NULL"
+        for(let div in data){
+            if(data[div]['ClusterName'] === null){
+                data[div]['ClusterName'] = "NULL"
             }
-            cluster.push(data[0][div]['ClusterName'])
-            console.log((data[0][div]['ClusterName']))
+            cluster.push(data[div]['ClusterName'])
+            console.log((data[div]['ClusterName']))
         }
         res.status(200).send({successful: true, data: cluster})
     }catch (e){
@@ -184,10 +193,11 @@ let getClusterFilterData = async (req, res) =>{
 
 let getSubBrandFormGroupFilterData = async (req, res) =>{
     try {
-        let data = await sequelize.query(`select distinct [SubbfGroupName]  from [sdm].[productMaster] order by [SubbfGroupName]`)
+        let connection = await getConnection()
+        let data = await getQueryData(connection, `select distinct [SubbfGroupName]  from [sdm].[productMaster] order by [SubbfGroupName]`)
         let subBrandGroup = []
-        for(let i in data[0]){
-            subBrandGroup.push(data[0][i]['SubbfGroupName'])
+        for(let i in data){
+            subBrandGroup.push(data[i]['SubbfGroupName'])
         }
         res.status(200).send({successful: true, data: subBrandGroup})
     }catch (e){
@@ -219,11 +229,12 @@ let getCategoryFilterDataByChannel = async (req, res) =>{
             sql_query = `select distinct [CategoryName] from ${table_name} where [Calendar Month] = '${current_year}' and [ChannelName] = '${channel}' `
         }
 
-        let data = await sequelize.query(sql_query)
+        let connection = await getConnection()
+        let data = await getQueryData(connection, sql_query)
         let category = []
-        for(let i in data[0]){
-            category.push(data[0][i]['CategoryName'])
-            console.log((data[0][i]['CategoryName']))
+        for(let i in data){
+            category.push(data[i]['CategoryName'])
+            console.log((data[i]['CategoryName']))
         }
         res.status(200).send({successful: true, data: category})
     }catch (e){
@@ -256,11 +267,12 @@ let getBrandFilterDataByChannel = async (req, res) =>{
             sql_query = `select distinct [BrandName] from ${table_name} where [Calendar Month] = '${current_year}' and [ChannelName] = '${channel}' and [CategoryName] = '${category_name}' `
         }
 
-        let data = await sequelize.query(sql_query)
+        let connection = await getConnection()
+        let data = await getQueryData(connection, sql_query)
         let brand = []
-        for(let i in data[0]){
-            brand.push(data[0][i]['BrandName'])
-            console.log((data[0][i]['BrandName']))
+        for(let i in data){
+            brand.push(data[i]['BrandName'])
+            console.log((data[i]['BrandName']))
         }
         res.status(200).send({successful: true, data: brand})
     }catch (e){
@@ -294,11 +306,12 @@ let getBrandFormFilterDataByChannel = async (req, res) =>{
             sql_query = `select distinct [BFName] from ${table_name} where [Calendar Month] = '${current_year}' and [ChannelName] = '${channel}' and [CategoryName] = '${category_name}' and [BrandName] = '${brand_name}' `
         }
 
-        let data = await sequelize.query(sql_query)
+        let connection = await getConnection()
+        let data = await getQueryData(connection, sql_query)
         let brand = []
-        for(let i in data[0]){
-            brand.push(data[0][i]['BFName'])
-            console.log((data[0][i]['BFName']))
+        for(let i in data){
+            brand.push(data[i]['BFName'])
+            console.log((data[i]['BFName']))
         }
         res.status(200).send({successful: true, data: brand})
     }catch (e){
@@ -333,11 +346,12 @@ let getSBFGroupFilterDataByChannel = async (req, res) =>{
             sql_query = `select distinct [SBFGroup] from ${table_name} where [Calendar Month] = '${current_year}' and [ChannelName] = '${channel}' and [CategoryName] = '${category_name}' and [BrandName] = '${brand_name}' and [BFName] = '${brandForm}' `
         }
 
-        let data = await sequelize.query(sql_query)
+        let connection = await getConnection()
+        let data = await getQueryData(connection, sql_query)
         let brand = []
-        for(let i in data[0]){
-            brand.push(data[0][i]['SBFGroup'])
-            console.log((data[0][i]['SBFGroup']))
+        for(let i in data){
+            brand.push(data[i]['SBFGroup'])
+            console.log((data[i]['SBFGroup']))
         }
         res.status(200).send({successful: true, data: brand})
     }catch (e){
@@ -386,11 +400,12 @@ let getChannelFilterDataByCategory = async (req, res) =>{
             sql_query = `select distinct [ChannelName] from ${table_name} where [Calendar Month] = '${current_year}' and [SBFGroup] = '${filter_data}' `
         }
 
-        let data = await sequelize.query(sql_query)
+        let connection = await getConnection()
+        let data = await getQueryData(connection, sql_query)
         let channel = []
-        for(let i in data[0]){
-            channel.push(data[0][i]['ChannelName'])
-            console.log((data[0][i]['ChannelName']))
+        for(let i in data){
+            channel.push(data[i]['ChannelName'])
+            console.log((data[i]['ChannelName']))
         }
         res.status(200).send({successful: true, data: channel})
     }catch (e){

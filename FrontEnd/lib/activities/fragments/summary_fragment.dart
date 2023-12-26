@@ -225,201 +225,234 @@ class SummaryFragment extends StatelessWidget {
                                     itemBuilder: (context, index) {
                                       final include = includedData[index];
                                       return Padding(
-                                        padding: const EdgeInsets.all(0.0),
-                                        child:
-                                        include.name == "Retailing"
-                                            ? ContainerShape(
-                                                cmIya: appData!
-                                                    .mtdRetailing!.cmIya!,
-                                                cmSalience: appData
-                                                    .mtdRetailing!.cmSaliance!,
-                                                cmSellout: appData
-                                                    .mtdRetailing!.cmSellout!,
-                                                tgtiya: appData
-                                                    .mtdRetailing!.tgtIya!,
-                                                tgtSalience: appData
-                                                    .mtdRetailing!.tgtSaliance!,
-                                                tgtSellout: appData
-                                                    .mtdRetailing!.tgtSellout!)
-                                            : include.name == "Coverage"
-                                                ? CoverageContainer(
-                                                    cmCoverage: appData!
-                                                        .coverage!.cmCoverage!,
-                                                    billingPercentage: appData
-                                                        .coverage!.billing!,
-                                                    title: 'Coverage',
-                                                    divisionCount:
-                                                        divisionCount,
-                                                    siteCount: siteCount,
-                                                    branchCount: branchCount,
-                                                    itemCount: itemCount,
-                                                    channelCount: channelCount,
-                                                  )
-                                                : include.name ==
-                                                        "Golden Points"
-                                                    ? CircularContainer(
-                                                        title:
-                                                            'DGP Compliance - ',
-                                                        perTitle: 'DGP Comp.',
-                                                        salience:
-                                                            'GP Abs (in M)',
-                                                        sellout: 'GP IYA',
-                                                        dgpCom: appData!
-                                                            .dgpCompliance!
-                                                            .gpAchievememt!,
-                                                        // dgpCom: appData.dgpCompliance.dgpCompliance,
-                                                        actual: appData
-                                                            .dgpCompliance!
-                                                            .gpAbs!,
-                                                        opportunity: appData
-                                                            .dgpCompliance!
-                                                            .gpIYA!,
-                                                        // opportunity: appData.dgpCompliance.gpOpportunity,
-                                                        onTap: () {
-                                                          Navigator.of(context).push(
-                                                              MaterialPageRoute(
-                                                                  builder:
-                                                                      (context) =>
-                                                                          const DGPComplianceScreen()));
-                                                        },
-                                                        subTitle: 'P3M',
-                                                      )
-                                                    : include.name ==
-                                                            "Focus Brand"
-                                                        ? CircularContainer(
-                                                            title:
-                                                                'Focus Brand - ',
-                                                            perTitle:
-                                                                'FB Achieve.',
-                                                            salience:
-                                                                'FB Actual (in M)',
-                                                            sellout: '',
-                                                            dgpCom: appData!
-                                                                .focusBrand!
-                                                                .fbAchievement!,
-                                                            actual: appData
-                                                                .focusBrand!
-                                                                .fbActual!,
-                                                            opportunity: "-1",
-                                                            onTap: () {
-                                                              Navigator.of(
-                                                                      context)
-                                                                  .push(MaterialPageRoute(
-                                                                      builder:
-                                                                          (context) =>
-                                                                              const FocusBrandScreen()));
-                                                            },
-                                                            subTitle: 'CM',
-                                                          )
-                                                        : include.name ==
-                                                                "Productivity"
-                                                            ? CoverageContainer(
-                                                                cmCoverage: appData!
-                                                                    .productivity!
-                                                                    .productivityCurrentMonth!,
-                                                                billingPercentage: appData
-                                                                    .productivity!
-                                                                    .productivityPreviousMonth!,
-                                                                title:
-                                                                    'Productivity',
-                                                                divisionCount:
-                                                                    divisionCount,
-                                                                siteCount:
-                                                                    siteCount,
-                                                                branchCount:
-                                                                    branchCount,
-                                                                itemCount:
-                                                                    itemCount,
-                                                                channelCount:
-                                                                    channelCount,
-                                                              )
-                                                            : include.name ==
-                                                                    "Call Compliance"
-                                                                ? CoverageContainer(
-                                                                    cmCoverage: appData!
-                                                                        .callCompliance!
-                                                                        .ccCurrentMonth!,
-                                                                    billingPercentage: appData
-                                                                        .callCompliance!
-                                                                        .ccPreviousMonth!,
-                                                                    title:
-                                                                        'Call Compliance',
-                                                                    divisionCount:
-                                                                        divisionCount,
-                                                                    siteCount:
-                                                                        siteCount,
-                                                                    branchCount:
-                                                                        branchCount,
-                                                                    itemCount:
-                                                                        itemCount,
-                                                                    channelCount: [
-                                                                      channelCount
-                                                                    ],
-                                                                  )
-                                                                : include.name ==
-                                                                        "Shipment"
-                                                                    ? CoverageContainer(
-                                                                        cmCoverage:
-                                                                            "${appData!.shipment!.shipmentActual!}",
-                                                                        billingPercentage:
-                                                                            "${appData.shipment!.shipmentIYA!}",
-                                                                        title:
-                                                                            'Shipment',
-                                                                        divisionCount:
-                                                                            divisionCount,
-                                                                        siteCount:
-                                                                            siteCount,
-                                                                        branchCount:
-                                                                            branchCount,
-                                                                        itemCount:
-                                                                            itemCount,
-                                                                        channelCount:
-                                                                            channelCount,
-                                                                      )
-                                                                    : include.name ==
-                                                                            "Inventory"
-                                                                        ? CoverageContainer(
-                                                                            cmCoverage:
-                                                                                "${appData!.inventory!.inventoryIYA!}",
-                                                                            billingPercentage:
-                                                                                "${appData.inventory!.inventoryActual!}",
-                                                                            title:
-                                                                                'Inventory',
-                                                                            divisionCount:
-                                                                                divisionCount,
-                                                                            siteCount:
-                                                                                siteCount,
-                                                                            branchCount:
-                                                                                branchCount,
-                                                                            itemCount:
-                                                                                itemCount,
-                                                                            channelCount:
-                                                                                channelCount,
-                                                                          )
-                                                                        : include.name ==
-                                                                                "Billing"
-                                                                            ? CoverageContainer(
-                                                                                cmCoverage: "${appData!.inventory!.inventoryIYA!}",
-                                                                                billingPercentage: "${appData.inventory!.inventoryActual!}",
-                                                                                title: 'Billing',
-                                                                                divisionCount: divisionCount,
-                                                                                siteCount: siteCount,
-                                                                                branchCount: branchCount,
-                                                                                itemCount: itemCount,
-                                                                                channelCount: channelCount,
-                                                                              )
-                                                                            : include.name == "BT%"? const NewCardsForSales(title: 'BT% ', subTitle: '12.8',):
-                                                                              include.name == "NOS (MM)"? const NewCardsForSales(title: 'NOS (MM) ', subTitle: '1654',):
-                                                                              include.name == "MSE%"? const NewCardsForSales(title: 'MSE% ', subTitle: '13.1',):
-                                                                              include.name == "CTS%"? const NewCardsForSales(title: 'CTS% ', subTitle: '7.2',):
-                                                                              include.name == "SD%"? const NewCardsForSales(title: 'SD% ', subTitle: '12.3',):
-                                                                              include.name == "SRA%"? const NewCardsForSales(title: 'SRA% ', subTitle: '12.2',):
-                                                                              include.name == "TDC%"? const NewCardsForSales(title: 'TDC% ', subTitle: '7.6',):
-                                                                              include.name == "GOS%"? const NewCardsForSales(title: 'GOS% ', subTitle: '15.5',):
-                                                                              include.name == "GM%"? const NewCardsForSales(title: 'GM% ', subTitle: '38.6',):
-                                                                              NewCardsForSales(title: "${include.name} ", subTitle: '0.0',)
-
-                                      );
+                                          padding: const EdgeInsets.all(0.0),
+                                          child: include.name == "Retailing"
+                                              ? ContainerShape(
+                                                  cmIya: appData!
+                                                      .mtdRetailing!.cmIya!,
+                                                  cmSalience: appData
+                                                      .mtdRetailing!
+                                                      .cmSaliance!,
+                                                  cmSellout: appData
+                                                      .mtdRetailing!.cmSellout!,
+                                                  tgtiya: appData
+                                                      .mtdRetailing!.tgtIya!,
+                                                  tgtSalience: appData
+                                                      .mtdRetailing!
+                                                      .tgtSaliance!,
+                                                  tgtSellout: appData
+                                                      .mtdRetailing!
+                                                      .tgtSellout!)
+                                              : include.name == "Coverage"
+                                                  ? CoverageContainer(
+                                                      cmCoverage: appData!
+                                                          .coverage!
+                                                          .cmCoverage!,
+                                                      billingPercentage: appData
+                                                          .coverage!.billing!,
+                                                      title: 'Coverage',
+                                                      divisionCount:
+                                                          divisionCount,
+                                                      siteCount: siteCount,
+                                                      branchCount: branchCount,
+                                                      itemCount: itemCount,
+                                                      channelCount:
+                                                          channelCount,
+                                                    )
+                                                  : include.name ==
+                                                          "Golden Points"
+                                                      ? CircularContainer(
+                                                          title:
+                                                              'DGP Compliance - ',
+                                                          perTitle: 'DGP Comp.',
+                                                          salience:
+                                                              'GP Abs (in M)',
+                                                          sellout: 'GP IYA',
+                                                          dgpCom: appData!
+                                                              .dgpCompliance!
+                                                              .gpAchievememt!,
+                                                          // dgpCom: appData.dgpCompliance.dgpCompliance,
+                                                          actual: appData
+                                                              .dgpCompliance!
+                                                              .gpAbs!,
+                                                          opportunity: appData
+                                                              .dgpCompliance!
+                                                              .gpIYA!,
+                                                          // opportunity: appData.dgpCompliance.gpOpportunity,
+                                                          onTap: () {
+                                                            Navigator.of(
+                                                                    context)
+                                                                .push(MaterialPageRoute(
+                                                                    builder:
+                                                                        (context) =>
+                                                                            const DGPComplianceScreen()));
+                                                          },
+                                                          subTitle: 'P3M',
+                                                        )
+                                                      : include.name ==
+                                                              "Focus Brand"
+                                                          ? CircularContainer(
+                                                              title:
+                                                                  'Focus Brand - ',
+                                                              perTitle:
+                                                                  'FB Achieve.',
+                                                              salience:
+                                                                  'FB Actual (in M)',
+                                                              sellout: '',
+                                                              dgpCom: appData!
+                                                                  .focusBrand!
+                                                                  .fbAchievement!,
+                                                              actual: appData
+                                                                  .focusBrand!
+                                                                  .fbActual!,
+                                                              opportunity: "-1",
+                                                              onTap: () {
+                                                                Navigator.of(
+                                                                        context)
+                                                                    .push(MaterialPageRoute(
+                                                                        builder:
+                                                                            (context) =>
+                                                                                const FocusBrandScreen()));
+                                                              },
+                                                              subTitle: 'CM',
+                                                            )
+                                                          : include.name ==
+                                                                  "Productivity"
+                                                              ? CoverageContainer(
+                                                                  cmCoverage: appData!
+                                                                      .productivity!
+                                                                      .productivityCurrentMonth!,
+                                                                  billingPercentage: appData
+                                                                      .productivity!
+                                                                      .productivityPreviousMonth!,
+                                                                  title:
+                                                                      'Productivity',
+                                                                  divisionCount:
+                                                                      divisionCount,
+                                                                  siteCount:
+                                                                      siteCount,
+                                                                  branchCount:
+                                                                      branchCount,
+                                                                  itemCount:
+                                                                      itemCount,
+                                                                  channelCount:
+                                                                      channelCount,
+                                                                )
+                                                              : include.name ==
+                                                                      "Call Compliance"
+                                                                  ? CoverageContainer(
+                                                                      cmCoverage: appData!
+                                                                          .callCompliance!
+                                                                          .ccCurrentMonth!,
+                                                                      billingPercentage: appData
+                                                                          .callCompliance!
+                                                                          .ccPreviousMonth!,
+                                                                      title:
+                                                                          'Call Compliance',
+                                                                      divisionCount:
+                                                                          divisionCount,
+                                                                      siteCount:
+                                                                          siteCount,
+                                                                      branchCount:
+                                                                          branchCount,
+                                                                      itemCount:
+                                                                          itemCount,
+                                                                      channelCount: [
+                                                                        channelCount
+                                                                      ],
+                                                                    )
+                                                                  : include.name ==
+                                                                          "Shipment"
+                                                                      ? CoverageContainer(
+                                                                          cmCoverage:
+                                                                              "${appData!.shipment!.shipmentActual!}",
+                                                                          billingPercentage:
+                                                                              "${appData.shipment!.shipmentIYA!}",
+                                                                          title:
+                                                                              'Shipment',
+                                                                          divisionCount:
+                                                                              divisionCount,
+                                                                          siteCount:
+                                                                              siteCount,
+                                                                          branchCount:
+                                                                              branchCount,
+                                                                          itemCount:
+                                                                              itemCount,
+                                                                          channelCount:
+                                                                              channelCount,
+                                                                        )
+                                                                      : include.name ==
+                                                                              "Inventory"
+                                                                          ? CoverageContainer(
+                                                                              cmCoverage: "${appData!.inventory!.inventoryIYA!}",
+                                                                              billingPercentage: "${appData.inventory!.inventoryActual!}",
+                                                                              title: 'Inventory',
+                                                                              divisionCount: divisionCount,
+                                                                              siteCount: siteCount,
+                                                                              branchCount: branchCount,
+                                                                              itemCount: itemCount,
+                                                                              channelCount: channelCount,
+                                                                            )
+                                                                          : include.name == "Billing"
+                                                                              ? CoverageContainer(
+                                                                                  cmCoverage: "${appData!.inventory!.inventoryIYA!}",
+                                                                                  billingPercentage: "${appData.inventory!.inventoryActual!}",
+                                                                                  title: 'Billing',
+                                                                                  divisionCount: divisionCount,
+                                                                                  siteCount: siteCount,
+                                                                                  branchCount: branchCount,
+                                                                                  itemCount: itemCount,
+                                                                                  channelCount: channelCount,
+                                                                                )
+                                                                              : include.name == "BT%"
+                                                                                  ? const NewCardsForSales(
+                                                                                      title: 'BT% ',
+                                                                                      subTitle: '12.8',
+                                                                                    )
+                                                                                  : include.name == "NOS (MM)"
+                                                                                      ? const NewCardsForSales(
+                                                                                          title: 'NOS (MM) ',
+                                                                                          subTitle: '1654',
+                                                                                        )
+                                                                                      : include.name == "MSE%"
+                                                                                          ? const NewCardsForSales(
+                                                                                              title: 'MSE% ',
+                                                                                              subTitle: '13.1',
+                                                                                            )
+                                                                                          : include.name == "CTS%"
+                                                                                              ? const NewCardsForSales(
+                                                                                                  title: 'CTS% ',
+                                                                                                  subTitle: '7.2',
+                                                                                                )
+                                                                                              : include.name == "SD%"
+                                                                                                  ? const NewCardsForSales(
+                                                                                                      title: 'SD% ',
+                                                                                                      subTitle: '12.3',
+                                                                                                    )
+                                                                                                  : include.name == "SRA%"
+                                                                                                      ? const NewCardsForSales(
+                                                                                                          title: 'SRA% ',
+                                                                                                          subTitle: '12.2',
+                                                                                                        )
+                                                                                                      : include.name == "TDC%"
+                                                                                                          ? const NewCardsForSales(
+                                                                                                              title: 'TDC% ',
+                                                                                                              subTitle: '7.6',
+                                                                                                            )
+                                                                                                          : include.name == "GOS%"
+                                                                                                              ? const NewCardsForSales(
+                                                                                                                  title: 'GOS% ',
+                                                                                                                  subTitle: '15.5',
+                                                                                                                )
+                                                                                                              : include.name == "GM%"
+                                                                                                                  ? const NewCardsForSales(
+                                                                                                                      title: 'GM% ',
+                                                                                                                      subTitle: '38.6',
+                                                                                                                    )
+                                                                                                                  : NewCardsForSales(
+                                                                                                                      title: "${include.name} ",
+                                                                                                                      subTitle: '0.0',
+                                                                                                                    ));
                                     }),
                                 Padding(
                                   padding: const EdgeInsets.only(
@@ -484,63 +517,6 @@ class SummaryFragment extends StatelessWidget {
                       }
                     },
                   )
-
-                  // Padding(
-                  //   padding: const EdgeInsets.only(
-                  //       top: 0, bottom: 120),
-                  //   child: InkWell(
-                  //     onTap: () {
-                  //       personalizeBottomSheet(
-                  //           context,
-                  //           includedData,
-                  //           metricData,
-                  //           allMetrics,
-                  //           onTapPer,
-                  //           onCrossTap);
-                  //     },
-                  //     child: Container(
-                  //       height: 32,
-                  //       width: 120,
-                  //       decoration: BoxDecoration(
-                  //         color: MyColors.whiteColor,
-                  //         borderRadius: BorderRadius.circular(40),
-                  //         boxShadow: const [
-                  //           BoxShadow(
-                  //             color: Color(0xffE1E7EC),
-                  //             offset: Offset(0.0, 1.0), //(x,y)
-                  //             blurRadius: 1.0,
-                  //           ),
-                  //         ],
-                  //       ),
-                  //       child: const Padding(
-                  //         padding: EdgeInsets.all(5.0),
-                  //         child: Row(
-                  //           mainAxisAlignment:
-                  //           MainAxisAlignment.center,
-                  //           children: [
-                  //             Icon(
-                  //               Icons.settings,
-                  //               color: MyColors.showMoreColor,
-                  //               size: 20,
-                  //             ),
-                  //             SizedBox(
-                  //               width: 5,
-                  //             ),
-                  //             Text(
-                  //               'Personalize',
-                  //               style: TextStyle(
-                  //                   fontFamily: fontFamily,
-                  //                   fontSize: 16,
-                  //                   fontWeight: FontWeight.w400,
-                  //                   color:
-                  //                   MyColors.showMoreColor),
-                  //             )
-                  //           ],
-                  //         ),
-                  //       ),
-                  //     ),
-                  //   ),
-                  // )
                 ],
               ),
             ),

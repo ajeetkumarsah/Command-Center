@@ -9,11 +9,14 @@ import '../../../utils/colors/colors.dart';
 import '../comman_utils/text_header_widget.dart';
 
 class CoverageTableData extends StatefulWidget {
-  final List newDataList;
+  final List<dynamic> newDataList;
+  final String key1;
+  final String key2;
+  final String key3;
 
   const CoverageTableData({
     super.key,
-    required this.newDataList,
+    required this.newDataList, required this.key1, required this.key2, required this.key3,
   });
 
   @override
@@ -24,10 +27,6 @@ class _CoverageTableDataState extends State<CoverageTableData> {
   @override
   Widget build(BuildContext context) {
     final sheetProvider = Provider.of<SheetProvider>(context);
-    return FutureBuilder(
-        future: getTableCoverageSummary(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
             return SingleChildScrollView(
               child: Column(
                 children: [
@@ -65,11 +64,11 @@ class _CoverageTableDataState extends State<CoverageTableData> {
                                 padding: const EdgeInsets.only(
                                     left: 10.0, top: 5, bottom: 5, right: 5),
                                 child: SizedBox(
-                                  height: 20,
+                                  height: 40,
                                   child: Row(
                                     children: [
                                       TextHeaderWidgetWithIcon(
-                                        title: '${coverage1['filter']}',
+                                        title: '${coverage1['filter_key']}',
                                         align: TextAlign.start, isRequired: false, isExpanded: sheetProvider.isExpandedDivision,
                                       ),
                                       const SizedBox(
@@ -210,7 +209,7 @@ class _CoverageTableDataState extends State<CoverageTableData> {
                                         padding:
                                             const EdgeInsets.only(left: 0.0),
                                         child: TextHeaderWidget(
-                                          title: '${coverage1['Coverage']}', //Billing Percentage
+                                          title: '${coverage1[widget.key1]}', //Billing Percentage
                                           align: TextAlign.center,
                                         ),
                                       ),
@@ -221,7 +220,7 @@ class _CoverageTableDataState extends State<CoverageTableData> {
                                         padding:
                                             const EdgeInsets.only(left: 0.0),
                                         child: TextHeaderWidget(
-                                          title: '${coverage1['billing_per']}', //IYA
+                                          title: '${coverage1[widget.key2]}', //IYA
                                           align: TextAlign.center,
                                         ),
                                       ),
@@ -232,7 +231,7 @@ class _CoverageTableDataState extends State<CoverageTableData> {
                                         padding:
                                             const EdgeInsets.only(left: 0.0),
                                         child: TextHeaderWidget(
-                                          title: '${coverage1['productivity_per']}', //IYA
+                                          title: '${coverage1[widget.key3]}', //IYA
                                           align: TextAlign.center,
                                         ),
                                       ),
@@ -283,7 +282,7 @@ class _CoverageTableDataState extends State<CoverageTableData> {
                                                           ? MyColors.dark500
                                                           : MyColors.dark400,
                                                   title: SizedBox(
-                                                    height: 20,
+                                                    height: 40,
                                                     child: Row(
                                                       // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                       children: [
@@ -437,7 +436,7 @@ class _CoverageTableDataState extends State<CoverageTableData> {
                                                         ),
                                                         TextHeaderWidget(
                                                           title:
-                                                              "${sites['coverage_sum']}",
+                                                              "${sites[widget.key1]}",
                                                           align:
                                                               TextAlign.center,
                                                         ),
@@ -446,7 +445,7 @@ class _CoverageTableDataState extends State<CoverageTableData> {
                                                         ),
                                                         TextHeaderWidget(
                                                           title:
-                                                              "${sites['billing_per']}",
+                                                              "${sites[widget.key2]}",
                                                           align:
                                                               TextAlign.center,
                                                         ),
@@ -455,7 +454,7 @@ class _CoverageTableDataState extends State<CoverageTableData> {
                                                         ),
                                                         TextHeaderWidget(
                                                           title:
-                                                              "${sites['productivity_per']}",
+                                                              "${sites[widget.key3]}",
                                                           align:
                                                               TextAlign.center,
                                                         ),
@@ -537,7 +536,7 @@ class _CoverageTableDataState extends State<CoverageTableData> {
                                                                       title:
                                                                           SizedBox(
                                                                         height:
-                                                                            20,
+                                                                            40,
                                                                         child:
                                                                             Row(
                                                                           children: [
@@ -591,21 +590,21 @@ class _CoverageTableDataState extends State<CoverageTableData> {
                                                                               width: sheetProvider.isExpandedSubChannel == true ? 3 : 0,
                                                                             ),
                                                                             TextHeaderWidget(
-                                                                              title: "${branches['coverage_sum']}",
+                                                                              title: "${branches[widget.key1]}",
                                                                               align: TextAlign.center,
                                                                             ),
                                                                             const SizedBox(
                                                                               width: 3,
                                                                             ),
                                                                             TextHeaderWidget(
-                                                                              title: "${branches['billing_per']}",
+                                                                              title: "${branches[widget.key2]}",
                                                                               align: TextAlign.center,
                                                                             ),
                                                                             const SizedBox(
                                                                               width: 3,
                                                                             ),
                                                                             TextHeaderWidget(
-                                                                              title: "${branches['productivity_per']}",
+                                                                              title: "${branches[widget.key3]}",
                                                                               align: TextAlign.center,
                                                                             ),
                                                                           ],
@@ -647,7 +646,7 @@ class _CoverageTableDataState extends State<CoverageTableData> {
                                                                                           collapsedBackgroundColor: branch2Index % 2 == 0 ? MyColors.dark500 : MyColors.dark400,
                                                                                           backgroundColor: branch2Index % 2 == 0 ? MyColors.dark500 : MyColors.dark400,
                                                                                           title: SizedBox(
-
+height: 40,
                                                                                             child: Row(
                                                                                               children: [
                                                                                                 Padding(
@@ -684,21 +683,21 @@ class _CoverageTableDataState extends State<CoverageTableData> {
                                                                                                   },
                                                                                                 ),
                                                                                                 TextHeaderWidget(
-                                                                                                  title: "${branches['coverage_sum']}",
+                                                                                                  title: "${branches[widget.key1]}",
                                                                                                   align: TextAlign.center,
                                                                                                 ),
                                                                                                 const SizedBox(
                                                                                                   width: 3,
                                                                                                 ),
                                                                                                 TextHeaderWidget(
-                                                                                                  title: "${branches['billing_per']}",
+                                                                                                  title: "${branches[widget.key2]}",
                                                                                                   align: TextAlign.center,
                                                                                                 ),
                                                                                                 const SizedBox(
                                                                                                   width: 3,
                                                                                                 ),
                                                                                                 TextHeaderWidget(
-                                                                                                  title: "${branches['productivity_per']}",
+                                                                                                  title: "${branches[widget.key3]}",
                                                                                                   align: TextAlign.center,
                                                                                                 ),
                                                                                               ],
@@ -767,21 +766,21 @@ class _CoverageTableDataState extends State<CoverageTableData> {
                                                                                                                       },
                                                                                                                     ),
                                                                                                                     TextHeaderWidget(
-                                                                                                                      title: "${branches['coverage_sum']}",
+                                                                                                                      title: "${branches[widget.key1]}",
                                                                                                                       align: TextAlign.center,
                                                                                                                     ),
                                                                                                                     const SizedBox(
                                                                                                                       width: 3,
                                                                                                                     ),
                                                                                                                     TextHeaderWidget(
-                                                                                                                      title: "${branches['billing_per']}",
+                                                                                                                      title: "${branches[widget.key2]}",
                                                                                                                       align: TextAlign.center,
                                                                                                                     ),
                                                                                                                     const SizedBox(
                                                                                                                       width: 3,
                                                                                                                     ),
                                                                                                                     TextHeaderWidget(
-                                                                                                                      title: "${branches['productivity_per']}",
+                                                                                                                      title: "${branches[widget.key3]}",
                                                                                                                       align: TextAlign.center,
                                                                                                                     ),
                                                                                                                   ],
@@ -813,58 +812,26 @@ class _CoverageTableDataState extends State<CoverageTableData> {
                                                                                                                                       ),
                                                                                                                                     ),
                                                                                                                                     TextHeaderWidget(
-                                                                                                                                      title: "${branches['coverage_sum']}",
+                                                                                                                                      title: "${branches[widget.key1]}",
                                                                                                                                       align: TextAlign.center,
                                                                                                                                     ),
                                                                                                                                     const SizedBox(
                                                                                                                                       width: 3,
                                                                                                                                     ),
                                                                                                                                     TextHeaderWidget(
-                                                                                                                                      title: "${branches['billing_per']}",
+                                                                                                                                      title: "${branches[widget.key2]}",
                                                                                                                                       align: TextAlign.center,
                                                                                                                                     ),
                                                                                                                                     const SizedBox(
                                                                                                                                       width: 3,
                                                                                                                                     ),
                                                                                                                                     TextHeaderWidget(
-                                                                                                                                      title: "${branches['productivity_per']}",
+                                                                                                                                      title: "${branches[widget.key3]}",
                                                                                                                                       align: TextAlign.center,
                                                                                                                                     ),
                                                                                                                                   ],
                                                                                                                                 ),
                                                                                                                               );
-                                                                                                                              // ListTileTheme(
-                                                                                                                              //   dense:
-                                                                                                                              //   true,
-                                                                                                                              //   contentPadding:
-                                                                                                                              //   EdgeInsets
-                                                                                                                              //       .zero,
-                                                                                                                              //   child:
-                                                                                                                              //   ExpansionTile(
-                                                                                                                              //
-                                                                                                                              //     // tilePadding: const EdgeInsets.only(left: 10),
-                                                                                                                              //     controlAffinity:
-                                                                                                                              //     ListTileControlAffinity
-                                                                                                                              //         .leading,
-                                                                                                                              //     collapsedBackgroundColor: branchIndex %
-                                                                                                                              //         2 ==
-                                                                                                                              //         0
-                                                                                                                              //         ? MyColors
-                                                                                                                              //         .dark600
-                                                                                                                              //         : MyColors
-                                                                                                                              //         .dark400,
-                                                                                                                              //     backgroundColor: branchIndex %
-                                                                                                                              //         2 ==
-                                                                                                                              //         0
-                                                                                                                              //         ? MyColors
-                                                                                                                              //         .dark600
-                                                                                                                              //         : MyColors
-                                                                                                                              //         .dark400,
-                                                                                                                              //     title:
-                                                                                                                              //
-                                                                                                                              //
-                                                                                                                              //   ),
-                                                                                                                              // );
                                                                                                                             }),
                                                                                                                       ],
                                                                                                                     ),
@@ -910,9 +877,9 @@ class _CoverageTableDataState extends State<CoverageTableData> {
                 ],
               ),
             );
-          } else {
-            return const Center(child: CircularProgressIndicator());
-          }
-        });
+        //   } else {
+        //     return const Center(child: CircularProgressIndicator());
+        //   }
+        // });
   }
 }

@@ -12,7 +12,9 @@ class TitleWidget extends StatefulWidget {
   final bool showHideRetailing;
   final Function() onPressed;
   final Function() onNewMonth;
-  const TitleWidget({Key? key, required this.title, required this.subTitle, required this.showHide, required this.onPressed, required this.onNewMonth, required this.showHideRetailing}) : super(key: key);
+  final Function() onTapDefaultGoe;
+
+  const TitleWidget({Key? key, required this.title, required this.subTitle, required this.showHide, required this.onPressed, required this.onNewMonth, required this.showHideRetailing, required this.onTapDefaultGoe}) : super(key: key);
 
   @override
   State<TitleWidget> createState() => _TitleWidgetState();
@@ -91,11 +93,12 @@ class _TitleWidgetState extends State<TitleWidget> {
                 SizedBox (
                   height: 40,
                   child: OutlinedButton(
-                    onPressed: (){
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) =>
-                          const SelectDivisionScreen(initInitial: true,)));
-                    },
+                    onPressed: widget.onTapDefaultGoe,
+                    //     (){
+                    //   Navigator.of(context).push(MaterialPageRoute(
+                    //       builder: (context) =>
+                    //       const SelectDivisionScreen(initInitial: true,)));
+                    // },
                     style: ButtonStyle(
                       side: MaterialStateProperty.all(
                           const BorderSide(
@@ -138,41 +141,7 @@ class _TitleWidgetState extends State<TitleWidget> {
               ],
             ),
           ):Container(),
-          widget.showHideRetailing == true? Padding(
-            padding: const EdgeInsets.only(right: 80, top: 20),
-            child: Row(
-              children: [
-                SizedBox(
-                  height: 40,
-                  child: OutlinedButton(
-                    onPressed: widget.onNewMonth,
-                    //     (){
-                    //   String selectedmonth = 'Jul';
-                    //   print(selectedmonth);
-                    //   fetchRetailingWeb(context,selectedmonth);
-                    //   setState(() {
-                    //
-                    //   });
-                    // },
-                    style: ButtonStyle(
-                      side: MaterialStateProperty.all(
-                          const BorderSide(
-                              width: 1.0, color: MyColors.whiteColor)),
-                      shape: MaterialStateProperty.all(
-                          RoundedRectangleBorder(
-                              borderRadius:
-                              BorderRadius.circular(5.0))),
-                    ),
-                    child: const Text(
-                      "Add Geo",
-                      style: TextStyle(
-                          fontFamily: fontFamily, color: MyColors.whiteColor),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ):Container()
+
         ],
       ),
     );

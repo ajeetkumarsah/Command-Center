@@ -25,10 +25,10 @@ class _CoverageTableDataBillingState extends State<CoverageTableDataBilling> {
   @override
   Widget build(BuildContext context) {
     final sheetProvider = Provider.of<SheetProvider>(context);
-    return FutureBuilder(
-        future: getTableCoverageSummary(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
+    // return FutureBuilder(
+    //     future: getTableCoverageSummary(),
+    //     builder: (context, snapshot) {
+    //       if (snapshot.hasData) {
             return SingleChildScrollView(
               child: Column(
                 children: [
@@ -65,7 +65,7 @@ class _CoverageTableDataBillingState extends State<CoverageTableDataBilling> {
                                 padding: const EdgeInsets.only(
                                     left: 10.0, top: 5, bottom: 5, right: 5),
                                 child: SizedBox(
-                                  height: 20,
+                                  height: 40,
                                   child: Row(
                                     children: [
                                       TextHeaderWidgetWithIcon(
@@ -311,7 +311,7 @@ class _CoverageTableDataBillingState extends State<CoverageTableDataBilling> {
                                                           ? MyColors.dark500
                                                           : MyColors.dark400,
                                                   title: SizedBox(
-                                                    height: 20,
+                                                    height: 40,
                                                     child: Row(
                                                       // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                       children: [
@@ -570,7 +570,7 @@ class _CoverageTableDataBillingState extends State<CoverageTableDataBilling> {
                                                                       title:
                                                                           SizedBox(
                                                                         height:
-                                                                            20,
+                                                                            40,
                                                                         child:
                                                                             Row(
                                                                           children: [
@@ -771,7 +771,7 @@ class _CoverageTableDataBillingState extends State<CoverageTableDataBilling> {
                                                                                                               collapsedBackgroundColor: channelIndex % 2 == 0 ? MyColors.dark600 : MyColors.dark300,
                                                                                                               backgroundColor: channelIndex % 2 == 0 ? MyColors.dark600 : MyColors.dark300,
                                                                                                               title: SizedBox(
-                                                                                                                height: 20,
+                                                                                                                height: 40,
                                                                                                                 child: Row(
                                                                                                                   children: [
                                                                                                                     Padding(
@@ -924,9 +924,9 @@ class _CoverageTableDataBillingState extends State<CoverageTableDataBilling> {
                 ],
               ),
             );
-          } else {
-            return const Center(child: CircularProgressIndicator());
-          }
-        });
+        //   } else {
+        //     return const Center(child: CircularProgressIndicator());
+        //   }
+        // });
   }
 }

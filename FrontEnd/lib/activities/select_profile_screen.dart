@@ -259,7 +259,7 @@ class _SelectProfileState extends State<SelectProfile> {
                     elevation: 0,
                     shape: const StadiumBorder(),
                     backgroundColor: MyColors.toggletextColor),
-                child: const Row(
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(

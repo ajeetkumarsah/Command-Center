@@ -4,7 +4,8 @@ import '../../../utils/colors/colors.dart';
 import '../../../utils/style/text_style.dart';
 
 class ExcelImportButton extends StatelessWidget {
-  const ExcelImportButton({super.key});
+  final Function() onClickExcel;
+  const ExcelImportButton({super.key, required this.onClickExcel});
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +15,7 @@ class ExcelImportButton extends StatelessWidget {
         height: 45,
         width: 200,
         child: OutlinedButton(
-          onPressed: null,
+          onPressed: onClickExcel,
           style: ButtonStyle(
             side: MaterialStateProperty.all(const BorderSide(
                 color: MyColors.toggletextColor,

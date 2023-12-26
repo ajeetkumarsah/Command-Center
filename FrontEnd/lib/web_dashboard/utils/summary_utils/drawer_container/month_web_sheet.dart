@@ -59,48 +59,10 @@ class _MonthWebSheetState extends State<MonthWebSheet> {
                                     setState(() {
                                       _selected = index;
                                       sheetProvider.division = items[index];
-                                      // if (widget.elName == 'Retailing') {
                                         SharedPreferencesUtils.setString(
                                             'webDefaultYear',
                                             (items[index]).toLowerCase());
-                                      // } else if (widget.elName == 'Coverage') {
-                                      //   SharedPreferencesUtils.setString(
-                                      //       'webCoverageYear',
-                                      //       (items[index]).toLowerCase());
-                                      // // } else if (widget.elName ==
-                                      // //     'Golden Points') {
-                                      //   SharedPreferencesUtils.setString(
-                                      //       'webGPYear',
-                                      //       (items[index]).toLowerCase());
-                                      // // } else if (widget.elName ==
-                                      // //     'Focus Brand') {
-                                      //   SharedPreferencesUtils.setString(
-                                      //       'webFBYear',
-                                      //       (items[index]).toLowerCase());
-                                      // // } else if (widget.elName ==
-                                      // //     'Distribution') {
-                                      //   SharedPreferencesUtils.setString(
-                                      //       'webDistributionYear',
-                                      //       (items[index]).toLowerCase());
-                                      // // } else if (widget.elName ==
-                                      // //     'Productivity') {
-                                      //   SharedPreferencesUtils.setString(
-                                      //       'webProductivityYear',
-                                      //       (items[index]).toLowerCase());
-                                      // // } else if (widget.elName ==
-                                      // //     'Call Compliance') {
-                                      //   SharedPreferencesUtils.setString(
-                                      //       'webCallComplianceYear',
-                                      //       (items[index]).toLowerCase());
-                                      // // } else if (widget.elName == 'Shipment') {
-                                      //   SharedPreferencesUtils.setString(
-                                      //       'webShipmentYear',
-                                      //       (items[index]).toLowerCase());
-                                      // // } else if (widget.elName == 'Inventory') {
-                                      //   SharedPreferencesUtils.setString(
-                                      //       'webInventoryYear',
-                                      //       (items[index]).toLowerCase());
-                                      // } else {}
+
                                     });
                                   },
                                   child: Padding(
@@ -154,94 +116,18 @@ class _MonthWebSheetState extends State<MonthWebSheet> {
                                               onTap: () {
                                                 setState(() {
                                                   if (selectedArrayItem == index) {
-                                                    // If the tapped item is already selected, deselect it.
                                                     selectedArrayItem = -1;
                                                   } else {
-                                                    // Otherwise, select the new item.
                                                     selectedArrayItem = index;
                                                   }
-                                                  // selectedArrayItem = index;
-                                                  // if (widget.elName ==
-                                                  //     'Retailing') {
+
                                                     SharedPreferencesUtils
                                                         .setString(
                                                         'webDefaultMonth',
                                                         ConstArray()
                                                             .month[
                                                         index]);
-                                                  // } else if (widget
-                                                  //     .elName ==
-                                                  //     'Coverage') {
-                                                  //   SharedPreferencesUtils
-                                                  //       .setString(
-                                                  //       'webCoverageMonth',
-                                                  //       ConstArray()
-                                                  //           .month[
-                                                  //       index]);
-                                                  // // } else if (widget
-                                                  // //     .elName ==
-                                                  // //     'Golden Points') {
-                                                  //   SharedPreferencesUtils
-                                                  //       .setString(
-                                                  //       'webGPMonth',
-                                                  //       ConstArray()
-                                                  //           .month[
-                                                  //       index]);
-                                                  // // } else if (widget
-                                                  // //     .elName ==
-                                                  // //     'Focus Brand') {
-                                                  //   SharedPreferencesUtils
-                                                  //       .setString(
-                                                  //       'webFBMonth',
-                                                  //       ConstArray()
-                                                  //           .month[
-                                                  //       index]);
-                                                  // // } else if (widget
-                                                  // //     .elName ==
-                                                  // //     'Distribution') {
-                                                  //   SharedPreferencesUtils
-                                                  //       .setString(
-                                                  //       'webDistributionMonth',
-                                                  //       ConstArray()
-                                                  //           .month[
-                                                  //       index]);
-                                                  // // } else if (widget
-                                                  // //     .elName ==
-                                                  // //     'Productivity') {
-                                                  //   SharedPreferencesUtils
-                                                  //       .setString(
-                                                  //       'webProductivityMonth',
-                                                  //       ConstArray()
-                                                  //           .month[
-                                                  //       index]);
-                                                  // // } else if (widget
-                                                  // //     .elName ==
-                                                  // //     'Call Compliance') {
-                                                  //   SharedPreferencesUtils
-                                                  //       .setString(
-                                                  //       'webCallComplianceMonth',
-                                                  //       ConstArray()
-                                                  //           .month[
-                                                  //       index]);
-                                                  // // } else if (widget
-                                                  // //     .elName ==
-                                                  // //     'Shipment') {
-                                                  //   SharedPreferencesUtils
-                                                  //       .setString(
-                                                  //       'webShipmentMonth',
-                                                  //       ConstArray()
-                                                  //           .month[
-                                                  //       index]);
-                                                  // // } else if (widget
-                                                  // //     .elName ==
-                                                  // //     'Inventory') {
-                                                  //   SharedPreferencesUtils
-                                                  //       .setString(
-                                                  //       'webInventoryMonth',
-                                                  //       ConstArray()
-                                                  //           .month[
-                                                  //       index]);
-                                                  // } else {}
+
                                                 });
                                               },
                                               child: Padding(

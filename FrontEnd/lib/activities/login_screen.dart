@@ -68,8 +68,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 //This will obscure text dynamically
 
                 decoration: InputDecoration(
-                  labelText: 'Password',
-                  hintText: 'Enter your password',
+                  labelText: '',
+                  hintText: '',
                   labelStyle: const TextStyle(fontSize: 18, fontFamily: fontFamily, fontWeight: FontWeight.w400),
                   hintStyle: TextStyle(fontSize: 18, fontFamily: fontFamily, fontWeight: FontWeight.w400),
                   border: const OutlineInputBorder(),

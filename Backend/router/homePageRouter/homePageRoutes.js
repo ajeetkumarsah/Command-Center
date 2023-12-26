@@ -2,10 +2,14 @@ const express = require('express')
 const router = express.Router();
 
 const homePage = require('../../appData/appData')
+const coverage = require('../../appData/deepDive/coverage/coverageDeepDiveByGeo')
+const coverageByChannel = require('../../appData/deepDive/coverage/coverageDeepDiveByChannel')
 
 // ======================== Home Page ========================//
 router.get('/appData', homePage.getHomePageData);
 router.get('/appData/coverage', homePage.getCoverageData);
+router.post('/appData/coverageTable', coverage.getCoverageDataByGeo);
+router.post('/appData/geo/coverage/channel', coverageByChannel.getCoverageDataByChannel);
 router.get('/appData/dgpCompliance', homePage.getDgpComplianceData);
 router.get('/appData/mtdRetailing', homePage.getMtdRetailingData);
 router.get('/appData/focusBrand/Channel', homePage.getFocusBrandDataByChannel);

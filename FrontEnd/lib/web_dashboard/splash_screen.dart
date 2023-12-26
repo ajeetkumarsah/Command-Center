@@ -16,7 +16,7 @@ class _WebSplashScreenState extends State<WebSplashScreen> {
 
   final String _url =
       // 'https://fedauthtst.pg.com/as/authorization.oauth2?client_id=Command%20Center&response_type=code&scope=openid%20pingid%20email%20profile&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fcallback';
-      'https://fedauthtst.pg.com/as/authorization.oauth2?client_id=Command%20Center&response_type=code&scope=openid%20pingid%20email%20profile&redirect_uri=https%3A%2F%2Fcommandcentrewebapp.ase1apxnp.pgcloud.com%2Fcallback';
+      'https://fedauthtst.pg.com/as/authorization.oauth2?client_id=IT%20Command%20Center&response_type=code&scope=openid%20pingid%20email%20profile&redirect_uri=https%3A%2F%2Fcmndcntr-web-dev-web01.azurewebsites.net%2Fcallback';
 
   @override
   void initState() {
@@ -111,6 +111,7 @@ class _WebSplashScreenState extends State<WebSplashScreen> {
                             child: OutlinedButton(
                               onPressed: () async {
                                 // await _launchUrl();
+                                // TODO: Here
                                 html.window.open(_url, "_self");
                                 // print(html.window.console.memory);
                                 // Navigator.pushNamed(context, '/ping/oauth2');

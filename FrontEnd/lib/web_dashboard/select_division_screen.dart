@@ -513,8 +513,8 @@ class _SelectDivisionScreenState extends State<SelectDivisionScreen>
                                 Navigator.pushNamed(
                                   context,
                                   '/summaryscreen',
-                                  arguments: ResponsiveHomePage(
-                                      initial: widget.initInitial,
+                                  arguments: const ResponsiveHomePage(
+                                      initial: true,
                                       initialLoading: true,
                                       items: ['allIndia']
                                   )
@@ -567,7 +567,7 @@ class _SelectDivisionScreenState extends State<SelectDivisionScreen>
                                   context,
                                   '/summaryscreen',
                                     arguments: ResponsiveHomePage(
-                                        initial: widget.initInitial,
+                                        initial: true,
                                         initialLoading: true,
                                         items: [selectedDivisionValue]
                                     )// Replace true with your dynamic value
@@ -617,7 +617,7 @@ class _SelectDivisionScreenState extends State<SelectDivisionScreen>
                                     context,
                                     '/summaryscreen',
                                     arguments: ResponsiveHomePage(
-                                        initial: widget.initInitial,
+                                        initial: true,
                                         initialLoading: true,
                                         items: [selectedClusterValue]
                                     ));
@@ -664,7 +664,7 @@ class _SelectDivisionScreenState extends State<SelectDivisionScreen>
                                     context,
                                     '/summaryscreen',
                                     arguments: ResponsiveHomePage(
-                                        initial: widget.initInitial,
+                                        initial: true,
                                         initialLoading: true,
                                         items: [selectedSiteValue]
                                     ));

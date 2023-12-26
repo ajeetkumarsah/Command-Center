@@ -169,7 +169,7 @@ class _DivisionWebSheetState extends State<DivisionWebSheet> {
                                                   (items[index]).toLowerCase());
                                             }
                                           } else if (widget.elName ==
-                                              'Coverage') {
+                                              'PXM billing') {
                                             if (items[index] == 'All India') {
                                               SharedPreferencesUtils.setString(
                                                   'webCoverageDivision',
@@ -387,7 +387,7 @@ class _DivisionWebSheetState extends State<DivisionWebSheet> {
                                                                           ? filteredItemsSite[index]
                                                                           : widget.branchList[index]);
                                                     } else if (widget.elName ==
-                                                        'Coverage') {
+                                                        'PXM billing') {
                                                       SharedPreferencesUtils.setString(
                                                           'webCoverageSite',
                                                           _selected == 0

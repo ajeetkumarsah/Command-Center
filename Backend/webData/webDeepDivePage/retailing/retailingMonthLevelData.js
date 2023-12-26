@@ -1,4 +1,5 @@
-const {sequelize} = require('../../../databaseConnection/sql_connection');
+// const {sequelize} = require('../../../databaseConnection/sql_connection');
+const {getConnection, getQueryData} = require("../../../databaseConnection/dbConnection");
 
 function getFinancialYearList(month, year) {
     const months = [
@@ -286,6 +287,7 @@ let getDeepDivePageData = async (req, res) =>{
             let channel_list = []
             channel = data.channel
             channel_list = data.channel
+            channel_list = [...new Set(channel_list)];
             channel = channel.map(item => `'${item}'`).join(", ")
             let all_india_filter = data.allIndia ? data.allIndia : ''
             let division_filter = data.division ? data.division : ''
@@ -351,68 +353,77 @@ let getDeepDivePageData = async (req, res) =>{
             let channel_query_rt_cy = getQuery(calendar_month_cy, filter_2, filter_1, channel)
             let channel_query_rt_py = getQuery(calendar_month_py, filter_2, filter_1, channel)
 
-            let categories_data_rt_cy = await sequelize.query(channel_query_rt_cy)
-            let categories_data_rt_py = await sequelize.query(channel_query_rt_py)
+            let connection = await getConnection()
+            let categories_data_rt_cy = await getQueryData(connection, channel_query_rt_cy)
+            // let categories_data_rt_cy = await sequelize.query(channel_query_rt_cy)
+            connection = await getConnection()
+            let categories_data_rt_py = await getQueryData(connection, channel_query_rt_py)
+            // let categories_data_rt_py = await sequelize.query(channel_query_rt_py)
+
+            if(categories_data_rt_cy.length === 0 || categories_data_rt_cy[0]['Retailing_Sum'] === null){
+                res.status(200).json([]);
+                return 0
+            }
 
             let cy_key = {}
-            for(let i in categories_data_rt_cy[0]){
-                cy_key[`${categories_data_rt_cy[0][i]['MonthYear']}/${categories_data_rt_cy[0][i]['channel_name']}/${categories_data_rt_cy[0][i]['CustName']}`] = categories_data_rt_cy[0][i]['Retailing_Sum']
+            for(let i in categories_data_rt_cy){
+                cy_key[`${categories_data_rt_cy[i]['MonthYear']}/${categories_data_rt_cy[i]['channel_name']}/${categories_data_rt_cy[i]['CustName']}`] = categories_data_rt_cy[i]['Retailing_Sum']
             }
 
             let cy_key_list = []
-            for(let i in categories_data_rt_py[0]){
-                let month = (categories_data_rt_py[0][i]['MonthYear']).slice(0,2)
-                let year = (categories_data_rt_py[0][i]['MonthYear']).slice(2)
+            for(let i in categories_data_rt_py){
+                let month = (categories_data_rt_py[i]['MonthYear']).slice(0,2)
+                let year = (categories_data_rt_py[i]['MonthYear']).slice(2)
                 let monthYear = month+(parseInt(year)+ 1)
-                if(!cy_key[`${monthYear}/${categories_data_rt_py[0][i]['channel_name']}/${categories_data_rt_py[0][i]['CustName']}`]){
+                if(!cy_key[`${monthYear}/${categories_data_rt_py[i]['channel_name']}/${categories_data_rt_py[i]['CustName']}`]){
                     let obj = {
                         'Retailing_Sum': 0,
                         'MonthYear': monthYear,
-                        'channel_name': categories_data_rt_py[0][i]['channel_name'],
-                        'CustName': categories_data_rt_py[0][i]['CustName']
+                        'channel_name': categories_data_rt_py[i]['channel_name'],
+                        'CustName': categories_data_rt_py[i]['CustName']
                     }
                     cy_key_list.push(obj)
                 }
             }
 
             for(let i in cy_key_list){
-                categories_data_rt_cy[0].push(cy_key_list[i])
+                categories_data_rt_cy.push(cy_key_list[i])
             }
 
-            let cm_set_cy = getPNMSet(categories_data_rt_cy[0], monthsList_cy, 1, 0)
-            let cm_set_py = getPNMSet(categories_data_rt_py[0], monthsList_py, 1, 0)
+            let cm_set_cy = getPNMSet(categories_data_rt_cy, monthsList_cy, 1, 0)
+            let cm_set_py = getPNMSet(categories_data_rt_py, monthsList_py, 1, 0)
             let cmDataSetList = getFinalDataOfPNMSet(cm_set_cy, cm_set_py)
             let cm_obj = {
                 "name" : "cm",
                 "data" : cmDataSetList
             }
 
-            let p1m_set_cy = getPNMSet(categories_data_rt_cy[0], monthsList_cy, 2, 1)
-            let p1m_set_py = getPNMSet(categories_data_rt_py[0], monthsList_py, 2, 1)
+            let p1m_set_cy = getPNMSet(categories_data_rt_cy, monthsList_cy, 2, 1)
+            let p1m_set_py = getPNMSet(categories_data_rt_py, monthsList_py, 2, 1)
             let p1mDataSetList = getFinalDataOfPNMSet(p1m_set_cy, p1m_set_py)
             let p1m_obj = {
                 "name" : "p1m",
                 "data" : p1mDataSetList
             }
 
-            let p3m_set_cy = getPNMSet(categories_data_rt_cy[0], monthsList_cy, 3, 0)
-            let p3m_set_py = getPNMSet(categories_data_rt_py[0], monthsList_py, 3, 0)
+            let p3m_set_cy = getPNMSet(categories_data_rt_cy, monthsList_cy, 3, 0)
+            let p3m_set_py = getPNMSet(categories_data_rt_py, monthsList_py, 3, 0)
             let p3mDataSetList = getFinalDataOfPNMSet(p3m_set_cy, p3m_set_py)
             let p3m_obj = {
                 "name" : "p3m",
                 "data" : p3mDataSetList
             }
 
-            let p6m_set_cy = getPNMSet(categories_data_rt_cy[0], monthsList_cy, 6, 0)
-            let p6m_set_py = getPNMSet(categories_data_rt_py[0], monthsList_py, 6, 0)
+            let p6m_set_cy = getPNMSet(categories_data_rt_cy, monthsList_cy, 6, 0)
+            let p6m_set_py = getPNMSet(categories_data_rt_py, monthsList_py, 6, 0)
             let p6mDataSetList = getFinalDataOfPNMSet(p6m_set_cy, p6m_set_py)
             let p6m_obj = {
                 "name" : "p6m",
                 "data" : p6mDataSetList
             }
 
-            let p12m_set_cy = getPNMSet(categories_data_rt_cy[0], monthsList_cy, 12, 0)
-            let p12m_set_py = getPNMSet(categories_data_rt_py[0], monthsList_py, 12, 0)
+            let p12m_set_cy = getPNMSet(categories_data_rt_cy, monthsList_cy, 12, 0)
+            let p12m_set_py = getPNMSet(categories_data_rt_py, monthsList_py, 12, 0)
             let p12mDataSetList = getFinalDataOfPNMSet(p12m_set_cy, p12m_set_py)
             let p12m_obj = {
                 "name" : "p12m",
@@ -421,8 +432,8 @@ let getDeepDivePageData = async (req, res) =>{
 
             let financialYearCount = getFinancialYearList(parseInt(getMonthDigit(date.split("-")[0]))-1, date.split("-")[1])
 
-            let py_set_cy = getPNMSet(categories_data_rt_cy[0], monthsList_cy, financialYearCount, 0)
-            let py_set_py = getPNMSet(categories_data_rt_py[0], monthsList_py, financialYearCount, 0)
+            let py_set_cy = getPNMSet(categories_data_rt_cy, monthsList_cy, financialYearCount, 0)
+            let py_set_py = getPNMSet(categories_data_rt_py, monthsList_py, financialYearCount, 0)
             let pyDataSetList = getFinalDataOfPNMSet(py_set_cy, py_set_py)
             let py_obj = {
                 "name" : "financial_year",

@@ -1,5 +1,6 @@
 import 'package:command_centre/activities/home_screen.dart';
 import 'package:command_centre/activities/purpose_screen.dart';
+import 'package:command_centre/helper/env/env_utils.dart';
 import 'package:command_centre/web_dashboard/utils/summary_utils/dropdown_widget.dart';
 
 import 'package:flutter/material.dart';
@@ -48,12 +49,9 @@ class _BusinessScreenState extends State<BusinessScreen>
   var allIndiaCount = [];
 
   Future<String>? divisionFilterAPI() async {
-    var url = 'https://run.mocky.io/v3/c52ff7cc-dd98-4909-aeb5-df7b53afc3bf';
-    // var url = '$BASE_URL/api/appData/divisionFilter';
-    var response = await http.get(Uri.parse(url), headers: {
-      'Content-Type': 'application/json; charset=UTF-8',
-      'Accept': 'application/json',
-    });
+    // var url = 'https://run.mocky.io/v3/c52ff7cc-dd98-4909-aeb5-df7b53afc3bf';
+    var url = '${EnvUtils.baseURL}/appData/branchlist?filter=division';
+    var response = await http.get(Uri.parse(url), headers: header);
     if (response.statusCode == 200) {
       var jsonResponse = await jsonDecode(response.body)['data'];
       setState(() {
@@ -68,12 +66,9 @@ class _BusinessScreenState extends State<BusinessScreen>
   }
 
   Future<String>? clusterFilterAPI() async {
-    var url = 'https://run.mocky.io/v3/9aa3f386-5275-4213-9372-dcaf9d068388';
-    // var url = '$BASE_URL/api/appData/clusterFilter';
-    var response = await http.get(Uri.parse(url), headers: {
-      'Content-Type': 'application/json; charset=UTF-8',
-      'Accept': 'application/json',
-    });
+    // var url = 'https://run.mocky.io/v3/9aa3f386-5275-4213-9372-dcaf9d068388';
+    var url = '${EnvUtils.baseURL}/appData/branchlist?filter=cluster';
+    var response = await http.get(Uri.parse(url), headers: header);
     if (response.statusCode == 200) {
       var jsonResponse = await jsonDecode(response.body)['data'];
       setState(() {
@@ -88,12 +83,9 @@ class _BusinessScreenState extends State<BusinessScreen>
   }
 
   Future<String>? siteFilterAPI() async {
-    var url = 'https://run.mocky.io/v3/5129f388-f278-4065-9886-d69e9992cc01';
-    // var url = '$BASE_URL/api/appData/siteFilter';
-    var response = await http.get(Uri.parse(url), headers: {
-      'Content-Type': 'application/json; charset=UTF-8',
-      'Accept': 'application/json',
-    });
+    // var url = 'https://run.mocky.io/v3/5129f388-f278-4065-9886-d69e9992cc01';
+    var url = '${EnvUtils.baseURL}/appData/branchlist?filter=site';
+    var response = await http.get(Uri.parse(url), headers: header);
     if (response.statusCode == 200) {
       var jsonResponse = await jsonDecode(response.body)['data'];
       setState(() {
