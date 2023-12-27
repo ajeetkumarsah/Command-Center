@@ -1,1 +1,0 @@
-const allIndia = 'allIndia';
