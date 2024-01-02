@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
 import 'package:command_centre/mobile_dashboard/utils/summary_types.dart';
-import 'package:command_centre/mobile_dashboard/controllers/home_controller.dart';
 import 'package:command_centre/mobile_dashboard/views/widgets/custom_loader.dart';
+import 'package:command_centre/mobile_dashboard/controllers/home_controller.dart';
 import 'package:command_centre/mobile_dashboard/views/widgets/custom_shimmer.dart';
 import 'package:command_centre/mobile_dashboard/views/widgets/custom_deepdive_appbar.dart';
 import 'package:command_centre/mobile_dashboard/views/coverage/widget/trends_chart_widget.dart';
@@ -17,8 +17,7 @@ import 'package:command_centre/mobile_dashboard/views/retailing/widgets/channel_
 
 class CoverageScreen extends StatelessWidget {
   const CoverageScreen({super.key});
-  // final HomeController controller =
-  //     Get.put(HomeController(homeRepo: Get.find()));
+    
 
   @override
   Widget build(BuildContext context) {
@@ -58,9 +57,7 @@ class CoverageScreen extends StatelessWidget {
               ),
               geo: ctlr.selectedGeo,
               geoValue: ctlr.selectedGeoValue,
-              date: ctlr.selectedMonth != null
-                  ? '${ctlr.selectedMonth!.substring(0, 3)} - ${ctlr.selectedYear}'
-                  : '',
+              date: ctlr.selectedMonth != null ? '${ctlr.selectedMonth}' : '',
             ),
             body: ctlr.isLoading
                 ? const CustomLoader()
@@ -222,8 +219,8 @@ class CoverageScreen extends StatelessWidget {
                                     ),
                                     onFilterTap: () => Get.bottomSheet(
                                       TrendsFilterBottomsheet(
-                                        onTap: (v) =>
-                                            ctlr.onTrendsFilterSelect(v),
+                                        onTap: (v) => ctlr.onTrendsFilterSelect(
+                                            v, SummaryTypes.coverage.type),
                                         tabType: SummaryTypes.coverage.type,
                                         isCoverage: true,
                                       ),

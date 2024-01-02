@@ -38,11 +38,10 @@ class GPTrendsModel {
 class GPTrendsDataModel {
   final String? month;
   final String? cyGp;
-  final int? pyGp;
+  final String? pyGp;
   final String? gpIya;
   final String? cyGpRv;
   final String? pyGpRv;
-
   final int? index;
 
   GPTrendsDataModel({
@@ -59,7 +58,7 @@ class GPTrendsDataModel {
       GPTrendsDataModel(
         month: json["month"],
         cyGp: json["CY GP"]?.toString(),
-        pyGp: json["PY GP"],
+        pyGp: json["PY GP"].toString(),
         gpIya: json["GP IYA"],
         cyGpRv: json["CY GP RV"].toString(),
         pyGpRv: json["PY GP RV"].toString(),

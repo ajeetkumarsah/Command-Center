@@ -403,14 +403,14 @@ class FBDeepDiveScreen extends StatelessWidget {
                                   sideTitles: _bottomTitles,
                                   // drawBehindEverything: true,
                                 ),
-                                leftTitles:const AxisTitles(
+                                leftTitles: AxisTitles(
                                   sideTitles: SideTitles(showTitles: false),
                                   // _leftTitles,
                                   // drawBehindEverything: true,
                                 ),
-                                topTitles: const AxisTitles(
+                                topTitles: AxisTitles(
                                     sideTitles: SideTitles(showTitles: false)),
-                                rightTitles:const AxisTitles(
+                                rightTitles: AxisTitles(
                                     sideTitles: SideTitles(showTitles: false)),
                               ),
                             ),

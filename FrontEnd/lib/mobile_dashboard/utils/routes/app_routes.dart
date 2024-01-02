@@ -24,6 +24,7 @@ abstract class Routes {
   static const FB_DEEP_DIVE_SCREEN = _Paths.FB_DEEP_DIVE;
   static const GP_DEEP_DIVE_SCREEN = _Paths.GP_DEEP_DIVE;
   static const COVERAGE_DEEP_DIVE_SCREEN = _Paths.COVERAGE_DEEP_DIVE;
+  static const SALES_DEEP_DIVE_SCREEN = _Paths.SALES_DEEP_DIVE;
 }
 
 abstract class _Paths {
@@ -47,4 +48,5 @@ abstract class _Paths {
   static const FB_DEEP_DIVE = '/fbDeepDiveScreen';
   static const GP_DEEP_DIVE = '/gpDeepDiveScreen';
   static const COVERAGE_DEEP_DIVE = '/coverageDeepDiveScreen';
+  static const SALES_DEEP_DIVE = '/salesDeepDiveScreen';
 }

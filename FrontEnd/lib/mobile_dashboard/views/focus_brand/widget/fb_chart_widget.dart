@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
 import 'package:command_centre/mobile_dashboard/controllers/home_controller.dart';
 import 'package:command_centre/mobile_dashboard/data/models/response/fb_trends_model.dart';
+import 'package:command_centre/mobile_dashboard/data/models/response/gp_trends_model.dart';
 
 class FBTrendsChartWidget extends StatefulWidget {
   final void Function()? onTap;
@@ -136,7 +137,11 @@ class _CustomExpandedChartWidgetState extends State<FBTrendsChartWidget> {
                                     Expanded(
                                       child: Row(
                                         children: [
-                                          const Spacer(),
+                                          Expanded(
+                                            child: Text(
+                                              ctlr.fbTrendsValue,
+                                            ),
+                                          ),
                                           widget.coverageWidget ??
                                               Container(
                                                 // height: 26,

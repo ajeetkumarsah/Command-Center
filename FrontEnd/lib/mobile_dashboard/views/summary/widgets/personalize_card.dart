@@ -30,38 +30,46 @@ class PersonalizeCard extends StatelessWidget {
       child: Column(
         children: [
           ListTile(
-            title: Text.rich(
-              TextSpan(
-                children: [
-                  TextSpan(
-                    text: '$title ',
-                    style: GoogleFonts.ptSans(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  WidgetSpan(
-                    child: Container(
-                      margin:
-                          const EdgeInsets.only(bottom: 6, left: 4, right: 4),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(100),
-                        color: AppColors.black,
-                      ),
-                      height: 8,
-                      width: 8,
-                    ),
-                  ),
-                  TextSpan(
-                    text: ' $secondTitle',
-                    style: GoogleFonts.ptSans(
-                      fontSize: 17,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                ],
+            title: Text(
+              '$title ',
+              style: GoogleFonts.ptSans(
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
               ),
             ),
+            // ),
+            // Text.rich(
+            //   TextSpan(
+            //     children: [
+            //       TextSpan(
+            //         text: '$title ',
+            //         style: GoogleFonts.ptSans(
+            //           fontSize: 16,
+            //           fontWeight: FontWeight.w700,
+            //         ),
+            //       ),
+            // WidgetSpan(
+            //   child: Container(
+            //     margin:
+            //         const EdgeInsets.only(bottom: 6, left: 4, right: 4),
+            //     decoration: BoxDecoration(
+            //       borderRadius: BorderRadius.circular(100),
+            //       color: AppColors.black,
+            //     ),
+            //     height: 8,
+            //     width: 8,
+            //   ),
+            // ),
+            // TextSpan(
+            //   text: ' $secondTitle',
+            //   style: GoogleFonts.ptSans(
+            //     fontSize: 17,
+            //     fontWeight: FontWeight.w400,
+            //   ),
+            // ),
+            //     ],
+            //   ),
+            // ),
             trailing: TextButton(
               onPressed: onPressedShowMore,
               child: Row(

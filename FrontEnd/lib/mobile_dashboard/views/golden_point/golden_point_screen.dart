@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
 import 'package:command_centre/mobile_dashboard/utils/summary_types.dart';
-import 'package:command_centre/mobile_dashboard/controllers/home_controller.dart';
 import 'package:command_centre/mobile_dashboard/views/widgets/custom_loader.dart';
+import 'package:command_centre/mobile_dashboard/controllers/home_controller.dart';
 import 'package:command_centre/mobile_dashboard/views/widgets/custom_shimmer.dart';
 import 'package:command_centre/mobile_dashboard/views/widgets/custom_deepdive_appbar.dart';
 import 'package:command_centre/mobile_dashboard/views/golden_point/widget/gp_chart_widget.dart';
@@ -15,7 +15,6 @@ import 'package:command_centre/mobile_dashboard/views/retailing/widgets/select_m
 import 'package:command_centre/mobile_dashboard/views/retailing/widgets/trends_filter_bottomsheet.dart';
 import 'package:command_centre/mobile_dashboard/views/retailing/widgets/channel_filter_bottomsheet.dart';
 import 'package:command_centre/mobile_dashboard/views/retailing/widgets/category_filter_bottomsheet.dart';
-import 'package:command_centre/mobile_dashboard/views/retailing/widgets/custom_expanded_chart_widget.dart';
 
 class GoldenPointScreen extends StatelessWidget {
   GoldenPointScreen({super.key});
@@ -60,9 +59,7 @@ class GoldenPointScreen extends StatelessWidget {
               ),
               geo: ctlr.selectedGeo,
               geoValue: ctlr.selectedGeoValue,
-              date: ctlr.selectedMonth != null
-                  ? '${ctlr.selectedMonth!.substring(0, 3)} - ${ctlr.selectedYear}'
-                  : '',
+              date: ctlr.selectedMonth != null ? '${ctlr.selectedMonth}' : '',
             ),
             body: ctlr.isLoading
                 ? const CustomLoader()
@@ -188,8 +185,8 @@ class GoldenPointScreen extends StatelessWidget {
                                     trendsList: ctlr.trendsGPList,
                                     onFilterTap: () => Get.bottomSheet(
                                       TrendsFilterBottomsheet(
-                                        onTap: (v) =>
-                                            ctlr.onTrendsFilterSelect(v),
+                                        onTap: (v) => ctlr.onTrendsFilterSelect(
+                                            v, SummaryTypes.gp.type),
                                         tabType: SummaryTypes.gp.type,
                                       ),
                                       isScrollControlled: true,

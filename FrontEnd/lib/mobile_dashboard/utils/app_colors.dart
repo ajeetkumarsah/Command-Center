@@ -8,6 +8,8 @@ class AppColors {
   static const Color lightBlue = Color(0xff6bbdd6); //#
   static const Color lightGrey = Color(0xffE7E7E7); //#
   static const Color storeTextLightColor = Color(0xff5984AB); //#
+  static const Color tableBorder = Color(0xffC5C5C5); //#
+  static const Color greyTextColor = Color(0xff8E8E8E); //#
 
   static const Color primaryDark = Color(0xff444444);
   static const Color filterColor = Color(0xffB8C6D1);
@@ -19,6 +21,8 @@ class AppColors {
   static const Color green = Color(0xff56C568);
   static const Color greenDark = Color(0xff1ACABE);
   static const Color storeBgColor = Color(0xffF2F6FD);
+  // static const Color storeBgColor = Color(0xffF2F6FD);
+  static const Color storeTableRowColor = Color(0xffF5F8FE);
 
   // chart color
   //static const Color primary = contentColorCyan;

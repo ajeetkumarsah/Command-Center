@@ -2,8 +2,8 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
-import 'package:command_centre/mobile_dashboard/controllers/home_controller.dart';
 import 'package:command_centre/mobile_dashboard/views/widgets/custom_loader.dart';
+import 'package:command_centre/mobile_dashboard/controllers/home_controller.dart';
 import 'package:command_centre/mobile_dashboard/views/widgets/custom_snackbar.dart';
 
 class SelectMonthBottomsheet extends StatelessWidget {
@@ -14,7 +14,7 @@ class SelectMonthBottomsheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<String> yearsList = ['2023', '2022', '2021', '2020', '2019'];
+    List<String> yearsList = ['Date'];
 
     return GetBuilder<HomeController>(
       init: HomeController(homeRepo: Get.find()),
@@ -145,8 +145,7 @@ class SelectMonthBottomsheet extends StatelessWidget {
                       ),
                       TextButton(
                         onPressed: () {
-                          if (ctlr.selectedTempYear != null &&
-                              ctlr.selectedTempMonth != null) {
+                          if (ctlr.selectedTempMonth != null) {
                             ctlr.onChangeDate(
                               isLoadRetailing: isLoadRetailing,
                               tabType: tabType,

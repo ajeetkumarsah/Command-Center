@@ -140,7 +140,11 @@ class _CustomExpandedChartWidgetState extends State<CustomExpandedChartWidget> {
                                     Expanded(
                                       child: Row(
                                         children: [
-                                          const Spacer(),
+                                          Expanded(
+                                            child: Text(
+                                              ctlr.retailingTrendsValue,
+                                            ),
+                                          ),
                                           widget.coverageWidget ??
                                               Container(
                                                 // height: 26,

@@ -136,7 +136,11 @@ class _CustomExpandedChartWidgetState extends State<GPTrendsChartWidget> {
                                     Expanded(
                                       child: Row(
                                         children: [
-                                          const Spacer(),
+                                          Expanded(
+                                            child: Text(
+                                              ctlr.gpTrendsValue,
+                                            ),
+                                          ),
                                           widget.coverageWidget ??
                                               Container(
                                                 // height: 26,

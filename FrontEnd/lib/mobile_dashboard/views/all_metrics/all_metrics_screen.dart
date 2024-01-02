@@ -4,8 +4,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:command_centre/mobile_dashboard/utils/png_files.dart';
 import 'package:command_centre/mobile_dashboard/utils/routes/app_pages.dart';
-import 'package:command_centre/mobile_dashboard/controllers/home_controller.dart';
 import 'package:command_centre/mobile_dashboard/views/widgets/custom_loader.dart';
+import 'package:command_centre/mobile_dashboard/controllers/home_controller.dart';
 import 'package:command_centre/mobile_dashboard/views/summary/widgets/personalize_card.dart';
 
 class AllMetricsScreen extends StatelessWidget {
@@ -60,7 +60,7 @@ class AllMetricsScreen extends StatelessWidget {
                                             CrossAxisAlignment.center,
                                         children: [
                                           Text(
-                                            'P1M IYA',
+                                            '${ctlr.selectedMonth?.substring(0, 3)}${ctlr.selectedMonth?.substring(6, 8)} IYA',
                                             style: GoogleFonts.ptSans(
                                               fontSize: 16,
                                               fontWeight: FontWeight.w400,
@@ -149,12 +149,82 @@ class AllMetricsScreen extends StatelessWidget {
                             ],
                           ),
                           PersonalizeCard(
-                            title: 'Coverage & Distribution',
+                            title: 'Coverage',
+                            secondTitle: '',
                             top: 12,
                             bottomInside: 8,
                             onPressedShowMore: () =>
                                 Get.toNamed(AppPages.COVERAGE_SCREEN),
                             children: [
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 12.0, vertical: 12),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            'Coverage (in ${ctlr.summaryData.first.coverage?.cmCoverage?.contains('MM') ?? false ? 'MM' : ctlr.summaryData.first.coverage?.cmCoverage?.contains('M') ?? false ? 'M' : 'M'})',
+                                            style: GoogleFonts.ptSans(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w400,
+                                            ),
+                                          ),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Flexible(
+                                                child: Text(
+                                                  '${ctlr.summaryData.first.coverage?.cmCoverage?.contains('MM') ?? false ? ctlr.summaryData.first.coverage?.cmCoverage?.replaceAll('MM', '') : ctlr.summaryData.first.coverage?.cmCoverage?.contains('M') ?? false ? ctlr.summaryData.first.coverage?.cmCoverage?.replaceAll('M', '') : ctlr.summaryData.first.coverage?.cmCoverage}',
+                                                  style: GoogleFonts.ptSans(
+                                                    fontSize: 40,
+                                                    fontWeight: FontWeight.w400,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: Column(
+                                        children: [
+                                          Text(
+                                            '${ctlr.selectedMonth?.substring(0, 3)}${ctlr.selectedMonth?.substring(6, 8)} Billing %',
+                                            style: GoogleFonts.ptSans(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w400,
+                                            ),
+                                          ),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Flexible(
+                                                child: Text(
+                                                  '${ctlr.summaryData.first.coverage?.billing?.contains('') ?? false ? ctlr.summaryData.first.coverage?.billing?.replaceAll('%', '') : ctlr.summaryData.first.coverage?.billing}',
+                                                  style: GoogleFonts.ptSans(
+                                                    fontSize: 40,
+                                                    fontWeight: FontWeight.w400,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
                               Padding(
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 12.0, vertical: 12),
@@ -210,75 +280,6 @@ class AllMetricsScreen extends StatelessWidget {
                                               Flexible(
                                                 child: Text(
                                                   '${ctlr.summaryData.first.productivity?.productivityCurrentMonth}',
-                                                  style: GoogleFonts.ptSans(
-                                                    fontSize: 40,
-                                                    fontWeight: FontWeight.w400,
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 12.0, vertical: 12),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                            'Coverage (in ${ctlr.summaryData.first.coverage?.cmCoverage?.contains('MM') ?? false ? 'MM' : ctlr.summaryData.first.coverage?.cmCoverage?.contains('M') ?? false ? 'M' : 'M'})',
-                                            style: GoogleFonts.ptSans(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w400,
-                                            ),
-                                          ),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Flexible(
-                                                child: Text(
-                                                  '${ctlr.summaryData.first.coverage?.cmCoverage?.contains('MM') ?? false ? ctlr.summaryData.first.coverage?.cmCoverage?.replaceAll('MM', '') : ctlr.summaryData.first.coverage?.cmCoverage?.contains('M') ?? false ? ctlr.summaryData.first.coverage?.cmCoverage?.replaceAll('M', '') : ctlr.summaryData.first.coverage?.cmCoverage}',
-                                                  style: GoogleFonts.ptSans(
-                                                    fontSize: 40,
-                                                    fontWeight: FontWeight.w400,
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                    Expanded(
-                                      child: Column(
-                                        children: [
-                                          Text(
-                                            'P1M Billing %',
-                                            style: GoogleFonts.ptSans(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w400,
-                                            ),
-                                          ),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Flexible(
-                                                child: Text(
-                                                  '${ctlr.summaryData.first.coverage?.billing?.contains('') ?? false ? ctlr.summaryData.first.coverage?.billing?.replaceAll('%', '') : ctlr.summaryData.first.coverage?.billing}',
                                                   style: GoogleFonts.ptSans(
                                                     fontSize: 40,
                                                     fontWeight: FontWeight.w400,
@@ -362,7 +363,7 @@ class AllMetricsScreen extends StatelessWidget {
                                                   .summaryData
                                                   .first
                                                   .dgpCompliance
-                                                  ?.progressBarGpIya ??
+                                                  ?.progressBarGpAchieved ??
                                               '0.0') ??
                                           0.0,
                                       header: const Text('DGP Comp.'),

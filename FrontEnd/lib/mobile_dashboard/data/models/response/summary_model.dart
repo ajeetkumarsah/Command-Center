@@ -159,6 +159,7 @@ class DgpCompliance {
   final String? progressBarGpIya;
   final String? gpP3Miya;
   final String? progressBarGpP3Miya;
+  final String? progressBarGpAchieved;
 
   DgpCompliance({
     this.gpAchievememt,
@@ -169,6 +170,7 @@ class DgpCompliance {
     this.progressBarGpIya,
     this.gpP3Miya,
     this.progressBarGpP3Miya,
+    this.progressBarGpAchieved,
   });
 
   factory DgpCompliance.fromJson(Map<String, dynamic> json) => DgpCompliance(
@@ -180,6 +182,7 @@ class DgpCompliance {
         progressBarGpIya: json["progressBarGpIYA"],
         gpP3Miya: json["gpP3MIYA"],
         progressBarGpP3Miya: json["progressBarGpP3MIYA"],
+        progressBarGpAchieved: json["progressBarGpAchieved"],
       );
 
   Map<String, dynamic> toJson() => {

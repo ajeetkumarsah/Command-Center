@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
+import 'package:command_centre/mobile_dashboard/utils/summary_types.dart';
 import 'package:command_centre/mobile_dashboard/controllers/home_controller.dart';
 
 class ChannelTrendsFilterBottomsheet extends StatelessWidget {
@@ -166,7 +167,11 @@ class ChannelTrendsFilterBottomsheet extends StatelessWidget {
                     ),
                     TextButton(
                       onPressed: () {
-                        ctlr.onApplyMultiFilter('trends', 'trends',
+                        ctlr.onApplyMultiFilter(
+                            'trends',
+                            tabType == SummaryTypes.coverage.type
+                                ? 'trends'
+                                : 'geo',
                             tabType: tabType);
 
                         Navigator.pop(context);

@@ -6,8 +6,9 @@ class StoreController extends GetxController {
   final StoreRepo storeRepo;
   StoreController({required this.storeRepo});
   //
-  bool _isLoading = false;
+  bool _isLoading = false, _salesTableShowMore = false;
   bool get isLoading => _isLoading;
+  bool get salesTableShowMore => _salesTableShowMore;
 
   //
   //
@@ -18,6 +19,11 @@ class StoreController extends GetxController {
   void onInit() {
     super.onInit();
     //
+  }
+
+  void onSalesTableShowMore() {
+    _salesTableShowMore = !_salesTableShowMore;
+    update();
   }
 
   String getYear() {

@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import '../../views/home_view.dart';
 import '../../bindings/home_binding.dart';
 import '../../views/login/retry_access_denied_screen.dart';
+import '../../views/store_fingertips/sales/sales_deep_dive_screen.dart';
 import 'package:command_centre/mobile_dashboard/views/login/login_screen.dart';
 import 'package:command_centre/mobile_dashboard/views/splash/intro_screen.dart';
 import 'package:command_centre/mobile_dashboard/views/login/purpose_screen.dart';
@@ -10,15 +11,15 @@ import 'package:command_centre/mobile_dashboard/views/login/fed_auth_screen.dart
 import 'package:command_centre/mobile_dashboard/views/summary/summary_screen.dart';
 import 'package:command_centre/mobile_dashboard/views/login/select_geo_screen.dart';
 import 'package:command_centre/mobile_dashboard/views/coverage/coverage_screen.dart';
-import 'package:command_centre/mobile_dashboard/store_fingertips/fb/fb_deep_dive.dart';
 import 'package:command_centre/mobile_dashboard/views/login/access_denied_screen.dart';
 import 'package:command_centre/mobile_dashboard/views/retailing/retailing_screen.dart';
 import 'package:command_centre/mobile_dashboard/views/login/select_profile_screen.dart';
 import 'package:command_centre/mobile_dashboard/views/focus_brand/focus_brand_screen.dart';
+import 'package:command_centre/mobile_dashboard/views/store_fingertips/fb/fb_deep_dive.dart';
 import 'package:command_centre/mobile_dashboard/views/golden_point/golden_point_screen.dart';
-import 'package:command_centre/mobile_dashboard/store_fingertips/gp/gp_deep_dive_screen.dart';
-import 'package:command_centre/mobile_dashboard/store_fingertips/store_fingertips_screen.dart';
-import 'package:command_centre/mobile_dashboard/store_fingertips/coverage/coverage_deep_dive.dart';
+import 'package:command_centre/mobile_dashboard/views/store_fingertips/gp/gp_deep_dive_screen.dart';
+import 'package:command_centre/mobile_dashboard/views/store_fingertips/store_fingertips_screen.dart';
+import 'package:command_centre/mobile_dashboard/views/store_fingertips/coverage/coverage_deep_dive.dart';
 // ignore_for_file: constant_identifier_names
 
 
@@ -48,6 +49,7 @@ class AppPages {
   static const FB_DEEP_DIVE_SCREEN = Routes.FB_DEEP_DIVE_SCREEN;
   static const GP_DEEP_DIVE_SCREEN = Routes.GP_DEEP_DIVE_SCREEN;
   static const COVERAGE_DEEP_DIVE = Routes.COVERAGE_DEEP_DIVE_SCREEN;
+  static const SALES_DEEP_DIVE = Routes.SALES_DEEP_DIVE_SCREEN;
 
   static final routes = [
     GetPage(
@@ -102,12 +104,12 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.RETAILING_SCREEN,
-      page: () => RetailingScreen(),
+      page: () => const RetailingScreen(),
       binding: HomeBinding(),
     ),
     GetPage(
       name: _Paths.COVERAGE_SCREEN,
-      page: () => CoverageScreen(),
+      page: () => const CoverageScreen(),
       binding: HomeBinding(),
     ),
     GetPage(
@@ -117,7 +119,7 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.FOCUS_BRAND_SCREEN,
-      page: () => FocusBrandScreen(),
+      page: () => const FocusBrandScreen(),
       binding: HomeBinding(),
     ),
     GetPage(
@@ -143,6 +145,11 @@ class AppPages {
     GetPage(
       name: _Paths.COVERAGE_DEEP_DIVE,
       page: () => const CoverageDeepDiveScreen(),
+      binding: HomeBinding(),
+    ),
+    GetPage(
+      name: _Paths.SALES_DEEP_DIVE,
+      page: () => const SalesDeepDiveScreen(),
       binding: HomeBinding(),
     ),
   ];

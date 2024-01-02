@@ -2,8 +2,9 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
-import 'package:command_centre/mobile_dashboard/controllers/home_controller.dart';
+import 'package:command_centre/mobile_dashboard/utils/summary_types.dart';
 import 'package:command_centre/mobile_dashboard/views/widgets/custom_loader.dart';
+import 'package:command_centre/mobile_dashboard/controllers/home_controller.dart';
 
 class GeographyTrendsBottomsheet extends StatelessWidget {
   final String tabType;
@@ -141,7 +142,7 @@ class GeographyTrendsBottomsheet extends StatelessWidget {
                                                         (e) => InkWell(
                                                           onTap: () => ctlr
                                                               .onChangeTrendsFilters(
-                                                                  e),
+                                                                  e, tabType),
                                                           child: Row(
                                                             children: [
                                                               Transform.scale(
@@ -154,10 +155,10 @@ class GeographyTrendsBottomsheet extends StatelessWidget {
                                                                       e
                                                                           .trim()
                                                                           .toLowerCase(),
-                                                                  onChanged:
-                                                                      (v) => ctlr
-                                                                          .onChangeTrendsFilters(
-                                                                              e),
+                                                                  onChanged: (v) =>
+                                                                      ctlr.onChangeTrendsFilters(
+                                                                          e,
+                                                                          tabType),
                                                                 ),
                                                               ),
                                                               Flexible(
@@ -188,7 +189,7 @@ class GeographyTrendsBottomsheet extends StatelessWidget {
                                                     (e) => InkWell(
                                                       onTap: () => ctlr
                                                           .onChangeTrendsFilters(
-                                                              e),
+                                                              e, tabType),
                                                       child: Row(
                                                         children: [
                                                           Transform.scale(
@@ -203,7 +204,8 @@ class GeographyTrendsBottomsheet extends StatelessWidget {
                                                                       .toLowerCase(),
                                                               onChanged: (v) =>
                                                                   ctlr.onChangeTrendsFilters(
-                                                                      e),
+                                                                      e,
+                                                                      tabType),
                                                             ),
                                                           ),
                                                           Flexible(
@@ -244,7 +246,11 @@ class GeographyTrendsBottomsheet extends StatelessWidget {
                     ),
                     TextButton(
                       onPressed: () async {
-                        ctlr.onApplyMultiFilter('trends', 'geo',
+                        ctlr.onApplyMultiFilter(
+                            'trends',
+                            tabType == SummaryTypes.coverage.type
+                                ? 'trends'
+                                : 'geo',
                             tabType: tabType);
                         Navigator.pop(context);
                       },

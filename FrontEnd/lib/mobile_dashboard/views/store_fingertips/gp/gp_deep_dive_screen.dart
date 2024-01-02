@@ -8,8 +8,8 @@ import 'package:command_centre/mobile_dashboard/utils/png_files.dart';
 import 'package:command_centre/mobile_dashboard/utils/svg_files.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
 import 'package:command_centre/mobile_dashboard/controllers/store_controller.dart';
-import 'package:command_centre/mobile_dashboard/store_fingertips/fb/fb_deep_dive.dart';
-import 'package:command_centre/mobile_dashboard/store_fingertips/widgets/category_bottomsheet.dart';
+import 'package:command_centre/mobile_dashboard/views/store_fingertips/fb/fb_deep_dive.dart';
+import 'package:command_centre/mobile_dashboard/views/store_fingertips/widgets/category_bottomsheet.dart';
 
 class GPDeepDiveScreen extends StatelessWidget {
   const GPDeepDiveScreen({super.key});

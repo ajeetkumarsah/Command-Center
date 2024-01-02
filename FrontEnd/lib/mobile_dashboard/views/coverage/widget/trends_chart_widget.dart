@@ -13,6 +13,7 @@ class CoverageTrendsChartWidget extends StatefulWidget {
   final String title;
   final List<CoverageTrendsModel> trendsList;
   final String summaryType;
+  final String? subtitle;
   final Widget? coverageWidget;
   const CoverageTrendsChartWidget(
       {super.key,
@@ -22,7 +23,8 @@ class CoverageTrendsChartWidget extends StatefulWidget {
       required this.isExpanded,
       this.coverageWidget,
       required this.summaryType,
-      required this.trendsList});
+      required this.trendsList,
+      this.subtitle});
 
   @override
   State<CoverageTrendsChartWidget> createState() =>
@@ -137,7 +139,12 @@ class _CustomExpandedChartWidgetState extends State<CoverageTrendsChartWidget> {
                                     Expanded(
                                       child: Row(
                                         children: [
-                                          const Spacer(),
+                                          Expanded(
+                                            child: Text(
+                                              ctlr.coverageTrendsValue,
+                                            ),
+                                          ),
+                                          // const Spacer(),
                                           widget.coverageWidget ??
                                               const SizedBox()
                                         ],
@@ -296,20 +303,18 @@ class _CustomExpandedChartWidgetState extends State<CoverageTrendsChartWidget> {
                                         border: const Border(
                                             bottom: BorderSide(width: .5),
                                             left: BorderSide(width: .5))),
-                                    gridData: FlGridData(show: false),
+                                    gridData:const FlGridData(show: false),
                                     titlesData: FlTitlesData(
                                       bottomTitles: AxisTitles(
                                         sideTitles: _bottomTitles,
-                                        // drawBehindEverything: true,
                                       ),
                                       leftTitles: AxisTitles(
                                         sideTitles: _leftTitles,
-                                        // drawBehindEverything: true,
                                       ),
-                                      topTitles: AxisTitles(
+                                      topTitles:const AxisTitles(
                                           sideTitles:
                                               SideTitles(showTitles: false)),
-                                      rightTitles: AxisTitles(
+                                      rightTitles:const AxisTitles(
                                           sideTitles:
                                               SideTitles(showTitles: false)),
                                     ),
