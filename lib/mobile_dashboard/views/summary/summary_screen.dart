@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../retailing/widgets/geography_bottomsheet.dart';
 import 'package:percent_indicator/percent_indicator.dart';
@@ -9,10 +10,11 @@ import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
 import 'package:command_centre/mobile_dashboard/utils/routes/app_pages.dart';
 import 'package:command_centre/mobile_dashboard/controllers/home_controller.dart';
 import 'package:command_centre/mobile_dashboard/views/widgets/custom_shimmer.dart';
-import 'package:command_centre/mobile_dashboard/views/summary/widgets/personalize_card.dart';
 import 'package:command_centre/mobile_dashboard/views/summary/widgets/menu_bottomsheet.dart';
+import 'package:command_centre/mobile_dashboard/views/summary/widgets/personalize_card.dart';
+import 'package:command_centre/mobile_dashboard/views/summary/widgets/retailing_graph_widget.dart';
+import 'package:command_centre/mobile_dashboard/views/summary/widgets/retailing_table_widget.dart';
 import 'package:command_centre/mobile_dashboard/views/summary/widgets/personalize_bottomsheet.dart';
-
 
 class SummaryScreen extends StatefulWidget {
   const SummaryScreen({super.key});
@@ -37,6 +39,13 @@ class _SummaryScreenState extends State<SummaryScreen> {
 
   @override
   Widget build(BuildContext context) {
+    List<List<String>>? dataList = [
+      ['Channel', 'Retailing', 'Apr-23 IYA'],
+      ['Core DO', '', ''],
+      ['MR', '', ''],
+      ['DCOM', '', ''],
+      ['EC', '', ''],
+    ];
     return GetBuilder<HomeController>(
       init: HomeController(homeRepo: Get.find()),
       initState: (_) {
@@ -259,7 +268,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
                   ),
                   if (ctlr.activeMetrics
                       .contains('Retailing')) //ctlr.showRetailing)
-                    ctlr.isSummaryPageLoading
+                    ctlr.isSummaryPageLoading || ctlr.isDirectIndirectLoading
                         ? CustomShimmer(
                             height: 200,
                             width: MediaQuery.of(context).size.width,
@@ -267,11 +276,240 @@ class _SummaryScreenState extends State<SummaryScreen> {
                             margin: const EdgeInsets.only(
                                 top: 24, left: 12, right: 12, bottom: 8),
                           )
-                        : ctlr.summaryData.isEmpty
-                            ? const SizedBox()
-                            : PersonalizeCard(
+                        : ctlr.summaryData.isNotEmpty &&
+                                ctlr.summaryIndirectData.isNotEmpty
+                            ? PersonalizeCard(
                                 title: 'Retailing',
                                 secondTitle: '',
+                                // showMore: !ctlr.getPersona(),
+                                secondWidget: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        'Retailing',
+                                        style: GoogleFonts.ptSans(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w700,
+                                        ),
+                                      ),
+                                    ),
+                                    Container(
+                                      // height: 26,
+                                      margin: const EdgeInsets.only(
+                                          bottom: 0, left: 12, right: 4),
+                                      decoration: BoxDecoration(
+                                          border: Border.all(
+                                            width: 1,
+                                            color: AppColors.lightGrey,
+                                          ),
+                                          borderRadius:
+                                              BorderRadius.circular(100)),
+                                      child: Row(
+                                        children: [
+                                          GestureDetector(
+                                            onTap: () =>
+                                                ctlr.onChangeSummaryDI(true),
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                color: ctlr.isSummaryDirect
+                                                    ? AppColors.primary
+                                                    : AppColors.white,
+                                                border: Border.all(
+                                                  width: 1,
+                                                  color: ctlr.isSummaryDirect
+                                                      ? AppColors.primary
+                                                      : AppColors.white,
+                                                ),
+                                                borderRadius:
+                                                    BorderRadius.circular(100),
+                                              ),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 10,
+                                                      vertical: 4),
+                                              child: Text(
+                                                'Indirect',
+                                                style:
+                                                    GoogleFonts.ptSansCaption(
+                                                  color: ctlr.isSummaryDirect
+                                                      ? Colors.white
+                                                      : Colors.grey,
+                                                  fontSize: 12,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          GestureDetector(
+                                            onTap: () =>
+                                                ctlr.onChangeSummaryDI(false),
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                color: ctlr.isSummaryDirect
+                                                    ? AppColors.white
+                                                    : AppColors.primary,
+                                                border: ctlr.isSummaryDirect
+                                                    ? null
+                                                    : Border.all(
+                                                        width: 1,
+                                                        color: !ctlr
+                                                                .isSummaryDirect
+                                                            ? AppColors.primary
+                                                            : AppColors.white,
+                                                      ),
+                                                borderRadius:
+                                                    BorderRadius.circular(100),
+                                              ),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 10,
+                                                      vertical: 4),
+                                              child: Text(
+                                                'Indirect+Direct',
+                                                style:
+                                                    GoogleFonts.ptSansCaption(
+                                                  color: !ctlr.isSummaryDirect
+                                                      ? Colors.white
+                                                      : Colors.grey,
+                                                  fontSize: 12,
+                                                ),
+                                              ),
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                // Text.rich(
+                                //   TextSpan(
+                                //     children: [
+                                //       // TextSpan(
+                                //       //   text: 'Retailing',
+                                //       //   style: GoogleFonts.ptSans(
+                                //       //     fontSize: 16,
+                                //       //     fontWeight: FontWeight.w700,
+                                //       //   ),
+                                //       // ),
+                                //       WidgetSpan(
+                                //         child: Padding(
+                                //           padding: const EdgeInsets.only(
+                                //               bottom: 8.0),
+                                //           child: Text(
+                                //             'Retailing',
+                                //             style: GoogleFonts.ptSans(
+                                //               fontSize: 18,
+                                //               fontWeight: FontWeight.w700,
+                                //             ),
+                                //           ),
+                                //         ),
+                                //       ),
+                                //       WidgetSpan(
+                                //         child: Row(
+                                //           mainAxisSize: MainAxisSize.min,
+                                //           children: [
+                                //             Container(
+                                //               // height: 26,
+                                //               margin: const EdgeInsets.only(
+                                //                   bottom: 0,
+                                //                   left: 12,
+                                //                   right: 4),
+                                //               decoration: BoxDecoration(
+                                //                   border: Border.all(
+                                //                     width: 1,
+                                //                     color: AppColors.lightGrey,
+                                //                   ),
+                                //                   borderRadius:
+                                //                       BorderRadius.circular(
+                                //                           100)),
+                                //               child: Row(
+                                //                 children: [
+                                //                   GestureDetector(
+                                //                     onTap: () => ctlr
+                                //                         .onChannelSalesChange(
+                                //                             true),
+                                //                     child: Container(
+                                //                       decoration: BoxDecoration(
+                                //                         color: ctlr.channelSales
+                                //                             ? AppColors.primary
+                                //                             : AppColors.white,
+                                //                         border: Border.all(
+                                //                           width: 1,
+                                //                           color: ctlr
+                                //                                   .channelSales
+                                //                               ? AppColors
+                                //                                   .primary
+                                //                               : AppColors.white,
+                                //                         ),
+                                //                         borderRadius:
+                                //                             BorderRadius
+                                //                                 .circular(100),
+                                //                       ),
+                                //                       padding: const EdgeInsets
+                                //                               .symmetric(
+                                //                           horizontal: 10,
+                                //                           vertical: 4),
+                                //                       child: Text(
+                                //                         'FB Abs.',
+                                //                         style: GoogleFonts
+                                //                             .ptSansCaption(
+                                //                           color:
+                                //                               ctlr.channelSales
+                                //                                   ? Colors.white
+                                //                                   : Colors.grey,
+                                //                         ),
+                                //                       ),
+                                //                     ),
+                                //                   ),
+                                //                   GestureDetector(
+                                //                     onTap: () => ctlr
+                                //                         .onChannelSalesChange(
+                                //                             false),
+                                //                     child: Container(
+                                //                       decoration: BoxDecoration(
+                                //                         color: ctlr.channelSales
+                                //                             ? AppColors.white
+                                //                             : AppColors.primary,
+                                //                         border:
+                                //                             ctlr.channelSales
+                                //                                 ? null
+                                //                                 : Border.all(
+                                //                                     width: 1,
+                                //                                     color: !ctlr.channelSales
+                                //                                         ? AppColors
+                                //                                             .primary
+                                //                                         : AppColors
+                                //                                             .white,
+                                //                                   ),
+                                //                         borderRadius:
+                                //                             BorderRadius
+                                //                                 .circular(100),
+                                //                       ),
+                                //                       padding: const EdgeInsets
+                                //                               .symmetric(
+                                //                           horizontal: 10,
+                                //                           vertical: 4),
+                                //                       child: Text(
+                                //                         '  IYA  ',
+                                //                         style: GoogleFonts
+                                //                             .ptSansCaption(
+                                //                           color:
+                                //                               !ctlr.channelSales
+                                //                                   ? Colors.white
+                                //                                   : Colors.grey,
+                                //                         ),
+                                //                       ),
+                                //                     ),
+                                //                   )
+                                //                 ],
+                                //               ),
+                                //             ),
+                                //           ],
+                                //         ),
+                                //       ),
+                                //     ],
+                                //   ),
+                                // ),
                                 onPressedShowMore: () =>
                                     Get.toNamed(AppPages.RETAILING_SCREEN),
                                 children: [
@@ -283,6 +521,37 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
+                                        Expanded(
+                                          child: Column(
+                                            children: [
+                                              Text(
+                                                'Sellout (in ${ctlr.summaryData.first.mtdRetailing?.cmSellout?.contains('Cr') ?? false ? 'Cr' : ctlr.summaryData.first.mtdRetailing?.cmSellout?.contains('Lk') ?? false ? 'Lk' : ''})',
+                                                style: GoogleFonts.ptSans(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w400,
+                                                ),
+                                              ),
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Flexible(
+                                                    child: Text(
+                                                      ctlr.isSummaryDirect
+                                                          ? '${ctlr.summaryIndirectData.first.mtdRetailing?.cmSellout?.contains('Cr') ?? false ? ctlr.summaryIndirectData.first.mtdRetailing?.cmSellout?.replaceAll('Cr', '') : ctlr.summaryIndirectData.first.mtdRetailing?.cmSellout?.contains('Lk') ?? false ? ctlr.summaryIndirectData.first.mtdRetailing?.cmSellout?.replaceAll('Lk', '') : ctlr.summaryIndirectData.first.mtdRetailing?.cmSellout}'
+                                                          : '${ctlr.summaryData.first.mtdRetailing?.cmSellout?.contains('Cr') ?? false ? ctlr.summaryData.first.mtdRetailing?.cmSellout?.replaceAll('Cr', '') : ctlr.summaryData.first.mtdRetailing?.cmSellout?.contains('Lk') ?? false ? ctlr.summaryData.first.mtdRetailing?.cmSellout?.replaceAll('Lk', '') : ctlr.summaryData.first.mtdRetailing?.cmSellout}',
+                                                      style: GoogleFonts.ptSans(
+                                                        fontSize: 40,
+                                                        fontWeight:
+                                                            FontWeight.w400,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              )
+                                            ],
+                                          ),
+                                        ),
                                         Expanded(
                                           child: Column(
                                             crossAxisAlignment:
@@ -301,7 +570,9 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                                 children: [
                                                   Flexible(
                                                     child: Text(
-                                                      '${ctlr.summaryData.first.mtdRetailing?.cmIya}',
+                                                      ctlr.isSummaryDirect
+                                                          ? '${ctlr.summaryIndirectData.first.mtdRetailing?.cmIya}'
+                                                          : '${ctlr.summaryData.first.mtdRetailing?.cmIya}',
                                                       maxLines: 1,
                                                       overflow:
                                                           TextOverflow.ellipsis,
@@ -333,36 +604,9 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                                 children: [
                                                   Flexible(
                                                     child: Text(
-                                                      '${ctlr.summaryData.first.mtdRetailing?.fyIya}',
-                                                      style: GoogleFonts.ptSans(
-                                                        fontSize: 40,
-                                                        fontWeight:
-                                                            FontWeight.w400,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                        Expanded(
-                                          child: Column(
-                                            children: [
-                                              Text(
-                                                'Sellout (in ${ctlr.summaryData.first.mtdRetailing?.cmSellout?.contains('Cr') ?? false ? 'Cr' : ctlr.summaryData.first.mtdRetailing?.cmSellout?.contains('Lk') ?? false ? 'Lk' : ''})',
-                                                style: GoogleFonts.ptSans(
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.w400,
-                                                ),
-                                              ),
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: [
-                                                  Flexible(
-                                                    child: Text(
-                                                      '${ctlr.summaryData.first.mtdRetailing?.cmSellout?.contains('Cr') ?? false ? ctlr.summaryData.first.mtdRetailing?.cmSellout?.replaceAll('Cr', '') : ctlr.summaryData.first.mtdRetailing?.cmSellout?.contains('Lk') ?? false ? ctlr.summaryData.first.mtdRetailing?.cmSellout?.replaceAll('Lk', '') : ctlr.summaryData.first.mtdRetailing?.cmSellout}',
+                                                      ctlr.isSummaryDirect
+                                                          ? '${ctlr.summaryIndirectData.first.mtdRetailing?.fyIya}'
+                                                          : '${ctlr.summaryData.first.mtdRetailing?.fyIya}',
                                                       style: GoogleFonts.ptSans(
                                                         fontSize: 40,
                                                         fontWeight:
@@ -378,104 +622,153 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                       ],
                                     ),
                                   ),
-                                  // Padding(
-                                  //   padding: const EdgeInsets.all(12.0),
-                                  //   child: Row(
-                                  //     mainAxisAlignment:
-                                  //         MainAxisAlignment.spaceBetween,
-                                  //     children: [
-                                  //       Column(
-                                  //         crossAxisAlignment:
-                                  //             CrossAxisAlignment.center,
-                                  //         children: [
-                                  //           Text(
-                                  //             'FY IYA',
-                                  //             style: GoogleFonts.ptSans(
-                                  //               fontSize: 16,
-                                  //               fontWeight: FontWeight.w400,
-                                  //             ),
-                                  //           ),
-                                  //           Text(
-                                  //             '${ctlr.summaryData.first.mtdRetailing?.fyIya}',
-                                  //             style: GoogleFonts.ptSans(
-                                  //               fontSize: 40,
-                                  //               fontWeight: FontWeight.w400,
-                                  //             ),
-                                  //           )
-                                  //         ],
-                                  //       ),
+                                  //
 
-                                  //     ],
-                                  //   ),
-                                  // ),
-                                  // Padding(
-                                  //   padding: const EdgeInsets.symmetric(
-                                  //       horizontal: 12.0),
-                                  //   child: Row(
-                                  //     mainAxisAlignment:
-                                  //         MainAxisAlignment.spaceBetween,
-                                  //     children: [
-                                  //       Column(
-                                  //         crossAxisAlignment:
-                                  //             CrossAxisAlignment.center,
-                                  //         children: [
-                                  //           Text(
-                                  //             'Tgt IYA',
-                                  //             style: GoogleFonts.ptSans(
-                                  //               fontSize: 16,
-                                  //               fontWeight: FontWeight.w400,
-                                  //             ),
-                                  //           ),
-                                  //           Text(
-                                  //             '${ctlr.summaryData.first.mtdRetailing?.tgtIya}',
-                                  //             style: GoogleFonts.ptSans(
-                                  //               fontSize: 16,
-                                  //               fontWeight: FontWeight.w400,
-                                  //             ),
-                                  //           )
-                                  //         ],
-                                  //       ),
-                                  //       Column(
-                                  //         children: [
-                                  //           Text(
-                                  //             'Tgt Sal %',
-                                  //             style: GoogleFonts.ptSans(
-                                  //               fontSize: 16,
-                                  //               fontWeight: FontWeight.w400,
-                                  //             ),
-                                  //           ),
-                                  //           Text(
-                                  //             '${ctlr.summaryData.first.mtdRetailing?.tgtSaliance}',
-                                  //             style: GoogleFonts.ptSans(
-                                  //               fontSize: 16,
-                                  //               fontWeight: FontWeight.w400,
-                                  //             ),
-                                  //           )
-                                  //         ],
-                                  //       ),
-                                  //       Column(
-                                  //         children: [
-                                  //           Text(
-                                  //             'Tgt Sellout',
-                                  //             style: GoogleFonts.ptSans(
-                                  //               fontSize: 16,
-                                  //               fontWeight: FontWeight.w400,
-                                  //             ),
-                                  //           ),
-                                  //           Text(
-                                  //             '${ctlr.summaryData.first.mtdRetailing?.tgtSellout}',
-                                  //             style: GoogleFonts.ptSans(
-                                  //               fontSize: 18,
-                                  //               fontWeight: FontWeight.w400,
-                                  //             ),
-                                  //           ),
-                                  //         ],
-                                  //       ),
-                                  //     ],
-                                  //   ),
-                                  // ),
+                                  if (ctlr.getPersona())
+                                    ctlr.isChannelLoading
+                                        ? CustomShimmer(
+                                            height: 240,
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width,
+                                            borderRadius:
+                                                BorderRadius.circular(20),
+                                            margin: const EdgeInsets.symmetric(
+                                                horizontal: 12, vertical: 12),
+                                          )
+                                        : ctlr.channelRetailingModel != null
+                                            ? RetailingTableWidget(
+                                                data: ctlr.isSummaryDirect
+                                                    ? ctlr.channelRetailingModel
+                                                            ?.ind ??
+                                                        []
+                                                    : ctlr.channelRetailingModel
+                                                            ?.indDir ??
+                                                        [],
+                                              )
+                                            : const SizedBox(),
+
+                                  if (ctlr.getPersona())
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 12.0, vertical: 12),
+                                      child: Row(
+                                        children: [
+                                          Container(
+                                            // height: 26,
+                                            decoration: BoxDecoration(
+                                                border: Border.all(
+                                                  width: 1,
+                                                  color: AppColors.lightGrey,
+                                                ),
+                                                borderRadius:
+                                                    BorderRadius.circular(100)),
+                                            child: Row(
+                                              children: [
+                                                GestureDetector(
+                                                  onTap: () =>
+                                                      ctlr.onChannelSalesChange(
+                                                          true),
+                                                  child: Container(
+                                                    decoration: BoxDecoration(
+                                                      color: ctlr.channelSales
+                                                          ? AppColors.primary
+                                                          : AppColors.white,
+                                                      border: Border.all(
+                                                        width: 1,
+                                                        color: ctlr.channelSales
+                                                            ? AppColors.primary
+                                                            : AppColors.white,
+                                                      ),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              100),
+                                                    ),
+                                                    padding: const EdgeInsets
+                                                            .symmetric(
+                                                        horizontal: 10,
+                                                        vertical: 4),
+                                                    child: Text(
+                                                      'Sales Value',
+                                                      style: GoogleFonts
+                                                          .ptSansCaption(
+                                                        color: ctlr.channelSales
+                                                            ? Colors.white
+                                                            : Colors.grey,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                GestureDetector(
+                                                  onTap: () =>
+                                                      ctlr.onChannelSalesChange(
+                                                          false),
+                                                  child: Container(
+                                                    decoration: BoxDecoration(
+                                                      color: ctlr.channelSales
+                                                          ? AppColors.white
+                                                          : AppColors.primary,
+                                                      border: ctlr.channelSales
+                                                          ? null
+                                                          : Border.all(
+                                                              width: 1,
+                                                              color: !ctlr
+                                                                      .channelSales
+                                                                  ? AppColors
+                                                                      .primary
+                                                                  : AppColors
+                                                                      .white,
+                                                            ),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              100),
+                                                    ),
+                                                    padding: const EdgeInsets
+                                                            .symmetric(
+                                                        horizontal: 10,
+                                                        vertical: 4),
+                                                    child: Text(
+                                                      '  IYA  ',
+                                                      style: GoogleFonts
+                                                          .ptSansCaption(
+                                                        color:
+                                                            !ctlr.channelSales
+                                                                ? Colors.white
+                                                                : Colors.grey,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+
+                                  if (ctlr.getPersona())
+                                    ctlr.isRetailingTrendsLoading
+                                        ? CustomShimmer(
+                                            height: 240,
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width,
+                                            borderRadius:
+                                                BorderRadius.circular(20),
+                                            margin: const EdgeInsets.symmetric(
+                                                horizontal: 12, vertical: 12),
+                                          )
+                                        : RetailingGraphWidget(
+                                            trendsData: ctlr.isSummaryDirect
+                                                ? ctlr
+                                                    .trendsRetailingModel!.ind!
+                                                : ctlr.trendsRetailingModel!
+                                                    .indDir!,
+                                            salesValue: ctlr.channelSales,
+                                          ),
                                 ],
-                              ),
+                              )
+                            : const SizedBox(),
                   if (ctlr.activeMetrics
                       .contains('Coverage')) //ctlr.showCoverage)
                     ctlr.isSummaryPageLoading
@@ -486,9 +779,8 @@ class _SummaryScreenState extends State<SummaryScreen> {
                             margin: const EdgeInsets.only(
                                 top: 16, left: 12, right: 12, bottom: 8),
                           )
-                        : ctlr.summaryData.isEmpty
-                            ? const SizedBox()
-                            : PersonalizeCard(
+                        : ctlr.summaryData.isNotEmpty
+                            ? PersonalizeCard(
                                 title: 'Coverage ',
                                 top: 12,
                                 secondTitle: '',
@@ -641,7 +933,8 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                     ),
                                   ),
                                 ],
-                              ),
+                              )
+                            : const SizedBox(),
                   if (ctlr.activeMetrics
                       .contains('Golden Points')) //ctlr.showGoldenPoints)
                     ctlr.isSummaryPageLoading
@@ -652,9 +945,8 @@ class _SummaryScreenState extends State<SummaryScreen> {
                             margin: const EdgeInsets.only(
                                 top: 16, left: 12, right: 12, bottom: 8),
                           )
-                        : ctlr.summaryData.isEmpty
-                            ? const SizedBox()
-                            : PersonalizeCard(
+                        : ctlr.summaryData.isNotEmpty
+                            ? PersonalizeCard(
                                 title: 'Golden Points',
                                 secondTitle: '', //P3M
                                 top: 12,
@@ -678,7 +970,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                                   CrossAxisAlignment.center,
                                               children: [
                                                 Text(
-                                                  'GP Abs (in ${ctlr.summaryData.first.dgpCompliance?.gpAbs?.contains('MM') ?? false ? 'MM' : ctlr.summaryData.first.dgpCompliance?.gpAbs?.contains('M') ?? false ? 'M' : 'M'})',
+                                                  'P3M GP (in ${ctlr.summaryData.first.dgpCompliance?.gpAbs?.contains('MM') ?? false ? 'MM' : ctlr.summaryData.first.dgpCompliance?.gpAbs?.contains('M') ?? false ? 'M' : 'M'})',
                                                   style: GoogleFonts.ptSans(
                                                     fontSize: 16,
                                                     fontWeight: FontWeight.w400,
@@ -726,7 +1018,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                                       ?.progressBarGpAchieved ??
                                                   '0.0') ??
                                               0.0,
-                                          header: const Text('DGP Comp.'),
+                                          header: const Text('GP Ach %'),
                                           center: Text(
                                               "${ctlr.summaryData.first.dgpCompliance?.gpAchievememt}%"),
                                           backgroundColor:
@@ -748,7 +1040,8 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                     ),
                                   ),
                                 ],
-                              ),
+                              )
+                            : const SizedBox(),
                   if (ctlr.activeMetrics
                       .contains('Focus Brand')) //ctlr.showFocusBrand)
                     ctlr.isSummaryPageLoading
@@ -759,9 +1052,8 @@ class _SummaryScreenState extends State<SummaryScreen> {
                             margin: const EdgeInsets.only(
                                 top: 16, left: 12, right: 12, bottom: 8),
                           )
-                        : ctlr.summaryData.isEmpty
-                            ? const SizedBox()
-                            : PersonalizeCard(
+                        : ctlr.summaryData.isNotEmpty
+                            ? PersonalizeCard(
                                 title: 'Focus Brand',
                                 secondTitle: '',
                                 top: 12,
@@ -783,14 +1075,14 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                                   CrossAxisAlignment.center,
                                               children: [
                                                 Text(
-                                                  'FB Actual (in ${ctlr.summaryData.first.focusBrand?.fbActual?.contains('MM') ?? false ? 'MM' : ctlr.summaryData.first.focusBrand?.fbActual?.contains('M') ?? false ? 'M' : 'M'})',
+                                                  'FB Actual (in ${(ctlr.summaryData.first.focusBrand?.fbActual?.contains('MM') ?? false) ? 'MM' : (ctlr.summaryData.first.focusBrand?.fbActual?.contains('M') ?? false) ? 'M' : 'M'})',
                                                   style: GoogleFonts.ptSans(
                                                     fontSize: 16,
                                                     fontWeight: FontWeight.w400,
                                                   ),
                                                 ),
                                                 Text(
-                                                  '${ctlr.summaryData.first.focusBrand?.fbActual?.contains('MM') ?? false ? ctlr.summaryData.first.focusBrand?.fbActual?.replaceAll('MM', '') : ctlr.summaryData.first.focusBrand?.fbActual?.contains('M') ?? false ? ctlr.summaryData.first.focusBrand?.fbActual?.replaceAll('M', '') : ctlr.summaryData.first.focusBrand?.fbActual}',
+                                                  '${(ctlr.summaryData.first.focusBrand?.fbActual?.contains('MM') ?? false) ? ctlr.summaryData.first.focusBrand?.fbActual?.replaceAll('MM', '') : (ctlr.summaryData.first.focusBrand?.fbActual?.contains('M') ?? false) ? ctlr.summaryData.first.focusBrand?.fbActual?.replaceAll('M', '') : ctlr.summaryData.first.focusBrand?.fbActual}',
                                                   style: GoogleFonts.ptSans(
                                                     fontSize: 40,
                                                     fontWeight: FontWeight.w400,
@@ -833,7 +1125,8 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                     ),
                                   ),
                                 ],
-                              ),
+                              )
+                            : const SizedBox(),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [

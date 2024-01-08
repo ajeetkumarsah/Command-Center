@@ -6,14 +6,15 @@ import 'package:flutter/foundation.dart';
 import 'package:command_centre/mobile_dashboard/utils/summary_types.dart';
 import 'package:command_centre/mobile_dashboard/utils/routes/app_pages.dart';
 import 'package:command_centre/mobile_dashboard/data/repository/home_repo.dart';
-import 'package:command_centre/mobile_dashboard/views/widgets/custom_snackbar.dart';
 import 'package:command_centre/mobile_dashboard/data/models/response/trends_model.dart';
 import 'package:command_centre/mobile_dashboard/data/models/response/filters_model.dart';
 import 'package:command_centre/mobile_dashboard/data/models/response/summary_model.dart';
 import 'package:command_centre/mobile_dashboard/data/models/response/response_model.dart';
 import 'package:command_centre/mobile_dashboard/data/models/response/fb_trends_model.dart';
 import 'package:command_centre/mobile_dashboard/data/models/response/gp_trends_model.dart';
+import 'package:command_centre/mobile_dashboard/data/models/response/retailing_geo_model.dart';
 import 'package:command_centre/mobile_dashboard/data/models/response/coverage_trends_model.dart';
+import 'package:command_centre/mobile_dashboard/data/models/response/retailing_trends_model.dart';
 
 
 class HomeController extends GetxController {
@@ -45,7 +46,10 @@ class HomeController extends GetxController {
       _isGPTrendsLoading = false,
       _isFBTrendsLoading = false,
       _channelSales = true,
-      _isSummaryPageLoading = false;
+      _isSummaryDirect = true,
+      _isDirectIndirectLoading = false,
+      _isSummaryPageLoading = false,
+      _isRetailingDeepDiveInd = true;
   bool get isLoading => _isLoading;
   bool get isSummaryExpanded => _isSummaryExpanded;
   bool get isExpandedCategory => _isExpandedCategory;
@@ -65,6 +69,9 @@ class HomeController extends GetxController {
   bool get isCoverageTrendsLoading => _isCoverageTrendsLoading;
   bool get isGPTrendsLoading => _isGPTrendsLoading;
   bool get isFBTrendsLoading => _isFBTrendsLoading;
+  bool get isSummaryDirect => _isSummaryDirect;
+  bool get isDirectIndirectLoading => _isDirectIndirectLoading;
+  bool get isRetailingDeepDiveInd => _isRetailingDeepDiveInd;
 
   //int
   int _selectedNav = 0;
@@ -154,6 +161,16 @@ class HomeController extends GetxController {
 
   void onChangeCoverageTrends(String value) {
     _selectedCoverageTrendsFilter = value;
+    update();
+  }
+
+  void onChangeSummaryDI(bool value) {
+    _isSummaryDirect = value;
+    update();
+  }
+
+  void onChangeDeepDiveIndirect(bool value) {
+    _isRetailingDeepDiveInd = value;
     update();
   }
 
@@ -381,6 +398,7 @@ class HomeController extends GetxController {
       _selectedTempGeo = getGeo();
       debugPrint('===>Selected Geo : $selectedGeo');
       _selectedGeo = getGeo();
+
       _selectedTrendsGeo = getGeo();
       _selectedTrendsGeoValue = getGeoValue();
       onGeoChange(_selectedGeo);
@@ -771,6 +789,10 @@ class HomeController extends GetxController {
     return homeRepo.getGeo();
   }
 
+  bool getPersona() {
+    return homeRepo.getPersona();
+  }
+
   String getGeoValue() {
     return homeRepo.getGeoValue();
   }
@@ -856,7 +878,12 @@ class HomeController extends GetxController {
     update();
   }
 
-  List<SummaryModel> summaryData = [];
+  List<SummaryModel> summaryData = [], summaryIndirectData = [];
+  RetailingGeoModel? retailingGeoModel;
+  RetailingGeoModel? categoryRetailingModel;
+  RetailingGeoModel? channelRetailingModel;
+  RetailingTrendsModel? trendsRetailingModel;
+
   List<List<String>> retailingList = [],
       coverageList = [],
       gpList = [],
@@ -887,9 +914,15 @@ class HomeController extends GetxController {
   // }
 
   Future<ResponseModel> getSummaryData() async {
-    debugPrint('===>Calling summary data');
+    getSummaryIndirectData();
+    // debugPrint('===>Calling summary data');
     _isSummaryPageLoading = true;
     update();
+    var stopWatch = Stopwatch();
+    stopWatch.reset();
+    stopWatch.start();
+    Logger().log(Level.debug,
+        '===> Summary Data Start: ${stopWatch.elapsed.toString()}');
 
     Response response = await homeRepo.getSummaryData({
       "date": _selectedTempMonth,
@@ -903,7 +936,7 @@ class HomeController extends GetxController {
           : [_selectedGeoValue],
     });
     ResponseModel responseModel;
-    Logger().w('Summary Pade Data :=> ${response.bodyString}');
+    Logger().w('Summary Page Data :=> ${response.bodyString}');
     if (response.statusCode == 200) {
       summaryData = summaryModelFromJson(response.bodyString.toString());
       responseModel = ResponseModel(true, 'Success');
@@ -913,7 +946,57 @@ class HomeController extends GetxController {
     } else {
       responseModel = ResponseModel(false, response.statusText ?? "");
     }
+    Logger().log(
+        Level.debug, '===> Summary Data End: ${stopWatch.elapsed.toString()}');
+    stopWatch.stop();
+    stopWatch.reset();
     _isSummaryPageLoading = false;
+    update();
+    return responseModel;
+  }
+
+  Future<ResponseModel> getSummaryIndirectData() async {
+    // debugPrint('===>Calling summary data');
+    _isDirectIndirectLoading = true;
+    update();
+    //debug the api calling time response
+    var stopWatch = Stopwatch();
+    stopWatch.reset();
+    stopWatch.start();
+    Logger().log(Level.debug,
+        '===> Summary Indirect Data Start: ${stopWatch.elapsed.toString()}');
+    //debug the api calling time response
+    Response response = await homeRepo.getSummaryData({
+      "date": _selectedTempMonth,
+      //"${selectedMonth!.substring(0, 3)}-$selectedYear",
+      _selectedGeo.startsWith('All India')
+          ? "allIndia"
+          : _selectedGeo.startsWith('Site')
+              ? "site"
+              : _selectedGeo.toLowerCase(): _selectedGeo.startsWith('All India')
+          ? ["allIndia"]
+          : [_selectedGeoValue],
+      "toggleMode": "i"
+    });
+    ResponseModel responseModel;
+    // Logger().w('Summary Pade Data :=> ${response.bodyString}');
+    if (response.statusCode == 200) {
+      summaryIndirectData =
+          summaryModelFromJson(response.bodyString.toString());
+      responseModel = ResponseModel(true, 'Success');
+    } else if (response.statusCode == 401) {
+      responseModel = ResponseModel(false, response.statusText ?? "");
+      Get.offAndToNamed(AppPages.FED_AUTH_LOGIN);
+    } else {
+      responseModel = ResponseModel(false, response.statusText ?? "");
+    }
+    //Api Response Calling time
+    Logger().log(Level.debug,
+        '===> Summary Indirect Data End: ${stopWatch.elapsed.toString()}');
+    stopWatch.stop();
+    stopWatch.reset();
+    //
+    _isDirectIndirectLoading = false;
     update();
     return responseModel;
   }
@@ -923,6 +1006,11 @@ class HomeController extends GetxController {
       _isFilterLoading = true;
       update();
     });
+    var stopWatch = Stopwatch();
+    stopWatch.reset();
+    stopWatch.start();
+    Logger().log(
+        Level.debug, '===> Filter Data Start: ${stopWatch.elapsed.toString()}');
     Response response = await homeRepo.getFilters({"year": year});
     ResponseModel responseModel;
     if (response.statusCode == 200) {
@@ -940,9 +1028,16 @@ class HomeController extends GetxController {
       responseModel = ResponseModel(false, response.statusText ?? "");
       Get.offAndToNamed(AppPages.FED_AUTH_LOGIN);
     } else {
-      Logger().e(response.body);
+      // Logger().e(response.body);
       responseModel = ResponseModel(false, response.statusText ?? "");
     }
+
+    //Api Calling Response time
+    Logger().log(
+        Level.debug, '===> Filter Data End : ${stopWatch.elapsed.toString()}');
+    stopWatch.stop();
+    stopWatch.reset();
+    //
     _isFilterLoading = false;
     update();
     return responseModel;
@@ -953,14 +1048,26 @@ class HomeController extends GetxController {
       String name = 'geo',
       bool isTrendsFilter = false,
       List<Map<String, dynamic>>? allFilter}) async {
+    var stopWatch = Stopwatch();
+    stopWatch.reset();
+    stopWatch.start();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (name.startsWith('trends')) {
         _isRetailingTrendsLoading = true;
+        var elapsedString = stopWatch.elapsed.toString();
+        Logger().log(
+            Level.debug, '===> Retailing Trends Data Start $elapsedString');
       } else if (type.startsWith('geo')) {
+        Logger().log(Level.debug,
+            '===> Retailing Geo Data Start ${stopWatch.elapsed.toString()}');
         _isSummaryLoading = true;
       } else if (type.startsWith('category')) {
+        Logger().log(Level.debug,
+            '===> Retailing Category Data Start ${stopWatch.elapsed.toString()}');
         _isCategoryLoading = true;
       } else if (type.startsWith('channel')) {
+        Logger().log(Level.debug,
+            '===> Retailing Channel Data Start ${stopWatch.elapsed.toString()}');
         _isChannelLoading = true;
       } else {
         _isLoading = true;
@@ -969,30 +1076,6 @@ class HomeController extends GetxController {
       update();
     });
 
-    if (name.toLowerCase().startsWith('trend')) {
-      debugPrint('===>Retailing Trends Data ${{
-        "date": _selectedTempMonth,
-        //"${selectedMonth!.substring(0, 3)}-$selectedYear",
-        if (isTrendsFilter)
-          _selectedTrendsGeo.startsWith('All India')
-                  ? "allIndia"
-                  : _selectedTrendsGeo.toLowerCase():
-              _selectedTrendsGeo.startsWith('All India')
-                  ? "allIndia"
-                  : _selectedTrendsGeoValue,
-        if (!isTrendsFilter)
-          _selectedGeo.startsWith('All India')
-                  ? "allIndia"
-                  : _selectedGeo.toLowerCase():
-              _selectedGeo.startsWith('All India')
-                  ? "allIndia"
-                  : _selectedGeoValue,
-        if (selectedTrendsCategoryValue.isNotEmpty)
-          selectedTrendsCategory.toLowerCase(): selectedTrendsCategoryValue,
-        if (selectedChannelFilter.isNotEmpty)
-          selectedChannel.toLowerCase(): selectedChannelFilter,
-      }}');
-    }
     Response response = await homeRepo.getRetailingData({
       "name": name,
       "type": type,
@@ -1119,35 +1202,48 @@ class HomeController extends GetxController {
     if (response.statusCode == 200) {
       if (response.body["status"].toString().toLowerCase() == 'true') {
         if (name.startsWith('trends')) {
-          Logger().v('===>Trends Data:${json.encode(response.body)}');
-          trendsList = response.body["data"] == null
-              ? []
-              : List<TrendsModel>.from(
-                  response.body["data"]!.map((x) => TrendsModel.fromJson(x)));
+          // Logger().f('===>Trends Data:${json.encode(response.body)}');
+          final data = response.body["data"];
+          if (data != null && data.isNotEmpty) {
+            trendsRetailingModel = RetailingTrendsModel.fromJson(data);
+          }
+          // trendsList = response.body["data"] == null
+          //     ? []
+          //     : List<TrendsModel>.from(
+          //         response.body["data"]!.map((x) => TrendsModel.fromJson(x)));
         } else {
           if (type.startsWith('geo')) {
             //CustomShimmer
             debugPrint('===>Geo Data:${json.encode(response.body)}');
-            retailingList = response.body["data"] == null
-                ? []
-                : List<List<String>>.from(response.body["data"]
-                    .map((x) => List<String>.from(x.map((x) => x.toString()))));
+            final data = response.body["data"];
+            if (data != null && data.isNotEmpty) {
+              retailingGeoModel = RetailingGeoModel.fromJson(data);
+            }
+
+            // retailingList = response.body["data"] == null
+            //     ? []
+            //     : List<List<String>>.from(response.body["data"]
+            //         .map((x) => List<String>.from(x.map((x) => x.toString()))));
           } else if (type.startsWith('category')) {
-            Logger().i('===>Category Data:${json.encode(response.body)}');
-            categoryList = response.body["data"] == null
-                ? []
-                : List<List<String>>.from(response.body["data"]
-                    .map((x) => List<String>.from(x.map((x) => x.toString()))));
+            // Logger().i('===>Category Data:${json.encode(response.body)}');
+            if (response.body["data"] != null) {
+              categoryRetailingModel =
+                  RetailingGeoModel.fromJson(response.body["data"]);
+            }
           } else if (type.startsWith('channel')) {
-            Logger().v('===>Category Data:${json.encode(response.body)}');
-            debugPrint(
-                '===>Retailing Channel Data:${json.encode(response.body)}');
-            channelList = response.body["data"] == null
-                ? []
-                : List<List<String>>.from(response.body["data"]
-                    .map((x) => List<String>.from(x.map((x) => x.toString()))));
+            // Logger().f('===>Category Data:${json.encode(response.body)}');
+            // debugPrint(
+            //     '===>Retailing Channel Data:${json.encode(response.body)}');
+            if (response.body["data"] != null) {
+              channelRetailingModel =
+                  RetailingGeoModel.fromJson(response.body["data"]);
+            }
+            // channelList = response.body["data"] == null
+            //     ? []
+            //     : List<List<String>>.from(response.body["data"]
+            //         .map((x) => List<String>.from(x.map((x) => x.toString()))));
           } else if (type.startsWith('trends')) {
-            Logger().v('===>Trends Data:${json.encode(response.body)}');
+            // Logger().f('===>Trends Data:${json.encode(response.body)}');
 
             trendsList = response.body["data"] == null
                 ? []
@@ -1159,7 +1255,7 @@ class HomeController extends GetxController {
       } else {
         //set value as empty
         // showCustomSnackBar(response.body["message"] ?? '');
-        Logger().i(response.body);
+        // Logger().i(response.body);
 
         responseModel = ResponseModel(false, 'Somehting went wrong!');
       }
@@ -1168,21 +1264,31 @@ class HomeController extends GetxController {
       Get.offAndToNamed(AppPages.FED_AUTH_LOGIN);
     } else {
       // showCustomSnackBar('${response.body}');
-      Logger().e(
-          '===>Status Code: ${response.statusCode} Type:$type  Name:$name Response body :${response.body}');
+      // Logger().e(
+      //     '===>Status Code: ${response.statusCode} Type:$type  Name:$name Response body :${response.body}');
       responseModel = ResponseModel(false, response.statusText ?? "");
     }
     if (name.startsWith('trends')) {
+      Logger().log(Level.debug,
+          '===> Retailing Trends Data End ${stopWatch.elapsed.toString()}');
       _isRetailingTrendsLoading = false;
     } else if (type.startsWith('geo')) {
+      Logger().log(Level.debug,
+          '===> Retailing Geo Data End ${stopWatch.elapsed.toString()}');
       _isSummaryLoading = false;
     } else if (type.startsWith('category')) {
+      Logger().log(Level.debug,
+          '===> Retailing Category Data End ${stopWatch.elapsed.toString()}');
       _isCategoryLoading = false;
     } else if (type.startsWith('channel')) {
+      Logger().log(Level.debug,
+          '===> Retailing Channel Data End ${stopWatch.elapsed.toString()}');
       _isChannelLoading = false;
     } else {
       _isLoading = false;
     }
+    stopWatch.stop();
+    stopWatch.reset();
 
     update();
     return responseModel;
@@ -1193,6 +1299,11 @@ class HomeController extends GetxController {
       _isFilterLoading = true;
       update();
     });
+    var stopWatch = Stopwatch();
+    stopWatch.reset();
+    stopWatch.start();
+    Logger().log(
+        Level.debug, '===> Filter Data Start ${stopWatch.elapsed.toString()}');
     Response response = await homeRepo.getFilters({"filter": filter});
     ResponseModel responseModel;
     if (response.statusCode == 200) {
@@ -1212,6 +1323,10 @@ class HomeController extends GetxController {
     } else {
       responseModel = ResponseModel(false, response.statusText ?? "");
     }
+    Logger().log(
+        Level.debug, '===> Filter Data End ${stopWatch.elapsed.toString()}');
+    stopWatch.stop();
+    stopWatch.reset();
     _isFilterLoading = false;
     update();
     return responseModel;
@@ -1223,6 +1338,13 @@ class HomeController extends GetxController {
       _isFilterLoading = true;
       update();
     });
+    //
+    var stopWatch = Stopwatch();
+    stopWatch.reset();
+    stopWatch.start();
+    Logger().log(Level.debug,
+        '===> Category Search Data Start ${stopWatch.elapsed.toString()}');
+    //
     Response response = await homeRepo.getFilters({
       "search": {"name": query, "type": type}
     });
@@ -1249,6 +1371,10 @@ class HomeController extends GetxController {
     } else {
       responseModel = ResponseModel(false, response.statusText ?? "");
     }
+    Logger().log(Level.debug,
+        '===> Category Search Data End ${stopWatch.elapsed.toString()}');
+    stopWatch.stop();
+    stopWatch.reset();
     _isFilterLoading = false;
     update();
     return responseModel;
@@ -1260,14 +1386,25 @@ class HomeController extends GetxController {
       String name = 'geo',
       bool isTrendsFilter = false,
       List<Map<String, dynamic>>? allFilter}) async {
+    var stopWatch = Stopwatch();
+    stopWatch.reset();
+    stopWatch.start();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (name.startsWith('trends')) {
+        Logger().log(Level.debug,
+            '===> Coverage Trends Data Start ${stopWatch.elapsed.toString()}');
         _isCoverageTrendsLoading = true;
       } else if (type.startsWith('geo')) {
+        Logger().log(Level.debug,
+            '===> Coverage Geo Data Start ${stopWatch.elapsed.toString()}');
         _isSummaryLoading = true;
       } else if (type.startsWith('category')) {
+        Logger().log(Level.debug,
+            '===> Coverage Category Data Start ${stopWatch.elapsed.toString()}');
         _isCategoryLoading = true;
       } else if (type.startsWith('channel')) {
+        Logger().log(Level.debug,
+            '===> Coverage Channel Data Start ${stopWatch.elapsed.toString()}');
         _isChannelLoading = true;
       } else {
         _isLoading = true;
@@ -1404,7 +1541,7 @@ class HomeController extends GetxController {
     if (response.statusCode == 200) {
       if (response.body["status"].toString().toLowerCase() == 'true') {
         if (name.startsWith('trends')) {
-          Logger().v('===>Coverage Trends Data:${json.encode(response.body)}');
+          // Logger().f('===>Coverage Trends Data:${json.encode(response.body)}');
 
           trendsCoverageList = response.body["data"] == null
               ? []
@@ -1413,27 +1550,27 @@ class HomeController extends GetxController {
         } else {
           if (type.startsWith('geo')) {
             //CustomShimmer
-            debugPrint('===>Geo Data:${json.encode(response.body)}');
+            // debugPrint('===>Geo Data:${json.encode(response.body)}');
             coverageList = response.body["data"] == null
                 ? []
                 : List<List<String>>.from(response.body["data"]
                     .map((x) => List<String>.from(x.map((x) => x.toString()))));
           } else if (type.startsWith('category')) {
-            Logger().i('===>Category Data:${json.encode(response.body)}');
+            // Logger().i('===>Category Data:${json.encode(response.body)}');
             categoryCoverageList = response.body["data"] == null
                 ? []
                 : List<List<String>>.from(response.body["data"]
                     .map((x) => List<String>.from(x.map((x) => x.toString()))));
           } else if (type.startsWith('channel')) {
-            Logger().v('===>Category Data:${json.encode(response.body)}');
-            debugPrint(
-                '===>Coverage Channel Data:${json.encode(response.body)}');
+            // Logger().f('===>Category Data:${json.encode(response.body)}');
+            // debugPrint(
+            //     '===>Coverage Channel Data:${json.encode(response.body)}');
             channelCoverageList = response.body["data"] == null
                 ? []
                 : List<List<String>>.from(response.body["data"]
                     .map((x) => List<String>.from(x.map((x) => x.toString()))));
           } else if (type.startsWith('trends')) {
-            Logger().v('===>Trends Data:${json.encode(response.body)}');
+            // Logger().f('===>Trends Data:${json.encode(response.body)}');
             trendsCoverageList = response.body["data"] == null
                 ? []
                 : List<CoverageTrendsModel>.from(response.body["data"]!
@@ -1443,27 +1580,37 @@ class HomeController extends GetxController {
         responseModel = ResponseModel(true, response.body["message"]);
       } else {
         // showCustomSnackBar(response.body["message"] ?? '');
-        Logger().e(response.body);
+        // Logger().e(response.body);
         responseModel = ResponseModel(false, 'Somehting went wrong!');
       }
     } else if (response.statusCode == 401) {
       responseModel = ResponseModel(false, response.statusText ?? "");
       Get.offAndToNamed(AppPages.FED_AUTH_LOGIN);
     } else {
-      Logger().e(response.body);
+      // Logger().e(response.body);
       responseModel = ResponseModel(false, response.statusText ?? "");
     }
     if (name.startsWith('trends')) {
+      Logger().log(Level.debug,
+          '===> Coverage Trends Data end ${stopWatch.elapsed.toString()}');
       _isCoverageTrendsLoading = false;
     } else if (type.startsWith('geo')) {
+      Logger().log(Level.debug,
+          '===> Coverage Geo Data end ${stopWatch.elapsed.toString()}');
       _isSummaryLoading = false;
     } else if (type.startsWith('category')) {
+      Logger().log(Level.debug,
+          '===> Coverage Category Data end ${stopWatch.elapsed.toString()}');
       _isCategoryLoading = false;
     } else if (type.startsWith('channel')) {
+      Logger().log(Level.debug,
+          '===> Coverage Channel Data end ${stopWatch.elapsed.toString()}');
       _isChannelLoading = false;
     } else {
       _isLoading = false;
     }
+    stopWatch.stop();
+    stopWatch.reset();
 
     update();
     return responseModel;
@@ -1475,14 +1622,25 @@ class HomeController extends GetxController {
       String name = 'geo',
       bool isTrendsFilter = false,
       List<Map<String, dynamic>>? allFilter}) async {
+    var stopWatch = Stopwatch();
+    stopWatch.reset();
+    stopWatch.start();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (name.startsWith('trends')) {
+        Logger().log(Level.debug,
+            '===> Golden Points Trends Data Start ${stopWatch.elapsed.toString()}');
         _isGPTrendsLoading = true;
       } else if (type.startsWith('geo')) {
+        Logger().log(Level.debug,
+            '===> Golden Points Geo Data Start ${stopWatch.elapsed.toString()}');
         _isSummaryLoading = true;
       } else if (type.startsWith('category')) {
+        Logger().log(Level.debug,
+            '===> Golden Points Category Data Start ${stopWatch.elapsed.toString()}');
         _isCategoryLoading = true;
       } else if (type.startsWith('channel')) {
+        Logger().log(Level.debug,
+            '===> Golden Points Channel Data Start ${stopWatch.elapsed.toString()}');
         _isChannelLoading = true;
       } else {
         _isLoading = true;
@@ -1631,7 +1789,7 @@ class HomeController extends GetxController {
     if (response.statusCode == 200) {
       if (response.body["status"].toString().toLowerCase() == 'true') {
         if (name.startsWith('trends')) {
-          Logger().v('===>Trends Data:${json.encode(response.body)}');
+          // Logger().f('===>Trends Data:${json.encode(response.body)}');
           trendsGPList = response.body["data"] == null
               ? []
               : List<GPTrendsModel>.from(
@@ -1639,26 +1797,26 @@ class HomeController extends GetxController {
         } else {
           if (type.startsWith('geo')) {
             //CustomShimmer
-            debugPrint('===>Geo Data:${json.encode(response.body)}');
+            // debugPrint('===>Geo Data:${json.encode(response.body)}');
             gpList = response.body["data"] == null
                 ? []
                 : List<List<String>>.from(response.body["data"]
                     .map((x) => List<String>.from(x.map((x) => x.toString()))));
           } else if (type.startsWith('category')) {
-            Logger().i('===>Category Data:${json.encode(response.body)}');
+            // Logger().i('===>Category Data:${json.encode(response.body)}');
             categoryGPList = response.body["data"] == null
                 ? []
                 : List<List<String>>.from(response.body["data"]
                     .map((x) => List<String>.from(x.map((x) => x.toString()))));
           } else if (type.startsWith('channel')) {
-            Logger().v('===>Category Data:${json.encode(response.body)}');
-            debugPrint('===>GP Channel Data:${json.encode(response.body)}');
+            // Logger().f('===>Category Data:${json.encode(response.body)}');
+            // debugPrint('===>GP Channel Data:${json.encode(response.body)}');
             channelGPList = response.body["data"] == null
                 ? []
                 : List<List<String>>.from(response.body["data"]
                     .map((x) => List<String>.from(x.map((x) => x.toString()))));
           } else if (type.startsWith('trends')) {
-            Logger().v('===>Trends Data:${json.encode(response.body)}');
+            // Logger().f('===>Trends Data:${json.encode(response.body)}');
             trendsGPList = response.body["data"] == null
                 ? []
                 : List<GPTrendsModel>.from(response.body["data"]!
@@ -1668,29 +1826,38 @@ class HomeController extends GetxController {
         responseModel = ResponseModel(true, response.body["message"]);
       } else {
         // showCustomSnackBar(response.body["message"] ?? '');
-        Logger().i("===>Name:$name --Type:$type  :${response.body}");
+        // Logger().i("===>Name:$name --Type:$type  :${response.body}");
         responseModel = ResponseModel(false, 'Somehting went wrong!');
       }
     } else if (response.statusCode == 401) {
       responseModel = ResponseModel(false, response.statusText ?? "");
       Get.offAndToNamed(AppPages.FED_AUTH_LOGIN);
     } else {
-      Logger().e(
-          "===>Status Code:${response.statusCode} Name:$name --Type:$type  :${response.body}");
+      // Logger().e(
+      //     "===>Status Code:${response.statusCode} Name:$name --Type:$type  :${response.body}");
       responseModel = ResponseModel(false, response.statusText ?? "");
     }
     if (name.startsWith('trends')) {
+      Logger().log(Level.debug,
+          '===> Golden Points Trends Data end ${stopWatch.elapsed.toString()}');
       _isGPTrendsLoading = false;
     } else if (type.startsWith('geo')) {
+      Logger().log(Level.debug,
+          '===> Golden Points Geo Data end ${stopWatch.elapsed.toString()}');
       _isSummaryLoading = false;
     } else if (type.startsWith('category')) {
+      Logger().log(Level.debug,
+          '===> Golden Points Category Data end ${stopWatch.elapsed.toString()}');
       _isCategoryLoading = false;
     } else if (type.startsWith('channel')) {
+      Logger().log(Level.debug,
+          '===> Golden Points Channel Data end ${stopWatch.elapsed.toString()}');
       _isChannelLoading = false;
     } else {
       _isLoading = false;
     }
-
+    stopWatch.stop();
+    stopWatch.reset();
     update();
     return responseModel;
   }
@@ -1701,14 +1868,25 @@ class HomeController extends GetxController {
       String name = 'geo',
       bool isTrendsFilter = false,
       List<Map<String, dynamic>>? allFilter}) async {
+    var stopWatch = Stopwatch();
+    stopWatch.reset();
+    stopWatch.start();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (name.startsWith('trends')) {
+        Logger().log(Level.debug,
+            '===> FocuscBrand Trends Data Start ${stopWatch.elapsed.toString()}');
         _isFBTrendsLoading = true;
       } else if (type.startsWith('geo')) {
+        Logger().log(Level.debug,
+            '===> Focus Brand Geo Data Start ${stopWatch.elapsed.toString()}');
         _isSummaryLoading = true;
       } else if (type.startsWith('category')) {
+        Logger().log(Level.debug,
+            '===> Focus Brand Category Data Start ${stopWatch.elapsed.toString()}');
         _isCategoryLoading = true;
       } else if (type.startsWith('channel')) {
+        Logger().log(Level.debug,
+            '===> Focus Brand Channel Data Start ${stopWatch.elapsed.toString()}');
         _isChannelLoading = true;
       } else {
         _isLoading = true;
@@ -1716,7 +1894,7 @@ class HomeController extends GetxController {
 
       update();
     });
-    debugPrint('=====>FocusBrand Type:$type Name: $name');
+    // debugPrint('=====>FocusBrand Type:$type Name: $name');
     Response response = await homeRepo.getFocusBrandData({
       "name": name,
       "type": type,
@@ -1849,13 +2027,13 @@ class HomeController extends GetxController {
     if (response.statusCode == 200) {
       if (response.body["status"].toString().toLowerCase() == 'true') {
         if (name.startsWith('trends')) {
-          Logger().v('===>Trends Data:${json.encode(response.body)}');
+          // Logger().f('===>Trends Data:${json.encode(response.body)}');
           trendsFBList = response.body["data"] == null
               ? []
               : List<FBTrendsModel>.from(
                   response.body["data"]!.map((x) => FBTrendsModel.fromJson(x)));
-          Logger()
-              .v('===>Trends Data Length:${trendsFBList.first.data?.length}');
+          // Logger()
+          //     .f('===>Trends Data Length:${trendsFBList.first.data?.length}');
         } else {
           if (type.startsWith('geo')) {
             //CustomShimmer
@@ -1865,20 +2043,20 @@ class HomeController extends GetxController {
                 : List<List<String>>.from(response.body["data"]
                     .map((x) => List<String>.from(x.map((x) => x.toString()))));
           } else if (type.startsWith('category')) {
-            Logger().i('===>Category Data:${json.encode(response.body)}');
+            // Logger().i('===>Category Data:${json.encode(response.body)}');
             categoryFBList = response.body["data"] == null
                 ? []
                 : List<List<String>>.from(response.body["data"]
                     .map((x) => List<String>.from(x.map((x) => x.toString()))));
           } else if (type.startsWith('channel')) {
-            Logger().v('===>Channel Data:${json.encode(response.body)}');
+            // Logger().f('===>Channel Data:${json.encode(response.body)}');
             debugPrint('===>FB Channel Data:${json.encode(response.body)}');
             channelFBList = response.body["data"] == null
                 ? []
                 : List<List<String>>.from(response.body["data"]
                     .map((x) => List<String>.from(x.map((x) => x.toString()))));
           } else if (type.startsWith('trends')) {
-            Logger().v('===>Trends Data:${json.encode(response.body)}');
+            // Logger().f('===>Trends Data:${json.encode(response.body)}');
 
             trendsFBList = response.body["data"] == null
                 ? []
@@ -1891,128 +2069,6 @@ class HomeController extends GetxController {
       } else {
         // set value as empty
         // showCustomSnackBar(response.body["message"] ?? '');
-        Logger().i('==>Focus Brand $type $name ${{
-          "name": name,
-          "type": type,
-          "query": name.toLowerCase().startsWith('trend')
-              ? [
-                  {
-                    "date": selectedMonth,
-                    // "${selectedMonth!.substring(0, 3)}-$selectedYear",
-                    if (selectedTrendsGeoValue.isNotEmpty)
-                      _selectedTrendsGeo.startsWith('All India')
-                              ? "allIndia"
-                              : _selectedTrendsGeo.toLowerCase():
-                          _selectedTrendsGeo.startsWith('All India')
-                              ? "allIndia"
-                              : _selectedTrendsGeoValue,
-                    if (selectedTrendsGeoValue.isEmpty)
-                      _selectedGeo.startsWith('All India')
-                              ? "allIndia"
-                              : _selectedGeo.toLowerCase():
-                          _selectedGeo.startsWith('All India')
-                              ? "allIndia"
-                              : _selectedGeoValue,
-                    if (selectedTrendsCategoryValue.isNotEmpty)
-                      selectedTrendsCategory.toLowerCase():
-                          selectedTrendsCategoryValue,
-                    if (selectedChannelFilter.isNotEmpty)
-                      selectedChannel.toLowerCase(): selectedChannelFilter,
-                  },
-                ]
-              : type.startsWith('channel')
-                  ? allFilter ??
-                      [
-                        {
-                          "date": selectedMonth,
-                          // "${selectedMonth!.substring(0, 3)}-$selectedYear",
-                          _selectedGeo.startsWith('All India')
-                                  ? "allIndia"
-                                  : _selectedGeo.toLowerCase():
-                              _selectedGeo.startsWith('All India')
-                                  ? ["allIndia"]
-                                  : [_selectedGeoValue],
-                          if (selectedChannelFilter.isNotEmpty)
-                            selectedChannel.toLowerCase():
-                                selectedChannelFilter,
-                          if (selectedChannelFilter.isEmpty) "channel": [],
-                        }
-                      ]
-                  : name.startsWith('geo')
-                      ? allFilter ??
-                          [
-                            {
-                              "date": selectedMonth,
-                              //"${selectedMonth!.substring(0, 3)}-$selectedYear",
-                              _selectedGeo.startsWith('All India')
-                                      ? "allIndia"
-                                      : _selectedGeo.toLowerCase():
-                                  _selectedGeo.startsWith('All India')
-                                      ? "allIndia"
-                                      : _selectedGeoValue,
-                            },
-                            ...selectedMultiDivisions
-                                .map((e) => {
-                                      "date": selectedMonth,
-                                      // "${selectedMonth!.substring(0, 3)}-$selectedYear",
-                                      "division": e,
-                                      "category": [],
-                                    })
-                                .toList(),
-                            ...selectedMultiClusters
-                                .map((e) => {
-                                      "date": selectedMonth,
-                                      // "${selectedMonth!.substring(0, 3)}-$selectedYear",
-                                      "cluster": e,
-                                      "category": [],
-                                    })
-                                .toList(),
-                            ...selectedMultiSites
-                                .map((e) => {
-                                      "date": selectedMonth,
-                                      // "${selectedMonth!.substring(0, 3)}-$selectedYear",
-                                      "site": e,
-                                      "category": [],
-                                    })
-                                .toList(),
-                            ...selectedMultiBranches
-                                .map((e) => {
-                                      "date": selectedMonth,
-                                      //"${selectedMonth!.substring(0, 3)}-$selectedYear",
-                                      "branch": e,
-                                      "category": [],
-                                    })
-                                .toList(),
-                            ...selectedMultiFilters
-                                .map((e) => {
-                                      "date": selectedMonth,
-                                      //"${selectedMonth!.substring(0, 3)}-$selectedYear",
-                                      "allIndia": e,
-                                      "category": [],
-                                    })
-                                .toList(),
-                          ]
-                      : [
-                          {
-                            "date": selectedMonth,
-                            // "${selectedMonth!.substring(0, 3)}-$selectedYear",
-                            _selectedGeo.startsWith('All India')
-                                    ? "allIndia"
-                                    : _selectedGeo.toLowerCase():
-                                _selectedGeo.startsWith('All India')
-                                    ? ["allIndia"]
-                                    : _selectedGeoValue,
-                            if (selectedCategoryFilters.isNotEmpty)
-                              selectedCategory
-                                          .toLowerCase()
-                                          .contains('sub-brand')
-                                      ? 'subBrandForm'
-                                      : selectedCategory.toLowerCase():
-                                  selectedCategoryFilters,
-                            if (selectedCategoryFilters.isEmpty) 'category': []
-                          },
-                        ]
-        }} ${response.body}');
 
         responseModel = ResponseModel(false, 'Somehting went wrong!');
       }
@@ -2020,21 +2076,30 @@ class HomeController extends GetxController {
       responseModel = ResponseModel(false, response.statusText ?? "");
       Get.offAndToNamed(AppPages.FED_AUTH_LOGIN);
     } else {
-      Logger().e('==>Focus Brand $type $name ${response.body}');
+      // Logger().e('==>Focus Brand $type $name ${response.body}');
       responseModel = ResponseModel(false, response.statusText ?? "");
     }
     if (name.startsWith('trends')) {
+      Logger().log(Level.debug,
+          '===> Focus Brand Trends Data end ${stopWatch.elapsed.toString()}');
       _isFBTrendsLoading = false;
     } else if (type.startsWith('geo')) {
+      Logger().log(Level.debug,
+          '===> Focus Brand Geo Data end ${stopWatch.elapsed.toString()}');
       _isSummaryLoading = false;
     } else if (type.startsWith('category')) {
+      Logger().log(Level.debug,
+          '===> Focus Brand Category Data end ${stopWatch.elapsed.toString()}');
       _isCategoryLoading = false;
     } else if (type.startsWith('channel')) {
+      Logger().log(Level.debug,
+          '===> Focus Brand Channel Data end ${stopWatch.elapsed.toString()}');
       _isChannelLoading = false;
     } else {
       _isLoading = false;
     }
-
+    stopWatch.stop();
+    stopWatch.reset();
     update();
     return responseModel;
   }

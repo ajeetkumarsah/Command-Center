@@ -6,7 +6,6 @@ import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
 import 'package:command_centre/mobile_dashboard/utils/summary_types.dart';
 import 'package:command_centre/mobile_dashboard/controllers/home_controller.dart';
 import 'package:command_centre/mobile_dashboard/data/models/response/trends_model.dart';
-// import 'package:syncfusion_flutter_charts/sparkcharts.dart';
 // import 'package:syncfusion_flutter_charts/charts.dart';
 
 class CustomExpandedChartWidget extends StatefulWidget {
@@ -14,7 +13,7 @@ class CustomExpandedChartWidget extends StatefulWidget {
   final void Function()? onFilterTap;
   final bool isExpanded;
   final String title;
-  final List<TrendsModel> trendsList;
+  final TrendsModel trendsList;
   final String summaryType;
   final Widget? coverageWidget;
   const CustomExpandedChartWidget(
@@ -278,7 +277,7 @@ class _CustomExpandedChartWidgetState extends State<CustomExpandedChartWidget> {
                                   LineChartData(
                                     lineBarsData: [
                                       LineChartBarData(
-                                        spots: widget.trendsList[0].data!
+                                        spots: widget.trendsList.data!
                                             .asMap()
                                             .map(
                                               (i, point) => MapEntry(
@@ -356,11 +355,10 @@ class _CustomExpandedChartWidgetState extends State<CustomExpandedChartWidget> {
                                                   widget.summaryType ==
                                                           SummaryTypes
                                                               .retailing.type
-                                                      ? double.tryParse(ctlr
-                                                                      .channelSales
-                                                                  ? (widget.trendsList[0].data![touchedSpot.spotIndex].cyRt ??
+                                                      ? double.tryParse(ctlr.channelSales
+                                                                  ? (widget.trendsList.data![touchedSpot.spotIndex].cyRt ??
                                                                       '0.0')
-                                                                  : (widget.trendsList[0].data![touchedSpot.spotIndex].iya ??
+                                                                  : (widget.trendsList.data![touchedSpot.spotIndex].iya ??
                                                                       '0.0'))
                                                               ?.toStringAsFixed(
                                                                   2) ??
@@ -368,13 +366,13 @@ class _CustomExpandedChartWidgetState extends State<CustomExpandedChartWidget> {
                                                       : widget.summaryType ==
                                                               SummaryTypes
                                                                   .coverage.type
-                                                          ? double.tryParse((widget.trendsList[0].data![touchedSpot.spotIndex].billingPer ?? '0.0'))
-                                                                  ?.toStringAsFixed(
-                                                                      2) ??
+                                                          ? double.tryParse((widget.trendsList.data![touchedSpot.spotIndex].billingPer ?? '0.0'))?.toStringAsFixed(2) ??
                                                               '0.0'
-                                                          : double.tryParse(ctlr.channelSales ? (widget.trendsList[0].data![touchedSpot.spotIndex].cyRt ?? '0.0') : (widget.trendsList[0].data![touchedSpot.spotIndex].iya ?? '0.0'))
-                                                                  ?.toStringAsFixed(
-                                                                      2) ??
+                                                          : double.tryParse(ctlr.channelSales
+                                                                      ? (widget.trendsList.data![touchedSpot.spotIndex].cyRt ??
+                                                                          '0.0')
+                                                                      : (widget.trendsList.data![touchedSpot.spotIndex].iya ?? '0.0'))
+                                                                  ?.toStringAsFixed(2) ??
                                                               '0.0',
                                                   textStyle,
                                                 );
@@ -420,12 +418,13 @@ class _CustomExpandedChartWidgetState extends State<CustomExpandedChartWidget> {
                                     titlesData: FlTitlesData(
                                       // leftTitles: _leftTitles,
                                       bottomTitles: AxisTitles(
-                                        sideTitles: _bottomTitles,
-                                        // drawBehindEverything: true,
+                                        sideTitles:
+                                            _bottomTitles(widget.trendsList),
+                                        
                                       ),
                                       leftTitles: AxisTitles(
                                         sideTitles: _leftTitles,
-                                        // drawBehindEverything: true,
+                                        
                                       ),
                                       topTitles: AxisTitles(
                                           sideTitles:
@@ -492,48 +491,15 @@ class _CustomExpandedChartWidgetState extends State<CustomExpandedChartWidget> {
     );
   }
 
-  SideTitles get _bottomTitles => SideTitles(
+  SideTitles _bottomTitles(TrendsModel trendsList) => SideTitles(
         showTitles: true,
-        reservedSize: 40,
+        reservedSize: 45,
         getTitlesWidget: (value, meta) {
           String text = '';
-          switch (value.toInt()) {
-            case 0:
-              text = 'Jan';
-              break;
-            case 1:
-              text = 'Feb';
-              break;
-            case 2:
-              text = 'Mar';
-              break;
-            case 3:
-              text = 'Apr';
-              break;
-            case 4:
-              text = 'May';
-              break;
-            case 5:
-              text = 'Jun';
-              break;
-            case 6:
-              text = 'Jul';
-              break;
-            case 7:
-              text = 'Aug';
-              break;
-            case 8:
-              text = 'Sep';
-              break;
-            case 9:
-              text = 'Oct';
-              break;
-            case 10:
-              text = 'Nov';
-              break;
-            case 11:
-              text = 'Dec';
-              break;
+          for (var v in trendsList.data!) {
+            if (value.toInt() == v.index) {
+              text = v.month ?? '';
+            }
           }
           return Padding(
             padding: const EdgeInsets.only(bottom: 8.0),
@@ -541,7 +507,10 @@ class _CustomExpandedChartWidgetState extends State<CustomExpandedChartWidget> {
               quarterTurns: 3,
               child: Text(
                 text,
-                style: GoogleFonts.ptSansCaption(color: Colors.black),
+                style: GoogleFonts.ptSansCaption(
+                  color: Colors.black,
+                  fontSize: 13,
+                ),
               ),
             ),
           );

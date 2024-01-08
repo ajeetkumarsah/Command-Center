@@ -470,12 +470,11 @@ class GPDeepDiveScreen extends StatelessWidget {
                               titlesData: FlTitlesData(
                                 bottomTitles: AxisTitles(
                                   sideTitles: _bottomTitles,
-                                  // drawBehindEverything: true,
+                                  
                                 ),
                                 leftTitles: AxisTitles(
                                   sideTitles: SideTitles(showTitles: false),
-                                  // _leftTitles,
-                                  // drawBehindEverything: true,
+                                 
                                 ),
                                 topTitles: AxisTitles(
                                     sideTitles: SideTitles(showTitles: false)),

@@ -10,8 +10,8 @@ import 'package:webview_flutter/webview_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
-import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_constants.dart';
+import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 import 'package:command_centre/mobile_dashboard/utils/routes/app_pages.dart';
 import 'package:command_centre/mobile_dashboard/utils/global.dart' as globals;
 import 'package:command_centre/mobile_dashboard/views/login/access_denied_screen.dart';
@@ -227,12 +227,16 @@ class _FedAuthScreenState extends State<FedAuthScreen> {
         globals.name = session.getString(AppConstants.NAME) ?? '';
         globals.email = session.getString(AppConstants.EMAIL) ?? '';
         if (session.getString(AppConstants.DEFAULT_GEO) != null &&
-            session.getString(AppConstants.DEFAULT_GEO)!.isNotEmpty &&
+            session.getString(AppConstants.DEFAULT_GEO)!.trim().isNotEmpty &&
             session.getString(AppConstants.DEFAULT_GEO_VALUE) != null &&
-            session.getString(AppConstants.DEFAULT_GEO_VALUE)!.isNotEmpty) {
+            session
+                .getString(AppConstants.DEFAULT_GEO_VALUE)!
+                .trim()
+                .isNotEmpty) {
           Get.offAndToNamed(AppPages.INITIAL);
+          // Get.offAndToNamed(AppPages.PERSONA_SCREEN);
         } else {
-          Get.offAndToNamed(AppPages.SELECT_PROFILE);
+          Get.offAndToNamed(AppPages.PERSONA_SCREEN);
         }
         // Navigator.pushReplacement(
         //     context,

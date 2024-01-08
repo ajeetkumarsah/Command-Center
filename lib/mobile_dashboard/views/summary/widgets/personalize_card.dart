@@ -6,9 +6,12 @@ class PersonalizeCard extends StatelessWidget {
   final String title;
   final void Function()? onPressedShowMore;
   final List<Widget> children;
+  final Widget? secondWidget;
   final double top;
   final double bottomInside;
   final String secondTitle;
+  final Widget? trailing;
+  final bool showMore;
   const PersonalizeCard({
     super.key,
     this.bottomInside = 24,
@@ -16,6 +19,9 @@ class PersonalizeCard extends StatelessWidget {
     this.onPressedShowMore,
     this.secondTitle = 'CM',
     required this.title,
+    this.trailing,
+    this.secondWidget,
+    this.showMore = true,
     this.top = 24,
   });
 
@@ -30,67 +36,15 @@ class PersonalizeCard extends StatelessWidget {
       child: Column(
         children: [
           ListTile(
-            title: Text(
-              '$title ',
-              style: GoogleFonts.ptSans(
-                fontSize: 16,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-            // ),
-            // Text.rich(
-            //   TextSpan(
-            //     children: [
-            //       TextSpan(
-            //         text: '$title ',
-            //         style: GoogleFonts.ptSans(
-            //           fontSize: 16,
-            //           fontWeight: FontWeight.w700,
-            //         ),
-            //       ),
-            // WidgetSpan(
-            //   child: Container(
-            //     margin:
-            //         const EdgeInsets.only(bottom: 6, left: 4, right: 4),
-            //     decoration: BoxDecoration(
-            //       borderRadius: BorderRadius.circular(100),
-            //       color: AppColors.black,
-            //     ),
-            //     height: 8,
-            //     width: 8,
-            //   ),
-            // ),
-            // TextSpan(
-            //   text: ' $secondTitle',
-            //   style: GoogleFonts.ptSans(
-            //     fontSize: 17,
-            //     fontWeight: FontWeight.w400,
-            //   ),
-            // ),
-            //     ],
-            //   ),
-            // ),
-            trailing: TextButton(
-              onPressed: onPressedShowMore,
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    'Show more',
-                    style: GoogleFonts.ptSans(
-                      color: AppColors.primary,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w400,
-                    ),
+            title: secondWidget ??
+                Text(
+                  '$title ',
+                  style: GoogleFonts.ptSans(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
                   ),
-                  const Icon(
-                    Icons.arrow_outward_rounded,
-                    color: AppColors.primary,
-                    size: 18,
-                  )
-                ],
-              ),
-            ),
+                ),
+            trailing: trailing,
           ),
           Container(
             height: 1,
@@ -99,6 +53,41 @@ class PersonalizeCard extends StatelessWidget {
           ),
           ...children.map((v) => v).toList(),
           SizedBox(height: bottomInside),
+          if (showMore)
+            Container(
+              height: .5,
+              width: double.infinity,
+              color: AppColors.borderColor,
+            ),
+          if (showMore)
+            GestureDetector(
+              onTap: onPressedShowMore,
+              child: Container(
+                // height: 1,
+                width: double.infinity,
+                color: AppColors.white,
+                margin:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Show more ',
+                      style: GoogleFonts.ptSans(
+                        color: AppColors.primary,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    const Icon(
+                      Icons.arrow_outward_rounded,
+                      color: AppColors.primary,
+                      size: 18,
+                    )
+                  ],
+                ),
+              ),
+            ),
         ],
       ),
     );

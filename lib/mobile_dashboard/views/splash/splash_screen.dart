@@ -38,9 +38,11 @@ class _SplashScreenState extends State<SplashScreen> {
         var code = await controller.getPingCode();
         if (token != null && token.isNotEmpty && accessToken.isNotEmpty) {
           if (geo.isNotEmpty && geoValue.isNotEmpty) {
+            debugPrint('===>Splash Geo $geo Value $geoValue');
             Get.offAndToNamed(AppPages.INITIAL);
+            // Get.offAndToNamed(AppPages.PERSONA_SCREEN);
           } else {
-            Get.offAndToNamed(AppPages.SELECT_PROFILE);
+            Get.offAndToNamed(AppPages.PERSONA_SCREEN);
           }
         } else {
           Get.offAndToNamed(AppPages.FED_AUTH_LOGIN);

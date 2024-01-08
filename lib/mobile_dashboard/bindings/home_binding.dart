@@ -3,7 +3,7 @@ import '../controllers/home_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:command_centre/mobile_dashboard/data/api/api_client.dart';
 import 'package:command_centre/mobile_dashboard/data/repository/auth_repo.dart';
-import 'package:command_centre/mobile_dashboard/data/repository/home_repo.dart';
+import 'package:command_centre/mobile_dashboard//data/repository/home_repo.dart';
 import 'package:command_centre/mobile_dashboard/data/repository/store_repo.dart';
 import 'package:command_centre/mobile_dashboard/controllers/auth_controller.dart';
 import 'package:command_centre/mobile_dashboard/controllers/store_controller.dart';

@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
 import 'package:command_centre/mobile_dashboard/utils/summary_types.dart';
-import 'package:command_centre/mobile_dashboard/views/widgets/custom_loader.dart';
 import 'package:command_centre/mobile_dashboard/controllers/home_controller.dart';
+import 'package:command_centre/mobile_dashboard/views/widgets/custom_loader.dart';
 import 'package:command_centre/mobile_dashboard/views/widgets/custom_shimmer.dart';
 import 'package:command_centre/mobile_dashboard/views/widgets/custom_deepdive_appbar.dart';
 import 'package:command_centre/mobile_dashboard/views/golden_point/widget/gp_chart_widget.dart';
@@ -15,6 +15,7 @@ import 'package:command_centre/mobile_dashboard/views/retailing/widgets/select_m
 import 'package:command_centre/mobile_dashboard/views/retailing/widgets/trends_filter_bottomsheet.dart';
 import 'package:command_centre/mobile_dashboard/views/retailing/widgets/channel_filter_bottomsheet.dart';
 import 'package:command_centre/mobile_dashboard/views/retailing/widgets/category_filter_bottomsheet.dart';
+import 'package:command_centre/mobile_dashboard/views/retailing/widgets/custom_expanded_chart_widget.dart';
 
 class GoldenPointScreen extends StatelessWidget {
   GoldenPointScreen({super.key});

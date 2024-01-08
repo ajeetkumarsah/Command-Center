@@ -4,8 +4,8 @@ import 'package:flutter/foundation.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
 import 'package:command_centre/mobile_dashboard/utils/summary_types.dart';
-import 'package:command_centre/mobile_dashboard/views/widgets/custom_loader.dart';
 import 'package:command_centre/mobile_dashboard/controllers/home_controller.dart';
+import 'package:command_centre/mobile_dashboard/views/widgets/custom_loader.dart';
 
 class CategoryTrendsFilterBottomsheet extends StatelessWidget {
   final String tabType;

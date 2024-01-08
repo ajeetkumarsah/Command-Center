@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:command_centre/mobile_dashboard/utils/png_files.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
 import 'package:command_centre/mobile_dashboard/controllers/store_controller.dart';
 import 'package:command_centre/mobile_dashboard/views/store_fingertips/new_appbar.dart';
@@ -94,8 +95,8 @@ class CoverageDeepDiveScreen extends StatelessWidget {
                           Expanded(
                             child: LineChart(
                               sampleData1,
-                              // swapAnimationDuration:
-                              //     const Duration(milliseconds: 500),
+                              duration:
+                                  const Duration(milliseconds: 500),
                             ),
                           ),
                         ],

@@ -33,8 +33,10 @@ class _IntroScreenState extends State<IntroScreen> {
     super.initState();
 
     Timer(const Duration(seconds: 2), () {
-      setState(() {
-        _inArrow = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        setState(() {
+          _inArrow = true;
+        });
       });
     });
     controller.setSeen(true);

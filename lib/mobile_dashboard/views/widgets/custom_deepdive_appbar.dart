@@ -10,6 +10,7 @@ class CustomDeepDiveAppBar extends StatelessWidget
   final String? geo;
   final String? geoValue;
   final String? date;
+  final Widget? trailing;
   final void Function()? onDivisionTap;
   final void Function()? onMonthTap;
 
@@ -20,6 +21,7 @@ class CustomDeepDiveAppBar extends StatelessWidget
       this.onMonthTap,
       this.geo,
       this.geoValue,
+      this.trailing,
       this.date});
 
   @override
@@ -65,7 +67,7 @@ class CustomDeepDiveAppBar extends StatelessWidget
                     ),
                   ),
                 ),
-                const SizedBox(width: 40),
+                trailing ?? const SizedBox(width: 40),
               ],
             ),
             Padding(

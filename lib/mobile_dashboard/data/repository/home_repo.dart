@@ -129,6 +129,10 @@ class HomeRepo {
     return sharedPreferences.getString(AppConstants.DEFAULT_GEO) ?? '';
   }
 
+  bool getPersona() {
+    return sharedPreferences.getBool(AppConstants.PERSONA) ?? false;
+  }
+
   String getGeoValue() {
     return sharedPreferences.getString(AppConstants.DEFAULT_GEO_VALUE) ?? '';
   }

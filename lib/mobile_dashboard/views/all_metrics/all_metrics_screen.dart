@@ -3,10 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:command_centre/mobile_dashboard/utils/png_files.dart';
+import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
 import 'package:command_centre/mobile_dashboard/utils/routes/app_pages.dart';
-import 'package:command_centre/mobile_dashboard/views/widgets/custom_loader.dart';
 import 'package:command_centre/mobile_dashboard/controllers/home_controller.dart';
+import 'package:command_centre/mobile_dashboard/views/widgets/custom_loader.dart';
+import 'package:command_centre/mobile_dashboard/views/widgets/custom_shimmer.dart';
 import 'package:command_centre/mobile_dashboard/views/summary/widgets/personalize_card.dart';
+import 'package:command_centre/mobile_dashboard/views/summary/widgets/retailing_graph_widget.dart';
+import 'package:command_centre/mobile_dashboard/views/summary/widgets/retailing_table_widget.dart';
 
 class AllMetricsScreen extends StatelessWidget {
   const AllMetricsScreen({super.key});
@@ -56,6 +60,36 @@ class AllMetricsScreen extends StatelessWidget {
                                   children: [
                                     Expanded(
                                       child: Column(
+                                        children: [
+                                          Text(
+                                            'Sellout (in ${ctlr.summaryData.first.mtdRetailing?.cmSellout?.contains('Cr') ?? false ? 'Cr' : ctlr.summaryData.first.mtdRetailing?.cmSellout?.contains('Lk') ?? false ? 'Lk' : ''})',
+                                            style: GoogleFonts.ptSans(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w400,
+                                            ),
+                                          ),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Flexible(
+                                                child: Text(
+                                                  ctlr.isSummaryDirect
+                                                      ? '${ctlr.summaryIndirectData.first.mtdRetailing?.cmSellout?.contains('Cr') ?? false ? ctlr.summaryIndirectData.first.mtdRetailing?.cmSellout?.replaceAll('Cr', '') : ctlr.summaryIndirectData.first.mtdRetailing?.cmSellout?.contains('Lk') ?? false ? ctlr.summaryIndirectData.first.mtdRetailing?.cmSellout?.replaceAll('Lk', '') : ctlr.summaryIndirectData.first.mtdRetailing?.cmSellout}'
+                                                      : '${ctlr.summaryData.first.mtdRetailing?.cmSellout?.contains('Cr') ?? false ? ctlr.summaryData.first.mtdRetailing?.cmSellout?.replaceAll('Cr', '') : ctlr.summaryData.first.mtdRetailing?.cmSellout?.contains('Lk') ?? false ? ctlr.summaryData.first.mtdRetailing?.cmSellout?.replaceAll('Lk', '') : ctlr.summaryData.first.mtdRetailing?.cmSellout}',
+                                                  style: GoogleFonts.ptSans(
+                                                    fontSize: 40,
+                                                    fontWeight: FontWeight.w400,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.center,
                                         children: [
@@ -72,7 +106,9 @@ class AllMetricsScreen extends StatelessWidget {
                                             children: [
                                               Flexible(
                                                 child: Text(
-                                                  '${ctlr.summaryData.first.mtdRetailing?.cmIya}',
+                                                  ctlr.isSummaryDirect
+                                                      ? '${ctlr.summaryIndirectData.first.mtdRetailing?.cmIya}'
+                                                      : '${ctlr.summaryData.first.mtdRetailing?.cmIya}',
                                                   maxLines: 1,
                                                   overflow:
                                                       TextOverflow.ellipsis,
@@ -103,35 +139,9 @@ class AllMetricsScreen extends StatelessWidget {
                                             children: [
                                               Flexible(
                                                 child: Text(
-                                                  '${ctlr.summaryData.first.mtdRetailing?.fyIya}',
-                                                  style: GoogleFonts.ptSans(
-                                                    fontSize: 40,
-                                                    fontWeight: FontWeight.w400,
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                    Expanded(
-                                      child: Column(
-                                        children: [
-                                          Text(
-                                            'Sellout (in ${ctlr.summaryData.first.mtdRetailing?.cmSellout?.contains('Cr') ?? false ? 'Cr' : ctlr.summaryData.first.mtdRetailing?.cmSellout?.contains('Lk') ?? false ? 'Lk' : ''})',
-                                            style: GoogleFonts.ptSans(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w400,
-                                            ),
-                                          ),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Flexible(
-                                                child: Text(
-                                                  '${ctlr.summaryData.first.mtdRetailing?.cmSellout?.contains('Cr') ?? false ? ctlr.summaryData.first.mtdRetailing?.cmSellout?.replaceAll('Cr', '') : ctlr.summaryData.first.mtdRetailing?.cmSellout?.contains('Lk') ?? false ? ctlr.summaryData.first.mtdRetailing?.cmSellout?.replaceAll('Lk', '') : ctlr.summaryData.first.mtdRetailing?.cmSellout}',
+                                                  ctlr.isSummaryDirect
+                                                      ? '${ctlr.summaryIndirectData.first.mtdRetailing?.fyIya}'
+                                                      : '${ctlr.summaryData.first.mtdRetailing?.fyIya}',
                                                   style: GoogleFonts.ptSans(
                                                     fontSize: 40,
                                                     fontWeight: FontWeight.w400,
@@ -146,6 +156,141 @@ class AllMetricsScreen extends StatelessWidget {
                                   ],
                                 ),
                               ),
+                              //
+
+                              if (ctlr.getPersona())
+                                ctlr.isChannelLoading
+                                    ? CustomShimmer(
+                                        height: 240,
+                                        width:
+                                            MediaQuery.of(context).size.width,
+                                        borderRadius: BorderRadius.circular(20),
+                                        margin: const EdgeInsets.symmetric(
+                                            horizontal: 12, vertical: 12),
+                                      )
+                                    : ctlr.channelRetailingModel != null
+                                        ? RetailingTableWidget(
+                                            data: ctlr.isSummaryDirect
+                                                ? ctlr.channelRetailingModel
+                                                        ?.ind ??
+                                                    []
+                                                : ctlr.channelRetailingModel
+                                                        ?.indDir ??
+                                                    [],
+                                          )
+                                        : const SizedBox(),
+
+                              if (ctlr.getPersona())
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 12.0, vertical: 12),
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                        // height: 26,
+                                        decoration: BoxDecoration(
+                                            border: Border.all(
+                                              width: 1,
+                                              color: AppColors.lightGrey,
+                                            ),
+                                            borderRadius:
+                                                BorderRadius.circular(100)),
+                                        child: Row(
+                                          children: [
+                                            GestureDetector(
+                                              onTap: () => ctlr
+                                                  .onChannelSalesChange(true),
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                  color: ctlr.channelSales
+                                                      ? AppColors.primary
+                                                      : AppColors.white,
+                                                  border: Border.all(
+                                                    width: 1,
+                                                    color: ctlr.channelSales
+                                                        ? AppColors.primary
+                                                        : AppColors.white,
+                                                  ),
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          100),
+                                                ),
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 10,
+                                                        vertical: 4),
+                                                child: Text(
+                                                  'Sales Value',
+                                                  style:
+                                                      GoogleFonts.ptSansCaption(
+                                                    color: ctlr.channelSales
+                                                        ? Colors.white
+                                                        : Colors.grey,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            GestureDetector(
+                                              onTap: () => ctlr
+                                                  .onChannelSalesChange(false),
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                  color: ctlr.channelSales
+                                                      ? AppColors.white
+                                                      : AppColors.primary,
+                                                  border: ctlr.channelSales
+                                                      ? null
+                                                      : Border.all(
+                                                          width: 1,
+                                                          color: !ctlr
+                                                                  .channelSales
+                                                              ? AppColors
+                                                                  .primary
+                                                              : AppColors.white,
+                                                        ),
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          100),
+                                                ),
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 10,
+                                                        vertical: 4),
+                                                child: Text(
+                                                  '  IYA  ',
+                                                  style:
+                                                      GoogleFonts.ptSansCaption(
+                                                    color: !ctlr.channelSales
+                                                        ? Colors.white
+                                                        : Colors.grey,
+                                                  ),
+                                                ),
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+
+                              if (ctlr.getPersona())
+                                ctlr.isRetailingTrendsLoading
+                                    ? CustomShimmer(
+                                        height: 240,
+                                        width:
+                                            MediaQuery.of(context).size.width,
+                                        borderRadius: BorderRadius.circular(20),
+                                        margin: const EdgeInsets.symmetric(
+                                            horizontal: 12, vertical: 12),
+                                      )
+                                    : RetailingGraphWidget(
+                                        trendsData: ctlr.isSummaryDirect
+                                            ? ctlr.trendsRetailingModel!.ind!
+                                            : ctlr
+                                                .trendsRetailingModel!.indDir!,
+                                        salesValue: ctlr.channelSales,
+                                      ),
                             ],
                           ),
                           PersonalizeCard(

@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
 import 'package:command_centre/mobile_dashboard/utils/summary_types.dart';
-import 'package:command_centre/mobile_dashboard/views/widgets/custom_loader.dart';
 import 'package:command_centre/mobile_dashboard/controllers/home_controller.dart';
+import 'package:command_centre/mobile_dashboard/views/widgets/custom_loader.dart';
 import 'package:command_centre/mobile_dashboard/views/widgets/custom_shimmer.dart';
 import 'package:command_centre/mobile_dashboard/views/widgets/custom_deepdive_appbar.dart';
 import 'package:command_centre/mobile_dashboard/views/coverage/widget/trends_chart_widget.dart';
@@ -17,7 +17,8 @@ import 'package:command_centre/mobile_dashboard/views/retailing/widgets/channel_
 
 class CoverageScreen extends StatelessWidget {
   const CoverageScreen({super.key});
-    
+  // final HomeController controller =
+  //     Get.put(HomeController(homeRepo: Get.find()));
 
   @override
   Widget build(BuildContext context) {

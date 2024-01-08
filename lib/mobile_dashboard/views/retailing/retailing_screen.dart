@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
 import 'package:command_centre/mobile_dashboard/utils/summary_types.dart';
-import 'package:command_centre/mobile_dashboard/views/widgets/custom_loader.dart';
 import 'package:command_centre/mobile_dashboard/controllers/home_controller.dart';
+import 'package:command_centre/mobile_dashboard/views/widgets/custom_loader.dart';
 import 'package:command_centre/mobile_dashboard/views/widgets/custom_shimmer.dart';
 import 'package:command_centre/mobile_dashboard/views/widgets/custom_deepdive_appbar.dart';
 import 'package:command_centre/mobile_dashboard/views/retailing/widgets/custom_epanded_Widget.dart';
@@ -44,6 +44,79 @@ class RetailingScreen extends StatelessWidget {
             backgroundColor: AppColors.bgLight,
             appBar: CustomDeepDiveAppBar(
               title: 'Retailing',
+              trailing: Container(
+                // height: 26,
+                margin: const EdgeInsets.only(bottom: 0, left: 12, right: 12),
+                decoration: BoxDecoration(
+                    border: Border.all(
+                      width: 1,
+                      color: AppColors.lightGrey,
+                    ),
+                    color: Colors.grey,
+                    borderRadius: BorderRadius.circular(100)),
+                child: Row(
+                  children: [
+                    GestureDetector(
+                      onTap: () => ctlr.onChangeDeepDiveIndirect(true),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: ctlr.isRetailingDeepDiveInd
+                              ? AppColors.white
+                              : Colors.grey,
+                          border: Border.all(
+                            width: 1,
+                            color: ctlr.isRetailingDeepDiveInd
+                                ? AppColors.white
+                                : Colors.grey,
+                          ),
+                          borderRadius: BorderRadius.circular(100),
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 4),
+                        child: Text(
+                          'Ind',
+                          style: GoogleFonts.ptSansCaption(
+                            color: ctlr.isRetailingDeepDiveInd
+                                ? AppColors.primary
+                                : AppColors.white,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () => ctlr.onChangeDeepDiveIndirect(false),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: !ctlr.isRetailingDeepDiveInd
+                              ? AppColors.white
+                              : Colors.grey,
+                          border: ctlr.isRetailingDeepDiveInd
+                              ? null
+                              : Border.all(
+                                  width: 1,
+                                  color: !ctlr.isRetailingDeepDiveInd
+                                      ? AppColors.white
+                                      : Colors.grey,
+                                ),
+                          borderRadius: BorderRadius.circular(100),
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 4),
+                        child: Text(
+                          'Ind+Dir',
+                          style: GoogleFonts.ptSansCaption(
+                            color: ctlr.isRetailingDeepDiveInd
+                                ? AppColors.white
+                                : AppColors.primary,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
               onDivisionTap: () => Get.bottomSheet(
                 GeographyBottomsheet(
                   isLoadRetailing: true,
@@ -69,16 +142,32 @@ class RetailingScreen extends StatelessWidget {
                     child: Column(
                       children: [
                         const SizedBox(height: 16),
+                        // SwitchListTile(
+                        //   title: Text(ctlr.isRetailingDeepDiveInd
+                        //       ? 'Indirect'
+                        //       : 'Indirect + Direct'),
+                        //   value: ctlr.isRetailingDeepDiveInd,
+                        //   onChanged: (v) => ctlr.onChangeDeepDiveIndirect(v),
+                        //   activeColor: AppColors.primary,
+                        // ),
+                        // Row(
+                        //   children: [
+
+                        //   ],
+                        // ),
+                        // const SizedBox(height: 16),
                         ctlr.isSummaryLoading
                             ? loadingWidget(context)
-                            : ctlr.retailingList.isNotEmpty
+                            : ctlr.retailingGeoModel != null
                                 ? CustomExpandedWidget(
                                     title: 'Retailing by Geography',
                                     isSummary: true,
                                     onTap: () => ctlr.onExpandSummary(
                                         !ctlr.isSummaryExpanded),
                                     isExpanded: ctlr.isSummaryExpanded,
-                                    dataList: ctlr.retailingList,
+                                    dataList: ctlr.isRetailingDeepDiveInd
+                                        ? ctlr.retailingGeoModel?.ind
+                                        : ctlr.retailingGeoModel?.indDir,
                                     onFilterTap: () => Get.bottomSheet(
                                       GeographyMultiSelectBottomsheet(
                                           tabType: SummaryTypes.retailing.type),
@@ -87,10 +176,10 @@ class RetailingScreen extends StatelessWidget {
                                   )
                                 : const SizedBox(),
                         SizedBox(
-                            height: ctlr.retailingList.isNotEmpty ? 16 : 0),
+                            height: ctlr.retailingGeoModel != null ? 16 : 0),
                         ctlr.isCategoryLoading
                             ? loadingWidget(context)
-                            : ctlr.categoryList.isNotEmpty
+                            : ctlr.categoryRetailingModel != null
                                 ? CustomExpandedWidget(
                                     title: 'Retailing by Category',
                                     firstWidget: InkWell(
@@ -124,18 +213,20 @@ class RetailingScreen extends StatelessWidget {
                                         ),
                                       ),
                                     ),
-                                    dataList: ctlr.categoryList.isNotEmpty
-                                        ? ctlr.categoryList
-                                        : null,
+                                    dataList: ctlr.isRetailingDeepDiveInd
+                                        ? ctlr.categoryRetailingModel?.ind
+                                        : ctlr.categoryRetailingModel?.indDir,
                                     onTap: () => ctlr.onExpandCategory(
                                         !ctlr.isExpandedCategory),
                                     isExpanded: ctlr.isExpandedCategory,
                                   )
                                 : const SizedBox(),
-                        SizedBox(height: ctlr.categoryList.isNotEmpty ? 16 : 0),
+                        SizedBox(
+                            height:
+                                ctlr.categoryRetailingModel != null ? 16 : 0),
                         ctlr.isChannelLoading
                             ? loadingWidget(context)
-                            : ctlr.channelList.isNotEmpty
+                            : ctlr.channelRetailingModel != null
                                 ? CustomExpandedWidget(
                                     title: 'Retailing by Channel',
                                     firstWidget: InkWell(
@@ -171,23 +262,28 @@ class RetailingScreen extends StatelessWidget {
                                     ),
                                     onTap: () => ctlr.onExpandChannel(
                                         !ctlr.isExpandedChannel),
-                                    dataList: ctlr.channelList.isNotEmpty
-                                        ? ctlr.channelList
-                                        : null,
+                                    dataList: ctlr.isRetailingDeepDiveInd
+                                        ? ctlr.channelRetailingModel?.ind
+                                        : ctlr.channelRetailingModel?.indDir,
                                     isExpanded: ctlr.isExpandedChannel,
                                   )
                                 : const SizedBox(),
-                        SizedBox(height: ctlr.channelList.isNotEmpty ? 16 : 0),
+                        SizedBox(
+                            height:
+                                ctlr.channelRetailingModel != null ? 16 : 0),
                         ctlr.isRetailingTrendsLoading
                             ? loadingWidget(context)
-                            : ctlr.trendsList.isNotEmpty
+                            : ctlr.trendsRetailingModel?.ind != null &&
+                                    ctlr.trendsRetailingModel?.indDir != null
                                 ? CustomExpandedChartWidget(
                                     summaryType: SummaryTypes.retailing.type,
                                     title: 'Retailing Trends',
                                     onTap: () => ctlr
                                         .onExpandTrends(!ctlr.isExpandedTrends),
                                     isExpanded: ctlr.isExpandedTrends,
-                                    trendsList: ctlr.trendsList,
+                                    trendsList: ctlr.isRetailingDeepDiveInd
+                                        ? ctlr.trendsRetailingModel!.ind!
+                                        : ctlr.trendsRetailingModel!.indDir!,
                                     onFilterTap: () => Get.bottomSheet(
                                       TrendsFilterBottomsheet(
                                         onTap: (v) => ctlr.onTrendsFilterSelect(

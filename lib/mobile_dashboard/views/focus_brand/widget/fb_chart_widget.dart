@@ -5,7 +5,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
 import 'package:command_centre/mobile_dashboard/controllers/home_controller.dart';
 import 'package:command_centre/mobile_dashboard/data/models/response/fb_trends_model.dart';
-import 'package:command_centre/mobile_dashboard/data/models/response/gp_trends_model.dart';
 
 class FBTrendsChartWidget extends StatefulWidget {
   final void Function()? onTap;
@@ -365,12 +364,13 @@ class _CustomExpandedChartWidgetState extends State<FBTrendsChartWidget> {
                                     gridData: FlGridData(show: false),
                                     titlesData: FlTitlesData(
                                       bottomTitles: AxisTitles(
-                                        sideTitles: _bottomTitles,
-                                        // drawBehindEverything: true,
+                                        sideTitles:
+                                            _bottomTitles(widget.trendsList),
+                                       
                                       ),
                                       leftTitles: AxisTitles(
                                         sideTitles: _leftTitles,
-                                        // drawBehindEverything: true,
+                                       
                                       ),
                                       topTitles: AxisTitles(
                                           sideTitles:
@@ -437,56 +437,65 @@ class _CustomExpandedChartWidgetState extends State<FBTrendsChartWidget> {
     );
   }
 
-  SideTitles get _bottomTitles => SideTitles(
+  SideTitles _bottomTitles(List<FBTrendsModel> trendsList) => SideTitles(
         showTitles: true,
-        reservedSize: 40,
+        reservedSize: 45,
         getTitlesWidget: (value, meta) {
           String text = '';
-          switch (value.toInt()) {
-            case 0:
-              text = 'Jan';
-              break;
-            case 1:
-              text = 'Feb';
-              break;
-            case 2:
-              text = 'Mar';
-              break;
-            case 3:
-              text = 'Apr';
-              break;
-            case 4:
-              text = 'May';
-              break;
-            case 5:
-              text = 'Jun';
-              break;
-            case 6:
-              text = 'Jul';
-              break;
-            case 7:
-              text = 'Aug';
-              break;
-            case 8:
-              text = 'Sep';
-              break;
-            case 9:
-              text = 'Oct';
-              break;
-            case 10:
-              text = 'Nov';
-              break;
-            case 11:
-              text = 'Dec';
-              break;
+
+          for (var v in trendsList[0].data!) {
+            if (value.toInt() == v.index) {
+              text = v.calendarMonth ?? '';
+            }
           }
+          // switch (value.toInt()) {
+          //   case 0:
+          //     text = 'Jan';
+          //     break;
+          //   case 1:
+          //     text = 'Feb';
+          //     break;
+          //   case 2:
+          //     text = 'Mar';
+          //     break;
+          //   case 3:
+          //     text = 'Apr';
+          //     break;
+          //   case 4:
+          //     text = 'May';
+          //     break;
+          //   case 5:
+          //     text = 'Jun';
+          //     break;
+          //   case 6:
+          //     text = 'Jul';
+          //     break;
+          //   case 7:
+          //     text = 'Aug';
+          //     break;
+          //   case 8:
+          //     text = 'Sep';
+          //     break;
+          //   case 9:
+          //     text = 'Oct';
+          //     break;
+          //   case 10:
+          //     text = 'Nov';
+          //     break;
+          //   case 11:
+          //     text = 'Dec';
+          //     break;
+          // }
           return Padding(
-            padding: const EdgeInsets.only(bottom: 8.0),
+            padding: const EdgeInsets.only(bottom: 4.0),
             child: RotatedBox(
               quarterTurns: 3,
               child: Text(
                 text,
-                style: GoogleFonts.ptSansCaption(color: Colors.black),
+                style: GoogleFonts.ptSansCaption(
+                  color: Colors.black,
+                  fontSize: 13,
+                ),
               ),
             ),
           );

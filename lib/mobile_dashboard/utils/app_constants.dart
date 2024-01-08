@@ -43,6 +43,7 @@ class AppConstants {
   static const String MONTH = 'month';
   static const String PERSONLIZED_ACTIVE = 'prsonalizedAvcitve';
   static const String PERSONLIZED_MORE = 'prsonalizedMore';
+  static const String PERSONA = 'persona';
 
   //
   static const String STORE = 'store';

@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'distributor_dropdown.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:another_stepper/another_stepper.dart';
@@ -9,6 +10,8 @@ import 'package:command_centre/mobile_dashboard/views/widgets/custom_loader.dart
 import 'package:command_centre/mobile_dashboard/views/widgets/custom_shimmer.dart';
 import 'package:command_centre/mobile_dashboard/views/widgets/custom_snackbar.dart';
 import 'package:command_centre/mobile_dashboard/controllers/store_selection_controller.dart';
+import 'package:command_centre/mobile_dashboard/views/store_fingertips/select_state_dropdown.dart';
+import 'package:command_centre/mobile_dashboard/views/store_fingertips/branch_location_dropdown.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});

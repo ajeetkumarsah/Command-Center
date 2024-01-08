@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import '../../views/home_view.dart';
 import '../../bindings/home_binding.dart';
+import '../../views/login/persona_select_screen.dart';
 import '../../views/login/retry_access_denied_screen.dart';
 import '../../views/store_fingertips/sales/sales_deep_dive_screen.dart';
 import 'package:command_centre/mobile_dashboard/views/login/login_screen.dart';
@@ -35,6 +36,7 @@ class AppPages {
   static const SELECT_PROFILE = Routes.SELECT_PROFILE;
   static const ACCESS_DENIED = Routes.ACCESS_DENIED;
   static const PURPOSE_SCREEN = Routes.PURPOSE_SCREEN;
+  static const PERSONA_SCREEN = Routes.PERSONA_SCREEN;
   static const INTRO_SCREEN = Routes.INTRO_SCREEN;
   static const INITIAL = Routes.HOME;
   static const SUMMARY = Routes.SUMMARY;
@@ -150,6 +152,11 @@ class AppPages {
     GetPage(
       name: _Paths.SALES_DEEP_DIVE,
       page: () => const SalesDeepDiveScreen(),
+      binding: HomeBinding(),
+    ),
+    GetPage(
+      name: _Paths.PERSONA_SCREEN,
+      page: () => PersonaScreen(),
       binding: HomeBinding(),
     ),
   ];

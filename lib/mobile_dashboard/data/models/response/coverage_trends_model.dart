@@ -47,6 +47,7 @@ class CoverageTrendsDataModel {
   final String? billingPer;
   final String? productivityPer;
   final String? ccPer;
+  final double? index;
 
   CoverageTrendsDataModel({
     this.billedSum,
@@ -59,6 +60,7 @@ class CoverageTrendsDataModel {
     this.billingPer,
     this.productivityPer,
     this.ccPer,
+    this.index,
   });
 
   factory CoverageTrendsDataModel.fromJson(Map<String, dynamic> json) =>
@@ -73,6 +75,7 @@ class CoverageTrendsDataModel {
         billingPer: json["billing_per"],
         productivityPer: json["productivity_per"],
         ccPer: json["cc_per"],
+        index: json["index"]?.toDouble(),
       );
 
   Map<String, dynamic> toJson() => {
