@@ -394,6 +394,7 @@
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "arm64 i386";
 				FLUTTER_BUILD_NAME = 1.0.13;
 				FLUTTER_BUILD_NUMBER = 16;
+				FLUTTER_TARGET = lib/mobile_dashboard/main.dart;
 				INFOPLIST_FILE = Runner/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "P&G Command Center";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
@@ -544,6 +545,7 @@
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "arm64 i386";
 				FLUTTER_BUILD_NAME = 1.0.13;
 				FLUTTER_BUILD_NUMBER = 16;
+				FLUTTER_TARGET = lib/mobile_dashboard/main.dart;
 				INFOPLIST_FILE = Runner/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "P&G Command Center";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
@@ -579,6 +581,7 @@
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "arm64 i386";
 				FLUTTER_BUILD_NAME = 1.0.13;
 				FLUTTER_BUILD_NUMBER = 16;
+				FLUTTER_TARGET = lib/mobile_dashboard/main.dart;
 				INFOPLIST_FILE = Runner/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "P&G Command Center";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
