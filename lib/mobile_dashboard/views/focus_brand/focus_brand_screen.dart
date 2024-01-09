@@ -15,12 +15,22 @@ import 'package:command_centre/mobile_dashboard/views/retailing/widgets/select_m
 import 'package:command_centre/mobile_dashboard/views/retailing/widgets/trends_filter_bottomsheet.dart';
 import 'package:command_centre/mobile_dashboard/views/retailing/widgets/channel_filter_bottomsheet.dart';
 import 'package:command_centre/mobile_dashboard/views/retailing/widgets/category_filter_bottomsheet.dart';
-import 'package:command_centre/mobile_dashboard/views/retailing/widgets/custom_expanded_chart_widget.dart';
 
-class FocusBrandScreen extends StatelessWidget {
+class FocusBrandScreen extends StatefulWidget {
   const FocusBrandScreen({super.key});
-  // final HomeController controller =
-  //     Get.put(HomeController(homeRepo: Get.find()));
+
+  @override
+  State<FocusBrandScreen> createState() => _FocusBrandScreenState();
+}
+
+class _FocusBrandScreenState extends State<FocusBrandScreen> {
+  bool isFirst = true;
+  void initCall(HomeController ctlr) {
+    if (isFirst) {
+      isFirst = false;
+      ctlr.getFBInit();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +43,7 @@ class FocusBrandScreen extends StatelessWidget {
         // controller.getFocusBrandData(type: 'geo', name: 'trends');
       },
       builder: (ctlr) {
+        initCall(ctlr);
         return RefreshIndicator(
           onRefresh: () async {
             ctlr.getFocusBrandData();
@@ -124,9 +135,7 @@ class FocusBrandScreen extends StatelessWidget {
                                         ),
                                       ),
                                     ),
-                                    dataList: ctlr.categoryFBList.isNotEmpty
-                                        ? ctlr.categoryFBList
-                                        : null,
+                                    dataList: ctlr.categoryFBList,
                                     onTap: () => ctlr.onExpandCategory(
                                         !ctlr.isExpandedCategory),
                                     isExpanded: ctlr.isExpandedCategory,
@@ -168,9 +177,7 @@ class FocusBrandScreen extends StatelessWidget {
                                     ),
                                     onTap: () => ctlr.onExpandChannel(
                                         !ctlr.isExpandedChannel),
-                                    dataList: ctlr.channelFBList.isNotEmpty
-                                        ? ctlr.channelFBList
-                                        : null,
+                                    dataList: ctlr.channelFBList,
                                     isExpanded: ctlr.isExpandedChannel,
                                   )
                                 : const SizedBox(),

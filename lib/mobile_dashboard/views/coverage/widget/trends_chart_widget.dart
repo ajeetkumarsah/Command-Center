@@ -308,7 +308,7 @@ class _CustomExpandedChartWidgetState extends State<CoverageTrendsChartWidget> {
                                       bottomTitles: AxisTitles(
                                         sideTitles:
                                             _bottomTitles(widget.trendsList),
-                                       
+                                        
                                       ),
                                       leftTitles: AxisTitles(
                                         sideTitles: _leftTitles,

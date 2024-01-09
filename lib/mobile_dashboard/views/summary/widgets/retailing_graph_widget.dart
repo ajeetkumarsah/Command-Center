@@ -20,18 +20,20 @@ class _RetailingGraphWidgetState extends State<RetailingGraphWidget> {
   Widget build(BuildContext context) {
     return AspectRatio(
       aspectRatio: 1.6,
-      child: BarChart(
-        BarChartData(
-          barTouchData: barTouchData(widget.trendsData),
+      child: widget.trendsData.data != null
+          ? BarChart(
+              BarChartData(
+                barTouchData: barTouchData(widget.trendsData),
 
-          titlesData: titlesData(widget.trendsData),
-          borderData: borderData,
-          barGroups: barGroups(widget.trendsData),
-          gridData: FlGridData(show: false),
-          alignment: BarChartAlignment.spaceAround,
-          // maxY: trendsData.yMax ,
-        ),
-      ),
+                titlesData: titlesData(widget.trendsData),
+                borderData: borderData,
+                barGroups: barGroups(widget.trendsData),
+                gridData: FlGridData(show: false),
+                alignment: BarChartAlignment.spaceAround,
+                // maxY: trendsData.yMax ,
+              ),
+            )
+          : const SizedBox(),
     );
   }
 
@@ -58,7 +60,6 @@ class _RetailingGraphWidgetState extends State<RetailingGraphWidget> {
           tooltipMargin: -4,
           tooltipBgColor: AppColors.bgLight,
           tooltipRoundedRadius: 6,
-
           getTooltipItem: (group, groupIndex, rod, rodIndex) {
             return touchedIndex == groupIndex
                 ? BarTooltipItem(
@@ -99,6 +100,7 @@ class _RetailingGraphWidgetState extends State<RetailingGraphWidget> {
     for (var v in trendsModel.data!) {
       if (value.toInt() == v.index) {
         text = v.month ?? '';
+        setState(() {});
       }
     }
     return text;

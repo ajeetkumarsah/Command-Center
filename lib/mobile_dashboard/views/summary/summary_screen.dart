@@ -381,135 +381,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                     ),
                                   ],
                                 ),
-                                // Text.rich(
-                                //   TextSpan(
-                                //     children: [
-                                //       // TextSpan(
-                                //       //   text: 'Retailing',
-                                //       //   style: GoogleFonts.ptSans(
-                                //       //     fontSize: 16,
-                                //       //     fontWeight: FontWeight.w700,
-                                //       //   ),
-                                //       // ),
-                                //       WidgetSpan(
-                                //         child: Padding(
-                                //           padding: const EdgeInsets.only(
-                                //               bottom: 8.0),
-                                //           child: Text(
-                                //             'Retailing',
-                                //             style: GoogleFonts.ptSans(
-                                //               fontSize: 18,
-                                //               fontWeight: FontWeight.w700,
-                                //             ),
-                                //           ),
-                                //         ),
-                                //       ),
-                                //       WidgetSpan(
-                                //         child: Row(
-                                //           mainAxisSize: MainAxisSize.min,
-                                //           children: [
-                                //             Container(
-                                //               // height: 26,
-                                //               margin: const EdgeInsets.only(
-                                //                   bottom: 0,
-                                //                   left: 12,
-                                //                   right: 4),
-                                //               decoration: BoxDecoration(
-                                //                   border: Border.all(
-                                //                     width: 1,
-                                //                     color: AppColors.lightGrey,
-                                //                   ),
-                                //                   borderRadius:
-                                //                       BorderRadius.circular(
-                                //                           100)),
-                                //               child: Row(
-                                //                 children: [
-                                //                   GestureDetector(
-                                //                     onTap: () => ctlr
-                                //                         .onChannelSalesChange(
-                                //                             true),
-                                //                     child: Container(
-                                //                       decoration: BoxDecoration(
-                                //                         color: ctlr.channelSales
-                                //                             ? AppColors.primary
-                                //                             : AppColors.white,
-                                //                         border: Border.all(
-                                //                           width: 1,
-                                //                           color: ctlr
-                                //                                   .channelSales
-                                //                               ? AppColors
-                                //                                   .primary
-                                //                               : AppColors.white,
-                                //                         ),
-                                //                         borderRadius:
-                                //                             BorderRadius
-                                //                                 .circular(100),
-                                //                       ),
-                                //                       padding: const EdgeInsets
-                                //                               .symmetric(
-                                //                           horizontal: 10,
-                                //                           vertical: 4),
-                                //                       child: Text(
-                                //                         'FB Abs.',
-                                //                         style: GoogleFonts
-                                //                             .ptSansCaption(
-                                //                           color:
-                                //                               ctlr.channelSales
-                                //                                   ? Colors.white
-                                //                                   : Colors.grey,
-                                //                         ),
-                                //                       ),
-                                //                     ),
-                                //                   ),
-                                //                   GestureDetector(
-                                //                     onTap: () => ctlr
-                                //                         .onChannelSalesChange(
-                                //                             false),
-                                //                     child: Container(
-                                //                       decoration: BoxDecoration(
-                                //                         color: ctlr.channelSales
-                                //                             ? AppColors.white
-                                //                             : AppColors.primary,
-                                //                         border:
-                                //                             ctlr.channelSales
-                                //                                 ? null
-                                //                                 : Border.all(
-                                //                                     width: 1,
-                                //                                     color: !ctlr.channelSales
-                                //                                         ? AppColors
-                                //                                             .primary
-                                //                                         : AppColors
-                                //                                             .white,
-                                //                                   ),
-                                //                         borderRadius:
-                                //                             BorderRadius
-                                //                                 .circular(100),
-                                //                       ),
-                                //                       padding: const EdgeInsets
-                                //                               .symmetric(
-                                //                           horizontal: 10,
-                                //                           vertical: 4),
-                                //                       child: Text(
-                                //                         '  IYA  ',
-                                //                         style: GoogleFonts
-                                //                             .ptSansCaption(
-                                //                           color:
-                                //                               !ctlr.channelSales
-                                //                                   ? Colors.white
-                                //                                   : Colors.grey,
-                                //                         ),
-                                //                       ),
-                                //                     ),
-                                //                   )
-                                //                 ],
-                                //               ),
-                                //             ),
-                                //           ],
-                                //         ),
-                                //       ),
-                                //     ],
-                                //   ),
-                                // ),
+
                                 onPressedShowMore: () =>
                                     Get.toNamed(AppPages.RETAILING_SCREEN),
                                 children: [
@@ -758,14 +630,16 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                             margin: const EdgeInsets.symmetric(
                                                 horizontal: 12, vertical: 12),
                                           )
-                                        : RetailingGraphWidget(
-                                            trendsData: ctlr.isSummaryDirect
-                                                ? ctlr
-                                                    .trendsRetailingModel!.ind!
-                                                : ctlr.trendsRetailingModel!
-                                                    .indDir!,
-                                            salesValue: ctlr.channelSales,
-                                          ),
+                                        : ctlr.trendsRetailingModel != null
+                                            ? RetailingGraphWidget(
+                                                trendsData: ctlr.isSummaryDirect
+                                                    ? ctlr.trendsRetailingModel!
+                                                        .ind!
+                                                    : ctlr.trendsRetailingModel!
+                                                        .indDir!,
+                                                salesValue: ctlr.channelSales,
+                                              )
+                                            : const SizedBox(),
                                 ],
                               )
                             : const SizedBox(),

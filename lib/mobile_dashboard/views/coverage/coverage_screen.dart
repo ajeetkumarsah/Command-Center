@@ -15,10 +15,21 @@ import 'package:command_centre/mobile_dashboard/views/retailing/widgets/select_m
 import 'package:command_centre/mobile_dashboard/views/retailing/widgets/trends_filter_bottomsheet.dart';
 import 'package:command_centre/mobile_dashboard/views/retailing/widgets/channel_filter_bottomsheet.dart';
 
-class CoverageScreen extends StatelessWidget {
+class CoverageScreen extends StatefulWidget {
   const CoverageScreen({super.key});
-  // final HomeController controller =
-  //     Get.put(HomeController(homeRepo: Get.find()));
+
+  @override
+  State<CoverageScreen> createState() => _CoverageScreenState();
+}
+
+class _CoverageScreenState extends State<CoverageScreen> {
+  bool isFirst = true;
+  void initCall(HomeController ctlr) {
+    if (isFirst) {
+      isFirst = false;
+      ctlr.getCoverageInit();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +43,7 @@ class CoverageScreen extends StatelessWidget {
         // controller.getCoverageData(type: 'trends', name: 'trends');
       },
       builder: (ctlr) {
+        initCall(ctlr);
         return RefreshIndicator(
           onRefresh: () async {
             ctlr.getCoverageData();
@@ -168,10 +180,7 @@ class CoverageScreen extends StatelessWidget {
                                     ),
                                     onTap: () => ctlr.onExpandChannel(
                                         !ctlr.isExpandedChannel),
-                                    dataList:
-                                        ctlr.channelCoverageList.isNotEmpty
-                                            ? ctlr.channelCoverageList
-                                            : null,
+                                    dataList: ctlr.channelCoverageList,
                                     isExpanded: ctlr.isExpandedChannel,
                                   )
                                 : const SizedBox(),

@@ -10,7 +10,7 @@ class CustomExpandedWidget extends StatefulWidget {
   final String title;
   final Widget? firstWidget;
   final void Function()? onFilterTap;
-  final List<List<String>>? dataList;
+  final List<List<String>> dataList;
   final bool isSummary;
   const CustomExpandedWidget(
       {super.key,
@@ -18,7 +18,7 @@ class CustomExpandedWidget extends StatefulWidget {
       this.onTap,
       required this.isExpanded,
       this.onFilterTap,
-      this.dataList,
+      required this.dataList,
       this.isSummary = false,
       this.firstWidget});
 
@@ -36,13 +36,13 @@ class _CustomExpandedWidgetState extends State<CustomExpandedWidget> {
   @override
   void initState() {
     super.initState();
-    if (widget.dataList != null && widget.dataList!.isNotEmpty) {
-      var divider = (widget.dataList!.length / 3).floor();
+    if (widget.dataList != null && widget.dataList.isNotEmpty) {
+      var divider = (widget.dataList.length / 3).floor();
       for (var i = 0; i <= divider; i++) {
         colorList.addAll(tableColors);
       }
       debugPrint(
-          '===>DAtaList Lenght:${widget.dataList!.length} ====>${colorList.length}');
+          '===>DAtaList Lenght:${widget.dataList.length} ====>${colorList.length}');
     }
   }
 
@@ -90,6 +90,7 @@ class _CustomExpandedWidgetState extends State<CustomExpandedWidget> {
                           duration: const Duration(milliseconds: 300),
                           margin: const EdgeInsets.only(
                               top: 12, left: 12, right: 12),
+                          padding: const EdgeInsets.only(top: 6),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(20),
                             color: AppColors.white,
@@ -125,7 +126,7 @@ class _CustomExpandedWidgetState extends State<CustomExpandedWidget> {
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.start,
                                                 children: [
-                                                  ...widget.dataList!
+                                                  ...widget.dataList
                                                       .asMap()
                                                       .map(
                                                         (index, data) =>
@@ -196,9 +197,8 @@ class _CustomExpandedWidgetState extends State<CustomExpandedWidget> {
                                         border: TableBorder.all(
                                             color: Colors.transparent),
                                         children: [
-                                          if (widget.dataList != null &&
-                                              widget.dataList!.isNotEmpty)
-                                            ...widget.dataList!
+                                          if (widget.dataList.isNotEmpty)
+                                            ...widget.dataList
                                                 .asMap()
                                                 .map(
                                                   (index, tableData) =>
@@ -259,8 +259,8 @@ class _CustomExpandedWidgetState extends State<CustomExpandedWidget> {
                                     border: TableBorder.all(
                                         color: Colors.transparent),
                                     children: [
-                                      if (widget.dataList != null)
-                                        ...widget.dataList!
+                                      if (widget.dataList.isNotEmpty)
+                                        ...widget.dataList
                                             .asMap()
                                             .map(
                                               (index, tableData) => MapEntry(
@@ -306,290 +306,14 @@ class _CustomExpandedWidgetState extends State<CustomExpandedWidget> {
                                             )
                                             .values
                                             .toList(),
-                                      if (widget.dataList == null)
-                                        TableRow(
-                                          children: [
-                                            widget.firstWidget ??
-                                                const Padding(
-                                                  padding: EdgeInsets.all(8.0),
-                                                  child: Text('   '),
-                                                ),
-                                            const Padding(
-                                              padding: EdgeInsets.all(8.0),
-                                              child: Text('BRANCH'),
-                                            ),
-                                            const Padding(
-                                              padding: EdgeInsets.all(8.0),
-                                              child: Text('SITE'),
-                                            ),
-                                            const Padding(
-                                              padding: EdgeInsets.all(8.0),
-                                              child: Text('AI'),
-                                            ),
-                                          ],
-                                        ),
-                                      if (widget.dataList == null)
-                                        TableRow(
-                                          children: [
-                                            Container(
-                                              color: AppColors.blueLight
-                                                  .withOpacity(.39),
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Text('CY Sales'),
-                                            ),
-                                            Container(
-                                              color: AppColors.blueLight
-                                                  .withOpacity(.39),
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Text('34,689'),
-                                            ),
-                                            Container(
-                                              color: AppColors.blueLight
-                                                  .withOpacity(.39),
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Text('34,689'),
-                                            ),
-                                            Container(
-                                              color: AppColors.blueLight
-                                                  .withOpacity(.39),
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Text('34,689'),
-                                            ),
-                                            // const SizedBox(),
-                                          ],
-                                        ),
-                                      if (widget.dataList == null)
-                                        TableRow(
-                                          children: [
-                                            Container(
-                                              color: AppColors.blueLight
-                                                  .withOpacity(.25),
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Text('CY Sales'),
-                                            ),
-                                            Container(
-                                              color: AppColors.blueLight
-                                                  .withOpacity(.25),
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Text('34,689'),
-                                            ),
-                                            Container(
-                                              color: AppColors.blueLight
-                                                  .withOpacity(.25),
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Text('34,689'),
-                                            ),
-                                            Container(
-                                              color: AppColors.blueLight
-                                                  .withOpacity(.25),
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Text('34,689'),
-                                            ),
-                                            // const SizedBox(),
-                                          ],
-                                        ),
-                                      if (widget.dataList == null)
-                                        TableRow(
-                                          children: [
-                                            Container(
-                                              color: AppColors.blueLight
-                                                  .withOpacity(.15),
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Text('CY Sales'),
-                                            ),
-                                            Container(
-                                              color: AppColors.blueLight
-                                                  .withOpacity(.15),
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Text('34,689'),
-                                            ),
-                                            Container(
-                                              color: AppColors.blueLight
-                                                  .withOpacity(.15),
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Text('34,689'),
-                                            ),
-                                            Container(
-                                              color: AppColors.blueLight
-                                                  .withOpacity(.15),
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Text('34,689'),
-                                            ),
-                                            // const SizedBox(),
-                                          ],
-                                        ),
-                                      if (widget.dataList == null)
-                                        TableRow(
-                                          children: [
-                                            Container(
-                                              color: AppColors.blueLight
-                                                  .withOpacity(.39),
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Text('CY Sales'),
-                                            ),
-                                            Container(
-                                              color: AppColors.blueLight
-                                                  .withOpacity(.39),
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Text('34,689'),
-                                            ),
-                                            Container(
-                                              color: AppColors.blueLight
-                                                  .withOpacity(.39),
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Text('34,689'),
-                                            ),
-                                            Container(
-                                              color: AppColors.blueLight
-                                                  .withOpacity(.39),
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Text('34,689'),
-                                            ),
-                                            // const SizedBox(),
-                                          ],
-                                        ),
-                                      if (widget.dataList == null)
-                                        TableRow(
-                                          children: [
-                                            Container(
-                                              color: AppColors.blueLight
-                                                  .withOpacity(.25),
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Text('CY Sales'),
-                                            ),
-                                            Container(
-                                              color: AppColors.blueLight
-                                                  .withOpacity(.25),
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Text('34,689'),
-                                            ),
-                                            Container(
-                                              color: AppColors.blueLight
-                                                  .withOpacity(.25),
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Text('34,689'),
-                                            ),
-                                            Container(
-                                              color: AppColors.blueLight
-                                                  .withOpacity(.25),
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Text('34,689'),
-                                            ),
-                                            // const SizedBox(),
-                                          ],
-                                        ),
-                                      if (widget.dataList == null)
-                                        TableRow(
-                                          children: [
-                                            Container(
-                                              color: AppColors.blueLight
-                                                  .withOpacity(.15),
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Text('CY Sales'),
-                                            ),
-                                            Container(
-                                              color: AppColors.blueLight
-                                                  .withOpacity(.15),
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Text('34,689'),
-                                            ),
-                                            Container(
-                                              color: AppColors.blueLight
-                                                  .withOpacity(.15),
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Text('34,689'),
-                                            ),
-                                            Container(
-                                              color: AppColors.blueLight
-                                                  .withOpacity(.15),
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Text('34,689'),
-                                            ),
-                                            // const SizedBox(),
-                                          ],
-                                        ),
-                                      if (widget.dataList == null)
-                                        TableRow(
-                                          children: [
-                                            Container(
-                                              decoration: BoxDecoration(
-                                                  color: AppColors.blueLight
-                                                      .withOpacity(.39),
-                                                  borderRadius:
-                                                      const BorderRadius.only(
-                                                          bottomLeft:
-                                                              Radius.circular(
-                                                                  15))),
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: const Text('CY Sales'),
-                                            ),
-                                            Container(
-                                              decoration: BoxDecoration(
-                                                color: AppColors.blueLight
-                                                    .withOpacity(.39),
-                                              ),
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Text('34,689'),
-                                            ),
-                                            Container(
-                                              decoration: BoxDecoration(
-                                                color: AppColors.blueLight
-                                                    .withOpacity(.39),
-                                              ),
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Text('34,689'),
-                                            ),
-                                            Container(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              decoration: BoxDecoration(
-                                                color: AppColors.blueLight
-                                                    .withOpacity(.39),
-                                                borderRadius: BorderRadius.only(
-                                                  bottomRight:
-                                                      Radius.circular(15),
-                                                ),
-                                              ),
-                                              child: Text('34,689'),
-                                            ),
-                                            // const SizedBox(),
-                                          ],
-                                        ),
                                     ],
                                   ),
                           ),
                         ),
                         if (widget.isSummary)
                           Positioned(
-                            top: 14,
-                            right: 20,
+                            top: 6,
+                            right: 12,
                             child: IconButton(
                               onPressed: widget.onFilterTap,
                               icon: const Icon(

@@ -5,6 +5,7 @@ import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
 import 'package:command_centre/mobile_dashboard/utils/summary_types.dart';
 import 'package:command_centre/mobile_dashboard/controllers/home_controller.dart';
 import 'package:command_centre/mobile_dashboard/views/widgets/custom_loader.dart';
+import 'package:command_centre/mobile_dashboard/controllers/home_controller.dart';
 import 'package:command_centre/mobile_dashboard/views/widgets/custom_shimmer.dart';
 import 'package:command_centre/mobile_dashboard/views/widgets/custom_deepdive_appbar.dart';
 import 'package:command_centre/mobile_dashboard/views/retailing/widgets/custom_epanded_Widget.dart';
@@ -16,10 +17,23 @@ import 'package:command_centre/mobile_dashboard/views/retailing/widgets/channel_
 import 'package:command_centre/mobile_dashboard/views/retailing/widgets/category_filter_bottomsheet.dart';
 import 'package:command_centre/mobile_dashboard/views/retailing/widgets/custom_expanded_chart_widget.dart';
 
-class RetailingScreen extends StatelessWidget {
+class RetailingScreen extends StatefulWidget {
   const RetailingScreen({super.key});
-  // final HomeController controller =
-  //     Get.put(HomeController(homeRepo: Get.find()));
+
+  @override
+  State<RetailingScreen> createState() => _RetailingScreenState();
+}
+
+class _RetailingScreenState extends State<RetailingScreen> {
+  bool isFirst = true;
+
+  void initCall(HomeController ctlr) {
+    if (isFirst) {
+      isFirst = false;
+      debugPrint('===> calling');
+      ctlr.getReatilingInit();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +46,7 @@ class RetailingScreen extends StatelessWidget {
         // controller.getRetailingData(type: 'geo', name: 'trends');
       },
       builder: (ctlr) {
+        initCall(ctlr);
         return RefreshIndicator(
           onRefresh: () async {
             ctlr.getRetailingData();
@@ -166,8 +181,8 @@ class RetailingScreen extends StatelessWidget {
                                         !ctlr.isSummaryExpanded),
                                     isExpanded: ctlr.isSummaryExpanded,
                                     dataList: ctlr.isRetailingDeepDiveInd
-                                        ? ctlr.retailingGeoModel?.ind
-                                        : ctlr.retailingGeoModel?.indDir,
+                                        ? ctlr.retailingGeoModel?.ind ?? []
+                                        : ctlr.retailingGeoModel?.indDir ?? [],
                                     onFilterTap: () => Get.bottomSheet(
                                       GeographyMultiSelectBottomsheet(
                                           tabType: SummaryTypes.retailing.type),
@@ -214,8 +229,9 @@ class RetailingScreen extends StatelessWidget {
                                       ),
                                     ),
                                     dataList: ctlr.isRetailingDeepDiveInd
-                                        ? ctlr.categoryRetailingModel?.ind
-                                        : ctlr.categoryRetailingModel?.indDir,
+                                        ? ctlr.categoryRetailingModel?.ind ?? []
+                                        : ctlr.categoryRetailingModel?.indDir ??
+                                            [],
                                     onTap: () => ctlr.onExpandCategory(
                                         !ctlr.isExpandedCategory),
                                     isExpanded: ctlr.isExpandedCategory,
@@ -263,8 +279,9 @@ class RetailingScreen extends StatelessWidget {
                                     onTap: () => ctlr.onExpandChannel(
                                         !ctlr.isExpandedChannel),
                                     dataList: ctlr.isRetailingDeepDiveInd
-                                        ? ctlr.channelRetailingModel?.ind
-                                        : ctlr.channelRetailingModel?.indDir,
+                                        ? ctlr.channelRetailingModel?.ind ?? []
+                                        : ctlr.channelRetailingModel?.indDir ??
+                                            [],
                                     isExpanded: ctlr.isExpandedChannel,
                                   )
                                 : const SizedBox(),

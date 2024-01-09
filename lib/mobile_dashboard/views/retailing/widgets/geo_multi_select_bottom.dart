@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
+import 'package:command_centre/mobile_dashboard/utils/summary_types.dart';
 import 'package:command_centre/mobile_dashboard/controllers/home_controller.dart';
 import 'package:command_centre/mobile_dashboard/views/widgets/custom_loader.dart';
 
@@ -145,7 +146,9 @@ class GeographyMultiSelectBottomsheet extends StatelessWidget {
                                                             (e) => InkWell(
                                                               onTap: () => ctlr
                                                                   .onChangeMultiFilters(
-                                                                      e),
+                                                                      e,
+                                                                      tabType:
+                                                                          tabType),
                                                               child: Row(
                                                                 children: [
                                                                   Transform
@@ -161,9 +164,10 @@ class GeographyMultiSelectBottomsheet extends StatelessWidget {
                                                                           : ctlr
                                                                               .selectedMultiFilters
                                                                               .contains(e),
-                                                                      onChanged:
-                                                                          (v) =>
-                                                                              ctlr.onChangeMultiFilters(e),
+                                                                      onChanged: (v) =>
+                                                                          ctlr.onChangeMultiFilters(
+                                                                              e,
+                                                                              tabType: tabType),
                                                                     ),
                                                                   ),
                                                                   Flexible(
@@ -195,41 +199,68 @@ class GeographyMultiSelectBottomsheet extends StatelessWidget {
                                                         (e) => InkWell(
                                                           onTap: () => ctlr
                                                               .onChangeMultiFilters(
-                                                                  e),
+                                                                  e,
+                                                                  tabType:
+                                                                      tabType),
                                                           child: Row(
                                                             children: [
                                                               Transform.scale(
                                                                 scale: .9,
                                                                 child: Checkbox(
-                                                                  value: ctlr.selectedMultiGeo
-                                                                              .trim()
-                                                                              .toLowerCase() ==
-                                                                          'Division'
-                                                                              .trim()
-                                                                              .toLowerCase()
-                                                                      ? ctlr
-                                                                          .selectedMultiDivisions
-                                                                          .contains(
-                                                                              e)
-                                                                      : ctlr.selectedMultiGeo.toLowerCase() ==
-                                                                              'Cluster'
-                                                                                  .toLowerCase()
-                                                                          ? ctlr
-                                                                              .selectedMultiClusters
-                                                                              .contains(e)
-                                                                          : ctlr.selectedMultiGeo.toLowerCase() == 'Site'.toLowerCase()
-                                                                              ? ctlr.selectedMultiSites.contains(e)
-                                                                              : ctlr.selectedMultiGeo.toLowerCase() == 'Branch'.toLowerCase()
-                                                                                  ? ctlr.selectedMultiBranches.contains(e)
-                                                                                  : ctlr.selectedMultiFilters.contains(e),
+                                                                  value: tabType ==
+                                                                          SummaryTypes
+                                                                              .retailing
+                                                                              .type
+                                                                      ? ctlr.selectedMultiGeo.trim().toLowerCase() ==
+                                                                              'Division'.trim().toLowerCase()
+                                                                          ? ctlr.selectedRetailingMultiDivisions.contains(e)
+                                                                          : ctlr.selectedMultiGeo.toLowerCase() == 'Cluster'.toLowerCase()
+                                                                              ? ctlr.selectedRetailingMultiClusters.contains(e)
+                                                                              : ctlr.selectedMultiGeo.toLowerCase() == 'Site'.toLowerCase()
+                                                                                  ? ctlr.selectedRetailingMultiSites.contains(e)
+                                                                                  : ctlr.selectedMultiGeo.toLowerCase() == 'Branch'.toLowerCase()
+                                                                                      ? ctlr.selectedMultiBranches.contains(e)
+                                                                                      : ctlr.selectedMultiFilters.contains(e)
+                                                                      : tabType == SummaryTypes.coverage.type
+                                                                          ? ctlr.selectedMultiGeo.trim().toLowerCase() == 'Division'.trim().toLowerCase()
+                                                                              ? ctlr.selectedCoverageMultiDivisions.contains(e)
+                                                                              : ctlr.selectedMultiGeo.toLowerCase() == 'Cluster'.toLowerCase()
+                                                                                  ? ctlr.selectedCoverageMultiClusters.contains(e)
+                                                                                  : ctlr.selectedMultiGeo.toLowerCase() == 'Site'.toLowerCase()
+                                                                                      ? ctlr.selectedCoverageMultiSites.contains(e)
+                                                                                      : ctlr.selectedMultiGeo.toLowerCase() == 'Branch'.toLowerCase()
+                                                                                          ? ctlr.selectedMultiBranches.contains(e)
+                                                                                          : ctlr.selectedMultiFilters.contains(e)
+                                                                          : tabType == SummaryTypes.gp.type
+                                                                              ? ctlr.selectedMultiGeo.trim().toLowerCase() == 'Division'.trim().toLowerCase()
+                                                                                  ? ctlr.selectedGPMultiDivisions.contains(e)
+                                                                                  : ctlr.selectedMultiGeo.toLowerCase() == 'Cluster'.toLowerCase()
+                                                                                      ? ctlr.selectedGPMultiClusters.contains(e)
+                                                                                      : ctlr.selectedMultiGeo.toLowerCase() == 'Site'.toLowerCase()
+                                                                                          ? ctlr.selectedGPMultiSites.contains(e)
+                                                                                          : ctlr.selectedMultiGeo.toLowerCase() == 'Branch'.toLowerCase()
+                                                                                              ? ctlr.selectedMultiBranches.contains(e)
+                                                                                              : ctlr.selectedMultiFilters.contains(e)
+                                                                              : tabType == SummaryTypes.fb.type
+                                                                                  ? ctlr.selectedMultiGeo.trim().toLowerCase() == 'Division'.trim().toLowerCase()
+                                                                                      ? ctlr.selectedFBMultiDivisions.contains(e)
+                                                                                      : ctlr.selectedMultiGeo.toLowerCase() == 'Cluster'.toLowerCase()
+                                                                                          ? ctlr.selectedFBMultiClusters.contains(e)
+                                                                                          : ctlr.selectedMultiGeo.toLowerCase() == 'Site'.toLowerCase()
+                                                                                              ? ctlr.selectedFBMultiSites.contains(e)
+                                                                                              : ctlr.selectedMultiGeo.toLowerCase() == 'Branch'.toLowerCase()
+                                                                                                  ? ctlr.selectedMultiBranches.contains(e)
+                                                                                                  : ctlr.selectedMultiFilters.contains(e)
+                                                                                  : false,
 
                                                                   //  ctlr
                                                                   //     .selectedMultiFilters
                                                                   //     .contains(e),
-                                                                  onChanged:
-                                                                      (v) => ctlr
-                                                                          .onChangeMultiFilters(
-                                                                              e),
+                                                                  onChanged: (v) =>
+                                                                      ctlr.onChangeMultiFilters(
+                                                                          e,
+                                                                          tabType:
+                                                                              tabType),
                                                                 ),
                                                               ),
                                                               Flexible(

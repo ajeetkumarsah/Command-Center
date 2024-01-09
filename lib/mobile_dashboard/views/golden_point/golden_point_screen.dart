@@ -17,10 +17,21 @@ import 'package:command_centre/mobile_dashboard/views/retailing/widgets/channel_
 import 'package:command_centre/mobile_dashboard/views/retailing/widgets/category_filter_bottomsheet.dart';
 import 'package:command_centre/mobile_dashboard/views/retailing/widgets/custom_expanded_chart_widget.dart';
 
-class GoldenPointScreen extends StatelessWidget {
-  GoldenPointScreen({super.key});
-  final HomeController controller =
-      Get.put(HomeController(homeRepo: Get.find()));
+class GoldenPointScreen extends StatefulWidget {
+  const GoldenPointScreen({super.key});
+
+  @override
+  State<GoldenPointScreen> createState() => _GoldenPointScreenState();
+}
+
+class _GoldenPointScreenState extends State<GoldenPointScreen> {
+  bool isFirst = true;
+  void initCall(HomeController ctlr) {
+    if (isFirst) {
+      isFirst = false;
+      ctlr.getGPInit();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +44,7 @@ class GoldenPointScreen extends StatelessWidget {
         // controller.getGPData(type: 'geo', name: 'trends');
       },
       builder: (ctlr) {
+        initCall(ctlr);
         return RefreshIndicator(
           onRefresh: () async {
             ctlr.getGPData();
@@ -124,7 +136,7 @@ class GoldenPointScreen extends StatelessWidget {
                                     ),
                                     dataList: ctlr.categoryGPList.isNotEmpty
                                         ? ctlr.categoryGPList
-                                        : null,
+                                        : [],
                                     onTap: () => ctlr.onExpandCategory(
                                         !ctlr.isExpandedCategory),
                                     isExpanded: ctlr.isExpandedCategory,
@@ -166,9 +178,7 @@ class GoldenPointScreen extends StatelessWidget {
                                     ),
                                     onTap: () => ctlr.onExpandChannel(
                                         !ctlr.isExpandedChannel),
-                                    dataList: ctlr.channelGPList.isNotEmpty
-                                        ? ctlr.channelGPList
-                                        : null,
+                                    dataList: ctlr.channelGPList,
                                     isExpanded: ctlr.isExpandedChannel,
                                   )
                                 : const SizedBox(),

@@ -424,7 +424,7 @@ class _CustomExpandedChartWidgetState extends State<CustomExpandedChartWidget> {
                                       ),
                                       leftTitles: AxisTitles(
                                         sideTitles: _leftTitles,
-                                        
+                                       
                                       ),
                                       topTitles: AxisTitles(
                                           sideTitles:
