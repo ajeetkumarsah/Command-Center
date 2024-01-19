@@ -24,14 +24,12 @@ class SummaryScreen extends StatefulWidget {
 }
 
 class _SummaryScreenState extends State<SummaryScreen> {
-  final HomeController controller =
-      Get.put(HomeController(homeRepo: Get.find()));
   bool isFirst = true;
-  void initCall() {
+  void initCall(HomeController ctlr) {
     if (isFirst) {
       isFirst = false;
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        controller.getInitValues();
+        ctlr.getInitValues();
       });
     }
     //
@@ -50,11 +48,12 @@ class _SummaryScreenState extends State<SummaryScreen> {
       init: HomeController(homeRepo: Get.find()),
       initState: (_) {
         // initCall();
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          controller.getInitValues();
-        });
+        // WidgetsBinding.instance.addPostFrameCallback((_) {
+        //   controller.getInitValues();
+        // });
       },
       builder: (ctlr) {
+        initCall(ctlr);
         return RefreshIndicator(
           onRefresh: () => ctlr.getSummaryData(),
           child: Container(
@@ -220,29 +219,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
                               ),
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 8),
-                              child:
-                                  // Text.rich(
-                                  //   maxLines: 1,
-                                  //   TextSpan(
-                                  //     children: [
-                                  //       TextSpan(
-                                  //         text: ctlr.selectedMonth !=
-                                  //                 null
-                                  //             ? '${ctlr.selectedMonth!.substring(0, 3)} - ${ctlr.selectedYear}'
-                                  //             : '',
-                                  //         style: GoogleFonts.ptSans(
-                                  //           fontSize: 16,
-                                  //           fontWeight: FontWeight.w400,
-                                  //         ),
-                                  //       ),
-                                  //       const WidgetSpan(
-                                  //         child: Icon(
-                                  //             Icons.arrow_drop_down),
-                                  //       )
-                                  //     ],
-                                  //   ),
-                                  // ),
-                                  Row(
+                              child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Flexible(
@@ -266,8 +243,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
                       ],
                     ),
                   ),
-                  if (ctlr.activeMetrics
-                      .contains('Retailing')) //ctlr.showRetailing)
+                  if (ctlr.activeMetrics.contains('Retailing'))
                     ctlr.isSummaryPageLoading || ctlr.isDirectIndirectLoading
                         ? CustomShimmer(
                             height: 200,
@@ -276,12 +252,17 @@ class _SummaryScreenState extends State<SummaryScreen> {
                             margin: const EdgeInsets.only(
                                 top: 24, left: 12, right: 12, bottom: 8),
                           )
-                        : ctlr.summaryData.isNotEmpty &&
-                                ctlr.summaryIndirectData.isNotEmpty
+                        : ctlr.summaryData.isNotEmpty
                             ? PersonalizeCard(
                                 title: 'Retailing',
+                                isDataFound: ctlr.isSummaryDirect
+                                    ? ctlr.summaryData.first.mtdRetailing?.ind
+                                            ?.dataFound ??
+                                        false
+                                    : ctlr.summaryData.first.mtdRetailing
+                                            ?.indDir?.dataFound ??
+                                        false,
                                 secondTitle: '',
-                                // showMore: !ctlr.getPersona(),
                                 secondWidget: Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
@@ -295,7 +276,6 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                       ),
                                     ),
                                     Container(
-                                      // height: 26,
                                       margin: const EdgeInsets.only(
                                           bottom: 0, left: 12, right: 4),
                                       decoration: BoxDecoration(
@@ -340,48 +320,50 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                               ),
                                             ),
                                           ),
-                                          GestureDetector(
-                                            onTap: () =>
-                                                ctlr.onChangeSummaryDI(false),
-                                            child: Container(
-                                              decoration: BoxDecoration(
-                                                color: ctlr.isSummaryDirect
-                                                    ? AppColors.white
-                                                    : AppColors.primary,
-                                                border: ctlr.isSummaryDirect
-                                                    ? null
-                                                    : Border.all(
-                                                        width: 1,
-                                                        color: !ctlr
-                                                                .isSummaryDirect
-                                                            ? AppColors.primary
-                                                            : AppColors.white,
-                                                      ),
-                                                borderRadius:
-                                                    BorderRadius.circular(100),
-                                              ),
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 10,
-                                                      vertical: 4),
-                                              child: Text(
-                                                'Indirect+Direct',
-                                                style:
-                                                    GoogleFonts.ptSansCaption(
-                                                  color: !ctlr.isSummaryDirect
-                                                      ? Colors.white
-                                                      : Colors.grey,
-                                                  fontSize: 12,
+                                          if (ctlr.selectedGeo == 'All India')
+                                            GestureDetector(
+                                              onTap: () =>
+                                                  ctlr.onChangeSummaryDI(false),
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                  color: ctlr.isSummaryDirect
+                                                      ? AppColors.white
+                                                      : AppColors.primary,
+                                                  border: ctlr.isSummaryDirect
+                                                      ? null
+                                                      : Border.all(
+                                                          width: 1,
+                                                          color: !ctlr
+                                                                  .isSummaryDirect
+                                                              ? AppColors
+                                                                  .primary
+                                                              : AppColors.white,
+                                                        ),
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          100),
+                                                ),
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 10,
+                                                        vertical: 4),
+                                                child: Text(
+                                                  'Indirect + Direct',
+                                                  style:
+                                                      GoogleFonts.ptSansCaption(
+                                                    color: !ctlr.isSummaryDirect
+                                                        ? Colors.white
+                                                        : Colors.grey,
+                                                    fontSize: 12,
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                          )
+                                            )
                                         ],
                                       ),
                                     ),
                                   ],
                                 ),
-
                                 onPressedShowMore: () =>
                                     Get.toNamed(AppPages.RETAILING_SCREEN),
                                 children: [
@@ -397,7 +379,9 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                           child: Column(
                                             children: [
                                               Text(
-                                                'Sellout (in ${ctlr.summaryData.first.mtdRetailing?.cmSellout?.contains('Cr') ?? false ? 'Cr' : ctlr.summaryData.first.mtdRetailing?.cmSellout?.contains('Lk') ?? false ? 'Lk' : ''})',
+                                                ctlr.isSummaryDirect
+                                                    ? 'Sellout (in ${ctlr.summaryData.first.mtdRetailing?.ind?.cmSellout?.contains('Cr') ?? false ? 'Cr' : ctlr.summaryData.first.mtdRetailing?.ind?.cmSellout?.contains('Lk') ?? false ? 'Lk' : ''})'
+                                                    : 'Sellout (in ${ctlr.summaryData.first.mtdRetailing?.indDir?.cmSellout?.contains('Cr') ?? false ? 'Cr' : ctlr.summaryData.first.mtdRetailing?.indDir?.cmSellout?.contains('Lk') ?? false ? 'Lk' : ''})',
                                                 style: GoogleFonts.ptSans(
                                                   fontSize: 16,
                                                   fontWeight: FontWeight.w400,
@@ -410,8 +394,8 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                                   Flexible(
                                                     child: Text(
                                                       ctlr.isSummaryDirect
-                                                          ? '${ctlr.summaryIndirectData.first.mtdRetailing?.cmSellout?.contains('Cr') ?? false ? ctlr.summaryIndirectData.first.mtdRetailing?.cmSellout?.replaceAll('Cr', '') : ctlr.summaryIndirectData.first.mtdRetailing?.cmSellout?.contains('Lk') ?? false ? ctlr.summaryIndirectData.first.mtdRetailing?.cmSellout?.replaceAll('Lk', '') : ctlr.summaryIndirectData.first.mtdRetailing?.cmSellout}'
-                                                          : '${ctlr.summaryData.first.mtdRetailing?.cmSellout?.contains('Cr') ?? false ? ctlr.summaryData.first.mtdRetailing?.cmSellout?.replaceAll('Cr', '') : ctlr.summaryData.first.mtdRetailing?.cmSellout?.contains('Lk') ?? false ? ctlr.summaryData.first.mtdRetailing?.cmSellout?.replaceAll('Lk', '') : ctlr.summaryData.first.mtdRetailing?.cmSellout}',
+                                                          ? '${ctlr.summaryData.first.mtdRetailing?.ind?.cmSellout?.contains('Cr') ?? false ? ctlr.summaryData.first.mtdRetailing?.ind?.cmSellout?.replaceAll('Cr', '') : ctlr.summaryData.first.mtdRetailing?.ind?.cmSellout?.contains('Lk') ?? false ? ctlr.summaryData.first.mtdRetailing?.ind?.cmSellout?.replaceAll('Lk', '') : ctlr.summaryData.first.mtdRetailing?.ind?.cmSellout}'
+                                                          : '${ctlr.summaryData.first.mtdRetailing?.indDir?.cmSellout?.contains('Cr') ?? false ? ctlr.summaryData.first.mtdRetailing?.indDir?.cmSellout?.replaceAll('Cr', '') : ctlr.summaryData.first.mtdRetailing?.indDir?.cmSellout?.contains('Lk') ?? false ? ctlr.summaryData.first.mtdRetailing?.indDir?.cmSellout?.replaceAll('Lk', '') : ctlr.summaryData.first.mtdRetailing?.indDir?.cmSellout}',
                                                       style: GoogleFonts.ptSans(
                                                         fontSize: 40,
                                                         fontWeight:
@@ -443,8 +427,8 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                                   Flexible(
                                                     child: Text(
                                                       ctlr.isSummaryDirect
-                                                          ? '${ctlr.summaryIndirectData.first.mtdRetailing?.cmIya}'
-                                                          : '${ctlr.summaryData.first.mtdRetailing?.cmIya}',
+                                                          ? '${ctlr.summaryData.first.mtdRetailing?.ind?.cmIya}'
+                                                          : '${ctlr.summaryData.first.mtdRetailing?.indDir?.cmIya}',
                                                       maxLines: 1,
                                                       overflow:
                                                           TextOverflow.ellipsis,
@@ -477,8 +461,8 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                                   Flexible(
                                                     child: Text(
                                                       ctlr.isSummaryDirect
-                                                          ? '${ctlr.summaryIndirectData.first.mtdRetailing?.fyIya}'
-                                                          : '${ctlr.summaryData.first.mtdRetailing?.fyIya}',
+                                                          ? '${ctlr.summaryData.first.mtdRetailing?.ind?.fyIya}'
+                                                          : '${ctlr.summaryData.first.mtdRetailing?.indDir?.fyIya}',
                                                       style: GoogleFonts.ptSans(
                                                         fontSize: 40,
                                                         fontWeight:
@@ -494,33 +478,83 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                       ],
                                     ),
                                   ),
-                                  //
-
-                                  if (ctlr.getPersona())
-                                    ctlr.isChannelLoading
-                                        ? CustomShimmer(
-                                            height: 240,
-                                            width: MediaQuery.of(context)
-                                                .size
-                                                .width,
-                                            borderRadius:
-                                                BorderRadius.circular(20),
-                                            margin: const EdgeInsets.symmetric(
-                                                horizontal: 12, vertical: 12),
-                                          )
-                                        : ctlr.channelRetailingModel != null
-                                            ? RetailingTableWidget(
-                                                data: ctlr.isSummaryDirect
-                                                    ? ctlr.channelRetailingModel
-                                                            ?.ind ??
-                                                        []
-                                                    : ctlr.channelRetailingModel
-                                                            ?.indDir ??
-                                                        [],
-                                              )
-                                            : const SizedBox(),
-
-                                  if (ctlr.getPersona())
+                                  if (ctlr.getPersona() &&
+                                      ctlr.summaryData.first.mtdRetailing?.ind
+                                              ?.channel !=
+                                          null)
+                                    Container(
+                                      height: .5,
+                                      width: double.infinity,
+                                      color: AppColors.borderColor,
+                                    ),
+                                  if (ctlr.getPersona() &&
+                                      ctlr.summaryData.first.mtdRetailing?.ind
+                                              ?.channel !=
+                                          null)
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 8.0),
+                                      child: Row(
+                                        children: [
+                                          const SizedBox(width: 16),
+                                          Flexible(
+                                            child: Text(
+                                              'Channel-Wise',
+                                              style: GoogleFonts.ptSans(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w700,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  if (ctlr.getPersona() &&
+                                      ctlr.summaryData.first.mtdRetailing?.ind
+                                              ?.channel !=
+                                          null)
+                                    RetailingTableWidget(
+                                      dataList: ctlr.isSummaryDirect
+                                          ? ctlr.summaryData.first.mtdRetailing
+                                                  ?.ind?.channel ??
+                                              []
+                                          : ctlr.summaryData.first.mtdRetailing
+                                                  ?.indDir?.channel ??
+                                              [],
+                                    ),
+                                  if (ctlr.getPersona() &&
+                                      ctlr.summaryData.first.mtdRetailing?.ind
+                                              ?.trends !=
+                                          null)
+                                    Container(
+                                      height: .5,
+                                      width: double.infinity,
+                                      color: AppColors.borderColor,
+                                    ),
+                                  if (ctlr.getPersona() &&
+                                      ctlr.summaryData.first.mtdRetailing?.ind
+                                              ?.trends !=
+                                          null)
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 8.0),
+                                      child: Row(
+                                        children: [
+                                          const SizedBox(width: 16),
+                                          Flexible(
+                                            child: Text(
+                                              'Trends Analysis',
+                                              style: GoogleFonts.ptSans(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w700,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  if (ctlr.getPersona() &&
+                                      ctlr.summaryData.first.mtdRetailing?.ind
+                                              ?.trends !=
+                                          null)
                                     Padding(
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 12.0, vertical: 12),
@@ -617,29 +651,48 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                         ],
                                       ),
                                     ),
-
-                                  if (ctlr.getPersona())
-                                    ctlr.isRetailingTrendsLoading
-                                        ? CustomShimmer(
-                                            height: 240,
-                                            width: MediaQuery.of(context)
-                                                .size
-                                                .width,
-                                            borderRadius:
-                                                BorderRadius.circular(20),
-                                            margin: const EdgeInsets.symmetric(
-                                                horizontal: 12, vertical: 12),
-                                          )
-                                        : ctlr.trendsRetailingModel != null
-                                            ? RetailingGraphWidget(
-                                                trendsData: ctlr.isSummaryDirect
-                                                    ? ctlr.trendsRetailingModel!
-                                                        .ind!
-                                                    : ctlr.trendsRetailingModel!
-                                                        .indDir!,
-                                                salesValue: ctlr.channelSales,
-                                              )
-                                            : const SizedBox(),
+                                  if (ctlr.getPersona() &&
+                                      ctlr.summaryData.first.mtdRetailing?.ind
+                                              ?.trends !=
+                                          null)
+                                    RetailingGraphWidget(
+                                      yAxisData: ctlr.isSummaryDirect
+                                          ? ctlr.summaryData.first.mtdRetailing
+                                                  ?.ind?.yAxisData ??
+                                              []
+                                          : ctlr.summaryData.first.mtdRetailing
+                                                  ?.indDir?.yAxisData ??
+                                              [],
+                                      minValue: ctlr.isSummaryDirect
+                                          ? ctlr.summaryData.first.mtdRetailing
+                                                  ?.ind?.yMin ??
+                                              0.0
+                                          : ctlr.summaryData.first.mtdRetailing
+                                                  ?.indDir?.yMin ??
+                                              0.0,
+                                      maxValue: ctlr.isSummaryDirect
+                                          ? ctlr.summaryData.first.mtdRetailing
+                                                  ?.ind?.yMax ??
+                                              0.0
+                                          : ctlr.summaryData.first.mtdRetailing
+                                                  ?.indDir?.yMax ??
+                                              0.0,
+                                      interval: ctlr.isSummaryDirect
+                                          ? ctlr.summaryData.first.mtdRetailing
+                                                  ?.ind?.yInterval ??
+                                              0.0
+                                          : ctlr.summaryData.first.mtdRetailing
+                                                  ?.indDir?.yInterval ??
+                                              0.0,
+                                      trendsData: ctlr.isSummaryDirect
+                                          ? ctlr.summaryData.first.mtdRetailing
+                                                  ?.ind?.trends ??
+                                              []
+                                          : ctlr.summaryData.first.mtdRetailing
+                                                  ?.indDir?.trends ??
+                                              [],
+                                      salesValue: ctlr.channelSales,
+                                    ),
                                 ],
                               )
                             : const SizedBox(),
@@ -657,6 +710,8 @@ class _SummaryScreenState extends State<SummaryScreen> {
                             ? PersonalizeCard(
                                 title: 'Coverage ',
                                 top: 12,
+                                isDataFound:
+                                    ctlr.summaryData.first.coverage?.dataFound,
                                 secondTitle: '',
                                 bottomInside: 8,
                                 onPressedShowMore: () =>
@@ -824,6 +879,8 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                 title: 'Golden Points',
                                 secondTitle: '', //P3M
                                 top: 12,
+                                isDataFound: ctlr
+                                    .summaryData.first.dgpCompliance?.dataFound,
                                 onPressedShowMore: () =>
                                     Get.toNamed(AppPages.GOLDEN_POINT_SCREEN),
                                 bottomInside: 8,
@@ -930,6 +987,8 @@ class _SummaryScreenState extends State<SummaryScreen> {
                             ? PersonalizeCard(
                                 title: 'Focus Brand',
                                 secondTitle: '',
+                                isDataFound: ctlr
+                                    .summaryData.first.focusBrand?.dataFound,
                                 top: 12,
                                 onPressedShowMore: () =>
                                     Get.toNamed(AppPages.FOCUS_BRAND_SCREEN),

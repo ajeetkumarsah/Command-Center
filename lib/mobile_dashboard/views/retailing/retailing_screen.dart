@@ -5,7 +5,6 @@ import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
 import 'package:command_centre/mobile_dashboard/utils/summary_types.dart';
 import 'package:command_centre/mobile_dashboard/controllers/home_controller.dart';
 import 'package:command_centre/mobile_dashboard/views/widgets/custom_loader.dart';
-import 'package:command_centre/mobile_dashboard/controllers/home_controller.dart';
 import 'package:command_centre/mobile_dashboard/views/widgets/custom_shimmer.dart';
 import 'package:command_centre/mobile_dashboard/views/widgets/custom_deepdive_appbar.dart';
 import 'package:command_centre/mobile_dashboard/views/retailing/widgets/custom_epanded_Widget.dart';
@@ -99,36 +98,37 @@ class _RetailingScreenState extends State<RetailingScreen> {
                         ),
                       ),
                     ),
-                    GestureDetector(
-                      onTap: () => ctlr.onChangeDeepDiveIndirect(false),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: !ctlr.isRetailingDeepDiveInd
-                              ? AppColors.white
-                              : Colors.grey,
-                          border: ctlr.isRetailingDeepDiveInd
-                              ? null
-                              : Border.all(
-                                  width: 1,
-                                  color: !ctlr.isRetailingDeepDiveInd
-                                      ? AppColors.white
-                                      : Colors.grey,
-                                ),
-                          borderRadius: BorderRadius.circular(100),
-                        ),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 4),
-                        child: Text(
-                          'Ind+Dir',
-                          style: GoogleFonts.ptSansCaption(
-                            color: ctlr.isRetailingDeepDiveInd
+                    if (ctlr.selectedGeo == 'All India')
+                      GestureDetector(
+                        onTap: () => ctlr.onChangeDeepDiveIndirect(false),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: !ctlr.isRetailingDeepDiveInd
                                 ? AppColors.white
-                                : AppColors.primary,
-                            fontSize: 12,
+                                : Colors.grey,
+                            border: ctlr.isRetailingDeepDiveInd
+                                ? null
+                                : Border.all(
+                                    width: 1,
+                                    color: !ctlr.isRetailingDeepDiveInd
+                                        ? AppColors.white
+                                        : Colors.grey,
+                                  ),
+                            borderRadius: BorderRadius.circular(100),
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 4),
+                          child: Text(
+                            'Ind+Dir',
+                            style: GoogleFonts.ptSansCaption(
+                              color: ctlr.isRetailingDeepDiveInd
+                                  ? AppColors.white
+                                  : AppColors.primary,
+                              fontSize: 12,
+                            ),
                           ),
                         ),
-                      ),
-                    )
+                      )
                   ],
                 ),
               ),
@@ -171,7 +171,7 @@ class _RetailingScreenState extends State<RetailingScreen> {
                         //   ],
                         // ),
                         // const SizedBox(height: 16),
-                        ctlr.isSummaryLoading
+                        ctlr.isRetailingGeoLoading
                             ? loadingWidget(context)
                             : ctlr.retailingGeoModel != null
                                 ? CustomExpandedWidget(
@@ -192,7 +192,7 @@ class _RetailingScreenState extends State<RetailingScreen> {
                                 : const SizedBox(),
                         SizedBox(
                             height: ctlr.retailingGeoModel != null ? 16 : 0),
-                        ctlr.isCategoryLoading
+                        ctlr.isRetailingCategoryLoading
                             ? loadingWidget(context)
                             : ctlr.categoryRetailingModel != null
                                 ? CustomExpandedWidget(
@@ -240,7 +240,7 @@ class _RetailingScreenState extends State<RetailingScreen> {
                         SizedBox(
                             height:
                                 ctlr.categoryRetailingModel != null ? 16 : 0),
-                        ctlr.isChannelLoading
+                        ctlr.isRetailingChannelLoading
                             ? loadingWidget(context)
                             : ctlr.channelRetailingModel != null
                                 ? CustomExpandedWidget(
@@ -290,8 +290,7 @@ class _RetailingScreenState extends State<RetailingScreen> {
                                 ctlr.channelRetailingModel != null ? 16 : 0),
                         ctlr.isRetailingTrendsLoading
                             ? loadingWidget(context)
-                            : ctlr.trendsRetailingModel?.ind != null &&
-                                    ctlr.trendsRetailingModel?.indDir != null
+                            : ctlr.trendsRetailingModel != null
                                 ? CustomExpandedChartWidget(
                                     summaryType: SummaryTypes.retailing.type,
                                     title: 'Retailing Trends',
@@ -303,10 +302,7 @@ class _RetailingScreenState extends State<RetailingScreen> {
                                         : ctlr.trendsRetailingModel!.indDir!,
                                     onFilterTap: () => Get.bottomSheet(
                                       TrendsFilterBottomsheet(
-                                        onTap: (v) => ctlr.onTrendsFilterSelect(
-                                            v, SummaryTypes.retailing.type),
-                                        tabType: SummaryTypes.retailing.type,
-                                      ),
+                                          tabType: SummaryTypes.retailing.type),
                                       isScrollControlled: true,
                                     ),
                                   )

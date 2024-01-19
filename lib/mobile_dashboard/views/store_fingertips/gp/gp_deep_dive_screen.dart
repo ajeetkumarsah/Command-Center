@@ -1017,6 +1017,7 @@ class GPDeepDiveScreen extends StatelessWidget {
   SideTitles get _bottomTitles => SideTitles(
         showTitles: true,
         reservedSize: 30,
+        interval: 1,
         getTitlesWidget: (value, meta) {
           String text = '';
           switch (value.toInt()) {

@@ -5,16 +5,63 @@ import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
 import 'package:command_centre/mobile_dashboard/utils/summary_types.dart';
 import 'package:command_centre/mobile_dashboard/controllers/home_controller.dart';
 
-class ChannelTrendsFilterBottomsheet extends StatelessWidget {
+class ChannelTrendsFilterBottomsheet extends StatefulWidget {
   final String tabType;
-  const ChannelTrendsFilterBottomsheet({super.key, required this.tabType});
+  final String type;
+  const ChannelTrendsFilterBottomsheet(
+      {super.key, required this.tabType, required this.type});
+
+  @override
+  State<ChannelTrendsFilterBottomsheet> createState() =>
+      _ChannelTrendsFilterBottomsheetState();
+}
+
+class _ChannelTrendsFilterBottomsheetState
+    extends State<ChannelTrendsFilterBottomsheet> {
+  String _selectedTrendsChannel = 'Level 1', _selectedChannelValue = '';
+  String get selectedTrendsChannel => _selectedTrendsChannel;
+  String get selectedChannelValue => _selectedChannelValue;
+  void onChangeFilter(String value) {
+    _selectedTrendsChannel = value;
+    setState(() {});
+  }
+
+  void onChangeFilterValue(String value) {
+    _selectedChannelValue = value;
+    setState(() {});
+  }
+
+  bool isFirst = true;
+  void initCall({required HomeController ctlr}) {
+    if (isFirst) {
+      isFirst = false;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ctlr.onChangeTrendsChannel1(ctlr.selectedChannel,
+            tabType: widget.tabType);
+        if (ctlr.selectedChannel == 'attr1') {
+          onChangeFilter('Level 1');
+          onChangeFilterValue(ctlr.selectedTrendsChannelValue);
+        } else {
+          onChangeFilter(ctlr.selectedChannel);
+          onChangeFilterValue(ctlr.selectedTrendsChannelValue);
+        }
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    List<String> channels = ['Channel'];
+    List<String> channels = [
+      'Level 1',
+      'Level 2',
+      'Level 3',
+      'Level 4',
+      'Level 5'
+    ];
     return GetBuilder<HomeController>(
       init: HomeController(homeRepo: Get.find()),
       builder: (ctlr) {
+        initCall(ctlr: ctlr);
         return Container(
           decoration: const BoxDecoration(
             borderRadius: BorderRadius.only(
@@ -62,11 +109,15 @@ class ChannelTrendsFilterBottomsheet extends StatelessWidget {
                           ...channels
                               .map(
                                 (e) => Container(
-                                  color: e == ctlr.selectedTrendsChannel
+                                  color: e == selectedTrendsChannel
                                       ? AppColors.white
                                       : null,
                                   child: ListTile(
-                                    onTap: () => ctlr.onChangeChannel(e),
+                                    onTap: () {
+                                      onChangeFilter(e);
+                                      ctlr.onChangeTrendsChannel1(e,
+                                          tabType: widget.tabType);
+                                    },
                                     visualDensity: const VisualDensity(
                                         horizontal: 0, vertical: -3),
                                     title: Text(e),
@@ -83,33 +134,6 @@ class ChannelTrendsFilterBottomsheet extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            // TextFormField(
-                            //   decoration: const InputDecoration(
-                            //     hintText: 'Search ',
-                            //     prefixIcon: Icon(
-                            //       Icons.search,
-                            //       color: Colors.grey,
-                            //     ),
-                            //     border: UnderlineInputBorder(
-                            //       borderSide: BorderSide(
-                            //         width: .5,
-                            //         color: Colors.grey,
-                            //       ),
-                            //     ),
-                            //     enabledBorder: UnderlineInputBorder(
-                            //       borderSide: BorderSide(
-                            //         width: .5,
-                            //         color: Colors.grey,
-                            //       ),
-                            //     ),
-                            //     focusedBorder: UnderlineInputBorder(
-                            //       borderSide: BorderSide(
-                            //         width: .5,
-                            //         color: Colors.grey,
-                            //       ),
-                            //     ),
-                            //   ),
-                            // ),
                             SizedBox(
                               height: 250,
                               child: SingleChildScrollView(
@@ -123,11 +147,10 @@ class ChannelTrendsFilterBottomsheet extends StatelessWidget {
                                                 scale: .9,
                                                 child: Checkbox(
                                                   value: e.toLowerCase() ==
-                                                      ctlr.selectedTrendsChannelValue
+                                                      _selectedChannelValue
                                                           .toLowerCase(),
-                                                  onChanged: (v) => ctlr
-                                                      .onChangeTrendsChannelValue(
-                                                          e),
+                                                  onChanged: (v) =>
+                                                      onChangeFilterValue(e),
                                                 ),
                                               ),
                                               Flexible(
@@ -167,12 +190,19 @@ class ChannelTrendsFilterBottomsheet extends StatelessWidget {
                     ),
                     TextButton(
                       onPressed: () {
+                        ctlr.onChangeChannel(
+                            _selectedTrendsChannel, widget.tabType);
+                        ctlr.onTrendsFilterSelect(widget.type, widget.tabType);
+                        ctlr.onChangeTrendsChannelValue(
+                            _selectedChannelValue, widget.tabType);
+                        ctlr.onChangeChannel1(_selectedTrendsChannel);
                         ctlr.onApplyMultiFilter(
-                            'trends',
-                            tabType == SummaryTypes.coverage.type
-                                ? 'trends'
-                                : 'geo',
-                            tabType: tabType);
+                          'trends',
+                          widget.tabType == SummaryTypes.coverage.type
+                              ? 'trends'
+                              : 'geo',
+                          tabType: widget.tabType,
+                        );
 
                         Navigator.pop(context);
                       },

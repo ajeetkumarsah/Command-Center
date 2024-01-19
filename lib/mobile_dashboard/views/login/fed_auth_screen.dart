@@ -213,8 +213,8 @@ class _FedAuthScreenState extends State<FedAuthScreen> {
             'Ocp-Apim-Trace': true.toString(),
             'Ocp-Apim-Subscription-Key': AppConstants.SUBSCRIPTION_KEY,
           });
-      debugPrint('==>Employee Response ${response.body}');
-      logger.i(response.body.toString());
+      // debugPrint('==>Employee Response ${response.body}');
+      logger.v('====>Employee Response:${response.body}');
       if (response.statusCode == 200) {
         var mapResponse = json.decode(response.body);
         SharedPreferences session = await SharedPreferences.getInstance();
@@ -226,6 +226,7 @@ class _FedAuthScreenState extends State<FedAuthScreen> {
         globals.token = session.getString(AppConstants.TOKEN) ?? '';
         globals.name = session.getString(AppConstants.NAME) ?? '';
         globals.email = session.getString(AppConstants.EMAIL) ?? '';
+        debugPrint('===>Before Token check');
         if (session.getString(AppConstants.DEFAULT_GEO) != null &&
             session.getString(AppConstants.DEFAULT_GEO)!.trim().isNotEmpty &&
             session.getString(AppConstants.DEFAULT_GEO_VALUE) != null &&
@@ -233,40 +234,23 @@ class _FedAuthScreenState extends State<FedAuthScreen> {
                 .getString(AppConstants.DEFAULT_GEO_VALUE)!
                 .trim()
                 .isNotEmpty) {
+          debugPrint('===>After Token check');
           Get.offAndToNamed(AppPages.INITIAL);
           // Get.offAndToNamed(AppPages.PERSONA_SCREEN);
         } else {
           Get.offAndToNamed(AppPages.PERSONA_SCREEN);
         }
-        // Navigator.pushReplacement(
-        //     context,
-        //     MaterialPageRoute(
-        //       builder: (context) => const SelectProfile(),
-        //     ));
       } else if (response.statusCode == 401) {
         Get.offAndToNamed(AppPages.FED_AUTH_LOGIN);
-        // Navigator.pushReplacement(context,
-        //     MaterialPageRoute(builder: (context) => FedAuthLoginPage()));
       } else if (response.statusCode == 403) {
         _onClearCookies(context);
         Get.offAndToNamed(AppPages.ACCESS_DENIED,
             arguments: AccessDeniedBody(
                 statusCode: response.statusCode,
                 reason: "ACCESS_DENIED_BY_BACKEND"));
-        // Navigator.pushReplacement(
-        //     context,
-        //     MaterialPageRoute(
-        //         builder: (context) => AccessDenied(
-        //             statusCode: response.statusCode,
-        //             reason: "ACCESS_DENIED_BY_BACKEND")));
       } else {
         _onClearCookies(context);
         Get.offAndToNamed(AppPages.RETRY_ACCESS_DENIED);
-        // Navigator.pushReplacement(
-        //     context,
-        //     MaterialPageRoute(
-        //       builder: (context) => const RetryAccessDenied(),
-        //     ));
       }
     } catch (e) {
       _onClearCookies(context);
@@ -291,9 +275,5 @@ class _FedAuthScreenState extends State<FedAuthScreen> {
     if (!hadCookies) {
       message = 'There are no cookies.';
     }
-    // ignore: deprecated_member_use
-    // Scaffold.of(context).showSnackBar(SnackBar(
-    //   content: Text(message),
-    // ));
   }
 }

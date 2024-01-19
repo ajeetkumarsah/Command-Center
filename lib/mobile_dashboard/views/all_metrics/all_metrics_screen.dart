@@ -60,8 +60,7 @@ class AllMetricsScreen extends StatelessWidget {
                                         right: 12,
                                         bottom: 8),
                                   )
-                                : ctlr.summaryData.isNotEmpty &&
-                                        ctlr.summaryIndirectData.isNotEmpty
+                                : ctlr.summaryData.isNotEmpty
                                     ? PersonalizeCard(
                                         title: 'Retailing',
                                         onPressedShowMore: () => Get.toNamed(
@@ -80,7 +79,9 @@ class AllMetricsScreen extends StatelessWidget {
                                                   child: Column(
                                                     children: [
                                                       Text(
-                                                        'Sellout (in ${ctlr.summaryData.first.mtdRetailing?.cmSellout?.contains('Cr') ?? false ? 'Cr' : ctlr.summaryData.first.mtdRetailing?.cmSellout?.contains('Lk') ?? false ? 'Lk' : ''})',
+                                                        ctlr.isSummaryDirect
+                                                            ? 'Sellout (in ${ctlr.summaryData.first.mtdRetailing?.ind?.cmSellout?.contains('Cr') ?? false ? 'Cr' : ctlr.summaryData.first.mtdRetailing?.ind?.cmSellout?.contains('Lk') ?? false ? 'Lk' : ''})'
+                                                            : 'Sellout (in ${ctlr.summaryData.first.mtdRetailing?.indDir?.cmSellout?.contains('Cr') ?? false ? 'Cr' : ctlr.summaryData.first.mtdRetailing?.indDir?.cmSellout?.contains('Lk') ?? false ? 'Lk' : ''})',
                                                         style:
                                                             GoogleFonts.ptSans(
                                                           fontSize: 16,
@@ -96,8 +97,8 @@ class AllMetricsScreen extends StatelessWidget {
                                                           Flexible(
                                                             child: Text(
                                                               ctlr.isSummaryDirect
-                                                                  ? '${ctlr.summaryIndirectData.first.mtdRetailing?.cmSellout?.contains('Cr') ?? false ? ctlr.summaryIndirectData.first.mtdRetailing?.cmSellout?.replaceAll('Cr', '') : ctlr.summaryIndirectData.first.mtdRetailing?.cmSellout?.contains('Lk') ?? false ? ctlr.summaryIndirectData.first.mtdRetailing?.cmSellout?.replaceAll('Lk', '') : ctlr.summaryIndirectData.first.mtdRetailing?.cmSellout}'
-                                                                  : '${ctlr.summaryData.first.mtdRetailing?.cmSellout?.contains('Cr') ?? false ? ctlr.summaryData.first.mtdRetailing?.cmSellout?.replaceAll('Cr', '') : ctlr.summaryData.first.mtdRetailing?.cmSellout?.contains('Lk') ?? false ? ctlr.summaryData.first.mtdRetailing?.cmSellout?.replaceAll('Lk', '') : ctlr.summaryData.first.mtdRetailing?.cmSellout}',
+                                                                  ? '${ctlr.summaryData.first.mtdRetailing?.ind?.cmSellout?.contains('Cr') ?? false ? ctlr.summaryData.first.mtdRetailing?.ind?.cmSellout?.replaceAll('Cr', '') : ctlr.summaryData.first.mtdRetailing?.ind?.cmSellout?.contains('Lk') ?? false ? ctlr.summaryData.first.mtdRetailing?.ind?.cmSellout?.replaceAll('Lk', '') : ctlr.summaryData.first.mtdRetailing?.ind?.cmSellout}'
+                                                                  : '${ctlr.summaryData.first.mtdRetailing?.indDir?.cmSellout?.contains('Cr') ?? false ? ctlr.summaryData.first.mtdRetailing?.indDir?.cmSellout?.replaceAll('Cr', '') : ctlr.summaryData.first.mtdRetailing?.indDir?.cmSellout?.contains('Lk') ?? false ? ctlr.summaryData.first.mtdRetailing?.indDir?.cmSellout?.replaceAll('Lk', '') : ctlr.summaryData.first.mtdRetailing?.indDir?.cmSellout}',
                                                               style: GoogleFonts
                                                                   .ptSans(
                                                                 fontSize: 40,
@@ -135,8 +136,8 @@ class AllMetricsScreen extends StatelessWidget {
                                                           Flexible(
                                                             child: Text(
                                                               ctlr.isSummaryDirect
-                                                                  ? '${ctlr.summaryIndirectData.first.mtdRetailing?.cmIya}'
-                                                                  : '${ctlr.summaryData.first.mtdRetailing?.cmIya}',
+                                                                  ? '${ctlr.summaryData.first.mtdRetailing?.ind?.cmIya}'
+                                                                  : '${ctlr.summaryData.first.mtdRetailing?.indDir?.cmIya}',
                                                               maxLines: 1,
                                                               overflow:
                                                                   TextOverflow
@@ -175,8 +176,8 @@ class AllMetricsScreen extends StatelessWidget {
                                                           Flexible(
                                                             child: Text(
                                                               ctlr.isSummaryDirect
-                                                                  ? '${ctlr.summaryIndirectData.first.mtdRetailing?.fyIya}'
-                                                                  : '${ctlr.summaryData.first.mtdRetailing?.fyIya}',
+                                                                  ? '${ctlr.summaryData.first.mtdRetailing?.ind?.fyIya}'
+                                                                  : '${ctlr.summaryData.first.mtdRetailing?.indDir?.fyIya}',
                                                               style: GoogleFonts
                                                                   .ptSans(
                                                                 fontSize: 40,
@@ -196,37 +197,109 @@ class AllMetricsScreen extends StatelessWidget {
                                           ),
                                           //
 
-                                          if (ctlr.getPersona())
-                                            ctlr.isChannelLoading
-                                                ? CustomShimmer(
-                                                    height: 240,
-                                                    width:
-                                                        MediaQuery.of(context)
-                                                            .size
-                                                            .width,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            20),
-                                                    margin: const EdgeInsets
-                                                            .symmetric(
-                                                        horizontal: 12,
-                                                        vertical: 12),
-                                                  )
-                                                : ctlr.channelRetailingModel !=
-                                                        null
-                                                    ? RetailingTableWidget(
-                                                        data: ctlr
-                                                                .isSummaryDirect
-                                                            ? ctlr.channelRetailingModel
-                                                                    ?.ind ??
-                                                                []
-                                                            : ctlr.channelRetailingModel
-                                                                    ?.indDir ??
-                                                                [],
-                                                      )
-                                                    : const SizedBox(),
-
-                                          if (ctlr.getPersona())
+                                          if (ctlr.getPersona() &&
+                                              ctlr.channelRetailingModel !=
+                                                  null)
+                                            Container(
+                                              height: .5,
+                                              width: double.infinity,
+                                              color: AppColors.borderColor,
+                                            ),
+                                          if (ctlr.getPersona() &&
+                                              ctlr.channelRetailingModel !=
+                                                  null)
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  top: 8.0),
+                                              child: Row(
+                                                children: [
+                                                  const SizedBox(width: 16),
+                                                  Flexible(
+                                                    child: Text(
+                                                      'Channel-Wise',
+                                                      style: GoogleFonts.ptSans(
+                                                        fontSize: 16,
+                                                        fontWeight:
+                                                            FontWeight.w700,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          if (ctlr.getPersona() &&
+                                              ctlr
+                                                      .summaryData
+                                                      .first
+                                                      .mtdRetailing
+                                                      ?.ind
+                                                      ?.channel !=
+                                                  null)
+                                            RetailingTableWidget(
+                                              dataList: ctlr.isSummaryDirect
+                                                  ? ctlr
+                                                          .summaryData
+                                                          .first
+                                                          .mtdRetailing
+                                                          ?.ind
+                                                          ?.channel ??
+                                                      []
+                                                  : ctlr
+                                                          .summaryData
+                                                          .first
+                                                          .mtdRetailing
+                                                          ?.indDir
+                                                          ?.channel ??
+                                                      [],
+                                            ),
+                                          if (ctlr.getPersona() &&
+                                              ctlr
+                                                      .summaryData
+                                                      .first
+                                                      .mtdRetailing
+                                                      ?.ind
+                                                      ?.trends !=
+                                                  null)
+                                            Container(
+                                              height: .5,
+                                              width: double.infinity,
+                                              color: AppColors.borderColor,
+                                            ),
+                                          if (ctlr.getPersona() &&
+                                              ctlr
+                                                      .summaryData
+                                                      .first
+                                                      .mtdRetailing
+                                                      ?.ind
+                                                      ?.trends !=
+                                                  null)
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  top: 8.0),
+                                              child: Row(
+                                                children: [
+                                                  const SizedBox(width: 16),
+                                                  Flexible(
+                                                    child: Text(
+                                                      'Trends Analysis',
+                                                      style: GoogleFonts.ptSans(
+                                                        fontSize: 16,
+                                                        fontWeight:
+                                                            FontWeight.w700,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          if (ctlr.getPersona() &&
+                                              ctlr
+                                                      .summaryData
+                                                      .first
+                                                      .mtdRetailing
+                                                      ?.ind
+                                                      ?.trends !=
+                                                  null)
                                             Padding(
                                               padding:
                                                   const EdgeInsets.symmetric(
@@ -351,38 +424,101 @@ class AllMetricsScreen extends StatelessWidget {
                                                 ],
                                               ),
                                             ),
-
-                                          if (ctlr.getPersona())
-                                            ctlr.isRetailingTrendsLoading
-                                                ? CustomShimmer(
-                                                    height: 240,
-                                                    width:
-                                                        MediaQuery.of(context)
-                                                            .size
-                                                            .width,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            20),
-                                                    margin: const EdgeInsets
-                                                            .symmetric(
-                                                        horizontal: 12,
-                                                        vertical: 12),
+                                          if (ctlr.getPersona() &&
+                                              ctlr
+                                                      .summaryData
+                                                      .first
+                                                      .mtdRetailing
+                                                      ?.ind
+                                                      ?.trends !=
+                                                  null)
+                                            ctlr.summaryData.first.mtdRetailing
+                                                        ?.ind?.trends !=
+                                                    null
+                                                ? RetailingGraphWidget(
+                                                    yAxisData: ctlr.isSummaryDirect
+                                                        ? ctlr
+                                                                .summaryData
+                                                                .first
+                                                                .mtdRetailing
+                                                                ?.ind
+                                                                ?.yAxisData ??
+                                                            []
+                                                        : ctlr
+                                                                .summaryData
+                                                                .first
+                                                                .mtdRetailing
+                                                                ?.indDir
+                                                                ?.yAxisData ??
+                                                            [],
+                                                    minValue: ctlr
+                                                            .isSummaryDirect
+                                                        ? ctlr
+                                                                .summaryData
+                                                                .first
+                                                                .mtdRetailing
+                                                                ?.ind
+                                                                ?.yMin ??
+                                                            0.0
+                                                        : ctlr
+                                                                .summaryData
+                                                                .first
+                                                                .mtdRetailing
+                                                                ?.indDir
+                                                                ?.yMin ??
+                                                            0.0,
+                                                    maxValue: ctlr
+                                                            .isSummaryDirect
+                                                        ? ctlr
+                                                                .summaryData
+                                                                .first
+                                                                .mtdRetailing
+                                                                ?.ind
+                                                                ?.yMax ??
+                                                            0.0
+                                                        : ctlr
+                                                                .summaryData
+                                                                .first
+                                                                .mtdRetailing
+                                                                ?.indDir
+                                                                ?.yMax ??
+                                                            0.0,
+                                                    interval: ctlr
+                                                            .isSummaryDirect
+                                                        ? ctlr
+                                                                .summaryData
+                                                                .first
+                                                                .mtdRetailing
+                                                                ?.ind
+                                                                ?.yInterval ??
+                                                            0.0
+                                                        : ctlr
+                                                                .summaryData
+                                                                .first
+                                                                .mtdRetailing
+                                                                ?.indDir
+                                                                ?.yInterval ??
+                                                            0.0,
+                                                    trendsData: ctlr
+                                                            .isSummaryDirect
+                                                        ? ctlr
+                                                                .summaryData
+                                                                .first
+                                                                .mtdRetailing
+                                                                ?.ind
+                                                                ?.trends ??
+                                                            []
+                                                        : ctlr
+                                                                .summaryData
+                                                                .first
+                                                                .mtdRetailing
+                                                                ?.indDir
+                                                                ?.trends ??
+                                                            [],
+                                                    salesValue:
+                                                        ctlr.channelSales,
                                                   )
-                                                : ctlr.trendsRetailingModel !=
-                                                        null
-                                                    ? RetailingGraphWidget(
-                                                        trendsData: ctlr
-                                                                .isSummaryDirect
-                                                            ? ctlr
-                                                                .trendsRetailingModel!
-                                                                .ind!
-                                                            : ctlr
-                                                                .trendsRetailingModel!
-                                                                .indDir!,
-                                                        salesValue:
-                                                            ctlr.channelSales,
-                                                      )
-                                                    : const SizedBox(),
+                                                : const SizedBox(),
                                         ],
                                       )
                                     : const SizedBox(),

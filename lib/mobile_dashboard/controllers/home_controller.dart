@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
+import 'package:collection/collection.dart';
 import 'package:command_centre/mobile_dashboard/utils/summary_types.dart';
 import 'package:command_centre/mobile_dashboard/utils/routes/app_pages.dart';
 import 'package:command_centre/mobile_dashboard/data/repository/home_repo.dart';
@@ -39,8 +40,19 @@ class HomeController extends GetxController {
       _showFocusBrand = true,
       _isFilterLoading = false,
       _isSummaryLoading = false,
-      _isCategoryLoading = false,
-      _isChannelLoading = false,
+      _isRetailingGeoLoading = false,
+      _isCoverageGeoLoading = false,
+      _isGPGeoLoading = false,
+      _isFBGeoLoading = false,
+      _isRetailingCategoryLoading = false,
+      _isCoverageCategoryLoading = false,
+      _isGPCategoryLoading = false,
+      _isFBCategoryLoading = false,
+      // _isChannelLoading = false,
+      _isRetailingChannelLoading = false,
+      _isCoverageChannelLoading = false,
+      _isGPChannelLoading = false,
+      _isFBChannelLoading = false,
       _isRetailingTrendsLoading = false,
       _isCoverageTrendsLoading = false,
       _isGPTrendsLoading = false,
@@ -61,8 +73,19 @@ class HomeController extends GetxController {
   bool get showFocusBrand => _showFocusBrand;
   bool get isFilterLoading => _isFilterLoading;
   bool get isSummaryLoading => _isSummaryLoading;
-  bool get isCategoryLoading => _isCategoryLoading;
-  bool get isChannelLoading => _isChannelLoading;
+  bool get isRetailingGeoLoading => _isRetailingGeoLoading;
+  bool get isCoverageGeoLoading => _isCoverageGeoLoading;
+  bool get isGPGeoLoading => _isGPGeoLoading;
+  bool get isFBGeoLoading => _isFBGeoLoading;
+  bool get isRetailingCategoryLoading => _isRetailingCategoryLoading;
+  bool get isCoverageCategoryLoading => _isCoverageCategoryLoading;
+  bool get isGPCategoryLoading => _isGPCategoryLoading;
+  bool get isFBCategoryLoading => _isFBCategoryLoading;
+
+  bool get isRetailingChannelLoading => _isRetailingChannelLoading;
+  bool get isCoverageChannelLoading => _isCoverageChannelLoading;
+  bool get isGPChannelLoading => _isGPChannelLoading;
+  bool get isFBChannelLoading => _isFBChannelLoading;
   bool get isRetailingTrendsLoading => _isRetailingTrendsLoading;
   bool get channelSales => _channelSales;
   bool get isSummaryPageLoading => _isSummaryPageLoading;
@@ -92,14 +115,25 @@ class HomeController extends GetxController {
   String get selectedCoverageTrendsFilter => _selectedCoverageTrendsFilter;
   String _selectedTrends = 'Channel';
   String get selectedTrends => _selectedTrends;
-  String _selectedChannel = 'Channel';
+  String _selectedCoverageTrends = 'Channel';
+  String get selectedCoverageTrends => _selectedCoverageTrends;
+  String _selectedGPTrends = 'Channel';
+  String get selectedGPTrends => _selectedGPTrends;
+  String _selectedFBTrends = 'Channel';
+  String get selectedFBTrends => _selectedFBTrends;
+
+  String _selectedChannel = 'attr1';
   String get selectedChannel => _selectedChannel;
-  String _selectedTrendsChannel = 'Channel';
+  String _selectedTrendsChannel = 'attr1';
   String get selectedTrendsChannel => _selectedTrendsChannel;
   String _selectedTrendsChannelValue = '';
   String get selectedTrendsChannelValue => _selectedTrendsChannelValue;
   String _selectedCategory = 'Category';
   String get selectedCategory => _selectedCategory;
+  String _selectedGPCategory = 'Category';
+  String get selectedGPCategory => _selectedGPCategory;
+  String _selectedFBCategory = 'Category';
+  String get selectedFBCategory => _selectedFBCategory;
   String _selectedTrendsCategory = 'Category';
   String get selectedTrendsCategory => _selectedTrendsCategory;
   String _selectedTrendsCategoryValue = '';
@@ -139,8 +173,13 @@ class HomeController extends GetxController {
       // subBrandsFilters = [],
       channelFilter = [],
       channelTrendsFilter = [],
-      selectedChannelFilter = [],
+      selectedRetailingChannelFilter = [],
+      selectedCoverageChannelFilter = [],
+      selectedGPChannelFilter = [],
+      selectedFBChannelFilter = [],
       // selectedMultiDivisions = [],
+      selectedRetailingMultiAllIndia = [],
+      selectedFBMultiAllIndia = [],
       selectedRetailingMultiDivisions = [],
       selectedCoverageMultiDivisions = [],
       selectedGPMultiDivisions = [],
@@ -238,12 +277,16 @@ class HomeController extends GetxController {
   }
 
   void onChangeSummaryDI(bool value) {
-    _isSummaryDirect = value;
+    if (selectedGeo == 'All India') {
+      _isSummaryDirect = value;
+    }
     update();
   }
 
   void onChangeDeepDiveIndirect(bool value) {
-    _isRetailingDeepDiveInd = value;
+    if (selectedGeo == 'All India') {
+      _isRetailingDeepDiveInd = value;
+    }
     update();
   }
 
@@ -267,9 +310,19 @@ class HomeController extends GetxController {
     update();
   }
 
-  //
+  void onChangeCategory1(String value, {required String tabType}) {
+    if (tabType == SummaryTypes.retailing.type) {
+      _selectedCategory = value;
+    } else if (tabType == SummaryTypes.gp.type) {
+      _selectedGPCategory = value;
+    } else if (tabType == SummaryTypes.fb.type) {
+      _selectedFBCategory = value;
+    }
+
+    update();
+  }
+
   void onChangeCategory(String value) {
-    _selectedCategory = value;
     selectedCategoryFilters.clear();
     if (filtersModel != null) {
       if (value.toLowerCase().startsWith('category')) {
@@ -284,14 +337,18 @@ class HomeController extends GetxController {
     } else {
       debugPrint('====>Filter model is Null');
     }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      update();
+    });
+  }
+
+  void onChangeTrendsCategoryValue(String value) {
+    _selectedTrendsCategory = value;
 
     update();
   }
 
   void onChangeTrendsCategory(String value) {
-    debugPrint('====>Trends onclick ${value}');
-    _selectedTrendsCategory = value;
-    _selectedTrendsCategoryValue = '';
     if (filtersModel != null) {
       if (value.toLowerCase().startsWith('category')) {
         categoryTrendsFilters = filtersModel?.category ?? [];
@@ -309,19 +366,149 @@ class HomeController extends GetxController {
     update();
   }
 
-  void onChangeChannel(String value) {
+  void onChangeChannel1(String value) {
     _selectedChannel = value;
-    selectedChannelFilter.clear();
-    if (filtersModel != null) {
-      if (value.toLowerCase().startsWith('channel')) {
-        channelFilter = filtersModel?.channel ?? [];
+    update();
+  }
+
+  void onChangeTrendsChannel(String value) {
+    _selectedTrendsChannel = value;
+    update();
+  }
+
+  void onChangeChannel(String value, String tabType) {
+    if (tabType == SummaryTypes.retailing.type) {
+      selectedRetailingChannelFilter.clear();
+    } else if (tabType == SummaryTypes.coverage.type) {
+      selectedCoverageChannelFilter.clear();
+    } else if (tabType == SummaryTypes.gp.type) {
+      selectedGPChannelFilter.clear();
+    } else if (tabType == SummaryTypes.fb.type) {
+      selectedFBChannelFilter.clear();
+    }
+    if (tabType == SummaryTypes.retailing.type) {
+      if (filtersModel != null) {
+        if (value.toLowerCase().startsWith('level 1')) {
+          debugPrint('===> $value');
+          channelFilter = filtersModel?.attr1 ?? [];
+        } else if (value.toLowerCase().startsWith('level 2')) {
+          debugPrint('===> $value  ==>${filtersModel?.attr2}');
+          channelFilter = filtersModel?.attr2 ?? [];
+        } else if (value.toLowerCase().startsWith('level 3')) {
+          channelFilter = filtersModel?.attr3 ?? [];
+        } else if (value.toLowerCase().startsWith('level 4')) {
+          channelFilter = filtersModel?.attr4 ?? [];
+        } else if (value.toLowerCase().startsWith('level 5')) {
+          channelFilter = filtersModel?.attr5 ?? [];
+        }
+      } else {
+        getAllFilters().then((v) {
+          if (value.toLowerCase().startsWith('level 1')) {
+            channelFilter = filtersModel?.attr1 ?? [];
+          } else if (value.toLowerCase().startsWith('level 2')) {
+            channelFilter = filtersModel?.attr2 ?? [];
+          } else if (value.toLowerCase().startsWith('level 3')) {
+            channelFilter = filtersModel?.attr3 ?? [];
+          } else if (value.toLowerCase().startsWith('level 4')) {
+            channelFilter = filtersModel?.attr4 ?? [];
+          } else if (value.toLowerCase().startsWith('level 5')) {
+            channelFilter = filtersModel?.attr5 ?? [];
+          }
+        });
       }
     } else {
-      getAllFilters().then((v) {
-        if (value.toLowerCase().startsWith('channel')) {
-          channelFilter = filtersModel?.channel ?? [];
+      if (filtersModel != null) {
+        if (value.toLowerCase().startsWith('level 1')) {
+          debugPrint('===> $value');
+          channelFilter = filtersModel?.otherAttrs?.attr1 ?? [];
+        } else if (value.toLowerCase().startsWith('level 2')) {
+          debugPrint('===> $value  ==>${filtersModel?.attr2}');
+          channelFilter = filtersModel?.otherAttrs?.attr2 ?? [];
+        } else if (value.toLowerCase().startsWith('level 3')) {
+          channelFilter = filtersModel?.otherAttrs?.attr3 ?? [];
+        } else if (value.toLowerCase().startsWith('level 4')) {
+          channelFilter = filtersModel?.otherAttrs?.attr4 ?? [];
+        } else if (value.toLowerCase().startsWith('level 5')) {
+          channelFilter = filtersModel?.otherAttrs?.attr5 ?? [];
         }
-      });
+      } else {
+        getAllFilters().then((v) {
+          if (value.toLowerCase().startsWith('level 1')) {
+            channelFilter = filtersModel?.otherAttrs?.attr1 ?? [];
+          } else if (value.toLowerCase().startsWith('level 2')) {
+            channelFilter = filtersModel?.otherAttrs?.attr2 ?? [];
+          } else if (value.toLowerCase().startsWith('level 3')) {
+            channelFilter = filtersModel?.otherAttrs?.attr3 ?? [];
+          } else if (value.toLowerCase().startsWith('level 4')) {
+            channelFilter = filtersModel?.otherAttrs?.attr4 ?? [];
+          } else if (value.toLowerCase().startsWith('level 5')) {
+            channelFilter = filtersModel?.otherAttrs?.attr5 ?? [];
+          }
+        });
+      }
+    }
+
+    update();
+  }
+
+  void onChangeTrendsChannel1(String value, {required String tabType}) {
+    if (tabType == SummaryTypes.retailing.type) {
+      if (filtersModel != null) {
+        if (value.toLowerCase().startsWith('level 1')) {
+          channelTrendsFilter = filtersModel?.attr1 ?? [];
+        } else if (value.toLowerCase().startsWith('level 2')) {
+          channelTrendsFilter = filtersModel?.attr2 ?? [];
+        } else if (value.toLowerCase().startsWith('level 3')) {
+          channelTrendsFilter = filtersModel?.attr3 ?? [];
+        } else if (value.toLowerCase().startsWith('level 4')) {
+          channelTrendsFilter = filtersModel?.attr4 ?? [];
+        } else if (value.toLowerCase().startsWith('level 5')) {
+          channelTrendsFilter = filtersModel?.attr5 ?? [];
+        }
+      } else {
+        getAllFilters().then((v) {
+          if (value.toLowerCase().startsWith('level 1')) {
+            channelTrendsFilter = filtersModel?.attr1 ?? [];
+          } else if (value.toLowerCase().startsWith('level 2')) {
+            channelTrendsFilter = filtersModel?.attr2 ?? [];
+          } else if (value.toLowerCase().startsWith('level 3')) {
+            channelTrendsFilter = filtersModel?.attr3 ?? [];
+          } else if (value.toLowerCase().startsWith('level 4')) {
+            channelTrendsFilter = filtersModel?.attr4 ?? [];
+          } else if (value.toLowerCase().startsWith('level 5')) {
+            channelTrendsFilter = filtersModel?.attr5 ?? [];
+          }
+        });
+      }
+    } else {
+      debugPrint('===>Onchange ${filtersModel?.otherAttrs?.attr1.toString()}');
+      if (filtersModel != null) {
+        if (value.toLowerCase().startsWith('level 1')) {
+          channelTrendsFilter = filtersModel?.otherAttrs?.attr1 ?? [];
+        } else if (value.toLowerCase().startsWith('level 2')) {
+          channelTrendsFilter = filtersModel?.otherAttrs?.attr2 ?? [];
+        } else if (value.toLowerCase().startsWith('level 3')) {
+          channelTrendsFilter = filtersModel?.otherAttrs?.attr3 ?? [];
+        } else if (value.toLowerCase().startsWith('level 4')) {
+          channelTrendsFilter = filtersModel?.otherAttrs?.attr4 ?? [];
+        } else if (value.toLowerCase().startsWith('level 5')) {
+          channelTrendsFilter = filtersModel?.otherAttrs?.attr5 ?? [];
+        }
+      } else {
+        getAllFilters().then((v) {
+          if (value.toLowerCase().startsWith('level 1')) {
+            channelTrendsFilter = filtersModel?.otherAttrs?.attr1 ?? [];
+          } else if (value.toLowerCase().startsWith('level 2')) {
+            channelTrendsFilter = filtersModel?.otherAttrs?.attr2 ?? [];
+          } else if (value.toLowerCase().startsWith('level 3')) {
+            channelTrendsFilter = filtersModel?.otherAttrs?.attr3 ?? [];
+          } else if (value.toLowerCase().startsWith('level 4')) {
+            channelTrendsFilter = filtersModel?.otherAttrs?.attr4 ?? [];
+          } else if (value.toLowerCase().startsWith('level 5')) {
+            channelTrendsFilter = filtersModel?.otherAttrs?.attr5 ?? [];
+          }
+        });
+      }
     }
 
     update();
@@ -336,24 +523,33 @@ class HomeController extends GetxController {
     update();
   }
 
-  void onChangeCategoryTrendsValue(String value) {
+  void onChangeCategoryTrendsValue(String value, String tabType) {
     debugPrint('====>Trends value$value');
     _selectedTrendsCategoryValue = value;
     _selectedTrendsChannelValue = '';
     _selectedTrendsGeoValue = '';
+    if (tabType == SummaryTypes.retailing.type) {
+      _retailingTrendsValue = value;
+    } else if (tabType == SummaryTypes.coverage.type) {
+      _coverageTrendsValue = value;
+    } else if (tabType == SummaryTypes.gp.type) {
+      _gpTrendsValue = value;
+    } else if (tabType == SummaryTypes.fb.type) {
+      _fbTrendsValue = value;
+    }
     update();
   }
 
   void onChangeFiltersAll({type = 'branch'}) {
     if (type == 'branch') {
-      if (listEquals(selectedMultiFilters, branchFilter)) {
+      if (eq(selectedMultiFilters, branchFilter)) {
         selectedMultiFilters.clear();
       } else {
         selectedMultiFilters.clear();
         selectedMultiFilters.addAll(branchFilter);
       }
     } else if (type == 'category') {
-      if (listEquals(selectedCategoryFilters, categoryFilters)) {
+      if (eq(selectedCategoryFilters, categoryFilters)) {
         selectedCategoryFilters.clear();
       } else {
         selectedCategoryFilters.clear();
@@ -364,43 +560,110 @@ class HomeController extends GetxController {
     update();
   }
 
-  void onChangeChannelValue(String value) {
-    if (selectedChannelFilter.contains(value)) {
-      selectedChannelFilter.remove(value);
+  void onChangeChannelValue(String value, String tabType) {
+    if (tabType == SummaryTypes.retailing.type) {
+      if (selectedRetailingChannelFilter.contains(value)) {
+        selectedRetailingChannelFilter.remove(value);
+      } else {
+        selectedRetailingChannelFilter.add(value);
+      }
+    } else if (tabType == SummaryTypes.coverage.type) {
+      if (selectedCoverageChannelFilter.contains(value)) {
+        selectedCoverageChannelFilter.remove(value);
+      } else {
+        selectedCoverageChannelFilter.add(value);
+      }
+    } else if (tabType == SummaryTypes.gp.type) {
+      if (selectedGPChannelFilter.contains(value)) {
+        selectedGPChannelFilter.remove(value);
+      } else {
+        selectedGPChannelFilter.add(value);
+      }
+    } else if (tabType == SummaryTypes.fb.type) {
+      if (selectedFBChannelFilter.contains(value)) {
+        selectedFBChannelFilter.remove(value);
+      } else {
+        selectedFBChannelFilter.add(value);
+      }
+    }
+
+    update();
+  }
+
+  Function eq = const ListEquality().equals;
+  void onChangeTrendsChannelValue(String value, String tabType,
+      {bool isChannel = true}) {
+    if (isChannel) {
+      _selectedTrendsGeoValue = '';
+      _selectedTrendsCategoryValue = '';
+      _selectedTrendsChannelValue = value;
     } else {
-      selectedChannelFilter.add(value);
+      _selectedTrendsGeoValue = '';
+      _selectedTrendsCategoryValue = value;
+      _selectedTrendsChannelValue = '';
+    }
+    // _selectedTrendsChannelValue = value;
+    // _selectedTrendsCategoryValue = '';
+    // _selectedTrendsGeoValue = '';
+    if (tabType == SummaryTypes.retailing.type) {
+      _retailingTrendsValue = value;
+    } else if (tabType == SummaryTypes.coverage.type) {
+      _coverageTrendsValue = value;
+    } else if (tabType == SummaryTypes.gp.type) {
+      _gpTrendsValue = value;
+    } else if (tabType == SummaryTypes.fb.type) {
+      _fbTrendsValue = value;
     }
     update();
   }
 
-  void onChangeTrendsChannelValue(String value) {
-    _selectedTrendsChannelValue = value;
-    _selectedTrendsCategoryValue = '';
-    _selectedTrendsGeoValue = '';
-    update();
-  }
-
-  void onChangeChannelAllSelect() {
-    if (listEquals(selectedChannelFilter, channelFilter)) {
-      debugPrint('===>Select All Clear');
-      selectedChannelFilter.clear();
-    } else {
-      debugPrint('===>Select All ADD');
-      selectedChannelFilter.addAll(channelFilter);
+  void onChangeChannelAllSelect(String tabType) {
+    if (tabType == SummaryTypes.retailing.type) {
+      if (eq(selectedRetailingChannelFilter, channelFilter)) {
+        debugPrint('===>Select All Clear');
+        selectedRetailingChannelFilter.clear();
+      } else {
+        debugPrint('===>Select All ADD');
+        selectedRetailingChannelFilter.addAll(channelFilter);
+      }
+    } else if (tabType == SummaryTypes.coverage.type) {
+      if (eq(selectedCoverageChannelFilter, channelFilter)) {
+        debugPrint('===>Select All Clear');
+        selectedCoverageChannelFilter.clear();
+      } else {
+        debugPrint('===>Select All ADD');
+        selectedCoverageChannelFilter.addAll(channelFilter);
+      }
+    } else if (tabType == SummaryTypes.gp.type) {
+      if (eq(selectedGPChannelFilter, channelFilter)) {
+        debugPrint('===>Select All Clear');
+        selectedGPChannelFilter.clear();
+      } else {
+        debugPrint('===>Select All ADD');
+        selectedGPChannelFilter.addAll(channelFilter);
+      }
+    } else if (tabType == SummaryTypes.fb.type) {
+      if (eq(selectedFBChannelFilter, channelFilter)) {
+        debugPrint('===>Select All Clear');
+        selectedFBChannelFilter.clear();
+      } else {
+        debugPrint('===>Select All ADD');
+        selectedFBChannelFilter.addAll(channelFilter);
+      }
     }
+
     update();
   }
 
   void onTrendsFilterSelect(String value, String tabType) {
-    _selectedTrends = value;
     if (tabType == SummaryTypes.retailing.type) {
-      _retailingTrendsValue = '';
+      _selectedTrends = value;
     } else if (tabType == SummaryTypes.coverage.type) {
-      _coverageTrendsValue = '';
+      _selectedCoverageTrends = value;
     } else if (tabType == SummaryTypes.gp.type) {
-      _gpTrendsValue = '';
+      _selectedGPTrends = value;
     } else if (tabType == SummaryTypes.fb.type) {
-      _fbTrendsValue = '';
+      _selectedFBTrends = value;
     }
     update();
   }
@@ -423,7 +686,9 @@ class HomeController extends GetxController {
             ? "allIndia"
             : _selectedGeo.startsWith('Site')
                 ? "site"
-                : _selectedGeo.toLowerCase(): selectedGeoValue,
+                : _selectedGeo.startsWith('Cluster')
+                    ? "district"
+                    : _selectedGeo.toLowerCase(): selectedGeoValue,
         "category": [],
       }
     ];
@@ -471,7 +736,6 @@ class HomeController extends GetxController {
       _selectedTempGeo = getGeo();
       debugPrint('===>Selected Geo : $selectedGeo');
       _selectedGeo = getGeo();
-
       _selectedTrendsGeo = getGeo();
       _selectedTrendsGeoValue = getGeoValue();
       onGeoChange(_selectedGeo);
@@ -487,8 +751,8 @@ class HomeController extends GetxController {
         getAllFilters().then((value) {
           categoryFilters = filtersModel?.category ?? [];
           categoryTrendsFilters = filtersModel?.category ?? [];
-          channelFilter = filtersModel?.channel ?? [];
-          channelTrendsFilter = filtersModel?.channel ?? [];
+          channelFilter = filtersModel?.attr1 ?? [];
+          channelTrendsFilter = filtersModel?.attr1 ?? [];
         }),
       ]);
     }
@@ -561,10 +825,15 @@ class HomeController extends GetxController {
     update();
   }
 
+  void onMultiGeoChange(String value) {
+    _selectedMultiGeo = value;
+    update();
+  }
+
   void onGeoChange(String value, {bool isMultiSelect = false}) {
     if (isMultiSelect) {
       //multiFilters
-      _selectedMultiGeo = value;
+
       selectedMultiFilters.clear();
       if (filtersModel != null) {
         if (value.startsWith('All India')) {
@@ -572,7 +841,7 @@ class HomeController extends GetxController {
         } else if (value.startsWith('Division')) {
           multiFilters = filtersModel!.division;
         } else if (value.startsWith('Cluster')) {
-          multiFilters = filtersModel!.cluster;
+          multiFilters = filtersModel!.district;
         } else if (value.startsWith('Site')) {
           multiFilters = filtersModel!.site;
         } else if (value.startsWith('Branch')) {
@@ -588,7 +857,7 @@ class HomeController extends GetxController {
           } else if (value.startsWith('Division')) {
             multiFilters = filtersModel?.division ?? [];
           } else if (value.startsWith('Cluster')) {
-            multiFilters = filtersModel?.cluster ?? [];
+            multiFilters = filtersModel?.district ?? [];
           } else if (value.startsWith('Site')) {
             multiFilters = filtersModel?.site ?? [];
           } else if (value.startsWith('Branch')) {
@@ -606,7 +875,7 @@ class HomeController extends GetxController {
         } else if (value.startsWith('Division')) {
           filters = filtersModel!.division;
         } else if (value.startsWith('Cluster')) {
-          filters = filtersModel!.cluster;
+          filters = filtersModel!.district;
         } else if (value.startsWith('Site')) {
           filters = filtersModel!.site;
         } else if (value.startsWith('Branch')) {
@@ -622,7 +891,7 @@ class HomeController extends GetxController {
           } else if (value.startsWith('Division')) {
             filters = filtersModel?.division ?? [];
           } else if (value.startsWith('Cluster')) {
-            filters = filtersModel?.cluster ?? [];
+            filters = filtersModel?.district ?? [];
           } else if (value.startsWith('Site')) {
             filters = filtersModel?.site ?? [];
           } else if (value.startsWith('Branch')) {
@@ -635,16 +904,27 @@ class HomeController extends GetxController {
     update();
   }
 
-  void onTrendsGeoChange(String value) {
+  void onChangeGeoTrends(String value) {
     _selectedTrendsGeo = value;
-    _selectedTrendsGeoValue = '';
+    selectedRetailingChannelFilter.clear();
+    selectedCoverageChannelFilter.clear();
+    selectedGPChannelFilter.clear();
+    selectedFBChannelFilter.clear();
+    // _selectedTrendsCategoryValue = '';
+    // _gpTrendsValue = '';
+    update();
+  }
+
+  void onTrendsGeoChange(String value) {
+    _selectedTrendsChannelValue = '';
+    _gpTrendsValue = '';
     if (filtersModel != null) {
       if (value.startsWith('All India')) {
         trendsFilter = ['All India'];
       } else if (value.startsWith('Division')) {
         trendsFilter = filtersModel!.division;
       } else if (value.startsWith('Cluster')) {
-        trendsFilter = filtersModel!.cluster;
+        trendsFilter = filtersModel!.district;
       } else if (value.startsWith('Site')) {
         trendsFilter = filtersModel!.site;
       } else if (value.startsWith('Branch')) {
@@ -658,7 +938,7 @@ class HomeController extends GetxController {
         } else if (value.startsWith('Division')) {
           trendsFilter = filtersModel?.division ?? [];
         } else if (value.startsWith('Cluster')) {
-          trendsFilter = filtersModel?.cluster ?? [];
+          trendsFilter = filtersModel?.district ?? [];
         } else if (value.startsWith('Site')) {
           trendsFilter = filtersModel?.site ?? [];
         } else if (value.startsWith('Branch')) {
@@ -676,6 +956,12 @@ class HomeController extends GetxController {
         '===>selected Filter $selectedTempGeo  -- $selectedTempGeoValue');
     _selectedGeo = _selectedTempGeo;
     _selectedGeoValue = _selectedTempGeoValue;
+    if (_selectedGeo == 'All India') {
+    } else {
+      _isRetailingDeepDiveInd = true;
+      _isSummaryDirect = true;
+    }
+
     saveGeo(_selectedTempGeo);
     saveGeoValue(_selectedTempGeoValue);
     await getSummaryData();
@@ -741,8 +1027,12 @@ class HomeController extends GetxController {
     update();
   }
 
-  void onApplyMultiFilter(String name, String type,
-      {String tabType = 'Retailing', bool isTrendsFilter = false}) {
+  void onApplyMultiFilter(
+    String name,
+    String type, {
+    String tabType = 'Retailing',
+    bool isTrendsFilter = false,
+  }) {
     if (SummaryTypes.retailing.type == tabType) {
       //retailing screen data
       getRetailingData(type: type, name: name, isTrendsFilter: isTrendsFilter);
@@ -782,21 +1072,68 @@ class HomeController extends GetxController {
     update();
   }
 
-  void onChangeMultiFilters(String value, {String tabType = 'retailing'}) {
+  void clearMultiFilter(String name, String type,
+      {String tabType = 'Retailing'}) {
+    selectedRetailingMultiAllIndia.clear();
+    selectedRetailingMultiDivisions.clear();
+    selectedCoverageMultiDivisions.clear();
+    selectedGPMultiDivisions.clear();
+    selectedFBMultiDivisions.clear();
+    selectedRetailingMultiClusters.clear();
+    selectedCoverageMultiClusters.clear();
+    selectedGPMultiClusters.clear();
+    selectedFBMultiClusters.clear();
+    selectedRetailingMultiSites.clear();
+    selectedCoverageMultiSites.clear();
+    selectedGPMultiSites.clear();
+    selectedFBMultiSites.clear();
+    selectedMultiBranches.clear();
+    selectedMultiFilters.clear();
+    onApplyMultiFilter(name, type, tabType: tabType);
+  }
+
+  void onChangeMultiFilters(String value,
+      {String tabType = 'retailing', required String selectedMultiGeoFilter}) {
     //
 
-    if (tabType == SummaryTypes.retailing.type) {
-    } else if (tabType == SummaryTypes.coverage.type) {
-    } else if (tabType == SummaryTypes.gp.type) {
-    } else if (tabType == SummaryTypes.fb.type) {}
-    if (_selectedMultiGeo.toLowerCase() == 'Division'.toLowerCase()) {
+    if (selectedMultiGeoFilter == 'All India') {
+      // selectedRetailingMultiAllIndia
+      debugPrint('====>All India $value');
+      if (tabType == SummaryTypes.retailing.type) {
+        if (selectedRetailingMultiAllIndia.contains(value)) {
+          selectedRetailingMultiAllIndia.remove(value);
+        } else {
+          selectedRetailingMultiAllIndia.add(value);
+        }
+      }
+      //  else if (tabType == SummaryTypes.coverage.type) {
+      //   if (selectedCoverageMultiDivisions.contains(value)) {
+      //     selectedCoverageMultiDivisions.remove(value);
+      //   } else {
+      //     selectedCoverageMultiDivisions.add(value);
+      //   }
+      // } else if (tabType == SummaryTypes.gp.type) {
+      //   if (selectedGPMultiDivisions.contains(value)) {
+      //     selectedGPMultiDivisions.remove(value);
+      //   } else {
+      //     selectedGPMultiDivisions.add(value);
+      //   }
+      // }
+      else if (tabType == SummaryTypes.fb.type) {
+        if (selectedFBMultiAllIndia.contains(value)) {
+          selectedFBMultiAllIndia.remove(value);
+        } else {
+          selectedFBMultiAllIndia.add(value);
+        }
+      }
+      update();
+    } else if (selectedMultiGeoFilter.toLowerCase() ==
+        'Division'.toLowerCase()) {
       debugPrint('===>Adding Division $value');
       if (tabType == SummaryTypes.retailing.type) {
         if (selectedRetailingMultiDivisions.contains(value)) {
-          debugPrint('===>Contains Division $value');
           selectedRetailingMultiDivisions.remove(value);
         } else {
-          debugPrint('===>Not Contains Division $value');
           selectedRetailingMultiDivisions.add(value);
         }
       } else if (tabType == SummaryTypes.coverage.type) {
@@ -819,7 +1156,8 @@ class HomeController extends GetxController {
         }
       }
       update();
-    } else if (_selectedMultiGeo.toLowerCase() == 'Cluster'.toLowerCase()) {
+    } else if (selectedMultiGeoFilter.toLowerCase() ==
+        'Cluster'.toLowerCase()) {
       if (tabType == SummaryTypes.retailing.type) {
         if (selectedRetailingMultiClusters.contains(value)) {
           selectedRetailingMultiClusters.remove(value);
@@ -845,7 +1183,7 @@ class HomeController extends GetxController {
           selectedFBMultiClusters.add(value);
         }
       }
-    } else if (_selectedMultiGeo.toLowerCase() == 'Site'.toLowerCase()) {
+    } else if (selectedMultiGeoFilter.toLowerCase() == 'Site'.toLowerCase()) {
       if (tabType == SummaryTypes.retailing.type) {
         if (selectedRetailingMultiSites.contains(value)) {
           selectedRetailingMultiSites.remove(value);
@@ -871,7 +1209,7 @@ class HomeController extends GetxController {
           selectedFBMultiSites.add(value);
         }
       }
-    } else if (_selectedMultiGeo.toLowerCase() == 'Branch'.toLowerCase()) {
+    } else if (selectedMultiGeoFilter.toLowerCase() == 'Branch'.toLowerCase()) {
       debugPrint('===>Adding Branch');
       if (selectedMultiBranches.contains(value)) {
         selectedMultiBranches.remove(value);
@@ -1014,7 +1352,7 @@ class HomeController extends GetxController {
     update();
   }
 
-  List<SummaryModel> summaryData = [], summaryIndirectData = [];
+  List<SummaryModel> summaryData = [];
   RetailingGeoModel? retailingGeoModel;
   RetailingGeoModel? categoryRetailingModel;
   RetailingGeoModel? channelRetailingModel;
@@ -1040,18 +1378,7 @@ class HomeController extends GetxController {
   List<FBTrendsModel> trendsFBList = [];
   List<Map<String, dynamic>> geoFilters = [];
 
-  // Future<void> addRetailingGeo(Map<String, dynamic> value) async {
-  //   if (geoFilters.contains(value)) {
-  //   } else {
-  //     geoFilters.add(value);
-  //   }
-  //   // getRetailingData(allFilter: geoFilters);
-  //   update();
-  // }
-
   Future<ResponseModel> getSummaryData() async {
-    getSummaryIndirectData();
-    // debugPrint('===>Calling summary data');
     _isSummaryPageLoading = true;
     update();
     var stopWatch = Stopwatch();
@@ -1064,12 +1391,15 @@ class HomeController extends GetxController {
       "date": _selectedTempMonth,
       //"${selectedMonth!.substring(0, 3)}-$selectedYear",
       _selectedGeo.startsWith('All India')
-          ? "allIndia"
-          : _selectedGeo.startsWith('Site')
-              ? "site"
-              : _selectedGeo.toLowerCase(): _selectedGeo.startsWith('All India')
-          ? ["allIndia"]
-          : [_selectedGeoValue],
+              ? "allIndia"
+              : _selectedGeo.startsWith('Site')
+                  ? "site"
+                  : _selectedGeo.startsWith('Cluster')
+                      ? "district"
+                      : _selectedGeo.toLowerCase():
+          _selectedGeo.startsWith('All India')
+              ? ["allIndia"]
+              : [_selectedGeoValue],
     });
     ResponseModel responseModel;
     Logger().w('Summary Page Data :=> ${response.bodyString}');
@@ -1087,52 +1417,6 @@ class HomeController extends GetxController {
     stopWatch.stop();
     stopWatch.reset();
     _isSummaryPageLoading = false;
-    update();
-    return responseModel;
-  }
-
-  Future<ResponseModel> getSummaryIndirectData() async {
-    // debugPrint('===>Calling summary data');
-    _isDirectIndirectLoading = true;
-    update();
-    //debug the api calling time response
-    var stopWatch = Stopwatch();
-    stopWatch.reset();
-    stopWatch.start();
-    Logger().log(Level.debug,
-        '===> Summary Indirect Data Start: ${stopWatch.elapsed.toString()}');
-    //debug the api calling time response
-    Response response = await homeRepo.getSummaryData({
-      "date": _selectedTempMonth,
-      //"${selectedMonth!.substring(0, 3)}-$selectedYear",
-      _selectedGeo.startsWith('All India')
-          ? "allIndia"
-          : _selectedGeo.startsWith('Site')
-              ? "site"
-              : _selectedGeo.toLowerCase(): _selectedGeo.startsWith('All India')
-          ? ["allIndia"]
-          : [_selectedGeoValue],
-      "toggleMode": "i"
-    });
-    ResponseModel responseModel;
-    // Logger().w('Summary Pade Data :=> ${response.bodyString}');
-    if (response.statusCode == 200) {
-      summaryIndirectData =
-          summaryModelFromJson(response.bodyString.toString());
-      responseModel = ResponseModel(true, 'Success');
-    } else if (response.statusCode == 401) {
-      responseModel = ResponseModel(false, response.statusText ?? "");
-      Get.offAndToNamed(AppPages.FED_AUTH_LOGIN);
-    } else {
-      responseModel = ResponseModel(false, response.statusText ?? "");
-    }
-    //Api Response Calling time
-    Logger().log(Level.debug,
-        '===> Summary Indirect Data End: ${stopWatch.elapsed.toString()}');
-    stopWatch.stop();
-    stopWatch.reset();
-    //
-    _isDirectIndirectLoading = false;
     update();
     return responseModel;
   }
@@ -1164,10 +1448,8 @@ class HomeController extends GetxController {
       responseModel = ResponseModel(false, response.statusText ?? "");
       Get.offAndToNamed(AppPages.FED_AUTH_LOGIN);
     } else {
-      // Logger().e(response.body);
       responseModel = ResponseModel(false, response.statusText ?? "");
     }
-
     //Api Calling Response time
     Logger().log(
         Level.debug, '===> Filter Data End : ${stopWatch.elapsed.toString()}');
@@ -1187,6 +1469,7 @@ class HomeController extends GetxController {
     var stopWatch = Stopwatch();
     stopWatch.reset();
     stopWatch.start();
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (name.startsWith('trends')) {
         _isRetailingTrendsLoading = true;
@@ -1196,15 +1479,15 @@ class HomeController extends GetxController {
       } else if (type.startsWith('geo')) {
         Logger().log(Level.debug,
             '===> Retailing Geo Data Start ${stopWatch.elapsed.toString()}');
-        _isSummaryLoading = true;
+        _isRetailingGeoLoading = true;
       } else if (type.startsWith('category')) {
         Logger().log(Level.debug,
             '===> Retailing Category Data Start ${stopWatch.elapsed.toString()}');
-        _isCategoryLoading = true;
+        _isRetailingCategoryLoading = true;
       } else if (type.startsWith('channel')) {
         Logger().log(Level.debug,
             '===> Retailing Channel Data Start ${stopWatch.elapsed.toString()}');
-        _isChannelLoading = true;
+        _isRetailingChannelLoading = true;
       } else {
         _isLoading = true;
       }
@@ -1212,33 +1495,68 @@ class HomeController extends GetxController {
       update();
     });
 
-    Response response = await homeRepo.getRetailingData({
+    Map<String, dynamic> _body = {
       "name": name,
       "type": type,
       "query": name.toLowerCase().startsWith('trend')
           ? [
               {
                 "date": _selectedTempMonth,
-                //"${selectedMonth!.substring(0, 3)}-$selectedYear",
-                if (isTrendsFilter)
+                if (isTrendsFilter && _selectedTrendsGeoValue.isEmpty)
                   _selectedTrendsGeo.startsWith('All India')
                           ? "allIndia"
-                          : _selectedTrendsGeo.toLowerCase():
+                          : _selectedTrendsGeo.startsWith('Cluster')
+                              ? "district"
+                              : _selectedTrendsGeo.toLowerCase():
                       _selectedTrendsGeo.startsWith('All India')
                           ? "allIndia"
                           : _selectedTrendsGeoValue,
                 if (!isTrendsFilter)
                   _selectedGeo.startsWith('All India')
                           ? "allIndia"
-                          : _selectedGeo.toLowerCase():
+                          : _selectedGeo.startsWith('Cluster')
+                              ? "district"
+                              : _selectedGeo.toLowerCase():
                       _selectedGeo.startsWith('All India')
                           ? "allIndia"
                           : _selectedGeoValue,
-                if (selectedTrendsCategoryValue.isNotEmpty)
+                if (_selectedTrendsGeoValue.isNotEmpty && isTrendsFilter)
+                  _selectedTrendsGeo.startsWith('Cluster')
+                          ? "district"
+                          : _selectedTrendsGeo.toLowerCase():
+                      _selectedTrendsGeoValue,
+                if (_selectedTrendsCategoryValue.isNotEmpty && isTrendsFilter)
+                  _selectedTrendsCategory.toLowerCase():
+                      _selectedTrendsCategoryValue,
+                if (_selectedTrendsChannelValue.isNotEmpty)
+                  selectedChannel.toLowerCase() == 'level 1'
+                      ? 'attr1'
+                      : selectedChannel.toLowerCase() == 'level 2'
+                          ? 'attr2'
+                          : selectedChannel.toLowerCase() == 'level 3'
+                              ? 'attr3'
+                              : selectedChannel.toLowerCase() == 'level 4'
+                                  ? 'attr4'
+                                  : selectedChannel.toLowerCase() == 'level 5'
+                                      ? 'attr5'
+                                      : 'attr1': _selectedTrendsChannelValue,
+                //
+                if (selectedTrendsCategoryValue.isNotEmpty && !isTrendsFilter)
                   selectedTrendsCategory.toLowerCase():
                       selectedTrendsCategoryValue,
-                if (selectedChannelFilter.isNotEmpty)
-                  selectedChannel.toLowerCase(): selectedChannelFilter,
+                // if (selectedRetailingChannelFilter.isNotEmpty &&
+                //     !isTrendsFilter)
+                //   selectedChannel.toLowerCase() == 'level 1'
+                //       ? 'attr1'
+                //       : selectedChannel.toLowerCase() == 'level 2'
+                //           ? 'attr2'
+                //           : selectedChannel.toLowerCase() == 'level 3'
+                //               ? 'attr3'
+                //               : selectedChannel.toLowerCase() == 'level 4'
+                //                   ? 'attr4'
+                //                   : selectedChannel.toLowerCase() == 'level 5'
+                //                       ? 'attr5'
+                //                       : 'attr1': selectedRetailingChannelFilter,
               },
             ]
           : type.startsWith('channel')
@@ -1246,16 +1564,29 @@ class HomeController extends GetxController {
                   [
                     {
                       "date": _selectedTempMonth,
-                      // "${selectedMonth!.substring(0, 3)}-$selectedYear",
                       _selectedGeo.startsWith('All India')
                               ? "allIndia"
-                              : _selectedGeo.toLowerCase():
+                              : _selectedGeo.startsWith('Cluster')
+                                  ? "district"
+                                  : _selectedGeo.toLowerCase():
                           _selectedGeo.startsWith('All India')
                               ? "allIndia"
                               : _selectedGeoValue,
-                      if (selectedChannelFilter.isNotEmpty)
-                        selectedChannel.toLowerCase(): selectedChannelFilter,
-                      if (selectedChannelFilter.isEmpty) "channel": [],
+                      if (selectedRetailingChannelFilter.isNotEmpty)
+                        selectedChannel.toLowerCase() == 'level 1'
+                                ? 'attr1'
+                                : selectedChannel.toLowerCase() == 'level 2'
+                                    ? 'attr2'
+                                    : selectedChannel.toLowerCase() == 'level 3'
+                                        ? 'attr3'
+                                        : selectedChannel.toLowerCase() == 'level 4'
+                                            ? 'attr4'
+                                            : selectedChannel.toLowerCase() ==
+                                                    'level 5'
+                                                ? 'attr5'
+                                                : 'attr1':
+                            selectedRetailingChannelFilter,
+                      if (selectedRetailingChannelFilter.isEmpty) "attr1": [],
                     }
                   ]
               : name.startsWith('geo')
@@ -1266,25 +1597,31 @@ class HomeController extends GetxController {
                           // "${selectedMonth!.substring(0, 3)}-$selectedYear",
                           _selectedGeo.startsWith('All India')
                                   ? "allIndia"
-                                  : _selectedGeo.toLowerCase():
+                                  : _selectedGeo.startsWith('Cluster')
+                                      ? "district"
+                                      : _selectedGeo.toLowerCase():
                               _selectedGeo.startsWith('All India')
                                   ? "allIndia"
                                   : _selectedGeoValue,
                         },
+                        ...selectedRetailingMultiAllIndia
+                            .map((e) => {
+                                  "date": _selectedTempMonth,
+                                  "allIndia": e,
+                                })
+                            .toList(),
                         ...selectedRetailingMultiDivisions
                             .map((e) => {
                                   "date": _selectedTempMonth,
                                   //"${selectedMonth!.substring(0, 3)}-$selectedYear",
                                   "division": e,
-                                  "category": [],
                                 })
                             .toList(),
                         ...selectedRetailingMultiClusters
                             .map((e) => {
                                   "date": _selectedTempMonth,
                                   // "${selectedMonth!.substring(0, 3)}-$selectedYear",
-                                  "cluster": e,
-                                  "category": [],
+                                  "district": e,
                                 })
                             .toList(),
                         ...selectedRetailingMultiSites
@@ -1292,7 +1629,6 @@ class HomeController extends GetxController {
                                   "date": selectedMonth,
                                   //"${selectedMonth!.substring(0, 3)}-$selectedYear",
                                   "site": e,
-                                  "category": [],
                                 })
                             .toList(),
                         ...selectedMultiBranches
@@ -1300,7 +1636,6 @@ class HomeController extends GetxController {
                                   "date": selectedMonth,
                                   //"${selectedMonth!.substring(0, 3)}-$selectedYear",
                                   "branch": e,
-                                  "category": [],
                                 })
                             .toList(),
                         ...selectedMultiFilters
@@ -1308,7 +1643,6 @@ class HomeController extends GetxController {
                                   "date": selectedMonth,
                                   //"${selectedMonth!.substring(0, 3)}-$selectedYear",
                                   "allIndia": e,
-                                  "category": [],
                                 })
                             .toList(),
                       ]
@@ -1318,22 +1652,28 @@ class HomeController extends GetxController {
                         // "${selectedMonth!.substring(0, 3)}-$selectedYear",
                         _selectedGeo.startsWith('All India')
                                 ? "allIndia"
-                                : _selectedGeo.toLowerCase():
+                                : _selectedGeo.startsWith('Cluster')
+                                    ? "district"
+                                    : _selectedGeo.toLowerCase():
                             _selectedGeo.startsWith('All India')
                                 ? "allIndia"
                                 : _selectedGeoValue,
                         if (selectedCategoryFilters.isNotEmpty)
                           selectedCategory.toLowerCase().contains('sub-brand')
                                   ? 'subBrandForm'
-                                  : selectedCategory.toLowerCase():
+                                  : selectedCategory
+                                          .toLowerCase()
+                                          .contains('brand form')
+                                      ? 'brandForm'
+                                      : selectedCategory.toLowerCase():
                               selectedCategoryFilters,
-                        // if (selectedCategoryFilters.isNotEmpty)
-                        //   selectedCategory.toLowerCase():
-                        //       selectedCategoryFilters,
+
                         if (selectedCategoryFilters.isEmpty) "category": [],
                       },
                     ]
-    });
+    };
+    debugPrint('===>Body : $_body');
+    Response response = await homeRepo.getRetailingData(_body);
     ResponseModel responseModel;
     if (response.statusCode == 200) {
       if (response.body["status"].toString().toLowerCase() == 'true') {
@@ -1389,15 +1729,15 @@ class HomeController extends GetxController {
     } else if (type.startsWith('geo')) {
       Logger().log(Level.debug,
           '===> Retailing Geo Data End ${stopWatch.elapsed.toString()}');
-      _isSummaryLoading = false;
+      _isRetailingGeoLoading = false;
     } else if (type.startsWith('category')) {
       Logger().log(Level.debug,
           '===> Retailing Category Data End ${stopWatch.elapsed.toString()}');
-      _isCategoryLoading = false;
+      _isRetailingCategoryLoading = false;
     } else if (type.startsWith('channel')) {
       Logger().log(Level.debug,
           '===> Retailing Channel Data End ${stopWatch.elapsed.toString()}');
-      _isChannelLoading = false;
+      _isRetailingChannelLoading = false;
     } else {
       _isLoading = false;
     }
@@ -1419,6 +1759,7 @@ class HomeController extends GetxController {
     Logger().log(
         Level.debug, '===> Filter Data Start ${stopWatch.elapsed.toString()}');
     Response response = await homeRepo.getFilters({"filter": filter});
+
     ResponseModel responseModel;
     if (response.statusCode == 200) {
       if (response.body["status"].toString().toLowerCase() == 'true') {
@@ -1458,7 +1799,6 @@ class HomeController extends GetxController {
     stopWatch.start();
     Logger().log(Level.debug,
         '===> Category Search Data Start ${stopWatch.elapsed.toString()}');
-    //
     Response response = await homeRepo.getFilters({
       "search": {"name": query, "type": type}
     });
@@ -1511,15 +1851,15 @@ class HomeController extends GetxController {
       } else if (type.startsWith('geo')) {
         Logger().log(Level.debug,
             '===> Coverage Geo Data Start ${stopWatch.elapsed.toString()}');
-        _isSummaryLoading = true;
+        _isCoverageGeoLoading = true;
       } else if (type.startsWith('category')) {
         Logger().log(Level.debug,
             '===> Coverage Category Data Start ${stopWatch.elapsed.toString()}');
-        _isCategoryLoading = true;
+        _isCoverageCategoryLoading = true;
       } else if (type.startsWith('channel')) {
         Logger().log(Level.debug,
             '===> Coverage Channel Data Start ${stopWatch.elapsed.toString()}');
-        _isChannelLoading = true;
+        _isCoverageChannelLoading = true;
       } else {
         _isLoading = true;
       }
@@ -1533,22 +1873,44 @@ class HomeController extends GetxController {
           ? [
               {
                 "date": selectedMonth,
-                if (isTrendsFilter)
+                if (isTrendsFilter && _selectedTrendsGeoValue.isEmpty)
                   _selectedTrendsGeo.startsWith('All India')
                           ? "allIndia"
-                          : _selectedTrendsGeo.toLowerCase():
+                          : _selectedTrendsGeo.startsWith('Cluster')
+                              ? "district"
+                              : _selectedTrendsGeo.toLowerCase():
                       _selectedTrendsGeo.startsWith('All India')
                           ? "allIndia"
                           : _selectedTrendsGeoValue,
                 if (!isTrendsFilter)
                   _selectedGeo.startsWith('All India')
                           ? "allIndia"
-                          : _selectedGeo.toLowerCase():
+                          : _selectedGeo.startsWith('Cluster')
+                              ? "district"
+                              : _selectedGeo.toLowerCase():
                       _selectedGeo.startsWith('All India')
                           ? "allIndia"
                           : _selectedGeoValue,
-                if (selectedChannelFilter.isNotEmpty)
-                  selectedChannel.toLowerCase(): selectedChannelFilter,
+                if (_selectedTrendsGeoValue.isNotEmpty && isTrendsFilter)
+                  _selectedTrendsGeo.startsWith('Cluster')
+                          ? "district"
+                          : _selectedTrendsGeo.toLowerCase():
+                      _selectedTrendsGeoValue,
+                // if (_selectedTrendsCategoryValue.isNotEmpty)
+                //   _selectedTrendsCategory.toLowerCase():
+                //       _selectedTrendsCategoryValue,
+                if (_selectedTrendsChannelValue.isNotEmpty)
+                  selectedChannel.toLowerCase() == 'level 1'
+                      ? 'attr1'
+                      : selectedChannel.toLowerCase() == 'level 2'
+                          ? 'attr2'
+                          : selectedChannel.toLowerCase() == 'level 3'
+                              ? 'attr3'
+                              : selectedChannel.toLowerCase() == 'level 4'
+                                  ? 'attr4'
+                                  : selectedChannel.toLowerCase() == 'level 5'
+                                      ? 'attr5'
+                                      : 'attr1': _selectedTrendsChannelValue,
               },
             ]
           : type.startsWith('channel')
@@ -1559,13 +1921,27 @@ class HomeController extends GetxController {
                       //"${selectedMonth!.substring(0, 3)}-$selectedYear",
                       _selectedGeo.startsWith('All India')
                               ? "allIndia"
-                              : _selectedGeo.toLowerCase():
+                              : _selectedGeo.startsWith('Cluster')
+                                  ? "district"
+                                  : _selectedGeo.toLowerCase():
                           _selectedGeo.startsWith('All India')
                               ? "allIndia"
                               : _selectedGeoValue,
-                      if (selectedChannelFilter.isNotEmpty)
-                        selectedChannel.toLowerCase(): selectedChannelFilter,
-                      if (selectedChannelFilter.isEmpty) "channel": [],
+                      if (selectedCoverageChannelFilter.isNotEmpty)
+                        selectedChannel.toLowerCase() == 'level 1'
+                                ? 'attr1'
+                                : selectedChannel.toLowerCase() == 'level 2'
+                                    ? 'attr2'
+                                    : selectedChannel.toLowerCase() == 'level 3'
+                                        ? 'attr3'
+                                        : selectedChannel.toLowerCase() == 'level 4'
+                                            ? 'attr4'
+                                            : selectedChannel.toLowerCase() ==
+                                                    'level 5'
+                                                ? 'attr5'
+                                                : 'attr1':
+                            selectedCoverageChannelFilter,
+                      if (selectedCoverageChannelFilter.isEmpty) "attr1": [],
                     }
                   ]
               : name.startsWith('geo')
@@ -1576,7 +1952,9 @@ class HomeController extends GetxController {
                           //"${selectedMonth!.substring(0, 3)}-$selectedYear",
                           _selectedGeo.startsWith('All India')
                                   ? "allIndia"
-                                  : _selectedGeo.toLowerCase():
+                                  : _selectedGeo.startsWith('Cluster')
+                                      ? "district"
+                                      : _selectedGeo.toLowerCase():
                               _selectedGeo.startsWith('All India')
                                   ? "allIndia"
                                   : _selectedGeoValue,
@@ -1592,7 +1970,7 @@ class HomeController extends GetxController {
                             .map((e) => {
                                   "date": selectedMonth,
                                   // "${selectedMonth!.substring(0, 3)}-$selectedYear",
-                                  "cluster": e,
+                                  "district": e,
                                 })
                             .toList(),
                         ...selectedCoverageMultiSites
@@ -1623,7 +2001,9 @@ class HomeController extends GetxController {
                         // "${selectedMonth!.substring(0, 3)}-$selectedYear",
                         _selectedGeo.startsWith('All India')
                                 ? "allIndia"
-                                : _selectedGeo.toLowerCase():
+                                : _selectedGeo.startsWith('Cluster')
+                                    ? "district"
+                                    : _selectedGeo.toLowerCase():
                             _selectedGeo.startsWith('All India')
                                 ? "allIndia"
                                 : _selectedGeoValue,
@@ -1696,15 +2076,15 @@ class HomeController extends GetxController {
     } else if (type.startsWith('geo')) {
       Logger().log(Level.debug,
           '===> Coverage Geo Data end ${stopWatch.elapsed.toString()}');
-      _isSummaryLoading = false;
+      _isCoverageGeoLoading = false;
     } else if (type.startsWith('category')) {
       Logger().log(Level.debug,
           '===> Coverage Category Data end ${stopWatch.elapsed.toString()}');
-      _isCategoryLoading = false;
+      _isCoverageCategoryLoading = false;
     } else if (type.startsWith('channel')) {
       Logger().log(Level.debug,
           '===> Coverage Channel Data end ${stopWatch.elapsed.toString()}');
-      _isChannelLoading = false;
+      _isCoverageChannelLoading = false;
     } else {
       _isLoading = false;
     }
@@ -1724,6 +2104,7 @@ class HomeController extends GetxController {
     var stopWatch = Stopwatch();
     stopWatch.reset();
     stopWatch.start();
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (name.startsWith('trends')) {
         Logger().log(Level.debug,
@@ -1732,15 +2113,15 @@ class HomeController extends GetxController {
       } else if (type.startsWith('geo')) {
         Logger().log(Level.debug,
             '===> Golden Points Geo Data Start ${stopWatch.elapsed.toString()}');
-        _isSummaryLoading = true;
+        _isGPGeoLoading = true;
       } else if (type.startsWith('category')) {
         Logger().log(Level.debug,
             '===> Golden Points Category Data Start ${stopWatch.elapsed.toString()}');
-        _isCategoryLoading = true;
+        _isGPCategoryLoading = true;
       } else if (type.startsWith('channel')) {
         Logger().log(Level.debug,
             '===> Golden Points Channel Data Start ${stopWatch.elapsed.toString()}');
-        _isChannelLoading = true;
+        _isGPChannelLoading = true;
       } else {
         _isLoading = true;
       }
@@ -1755,27 +2136,61 @@ class HomeController extends GetxController {
             ? [
                 {
                   "date": selectedMonth,
+
+                  if (!isTrendsFilter)
+                    _selectedGeo.startsWith('All India')
+                            ? "allIndia"
+                            : _selectedGeo.startsWith('Cluster')
+                                ? "district"
+                                : _selectedGeo.toLowerCase():
+                        _selectedGeo.startsWith('All India')
+                            ? "allIndia"
+                            : _selectedGeoValue,
+                  if (_selectedTrendsGeoValue.isNotEmpty && isTrendsFilter)
+                    _selectedTrendsGeo.startsWith('Cluster')
+                            ? "district"
+                            : _selectedTrendsGeo.toLowerCase():
+                        _selectedTrendsGeoValue,
+                  ////
                   if (isTrendsFilter)
                     _selectedTrendsGeo.startsWith('All India')
                             ? "allIndia"
-                            : _selectedTrendsGeo.toLowerCase():
+                            : _selectedTrendsGeo.startsWith('Cluster')
+                                ? "district"
+                                : _selectedTrendsGeo.toLowerCase():
                         _selectedTrendsGeo.startsWith('All India')
                             ? "allIndia"
                             : _selectedTrendsGeoValue,
                   if (!isTrendsFilter)
                     _selectedGeo.startsWith('All India')
                             ? "allIndia"
-                            : _selectedGeo.toLowerCase():
+                            : _selectedGeo.startsWith('Cluster')
+                                ? "district"
+                                : _selectedGeo.toLowerCase():
                         _selectedGeo.startsWith('All India')
                             ? "allIndia"
                             : _selectedGeoValue,
                   if (selectedTrendsCategoryValue.isNotEmpty)
                     selectedTrendsCategory.toLowerCase().contains('sub-brand')
                             ? 'subBrandGroup'
-                            : selectedTrendsCategory.toLowerCase():
+                            : selectedTrendsCategory
+                                    .toLowerCase()
+                                    .contains('brand form')
+                                ? 'brandForm'
+                                : selectedTrendsCategory.toLowerCase():
                         selectedTrendsCategoryValue,
-                  if (selectedChannelFilter.isNotEmpty)
-                    selectedChannel.toLowerCase(): selectedChannelFilter,
+                  if (_selectedTrendsChannelValue.isNotEmpty)
+                    selectedChannel.toLowerCase() == 'level 1'
+                        ? 'attr1'
+                        : selectedChannel.toLowerCase() == 'level 2'
+                            ? 'attr2'
+                            : selectedChannel.toLowerCase() == 'level 3'
+                                ? 'attr3'
+                                : selectedChannel.toLowerCase() == 'level 4'
+                                    ? 'attr4'
+                                    : selectedChannel.toLowerCase() == 'level 5'
+                                        ? 'attr5'
+                                        : 'attr1': _selectedTrendsChannelValue,
                 },
               ]
             : type.startsWith('channel')
@@ -1786,13 +2201,28 @@ class HomeController extends GetxController {
                         //"${selectedMonth!.substring(0, 3)}-$selectedYear",
                         _selectedGeo.startsWith('All India')
                                 ? "allIndia"
-                                : _selectedGeo.toLowerCase():
+                                : _selectedGeo.startsWith('Cluster')
+                                    ? "district"
+                                    : _selectedGeo.toLowerCase():
                             _selectedGeo.startsWith('All India')
                                 ? "allIndia"
                                 : _selectedGeoValue,
-                        if (selectedChannelFilter.isNotEmpty)
-                          selectedChannel.toLowerCase(): selectedChannelFilter,
-                        if (selectedChannelFilter.isEmpty) "channel": [],
+
+                        if (selectedGPChannelFilter.isNotEmpty)
+                          selectedChannel.toLowerCase() == 'level 1'
+                              ? 'attr1'
+                              : selectedChannel.toLowerCase() == 'level 2'
+                                  ? 'attr2'
+                                  : selectedChannel.toLowerCase() == 'level 3'
+                                      ? 'attr3'
+                                      : selectedChannel.toLowerCase() ==
+                                              'level 4'
+                                          ? 'attr4'
+                                          : selectedChannel.toLowerCase() ==
+                                                  'level 5'
+                                              ? 'attr5'
+                                              : 'attr1': selectedGPChannelFilter,
+                        if (selectedGPChannelFilter.isEmpty) "attr1": [],
                       }
                     ]
                 : name.startsWith('geo')
@@ -1803,7 +2233,9 @@ class HomeController extends GetxController {
                             //"${selectedMonth!.substring(0, 3)}-$selectedYear",
                             _selectedGeo.startsWith('All India')
                                     ? "allIndia"
-                                    : _selectedGeo.toLowerCase():
+                                    : _selectedGeo.startsWith('Cluster')
+                                        ? "district"
+                                        : _selectedGeo.toLowerCase():
                                 _selectedGeo.startsWith('All India')
                                     ? "allIndia"
                                     : _selectedGeoValue,
@@ -1820,7 +2252,7 @@ class HomeController extends GetxController {
                               .map((e) => {
                                     "date": selectedMonth,
                                     // "${selectedMonth!.substring(0, 3)}-$selectedYear",
-                                    "cluster": e,
+                                    "district": e,
                                     "category": [],
                                   })
                               .toList(),
@@ -1855,18 +2287,26 @@ class HomeController extends GetxController {
                           // "${selectedMonth!.substring(0, 3)}-$selectedYear",
                           _selectedGeo.startsWith('All India')
                                   ? "allIndia"
-                                  : _selectedGeo.toLowerCase():
+                                  : _selectedGeo.startsWith('Cluster')
+                                      ? "district"
+                                      : _selectedGeo.toLowerCase():
                               _selectedGeo.startsWith('All India')
                                   ? "allIndia"
                                   : _selectedGeoValue,
                           if (selectedCategoryFilters.isNotEmpty)
-                            selectedCategory.toLowerCase().contains('sub-brand')
+                            _selectedGPCategory
+                                        .toLowerCase()
+                                        .contains('sub-brand')
                                     ? 'subBrandGroup'
-                                    : selectedCategory.toLowerCase():
+                                    : _selectedGPCategory
+                                            .toLowerCase()
+                                            .contains('brand form')
+                                        ? 'brandForm'
+                                        : _selectedGPCategory.toLowerCase():
                                 selectedCategoryFilters,
                           if (selectedCategoryFilters.isEmpty) 'category': []
                         },
-                      ]
+                      ],
       },
     );
     ResponseModel responseModel;
@@ -1928,15 +2368,15 @@ class HomeController extends GetxController {
     } else if (type.startsWith('geo')) {
       Logger().log(Level.debug,
           '===> Golden Points Geo Data end ${stopWatch.elapsed.toString()}');
-      _isSummaryLoading = false;
+      _isGPGeoLoading = false;
     } else if (type.startsWith('category')) {
       Logger().log(Level.debug,
           '===> Golden Points Category Data end ${stopWatch.elapsed.toString()}');
-      _isCategoryLoading = false;
+      _isGPCategoryLoading = false;
     } else if (type.startsWith('channel')) {
       Logger().log(Level.debug,
           '===> Golden Points Channel Data end ${stopWatch.elapsed.toString()}');
-      _isChannelLoading = false;
+      _isGPChannelLoading = false;
     } else {
       _isLoading = false;
     }
@@ -1963,15 +2403,15 @@ class HomeController extends GetxController {
       } else if (type.startsWith('geo')) {
         Logger().log(Level.debug,
             '===> Focus Brand Geo Data Start ${stopWatch.elapsed.toString()}');
-        _isSummaryLoading = true;
+        _isFBGeoLoading = true;
       } else if (type.startsWith('category')) {
         Logger().log(Level.debug,
             '===> Focus Brand Category Data Start ${stopWatch.elapsed.toString()}');
-        _isCategoryLoading = true;
+        _isFBCategoryLoading = true;
       } else if (type.startsWith('channel')) {
         Logger().log(Level.debug,
             '===> Focus Brand Channel Data Start ${stopWatch.elapsed.toString()}');
-        _isChannelLoading = true;
+        _isFBChannelLoading = true;
       } else {
         _isLoading = true;
       }
@@ -1986,40 +2426,61 @@ class HomeController extends GetxController {
           ? [
               {
                 "date": selectedMonth,
-                //"${selectedMonth!.substring(0, 3)}-$selectedYear",
-                // if (selectedTrendsGeoValue.isNotEmpty)
-                //   _selectedTrendsGeo.startsWith('All India')
-                //           ? "allIndia"
-                //           : _selectedTrendsGeo.toLowerCase():
-                //       _selectedTrendsGeo.startsWith('All India')
-                //           ? "allIndia"
-                //           : _selectedTrendsGeoValue,
-                // if (selectedGeoValue.isEmpty)
-                //   _selectedGeo.startsWith('All India')
-                //           ? "allIndia"
-                //           : _selectedGeo.toLowerCase():
-                //       _selectedGeo.startsWith('All India')
-                //           ? "allIndia"
-                //           : _selectedGeoValue,
-                if (isTrendsFilter)
+
+                ////
+                if (isTrendsFilter && _selectedTrendsGeoValue.isEmpty)
                   _selectedTrendsGeo.startsWith('All India')
                           ? "allIndia"
-                          : _selectedTrendsGeo.toLowerCase():
+                          : _selectedTrendsGeo.startsWith('Cluster')
+                              ? "district"
+                              : _selectedTrendsGeo.toLowerCase():
                       _selectedTrendsGeo.startsWith('All India')
                           ? "allIndia"
                           : _selectedTrendsGeoValue,
                 if (!isTrendsFilter)
                   _selectedGeo.startsWith('All India')
                           ? "allIndia"
-                          : _selectedGeo.toLowerCase():
+                          : _selectedGeo.startsWith('Cluster')
+                              ? "district"
+                              : _selectedGeo.toLowerCase():
                       _selectedGeo.startsWith('All India')
                           ? "allIndia"
                           : _selectedGeoValue,
-                if (selectedTrendsCategoryValue.isNotEmpty)
-                  selectedTrendsCategory.toLowerCase():
+                if (_selectedTrendsGeoValue.isNotEmpty && isTrendsFilter)
+                  _selectedTrendsGeo.startsWith('Cluster')
+                          ? "district"
+                          : _selectedTrendsGeo.toLowerCase():
+                      _selectedTrendsGeoValue,
+                //
+                if (selectedTrendsCategoryValue.isNotEmpty && !isTrendsFilter)
+                  selectedTrendsCategory.toLowerCase() == 'brand form'
+                          ? 'brandForm'
+                          : selectedTrendsCategory.toLowerCase():
                       selectedTrendsCategoryValue,
-                if (selectedChannelFilter.isNotEmpty)
-                  selectedChannel.toLowerCase(): selectedChannelFilter,
+                if (_selectedTrendsChannelValue.isNotEmpty)
+                  selectedChannel.toLowerCase() == 'level 1'
+                      ? 'attr1'
+                      : selectedChannel.toLowerCase() == 'level 2'
+                          ? 'attr2'
+                          : selectedChannel.toLowerCase() == 'level 3'
+                              ? 'attr3'
+                              : selectedChannel.toLowerCase() == 'level 4'
+                                  ? 'attr4'
+                                  : selectedChannel.toLowerCase() == 'level 5'
+                                      ? 'attr5'
+                                      : 'attr1': _selectedTrendsChannelValue,
+                // if (selectedFBChannelFilter.isNotEmpty)
+                //   selectedChannel.toLowerCase() == 'level 1'
+                //       ? 'attr1'
+                //       : selectedChannel.toLowerCase() == 'level 2'
+                //           ? 'attr2'
+                //           : selectedChannel.toLowerCase() == 'level 3'
+                //               ? 'attr3'
+                //               : selectedChannel.toLowerCase() == 'level 4'
+                //                   ? 'attr4'
+                //                   : selectedChannel.toLowerCase() == 'level 5'
+                //                       ? 'attr5'
+                //                       : 'attr1': selectedFBChannelFilter,
               },
             ]
           : type.startsWith('channel')
@@ -2030,13 +2491,26 @@ class HomeController extends GetxController {
                       // "${selectedMonth!.substring(0, 3)}-$selectedYear",
                       _selectedGeo.startsWith('All India')
                               ? "allIndia"
-                              : _selectedGeo.toLowerCase():
+                              : _selectedGeo.startsWith('Cluster')
+                                  ? "district"
+                                  : _selectedGeo.toLowerCase():
                           _selectedGeo.startsWith('All India')
                               ? "allIndia"
                               : _selectedGeoValue,
-                      if (selectedChannelFilter.isNotEmpty)
-                        selectedChannel.toLowerCase(): selectedChannelFilter,
-                      if (selectedChannelFilter.isEmpty) "channel": [],
+                      if (selectedFBChannelFilter.isNotEmpty)
+                        selectedChannel.toLowerCase() == 'level 1'
+                            ? 'attr1'
+                            : selectedChannel.toLowerCase() == 'level 2'
+                                ? 'attr2'
+                                : selectedChannel.toLowerCase() == 'level 3'
+                                    ? 'attr3'
+                                    : selectedChannel.toLowerCase() == 'level 4'
+                                        ? 'attr4'
+                                        : selectedChannel.toLowerCase() ==
+                                                'level 5'
+                                            ? 'attr5'
+                                            : 'attr1': selectedFBChannelFilter,
+                      if (selectedFBChannelFilter.isEmpty) "attr1": [],
                     }
                   ]
               : name.startsWith('geo')
@@ -2047,7 +2521,9 @@ class HomeController extends GetxController {
                           //"${selectedMonth!.substring(0, 3)}-$selectedYear",
                           _selectedGeo.startsWith('All India')
                                   ? "allIndia"
-                                  : _selectedGeo.toLowerCase():
+                                  : _selectedGeo.startsWith('Cluster')
+                                      ? "district"
+                                      : _selectedGeo.toLowerCase():
                               _selectedGeo.startsWith('All India')
                                   ? "allIndia"
                                   : _selectedGeoValue,
@@ -2063,7 +2539,7 @@ class HomeController extends GetxController {
                             .map((e) => {
                                   "date": selectedMonth,
                                   //"${selectedMonth!.substring(0, 3)}-$selectedYear",
-                                  "cluster": e,
+                                  "district": e,
                                 })
                             .toList(),
                         ...selectedFBMultiSites
@@ -2094,7 +2570,9 @@ class HomeController extends GetxController {
                         // "${selectedMonth!.substring(0, 3)}-$selectedYear",
                         _selectedGeo.startsWith('All India')
                                 ? "allIndia"
-                                : _selectedGeo.toLowerCase():
+                                : _selectedGeo.startsWith('Cluster')
+                                    ? "district"
+                                    : _selectedGeo.toLowerCase():
                             _selectedGeo.startsWith('All India')
                                 ? "allIndia"
                                 : _selectedGeoValue,
@@ -2170,15 +2648,15 @@ class HomeController extends GetxController {
     } else if (type.startsWith('geo')) {
       Logger().log(Level.debug,
           '===> Focus Brand Geo Data end ${stopWatch.elapsed.toString()}');
-      _isSummaryLoading = false;
+      _isFBGeoLoading = false;
     } else if (type.startsWith('category')) {
       Logger().log(Level.debug,
           '===> Focus Brand Category Data end ${stopWatch.elapsed.toString()}');
-      _isCategoryLoading = false;
+      _isFBCategoryLoading = false;
     } else if (type.startsWith('channel')) {
       Logger().log(Level.debug,
           '===> Focus Brand Channel Data end ${stopWatch.elapsed.toString()}');
-      _isChannelLoading = false;
+      _isFBChannelLoading = false;
     } else {
       _isLoading = false;
     }

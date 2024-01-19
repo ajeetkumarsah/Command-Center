@@ -111,8 +111,8 @@ class AuthController extends GetxController {
     _selectedGeo = geo;
     _selectedGeoValue = geoValue;
     saveGeo(geo, geoValue);
-    // Get.put<HomeController>(HomeController(homeRepo: Get.find()))
-    //     .onChangeGeo(geo, geoValue);
+    Get.put<HomeController>(HomeController(homeRepo: Get.find()))
+        .onChangeGeo(geo, geoValue);
     update();
   }
 

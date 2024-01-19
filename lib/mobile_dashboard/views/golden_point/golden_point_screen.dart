@@ -81,7 +81,7 @@ class _GoldenPointScreenState extends State<GoldenPointScreen> {
                     child: Column(
                       children: [
                         const SizedBox(height: 16),
-                        ctlr.isSummaryLoading
+                        ctlr.isGPGeoLoading
                             ? loadingWidget(context)
                             : ctlr.gpList.isNotEmpty
                                 ? CustomExpandedWidget(
@@ -99,7 +99,7 @@ class _GoldenPointScreenState extends State<GoldenPointScreen> {
                                   )
                                 : const SizedBox(),
                         SizedBox(height: ctlr.gpList.isNotEmpty ? 16 : 0),
-                        ctlr.isCategoryLoading
+                        ctlr.isGPCategoryLoading
                             ? loadingWidget(context)
                             : ctlr.categoryGPList.isNotEmpty
                                 ? CustomExpandedWidget(
@@ -116,7 +116,7 @@ class _GoldenPointScreenState extends State<GoldenPointScreen> {
                                           children: [
                                             Flexible(
                                               child: Text(
-                                                ctlr.selectedCategory,
+                                                ctlr.selectedGPCategory,
                                                 maxLines: 2,
                                                 overflow: TextOverflow.ellipsis,
                                                 style: GoogleFonts.ptSans(
@@ -144,7 +144,7 @@ class _GoldenPointScreenState extends State<GoldenPointScreen> {
                                 : const SizedBox(),
                         SizedBox(
                             height: ctlr.categoryGPList.isNotEmpty ? 16 : 0),
-                        ctlr.isChannelLoading
+                        ctlr.isGPChannelLoading
                             ? loadingWidget(context)
                             : ctlr.channelGPList.isNotEmpty
                                 ? CustomExpandedWidget(
@@ -196,10 +196,7 @@ class _GoldenPointScreenState extends State<GoldenPointScreen> {
                                     trendsList: ctlr.trendsGPList,
                                     onFilterTap: () => Get.bottomSheet(
                                       TrendsFilterBottomsheet(
-                                        onTap: (v) => ctlr.onTrendsFilterSelect(
-                                            v, SummaryTypes.gp.type),
-                                        tabType: SummaryTypes.gp.type,
-                                      ),
+                                          tabType: SummaryTypes.gp.type),
                                       isScrollControlled: true,
                                     ),
                                   )

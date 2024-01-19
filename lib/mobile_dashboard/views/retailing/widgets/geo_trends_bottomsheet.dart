@@ -6,23 +6,70 @@ import 'package:command_centre/mobile_dashboard/utils/summary_types.dart';
 import 'package:command_centre/mobile_dashboard/controllers/home_controller.dart';
 import 'package:command_centre/mobile_dashboard/views/widgets/custom_loader.dart';
 
-class GeographyTrendsBottomsheet extends StatelessWidget {
+class GeographyTrendsBottomsheet extends StatefulWidget {
   final String tabType;
-  const GeographyTrendsBottomsheet({super.key, required this.tabType});
+  final String type;
+  const GeographyTrendsBottomsheet(
+      {super.key, required this.tabType, required this.type});
+
+  @override
+  State<GeographyTrendsBottomsheet> createState() =>
+      _GeographyTrendsBottomsheetState();
+}
+
+class _GeographyTrendsBottomsheetState
+    extends State<GeographyTrendsBottomsheet> {
+  List<String> geoList = ['All India', 'Division', 'Cluster', 'Site', 'Branch'];
+  String _selectedGeo = 'All India', _selectedGeoValue = '';
+  String get selectedGeo => _selectedGeo;
+  String get selectedGeoValue => _selectedGeoValue;
+  void onChangeFilter(String value) {
+    _selectedGeo = value;
+
+    setState(() {});
+  }
+
+  bool _isFirst = true;
+  void catInit(HomeController ctlr, {required String tabType}) {
+    if (_isFirst) {
+      _isFirst = false;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        String _selectedGeo = ctlr.selectedTrendsGeo.isNotEmpty
+            ? ctlr.selectedTrendsGeo
+            : ctlr.selectedGeo;
+        String _selectedGeoValue1 = ctlr.selectedTrendsGeo.isNotEmpty
+            ? ctlr.selectedTrendsGeoValue
+            : ctlr.selectedGeoValue;
+        _selectedGeoValue = _selectedGeoValue1;
+        ctlr.onTrendsGeoChange(_selectedGeo);
+        onChangeFilter(_selectedGeo);
+        // if (tabType == SummaryTypes.retailing.type) {
+        //   onChangeFilter(_selectedGeo);
+        // } else if (tabType == SummaryTypes.gp.type) {
+        //   onChangeFilter(_selectedGeo);
+        // } else if (tabType == SummaryTypes.fb.type) {
+        //   onChangeFilter(_selectedGeo);
+        // }
+      });
+    }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {});
+    });
+  }
+
+  void onChangeFilterValue(String value) {
+    _selectedGeoValue = value;
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
-    List<String> geoList = [
-      'All India',
-      'Division',
-      'Cluster',
-      'Site',
-      'Branch'
-    ];
+    WidgetsBinding.instance.addPostFrameCallback((_) {});
     return GetBuilder<HomeController>(
       init: HomeController(homeRepo: Get.find()),
       initState: (_) {},
       builder: (ctlr) {
+        catInit(ctlr, tabType: widget.tabType);
         return Container(
           decoration: const BoxDecoration(
             borderRadius: BorderRadius.only(
@@ -69,11 +116,14 @@ class GeographyTrendsBottomsheet extends StatelessWidget {
                         children: [
                           ...geoList
                               .map((e) => Container(
-                                    color: e == ctlr.selectedTrendsGeo
+                                    color: e == selectedGeo
                                         ? AppColors.white
                                         : null,
                                     child: ListTile(
-                                      onTap: () => ctlr.onTrendsGeoChange(e),
+                                      onTap: () {
+                                        onChangeFilter(e);
+                                        ctlr.onTrendsGeoChange(e);
+                                      },
                                       visualDensity: const VisualDensity(
                                           horizontal: 0, vertical: -3),
                                       title: Text(e),
@@ -89,7 +139,7 @@ class GeographyTrendsBottomsheet extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            ctlr.selectedTrendsGeo.trim().toLowerCase() ==
+                            _selectedGeo.trim().toLowerCase() ==
                                     "Branch".toLowerCase()
                                 ? TextFormField(
                                     onChanged: (v) => ctlr
@@ -122,14 +172,11 @@ class GeographyTrendsBottomsheet extends StatelessWidget {
                                   )
                                 : const SizedBox(),
                             SizedBox(
-                              height:
-                                  ctlr.selectedTrendsGeo.trim().toLowerCase() ==
-                                          "Branch".toLowerCase()
-                                      ? 250
-                                      : 300,
-                              child: ctlr.selectedTrendsGeo
-                                          .trim()
-                                          .toLowerCase() ==
+                              height: _selectedGeo.trim().toLowerCase() ==
+                                      "Branch".toLowerCase()
+                                  ? 250
+                                  : 300,
+                              child: _selectedGeo.trim().toLowerCase() ==
                                       "Branch".toLowerCase()
                                   ? ctlr.isFilterLoading
                                       ? const CustomLoader()
@@ -140,25 +187,23 @@ class GeographyTrendsBottomsheet extends StatelessWidget {
                                                   ...ctlr.branchFilter
                                                       .map(
                                                         (e) => InkWell(
-                                                          onTap: () => ctlr
-                                                              .onChangeTrendsFilters(
-                                                                  e, tabType),
+                                                          onTap: () =>
+                                                              onChangeFilterValue(
+                                                                  e),
                                                           child: Row(
                                                             children: [
                                                               Transform.scale(
                                                                 scale: .9,
                                                                 child: Checkbox(
-                                                                  value: ctlr
-                                                                          .selectedTrendsGeoValue
+                                                                  value: _selectedGeoValue
                                                                           .trim()
                                                                           .toLowerCase() ==
                                                                       e
                                                                           .trim()
                                                                           .toLowerCase(),
                                                                   onChanged: (v) =>
-                                                                      ctlr.onChangeTrendsFilters(
-                                                                          e,
-                                                                          tabType),
+                                                                      onChangeFilterValue(
+                                                                          e),
                                                                 ),
                                                               ),
                                                               Flexible(
@@ -187,25 +232,23 @@ class GeographyTrendsBottomsheet extends StatelessWidget {
                                               ...ctlr.trendsFilter
                                                   .map(
                                                     (e) => InkWell(
-                                                      onTap: () => ctlr
-                                                          .onChangeTrendsFilters(
-                                                              e, tabType),
+                                                      onTap: () =>
+                                                          onChangeFilterValue(
+                                                              e),
                                                       child: Row(
                                                         children: [
                                                           Transform.scale(
                                                             scale: .9,
                                                             child: Checkbox(
-                                                              value: ctlr
-                                                                      .selectedTrendsGeoValue
+                                                              value: _selectedGeoValue
                                                                       .trim()
                                                                       .toLowerCase() ==
                                                                   e
                                                                       .trim()
                                                                       .toLowerCase(),
                                                               onChanged: (v) =>
-                                                                  ctlr.onChangeTrendsFilters(
-                                                                      e,
-                                                                      tabType),
+                                                                  onChangeFilterValue(
+                                                                      e),
                                                             ),
                                                           ),
                                                           Flexible(
@@ -246,12 +289,18 @@ class GeographyTrendsBottomsheet extends StatelessWidget {
                     ),
                     TextButton(
                       onPressed: () async {
+                        ctlr.onTrendsFilterSelect(widget.type, widget.tabType);
+                        ctlr.onChangeGeoTrends(_selectedGeo);
+                        ctlr.onChangeTrendsFilters(
+                            _selectedGeoValue, widget.tabType);
                         ctlr.onApplyMultiFilter(
-                            'trends',
-                            tabType == SummaryTypes.coverage.type
-                                ? 'trends'
-                                : 'geo',
-                            tabType: tabType);
+                          'trends',
+                          widget.tabType == SummaryTypes.coverage.type
+                              ? 'trends'
+                              : 'geo',
+                          tabType: widget.tabType,
+                          isTrendsFilter: true,
+                        );
                         Navigator.pop(context);
                       },
                       style: ButtonStyle(

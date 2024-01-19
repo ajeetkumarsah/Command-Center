@@ -6,6 +6,7 @@ import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
 import 'package:command_centre/mobile_dashboard/utils/summary_types.dart';
 import 'package:command_centre/mobile_dashboard/controllers/home_controller.dart';
 import 'package:command_centre/mobile_dashboard/data/models/response/trends_model.dart';
+import 'package:command_centre/mobile_dashboard/data/models/response/fb_trends_model.dart';
 // import 'package:syncfusion_flutter_charts/charts.dart';
 
 class CustomExpandedChartWidget extends StatefulWidget {
@@ -271,10 +272,13 @@ class _CustomExpandedChartWidgetState extends State<CustomExpandedChartWidget> {
                                 ),
                               ),
                               Expanded(
-                                child: //
-
-                                    LineChart(
+                                child: LineChart(
                                   LineChartData(
+                                    maxX: 13,
+                                    minX: 0,
+                                    maxY: widget.trendsList.yMax,
+                                    minY: widget.trendsList.yMin,
+                                    baselineX: 1,
                                     lineBarsData: [
                                       LineChartBarData(
                                         spots: widget.trendsList.data!
@@ -331,9 +335,13 @@ class _CustomExpandedChartWidgetState extends State<CustomExpandedChartWidget> {
                                     ],
                                     lineTouchData: LineTouchData(
                                         enabled: true,
-                                        touchCallback: (FlTouchEvent event,
-                                            LineTouchResponse?
-                                                touchResponse) {},
+                                        touchCallback: (event, response) {
+                                          if (event is FlTapUpEvent) {
+                                            if (response != null &&
+                                                response.lineBarSpots !=
+                                                    null) {}
+                                          }
+                                        },
                                         touchTooltipData: LineTouchTooltipData(
                                           tooltipBgColor: AppColors.primaryDark,
                                           tooltipRoundedRadius: 20.0,
@@ -355,23 +363,27 @@ class _CustomExpandedChartWidgetState extends State<CustomExpandedChartWidget> {
                                                   widget.summaryType ==
                                                           SummaryTypes
                                                               .retailing.type
-                                                      ? double.tryParse(ctlr.channelSales
-                                                                  ? (widget.trendsList.data![touchedSpot.spotIndex].cyRt ??
-                                                                      '0.0')
-                                                                  : (widget.trendsList.data![touchedSpot.spotIndex].iya ??
-                                                                      '0.0'))
-                                                              ?.toStringAsFixed(
-                                                                  2) ??
-                                                          "0.0"
+                                                      ? ctlr.channelSales
+                                                          ? (widget
+                                                                  .trendsList
+                                                                  .data![touchedSpot
+                                                                      .spotIndex]
+                                                                  .cyRtRv ??
+                                                              '0.0')
+                                                          : double.tryParse((widget.trendsList.data![touchedSpot.spotIndex].iya ?? '0.0'))?.toStringAsFixed(2) ??
+                                                              "0.0"
                                                       : widget.summaryType ==
                                                               SummaryTypes
                                                                   .coverage.type
-                                                          ? double.tryParse((widget.trendsList.data![touchedSpot.spotIndex].billingPer ?? '0.0'))?.toStringAsFixed(2) ??
+                                                          ? double.tryParse((widget.trendsList.data![touchedSpot.spotIndex].billingPer ?? '0.0'))
+                                                                  ?.toStringAsFixed(
+                                                                      2) ??
                                                               '0.0'
                                                           : double.tryParse(ctlr.channelSales
                                                                       ? (widget.trendsList.data![touchedSpot.spotIndex].cyRt ??
                                                                           '0.0')
-                                                                      : (widget.trendsList.data![touchedSpot.spotIndex].iya ?? '0.0'))
+                                                                      : (widget.trendsList.data![touchedSpot.spotIndex].iya ??
+                                                                          '0.0'))
                                                                   ?.toStringAsFixed(2) ??
                                                               '0.0',
                                                   textStyle,
@@ -423,15 +435,32 @@ class _CustomExpandedChartWidgetState extends State<CustomExpandedChartWidget> {
                                         
                                       ),
                                       leftTitles: AxisTitles(
-                                        sideTitles: _leftTitles,
-                                       
+                                        sideTitles: SideTitles(
+                                          showTitles: true,
+                                          reservedSize: 40,
+                                          interval:
+                                              widget.trendsList.yInterval != 0
+                                                  ? widget.trendsList.yInterval
+                                                  : 1,
+                                          getTitlesWidget: (value, meta) =>
+                                              getLeftTitles(
+                                                  value,
+                                                  meta,
+                                                  widget.trendsList.yAxisData ??
+                                                      []),
+                                        ),
                                       ),
                                       topTitles: AxisTitles(
                                           sideTitles:
                                               SideTitles(showTitles: false)),
                                       rightTitles: AxisTitles(
-                                          sideTitles:
-                                              SideTitles(showTitles: false)),
+                                        sideTitles: SideTitles(
+                                          showTitles: false,
+                                          reservedSize: 15,
+                                          getTitlesWidget: (d, w) =>
+                                              const SizedBox(width: 12),
+                                        ),
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -494,6 +523,7 @@ class _CustomExpandedChartWidgetState extends State<CustomExpandedChartWidget> {
   SideTitles _bottomTitles(TrendsModel trendsList) => SideTitles(
         showTitles: true,
         reservedSize: 45,
+        interval: 1,
         getTitlesWidget: (value, meta) {
           String text = '';
           for (var v in trendsList.data!) {
@@ -501,29 +531,44 @@ class _CustomExpandedChartWidgetState extends State<CustomExpandedChartWidget> {
               text = v.month ?? '';
             }
           }
-          return Padding(
-            padding: const EdgeInsets.only(bottom: 8.0),
-            child: RotatedBox(
-              quarterTurns: 3,
-              child: Text(
-                text,
-                style: GoogleFonts.ptSansCaption(
-                  color: Colors.black,
-                  fontSize: 13,
+          return SideTitleWidget(
+            axisSide: meta.axisSide,
+            space: 4,
+            angle: 35,
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 8.0),
+              child: RotatedBox(
+                quarterTurns: 1,
+                child: Text(
+                  text,
+                  style: GoogleFonts.ptSansCaption(
+                    color: Colors.black,
+                    fontSize: 12,
+                  ),
                 ),
               ),
             ),
           );
         },
       );
-  SideTitles get _leftTitles => SideTitles(
-        showTitles: true,
-        reservedSize: 40,
-        getTitlesWidget: (value, meta) {
-          return Text(
-            meta.formattedValue,
-            style: GoogleFonts.ptSansCaption(color: Colors.black),
-          );
-        },
-      );
+  Widget getLeftTitles(
+      double value, TitleMeta meta, List<YAxisData> yaxisData) {
+    final style = GoogleFonts.ptSans(
+      color: AppColors.black,
+      fontWeight: FontWeight.w300,
+      fontSize: 12,
+    );
+    String text = '';
+    for (var v in yaxisData) {
+      if (value == v.yAbs) {
+        text = v.yRv ?? '';
+      }
+    }
+    return SideTitleWidget(
+      axisSide: meta.axisSide,
+      space: 4,
+      // angle: 30,
+      child: Text(text, style: style),
+    );
+  }
 }

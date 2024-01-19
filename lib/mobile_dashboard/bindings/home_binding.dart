@@ -14,29 +14,26 @@ class HomeBinding extends Bindings {
   @override
   Future<void> dependencies() async {
     final sharedPreferences = await SharedPreferences.getInstance();
-
+//SharedPreferences
     Get.lazyPut(() => sharedPreferences);
-    //Api Client
+//Api Client
     Get.lazyPut<ApiClient>(
         () => ApiClient(sharedPreferences: sharedPreferences));
 //Repo
     Get.lazyPut<AuthRepo>(() =>
         AuthRepo(sharedPreferences: sharedPreferences, apiClient: Get.find()));
-    // Get.lazyPut(() =>
-    //     HomeRepo(sharedPreferences: sharedPreferences, apiClient: Get.find()));
+    Get.put<AuthRepo>(
+        AuthRepo(sharedPreferences: sharedPreferences, apiClient: Get.find()));
+
     Get.lazyPut<HomeRepo>(() =>
+        HomeRepo(sharedPreferences: sharedPreferences, apiClient: Get.find()));
+    Get.put<HomeRepo>(
         HomeRepo(sharedPreferences: sharedPreferences, apiClient: Get.find()));
     Get.lazyPut<StoreRepo>(() =>
         StoreRepo(sharedPreferences: sharedPreferences, apiClient: Get.find()));
-
-    // Get.put(
-    //     AuthRepo(sharedPreferences: sharedPreferences, apiClient: Get.find()));
-    // Get.put(
-    //     HomeRepo(sharedPreferences: sharedPreferences, apiClient: Get.find()));
-    // Get.put(
-    //     StoreRepo(sharedPreferences: sharedPreferences, apiClient: Get.find()));
-
+//Controllers
     Get.lazyPut<HomeController>(() => HomeController(homeRepo: Get.find()));
+    // Get.put<HomeController>(HomeController(homeRepo: Get.find()));
     Get.lazyPut<StoreSelectionController>(
         () => StoreSelectionController(storeRepo: Get.find()));
     Get.lazyPut<AuthController>(() => AuthController(authRepo: Get.find()));

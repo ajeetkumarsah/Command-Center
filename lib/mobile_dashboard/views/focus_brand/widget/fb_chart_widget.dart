@@ -31,12 +31,6 @@ class FBTrendsChartWidget extends StatefulWidget {
 
 class _CustomExpandedChartWidgetState extends State<FBTrendsChartWidget> {
   @override
-  void initState() {
-    super.initState();
-    //
-  }
-
-  @override
   Widget build(BuildContext context) {
     return GetBuilder<HomeController>(
       init: HomeController(homeRepo: Get.find()),
@@ -112,7 +106,7 @@ class _CustomExpandedChartWidgetState extends State<FBTrendsChartWidget> {
                                       child: Padding(
                                         padding: const EdgeInsets.all(4.0),
                                         child: Text(
-                                          ctlr.selectedTrends,
+                                          ctlr.selectedFBTrends,
                                           overflow: TextOverflow.ellipsis,
                                           maxLines: 1,
                                           style: GoogleFonts.ptSans(
@@ -233,7 +227,7 @@ class _CustomExpandedChartWidgetState extends State<FBTrendsChartWidget> {
                                                                 horizontal: 10,
                                                                 vertical: 4),
                                                         child: Text(
-                                                          '  IYA  ',
+                                                          '  FB%  ',
                                                           style: GoogleFonts
                                                               .ptSansCaption(
                                                             color: !ctlr
@@ -256,6 +250,11 @@ class _CustomExpandedChartWidgetState extends State<FBTrendsChartWidget> {
                               Expanded(
                                 child: LineChart(
                                   LineChartData(
+                                    maxX: 13,
+                                    minX: 0,
+                                    maxY: widget.trendsList[0].yMax,
+                                    minY: 0,
+                                    baselineX: 1,
                                     lineBarsData: [
                                       LineChartBarData(
                                         spots: widget.trendsList[0].data!
@@ -267,9 +266,9 @@ class _CustomExpandedChartWidgetState extends State<FBTrendsChartWidget> {
                                                                 .fbAchieveSum ??
                                                             '0.0')) ??
                                                         0.0
-                                                    : double.tryParse((point
-                                                                .fbTargetSum ??
-                                                            '0.0')) ??
+                                                    : double.tryParse(
+                                                            (point.fb ??
+                                                                '0.0')) ??
                                                         0.0,
                                               ),
                                             )
@@ -314,22 +313,18 @@ class _CustomExpandedChartWidgetState extends State<FBTrendsChartWidget> {
                                                 );
                                                 return LineTooltipItem(
                                                   ctlr.channelSales
-                                                      ? double.tryParse((widget
-                                                                      .trendsList[
-                                                                          0]
-                                                                      .data![touchedSpot
-                                                                          .spotIndex]
-                                                                      .fbAchieveSum ??
-                                                                  '0.0'))
-                                                              ?.toStringAsFixed(
-                                                                  2) ??
-                                                          "0.0"
+                                                      ? (widget
+                                                              .trendsList[0]
+                                                              .data![touchedSpot
+                                                                  .spotIndex]
+                                                              .fbAchieveSumRv ??
+                                                          '0.0')
                                                       : double.tryParse((widget
                                                                       .trendsList[
                                                                           0]
                                                                       .data![touchedSpot
                                                                           .spotIndex]
-                                                                      .fbTargetSum ??
+                                                                      .fb ??
                                                                   '0.0'))
                                                               ?.toStringAsFixed(
                                                                   2) ??
@@ -370,8 +365,22 @@ class _CustomExpandedChartWidgetState extends State<FBTrendsChartWidget> {
                                         
                                       ),
                                       leftTitles: AxisTitles(
-                                        sideTitles: _leftTitles,
-                                        
+                                        sideTitles: SideTitles(
+                                          showTitles: true,
+                                          reservedSize: 45,
+                                          interval: widget.trendsList[0]
+                                                      .yInterval !=
+                                                  0
+                                              ? widget.trendsList[0].yInterval
+                                              : 1,
+                                          getTitlesWidget: (value, meta) =>
+                                              getLeftTitles(
+                                                  value,
+                                                  meta,
+                                                  widget.trendsList[0]
+                                                          .yAxisData ??
+                                                      []),
+                                        ),
                                       ),
                                       topTitles: AxisTitles(
                                           sideTitles:
@@ -438,64 +447,51 @@ class _CustomExpandedChartWidgetState extends State<FBTrendsChartWidget> {
     );
   }
 
+  Widget getLeftTitles(
+      double value, TitleMeta meta, List<YAxisData> yaxisData) {
+    final style = GoogleFonts.ptSans(
+      color: AppColors.black,
+      fontWeight: FontWeight.w300,
+      fontSize: 12,
+    );
+    String text = '';
+    for (var v in yaxisData) {
+      if (value == v.yAbs) {
+        text = v.yRv ?? '';
+      }
+    }
+    return SideTitleWidget(
+      axisSide: meta.axisSide,
+      space: 4,
+      child: Text(text, style: style),
+    );
+  }
+
   SideTitles _bottomTitles(List<FBTrendsModel> trendsList) => SideTitles(
         showTitles: true,
         reservedSize: 45,
+        interval: 1,
         getTitlesWidget: (value, meta) {
           String text = '';
-
           for (var v in trendsList[0].data!) {
             if (value.toInt() == v.index) {
               text = v.calendarMonth ?? '';
             }
           }
-          // switch (value.toInt()) {
-          //   case 0:
-          //     text = 'Jan';
-          //     break;
-          //   case 1:
-          //     text = 'Feb';
-          //     break;
-          //   case 2:
-          //     text = 'Mar';
-          //     break;
-          //   case 3:
-          //     text = 'Apr';
-          //     break;
-          //   case 4:
-          //     text = 'May';
-          //     break;
-          //   case 5:
-          //     text = 'Jun';
-          //     break;
-          //   case 6:
-          //     text = 'Jul';
-          //     break;
-          //   case 7:
-          //     text = 'Aug';
-          //     break;
-          //   case 8:
-          //     text = 'Sep';
-          //     break;
-          //   case 9:
-          //     text = 'Oct';
-          //     break;
-          //   case 10:
-          //     text = 'Nov';
-          //     break;
-          //   case 11:
-          //     text = 'Dec';
-          //     break;
-          // }
-          return Padding(
-            padding: const EdgeInsets.only(bottom: 4.0),
-            child: RotatedBox(
-              quarterTurns: 3,
-              child: Text(
-                text,
-                style: GoogleFonts.ptSansCaption(
-                  color: Colors.black,
-                  fontSize: 13,
+          return SideTitleWidget(
+            axisSide: meta.axisSide,
+            space: 4,
+            angle: 35,
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 4.0),
+              child: RotatedBox(
+                quarterTurns: 1,
+                child: Text(
+                  text,
+                  style: GoogleFonts.ptSansCaption(
+                    color: Colors.black,
+                    fontSize: 12,
+                  ),
                 ),
               ),
             ),

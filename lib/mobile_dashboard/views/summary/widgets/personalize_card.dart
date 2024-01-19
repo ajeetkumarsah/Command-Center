@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
+import 'package:command_centre/mobile_dashboard/views/widgets/data_not_found_widget.dart';
 
 class PersonalizeCard extends StatelessWidget {
   final String title;
+  final bool? isDataFound;
   final void Function()? onPressedShowMore;
   final List<Widget> children;
   final Widget? secondWidget;
@@ -15,6 +17,7 @@ class PersonalizeCard extends StatelessWidget {
   const PersonalizeCard({
     super.key,
     this.bottomInside = 24,
+    this.isDataFound,
     required this.children,
     this.onPressedShowMore,
     this.secondTitle = 'CM',
@@ -44,6 +47,7 @@ class PersonalizeCard extends StatelessWidget {
                     fontWeight: FontWeight.w700,
                   ),
                 ),
+            subtitle: isDataFound ?? true ? null : const DataNotFoundWidget(),
             trailing: trailing,
           ),
           Container(
@@ -61,7 +65,7 @@ class PersonalizeCard extends StatelessWidget {
             ),
           if (showMore)
             GestureDetector(
-              onTap: onPressedShowMore,
+              onTap: isDataFound ?? true ? onPressedShowMore : null,
               child: Container(
                 // height: 1,
                 width: double.infinity,
@@ -74,14 +78,17 @@ class PersonalizeCard extends StatelessWidget {
                     Text(
                       'Show more ',
                       style: GoogleFonts.ptSans(
-                        color: AppColors.primary,
+                        color: isDataFound ?? true
+                            ? AppColors.primary
+                            : Colors.grey,
                         fontSize: 14,
                         fontWeight: FontWeight.w400,
                       ),
                     ),
-                    const Icon(
+                    Icon(
                       Icons.arrow_outward_rounded,
-                      color: AppColors.primary,
+                      color:
+                          isDataFound ?? true ? AppColors.primary : Colors.grey,
                       size: 18,
                     )
                   ],

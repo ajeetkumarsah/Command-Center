@@ -1,24 +1,40 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
 import 'package:command_centre/mobile_dashboard/utils/summary_types.dart';
 import 'package:command_centre/mobile_dashboard/controllers/home_controller.dart';
-import 'package:command_centre/mobile_dashboard/views/widgets/custom_loader.dart';
 
-class CategoryTrendsFilterBottomsheet extends StatelessWidget {
+class CategoryTrendsFilterBottomsheet extends StatefulWidget {
   final String tabType;
-  const CategoryTrendsFilterBottomsheet({super.key, required this.tabType});
+  final String type;
+  const CategoryTrendsFilterBottomsheet(
+      {super.key, required this.tabType, required this.type});
+
+  @override
+  State<CategoryTrendsFilterBottomsheet> createState() =>
+      _CategoryTrendsFilterBottomsheetState();
+}
+
+class _CategoryTrendsFilterBottomsheetState
+    extends State<CategoryTrendsFilterBottomsheet> {
+  String _selectedTrendsCategory = 'Category',
+      _selectedTrendsCategoryValue = '';
+  String get selectedTrendsCategory => _selectedTrendsCategory;
+  String get selectedTrendsCategoryValue => _selectedTrendsCategoryValue;
+  void onFilterChange(String value) {
+    _selectedTrendsCategory = value;
+    setState(() {});
+  }
+
+  void onFilterChangeValue(String value) {
+    _selectedTrendsCategoryValue = value;
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
-    List<String> categoryList = [
-      'Category',
-      'Brand',
-      'Brand form',
-      'Sub-brand form'
-    ];
+    List<String> categoryList = ['Category', 'Brand', 'Brand form'];
     return GetBuilder<HomeController>(
       init: HomeController(homeRepo: Get.find()),
       builder: (ctlr) {
@@ -39,7 +55,7 @@ class CategoryTrendsFilterBottomsheet extends StatelessWidget {
                     const SizedBox(width: 16),
                     Expanded(
                       child: Text(
-                        'Select Category',
+                        'Select Category ',
                         style: GoogleFonts.ptSans(
                           fontSize: 16,
                           fontWeight: FontWeight.w700,
@@ -69,11 +85,14 @@ class CategoryTrendsFilterBottomsheet extends StatelessWidget {
                           ...categoryList
                               .map(
                                 (e) => Container(
-                                  color: e == ctlr.selectedTrendsCategory
+                                  color: e == selectedTrendsCategory
                                       ? AppColors.white
                                       : null,
                                   child: ListTile(
-                                    onTap: () => ctlr.onChangeTrendsCategory(e),
+                                    onTap: () {
+                                      onFilterChange(e);
+                                      ctlr.onChangeTrendsCategory(e);
+                                    },
                                     visualDensity: const VisualDensity(
                                         horizontal: 0, vertical: -3),
                                     title: Text(e),
@@ -90,129 +109,38 @@ class CategoryTrendsFilterBottomsheet extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            ctlr.selectedTrendsCategory.trim().toLowerCase() ==
-                                    'Sub-brand form'.trim().toLowerCase()
-                                ? TextFormField(
-                                    onChanged: (v) => ctlr.getCategorySearch(
-                                        tabType == SummaryTypes.gp.type
-                                            ? 'subBrandGroup'
-                                            : 'subBrandForm',
-                                        query: v),
-                                    decoration: const InputDecoration(
-                                      hintText: 'Search ',
-                                      prefixIcon: Icon(
-                                        Icons.search,
-                                        color: Colors.grey,
-                                      ),
-                                      border: UnderlineInputBorder(
-                                        borderSide: BorderSide(
-                                          width: .5,
-                                          color: Colors.grey,
-                                        ),
-                                      ),
-                                      enabledBorder: UnderlineInputBorder(
-                                        borderSide: BorderSide(
-                                          width: .5,
-                                          color: Colors.grey,
-                                        ),
-                                      ),
-                                      focusedBorder: UnderlineInputBorder(
-                                        borderSide: BorderSide(
-                                          width: .5,
-                                          color: Colors.grey,
-                                        ),
-                                      ),
-                                    ),
-                                  )
-                                : const SizedBox(),
                             SizedBox(
-                              height: ctlr.selectedTrendsCategory
-                                          .trim()
-                                          .toLowerCase() ==
-                                      "Sub-brand form".toLowerCase()
-                                  ? 250
-                                  : 300,
-                              child: ctlr.selectedTrendsCategory
-                                          .trim()
-                                          .toLowerCase() ==
-                                      "Sub-brand form".toLowerCase()
-                                  ? ctlr.isFilterLoading
-                                      ? const CustomLoader()
-                                      : ctlr.subBrandForm.isNotEmpty
-                                          ? SingleChildScrollView(
-                                              child: Column(
-                                                children: [
-                                                  ...ctlr.subBrandForm
-                                                      .map(
-                                                        (e) => InkWell(
-                                                          onTap: () => ctlr
-                                                              .onChangeCategoryTrendsValue(
-                                                                  e),
-                                                          child: Row(
-                                                            children: [
-                                                              Transform.scale(
-                                                                scale: .9,
-                                                                child: Checkbox(
-                                                                  value: ctlr
-                                                                          .selectedTrendsCategoryValue
-                                                                          .toLowerCase() ==
-                                                                      e.toLowerCase(),
-                                                                  onChanged:
-                                                                      (v) => ctlr
-                                                                          .onChangeCategoryTrendsValue(
-                                                                              e),
-                                                                ),
-                                                              ),
-                                                              Flexible(
-                                                                child: Text(e),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      )
-                                                      .toList(),
-                                                ],
-                                              ),
-                                            )
-                                          : Center(
-                                              child: Text(
-                                                'Search for Sub brand form',
-                                                style:
-                                                    GoogleFonts.ptSansCaption(),
-                                              ),
-                                            )
-                                  : SingleChildScrollView(
-                                      child: Column(
-                                        children: [
-                                          ...ctlr.categoryTrendsFilters
-                                              .map(
-                                                (cat) => GestureDetector(
-                                                  onTap: () => ctlr
-                                                      .onChangeCategoryTrendsValue(
-                                                          cat),
-                                                  child: Row(
-                                                    children: [
-                                                      Transform.scale(
-                                                        scale: .9,
-                                                        child: Checkbox(
-                                                          value:
-                                                              ctlr.selectedTrendsCategoryValue ==
-                                                                  cat,
-                                                          onChanged: (v) => ctlr
-                                                              .onChangeCategoryTrendsValue(
-                                                                  cat),
-                                                        ),
-                                                      ),
-                                                      Flexible(
-                                                          child: Text(cat)),
-                                                    ],
+                              height: 300,
+                              child: SingleChildScrollView(
+                                child: Column(
+                                  children: [
+                                    ...ctlr.categoryTrendsFilters
+                                        .map(
+                                          (cat) => GestureDetector(
+                                            onTap: () =>
+                                                onFilterChangeValue(cat),
+                                            child: Row(
+                                              children: [
+                                                Transform.scale(
+                                                  scale: .9,
+                                                  child: Checkbox(
+                                                    value:
+                                                        _selectedTrendsCategoryValue ==
+                                                            cat,
+                                                    onChanged: (v) =>
+                                                        onFilterChangeValue(
+                                                            cat),
                                                   ),
                                                 ),
-                                              )
-                                              .toList(),
-                                        ],
-                                      ),
-                                    ),
+                                                Flexible(child: Text(cat)),
+                                              ],
+                                            ),
+                                          ),
+                                        )
+                                        .toList(),
+                                  ],
+                                ),
+                              ),
                             ),
                           ],
                         ),
@@ -240,13 +168,18 @@ class CategoryTrendsFilterBottomsheet extends StatelessWidget {
                     ),
                     TextButton(
                       onPressed: () {
+                        ctlr.onTrendsFilterSelect(widget.type, widget.tabType);
+                        ctlr.onChangeTrendsChannelValue(
+                            _selectedTrendsCategoryValue, widget.tabType,
+                            isChannel: false);
+                        ctlr.onChangeTrendsCategoryValue(
+                            _selectedTrendsCategory);
                         ctlr.onApplyMultiFilter(
                           'trends',
-                          tabType == SummaryTypes.coverage.type
+                          widget.tabType == SummaryTypes.coverage.type
                               ? 'trends'
                               : 'geo',
-                          tabType: tabType,
-                          isTrendsFilter: true,
+                          tabType: widget.tabType,
                         );
 
                         Navigator.pop(context);

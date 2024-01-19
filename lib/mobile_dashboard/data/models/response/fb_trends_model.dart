@@ -1,9 +1,11 @@
 class FBTrendsModel {
-  final int? yMin;
-  final int? yMax;
-  final int? yRange;
-  final int? yInterval;
+  final double? yMin;
+  final double? yMax;
+  final double? yRange;
+  final double? yInterval;
   final List<FBTrendsDataModel>? data;
+
+  final List<YAxisData>? yAxisData;
 
   FBTrendsModel({
     this.yMin,
@@ -11,13 +13,18 @@ class FBTrendsModel {
     this.yRange,
     this.yInterval,
     this.data,
+    this.yAxisData,
   });
 
   factory FBTrendsModel.fromJson(Map<String, dynamic> json) => FBTrendsModel(
-        yMin: json["yMin"],
-        yMax: json["yMax"],
-        yRange: json["yRange"],
-        yInterval: json["yInterval"],
+        yMin: json["yMin"].toDouble(),
+        yMax: json["yMax"].toDouble(),
+        yRange: json["yRange"].toDouble(),
+        yInterval: json["yInterval"].toDouble(),
+        yAxisData: json["y_axis_data"] == null
+            ? []
+            : List<YAxisData>.from(
+                json["y_axis_data"]!.map((x) => YAxisData.fromJson(x))),
         data: json["data"] == null
             ? []
             : List<FBTrendsDataModel>.from(
@@ -47,6 +54,8 @@ class FBTrendsDataModel {
   final String? fbTargetBaseSumRv;
   final double? index;
 
+  final String? fbAchievedSum;
+
   FBTrendsDataModel({
     this.fbAchieveSum,
     this.fbTargetSum,
@@ -57,10 +66,12 @@ class FBTrendsDataModel {
     this.fbTargetSumRv,
     this.fbTargetBaseSumRv,
     this.index,
+    this.fbAchievedSum,
   });
 
   factory FBTrendsDataModel.fromJson(Map<String, dynamic> json) =>
       FBTrendsDataModel(
+        fbAchievedSum: json["fb_achieved_sum"].toString(),
         fbAchieveSum: json["fb_achieve_sum"],
         fbTargetSum: json["fb_target_sum"],
         fbTargetBaseSum: json["fb_target_base_sum"],
@@ -78,5 +89,25 @@ class FBTrendsDataModel {
         "fb_target_base_sum": fbTargetBaseSum,
         "Calendar Month": calendarMonth,
         "FB %": fb,
+      };
+}
+
+class YAxisData {
+  final double? yAbs;
+  final String? yRv;
+
+  YAxisData({
+    this.yAbs,
+    this.yRv,
+  });
+
+  factory YAxisData.fromJson(Map<String, dynamic> json) => YAxisData(
+        yAbs: json["y_abs"]?.toDouble(),
+        yRv: json["y_rv"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "y_abs": yAbs,
+        "y_rv": yRv,
       };
 }

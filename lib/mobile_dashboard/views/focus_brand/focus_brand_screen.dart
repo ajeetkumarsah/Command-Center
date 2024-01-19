@@ -81,7 +81,7 @@ class _FocusBrandScreenState extends State<FocusBrandScreen> {
                     child: Column(
                       children: [
                         const SizedBox(height: 16),
-                        ctlr.isSummaryLoading
+                        ctlr.isFBGeoLoading
                             ? loadingWidget(context)
                             : ctlr.fbList.isNotEmpty
                                 ? CustomExpandedWidget(
@@ -99,7 +99,7 @@ class _FocusBrandScreenState extends State<FocusBrandScreen> {
                                   )
                                 : const SizedBox(),
                         SizedBox(height: ctlr.fbList.isNotEmpty ? 16 : 0),
-                        ctlr.isCategoryLoading
+                        ctlr.isFBCategoryLoading
                             ? loadingWidget(context)
                             : ctlr.categoryFBList.isNotEmpty
                                 ? CustomExpandedWidget(
@@ -117,7 +117,7 @@ class _FocusBrandScreenState extends State<FocusBrandScreen> {
                                           children: [
                                             Flexible(
                                               child: Text(
-                                                ctlr.selectedCategory,
+                                                ctlr.selectedFBCategory,
                                                 maxLines: 2,
                                                 overflow: TextOverflow.ellipsis,
                                                 style: GoogleFonts.ptSans(
@@ -143,7 +143,7 @@ class _FocusBrandScreenState extends State<FocusBrandScreen> {
                                 : const SizedBox(),
                         SizedBox(
                             height: ctlr.categoryFBList.isNotEmpty ? 16 : 0),
-                        ctlr.isChannelLoading
+                        ctlr.isFBChannelLoading
                             ? loadingWidget(context)
                             : ctlr.channelFBList.isNotEmpty
                                 ? CustomExpandedWidget(
@@ -195,8 +195,6 @@ class _FocusBrandScreenState extends State<FocusBrandScreen> {
                                     trendsList: ctlr.trendsFBList,
                                     onFilterTap: () => Get.bottomSheet(
                                       TrendsFilterBottomsheet(
-                                        onTap: (v) => ctlr.onTrendsFilterSelect(
-                                            v, SummaryTypes.fb.type),
                                         tabType: SummaryTypes.fb.type,
                                       ),
                                       isScrollControlled: true,

@@ -4,6 +4,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
 import 'package:command_centre/mobile_dashboard/controllers/home_controller.dart';
+import 'package:command_centre/mobile_dashboard/data/models/response/fb_trends_model.dart';
 import 'package:command_centre/mobile_dashboard/data/models/response/coverage_trends_model.dart';
 
 class CoverageTrendsChartWidget extends StatefulWidget {
@@ -156,19 +157,13 @@ class _CustomExpandedChartWidgetState extends State<CoverageTrendsChartWidget> {
                               Expanded(
                                 child: LineChart(
                                   LineChartData(
+                                    maxX: 13,
+                                    minX: 0,
+                                    maxY: widget.trendsList[0].yMax,
+                                    minY: 0,
+                                    baselineX: 1,
                                     lineBarsData: [
                                       LineChartBarData(
-                                        // belowBarData: BarAreaData(
-                                        //   show: true,
-                                        //   gradient: const LinearGradient(
-                                        //     begin: Alignment.topCenter,
-                                        //     end: Alignment.bottomCenter,
-                                        //     colors: [
-                                        //       AppColors.primary,
-                                        //       Colors.white
-                                        //     ],
-                                        //   ),
-                                        // ),
                                         spots: widget.trendsList[0].data!
                                             .asMap()
                                             .map(
@@ -241,26 +236,28 @@ class _CustomExpandedChartWidgetState extends State<CoverageTrendsChartWidget> {
                                                 return LineTooltipItem(
                                                   ctlr.selectedCoverageTrendsFilter ==
                                                           'Billing %'
-                                                      ? double.tryParse((widget
-                                                                      .trendsList[
-                                                                          0]
-                                                                      .data![touchedSpot
-                                                                          .spotIndex]
-                                                                      .billingPer ??
-                                                                  '0.0'))
-                                                              ?.toStringAsFixed(
-                                                                  2) ??
+                                                      ? widget
+                                                              .trendsList[0]
+                                                              .data![touchedSpot
+                                                                  .spotIndex]
+                                                              .billingPer
+                                                              ?.toString() ??
                                                           '0.0'
                                                       : ctlr.selectedCoverageTrendsFilter ==
                                                               'Prod %'
-                                                          ? double.tryParse((widget.trendsList[0].data![touchedSpot.spotIndex].productivityPer ?? '0.0'))
+                                                          ? double.tryParse(
+                                                                      (widget.trendsList[0].data![touchedSpot.spotIndex].productivityPer ??
+                                                                          '0.0'))
                                                                   ?.toStringAsFixed(
                                                                       2) ??
                                                               '0.0'
                                                           : ctlr.selectedCoverageTrendsFilter ==
                                                                   'CCR %'
-                                                              ? double.tryParse((widget.trendsList[0].data![touchedSpot.spotIndex].ccPer ?? '0.0'))
-                                                                      ?.toStringAsFixed(2) ??
+                                                              ? double.tryParse(
+                                                                          (widget.trendsList[0].data![touchedSpot.spotIndex].ccPer ??
+                                                                              '0.0'))
+                                                                      ?.toStringAsFixed(
+                                                                          2) ??
                                                                   '0.0'
                                                               : '0.0',
                                                   textStyle,
@@ -308,11 +305,25 @@ class _CustomExpandedChartWidgetState extends State<CoverageTrendsChartWidget> {
                                       bottomTitles: AxisTitles(
                                         sideTitles:
                                             _bottomTitles(widget.trendsList),
-                                        
+                                       
                                       ),
                                       leftTitles: AxisTitles(
-                                        sideTitles: _leftTitles,
-                                       
+                                        sideTitles: SideTitles(
+                                          showTitles: true,
+                                          reservedSize: 45,
+                                          interval: widget.trendsList[0]
+                                                      .yInterval !=
+                                                  0
+                                              ? widget.trendsList[0].yInterval
+                                              : 1,
+                                          getTitlesWidget: (value, meta) =>
+                                              getLeftTitles(
+                                                  value,
+                                                  meta,
+                                                  widget.trendsList[0]
+                                                          .yAxisData ??
+                                                      []),
+                                        ),
                                       ),
                                       topTitles: AxisTitles(
                                           sideTitles:
@@ -379,6 +390,26 @@ class _CustomExpandedChartWidgetState extends State<CoverageTrendsChartWidget> {
     );
   }
 
+  Widget getLeftTitles(
+      double value, TitleMeta meta, List<YAxisData> yaxisData) {
+    final style = GoogleFonts.ptSans(
+      color: AppColors.black,
+      fontWeight: FontWeight.w300,
+      fontSize: 12,
+    );
+    String text = '';
+    for (var v in yaxisData) {
+      if (value == v.yAbs) {
+        text = v.yRv ?? '';
+      }
+    }
+    return SideTitleWidget(
+      axisSide: meta.axisSide,
+      space: 4,
+      child: Text(text, style: style),
+    );
+  }
+
   SideTitles _bottomTitles(List<CoverageTrendsModel> trendsList) => SideTitles(
         showTitles: true,
         reservedSize: 45,
@@ -386,58 +417,23 @@ class _CustomExpandedChartWidgetState extends State<CoverageTrendsChartWidget> {
           String text = '';
           for (var v in trendsList[0].data!) {
             if (value.toInt() == v.index) {
-              text = v.calendarMonth ?? '';
+              text = v.monthYear ?? '';
             }
           }
-
-          // switch (value.toInt()) {
-          //   case 0:
-          //     text = 'Jan';
-          //     break;
-          //   case 1:
-          //     text = 'Feb';
-          //     break;
-          //   case 2:
-          //     text = 'Mar';
-          //     break;
-          //   case 3:
-          //     text = 'Apr';
-          //     break;
-          //   case 4:
-          //     text = 'May';
-          //     break;
-          //   case 5:
-          //     text = 'Jun';
-          //     break;
-          //   case 6:
-          //     text = 'Jul';
-          //     break;
-          //   case 7:
-          //     text = 'Aug';
-          //     break;
-          //   case 8:
-          //     text = 'Sep';
-          //     break;
-          //   case 9:
-          //     text = 'Oct';
-          //     break;
-          //   case 10:
-          //     text = 'Nov';
-          //     break;
-          //   case 11:
-          //     text = 'Dec';
-          //     break;
-          // }
-
-          return Padding(
-            padding: const EdgeInsets.only(bottom: 8.0),
-            child: RotatedBox(
-              quarterTurns: 3,
-              child: Text(
-                text,
-                style: GoogleFonts.ptSansCaption(
-                  color: Colors.black,
-                  fontSize: 12,
+          return SideTitleWidget(
+            axisSide: meta.axisSide,
+            space: 4,
+            angle: 35,
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 8.0),
+              child: RotatedBox(
+                quarterTurns: 1,
+                child: Text(
+                  text,
+                  style: GoogleFonts.ptSansCaption(
+                    color: Colors.black,
+                    fontSize: 12,
+                  ),
                 ),
               ),
             ),
@@ -447,6 +443,7 @@ class _CustomExpandedChartWidgetState extends State<CoverageTrendsChartWidget> {
   SideTitles get _leftTitles => SideTitles(
         showTitles: true,
         reservedSize: 40,
+        interval: 1,
         getTitlesWidget: (value, meta) {
           return Text(
             meta.formattedValue,

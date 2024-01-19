@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
 import 'package:command_centre/mobile_dashboard/controllers/home_controller.dart';
 import 'package:command_centre/mobile_dashboard/views/widgets/custom_loader.dart';
+import 'package:command_centre/mobile_dashboard/views/widgets/custom_snackbar.dart';
 
 class GeographyBottomsheet extends StatelessWidget {
   final Function(Map<String, dynamic>)? onApplyFilter;
@@ -81,7 +82,10 @@ class GeographyBottomsheet extends StatelessWidget {
                                       onTap: () => ctlr.onGeoChange(e),
                                       visualDensity: const VisualDensity(
                                           horizontal: 0, vertical: -3),
-                                      title: Text(e),
+                                      title: Text(
+                                        e,
+                                        style: GoogleFonts.ptSans(),
+                                      ),
                                     ),
                                   ))
                               .toList(),
@@ -167,7 +171,11 @@ class GeographyBottomsheet extends StatelessWidget {
                                                                 ),
                                                               ),
                                                               Flexible(
-                                                                child: Text(e),
+                                                                child: Text(
+                                                                  e,
+                                                                  style: GoogleFonts
+                                                                      .ptSans(),
+                                                                ),
                                                               ),
                                                             ],
                                                           ),
@@ -212,7 +220,11 @@ class GeographyBottomsheet extends StatelessWidget {
                                                             ),
                                                           ),
                                                           Flexible(
-                                                            child: Text(e),
+                                                            child: Text(
+                                                              e,
+                                                              style: GoogleFonts
+                                                                  .ptSans(),
+                                                            ),
                                                           ),
                                                         ],
                                                       ),
@@ -249,9 +261,14 @@ class GeographyBottomsheet extends StatelessWidget {
                     ),
                     TextButton(
                       onPressed: () async {
-                        ctlr.onApplyFilter(
-                            isLoadRetailing: isLoadRetailing, tabType: tabType);
-                        Navigator.pop(context);
+                        if (ctlr.selectedTempGeoValue.isNotEmpty) {
+                          ctlr.onApplyFilter(
+                              isLoadRetailing: isLoadRetailing,
+                              tabType: tabType);
+                          Navigator.pop(context);
+                        } else {
+                          showCustomSnackBar('Please select a geo!');
+                        }
                       },
                       style: ButtonStyle(
                         overlayColor:
@@ -262,7 +279,9 @@ class GeographyBottomsheet extends StatelessWidget {
                         style: GoogleFonts.ptSans(
                           fontSize: 16,
                           fontWeight: FontWeight.w700,
-                          color: AppColors.primary,
+                          color: ctlr.selectedTempGeoValue.isNotEmpty
+                              ? AppColors.primary
+                              : Colors.grey,
                         ),
                       ),
                     ),

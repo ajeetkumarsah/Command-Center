@@ -1,9 +1,12 @@
+import 'package:command_centre/mobile_dashboard/data/models/response/fb_trends_model.dart';
+
 class TrendsModel {
-  final int? yMin;
-  final int? yMax;
-  final int? yRange;
-  final int? yInterval;
+  final double? yMin;
+  final double? yMax;
+  final double? yRange;
+  final double? yInterval;
   final List<TrendsDataModel>? data;
+  final List<YAxisData>? yAxisData;
 
   TrendsModel({
     this.yMin,
@@ -11,13 +14,18 @@ class TrendsModel {
     this.yRange,
     this.yInterval,
     this.data,
+    this.yAxisData,
   });
 
   factory TrendsModel.fromJson(Map<String, dynamic> json) => TrendsModel(
-        yMin: json["yMin"],
-        yMax: json["yMax"],
-        yRange: json["yRange"],
-        yInterval: json["yInterval"],
+        yMin: json["yMin"].toDouble(),
+        yMax: json["yMax"].toDouble(),
+        yRange: json["yRange"].toDouble(),
+        yInterval: json["yInterval"].toDouble(),
+        yAxisData: json["y_axis_data"] == null
+            ? []
+            : List<YAxisData>.from(
+                json["y_axis_data"]!.map((x) => YAxisData.fromJson(x))),
         data: json["data"] == null
             ? []
             : List<TrendsDataModel>.from(

@@ -79,7 +79,7 @@ class _CoverageScreenState extends State<CoverageScreen> {
                     child: Column(
                       children: [
                         const SizedBox(height: 16),
-                        ctlr.isSummaryLoading
+                        ctlr.isRetailingGeoLoading
                             ? loadingWidget(context)
                             : ctlr.coverageList.isNotEmpty
                                 ? CustomExpandedWidget(
@@ -142,7 +142,7 @@ class _CoverageScreenState extends State<CoverageScreen> {
                         SizedBox(
                             height:
                                 ctlr.categoryCoverageList.isNotEmpty ? 16 : 0),
-                        ctlr.isChannelLoading
+                        ctlr.isCoverageChannelLoading
                             ? loadingWidget(context)
                             : ctlr.channelCoverageList.isNotEmpty
                                 ? CustomExpandedWidget(
@@ -229,8 +229,6 @@ class _CoverageScreenState extends State<CoverageScreen> {
                                     ),
                                     onFilterTap: () => Get.bottomSheet(
                                       TrendsFilterBottomsheet(
-                                        onTap: (v) => ctlr.onTrendsFilterSelect(
-                                            v, SummaryTypes.coverage.type),
                                         tabType: SummaryTypes.coverage.type,
                                         isCoverage: true,
                                       ),

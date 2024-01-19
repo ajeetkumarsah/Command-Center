@@ -154,7 +154,9 @@ class CustomDeepDiveAppBar extends StatelessWidget
                               child: Text(
                                 date ?? 'Dec 2023',
                                 style: GoogleFonts.ptSans(
-                                    fontSize: 16, fontWeight: FontWeight.w400),
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w400,
+                                ),
                               ),
                             ),
                             const Icon(Icons.arrow_drop_down),

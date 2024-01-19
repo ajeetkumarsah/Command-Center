@@ -2,17 +2,15 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
-import 'package:command_centre/mobile_dashboard/utils/summary_types.dart';
 import 'package:command_centre/mobile_dashboard/views/retailing/widgets/geo_trends_bottomsheet.dart';
 import 'package:command_centre/mobile_dashboard/views/retailing/widgets/channel_trends_bottomsheet.dart';
 import 'package:command_centre/mobile_dashboard/views/retailing/widgets/category_trends_bottomsheet.dart';
 
 class TrendsFilterBottomsheet extends StatelessWidget {
-  final Function(String)? onTap;
   final bool isCoverage;
   final String tabType;
   const TrendsFilterBottomsheet(
-      {super.key, this.onTap, this.isCoverage = false, required this.tabType});
+      {super.key, this.isCoverage = false, required this.tabType});
 
   @override
   Widget build(BuildContext context) {
@@ -65,18 +63,18 @@ class TrendsFilterBottomsheet extends StatelessWidget {
                           child: ListTile(
                             onTap: () {
                               Get.back();
-                              if (onTap != null) {
-                                onTap!(e);
-                              }
+                              // if (onTap != null) {
+                              //   onTap!(e);
+                              // }
                               if (e == 'Category') {
                                 Get.bottomSheet(CategoryTrendsFilterBottomsheet(
-                                    tabType: tabType));
+                                    tabType: tabType, type: e));
                               } else if (e == 'Geography') {
                                 Get.bottomSheet(GeographyTrendsBottomsheet(
-                                    tabType: tabType));
+                                    tabType: tabType, type: e));
                               } else if (e == 'Channel') {
                                 Get.bottomSheet(ChannelTrendsFilterBottomsheet(
-                                    tabType: tabType));
+                                    tabType: tabType, type: e));
                               }
                             },
                             title: Text(

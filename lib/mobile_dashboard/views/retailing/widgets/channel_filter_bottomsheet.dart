@@ -1,22 +1,61 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
+import '../../../utils/summary_types.dart';
+import 'package:collection/collection.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
 import 'package:command_centre/mobile_dashboard/controllers/home_controller.dart';
 
-class ChannelFilterBottomsheet extends StatelessWidget {
+
+class ChannelFilterBottomsheet extends StatefulWidget {
   final String tabType;
   final bool isTrends;
   const ChannelFilterBottomsheet(
       {super.key, this.isTrends = false, required this.tabType});
 
   @override
+  State<ChannelFilterBottomsheet> createState() =>
+      _ChannelFilterBottomsheetState();
+}
+
+class _ChannelFilterBottomsheetState extends State<ChannelFilterBottomsheet> {
+  Function eq = const ListEquality().equals;
+  List<String> channels = [
+    'Level 1',
+    'Level 2',
+    'Level 3',
+    'Level 4',
+    'Level 5'
+  ];
+  String _selectedChannel = 'Level 1';
+  String get selectedChannel => _selectedChannel;
+
+  void onChangeFilter(String value) {
+    _selectedChannel = value;
+    setState(() {});
+  }
+
+  bool isFirst = true;
+  void initCall(String value) {
+    if (isFirst) {
+      isFirst = false;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (value == 'attr1') {
+          onChangeFilter('Level 1');
+        } else {
+          onChangeFilter(value);
+        }
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    List<String> channels = ['Channel'];
     return GetBuilder<HomeController>(
       init: HomeController(homeRepo: Get.find()),
       builder: (ctlr) {
+        initCall(ctlr.selectedChannel);
         return Container(
           decoration: const BoxDecoration(
             borderRadius: BorderRadius.only(
@@ -64,11 +103,14 @@ class ChannelFilterBottomsheet extends StatelessWidget {
                           ...channels
                               .map(
                                 (e) => Container(
-                                  color: e == ctlr.selectedChannel
+                                  color: e == _selectedChannel
                                       ? AppColors.white
                                       : null,
                                   child: ListTile(
-                                    onTap: () => ctlr.onChangeChannel(e),
+                                    onTap: () {
+                                      onChangeFilter(e);
+                                      ctlr.onChangeChannel(e, widget.tabType);
+                                    },
                                     visualDensity: const VisualDensity(
                                         horizontal: 0, vertical: -3),
                                     title: Text(e),
@@ -122,11 +164,35 @@ class ChannelFilterBottomsheet extends StatelessWidget {
                                         Transform.scale(
                                           scale: .9,
                                           child: Checkbox(
-                                            value: listEquals(
-                                                ctlr.selectedChannelFilter,
-                                                ctlr.channelFilter),
+                                            value: SummaryTypes
+                                                        .retailing.type ==
+                                                    widget.tabType
+                                                ? eq(
+                                                    ctlr
+                                                        .selectedRetailingChannelFilter,
+                                                    ctlr.channelFilter)
+                                                : SummaryTypes.coverage.type ==
+                                                        widget.tabType
+                                                    ? eq(
+                                                        ctlr
+                                                            .selectedCoverageChannelFilter,
+                                                        ctlr.channelFilter)
+                                                    : SummaryTypes.gp.type ==
+                                                            widget.tabType
+                                                        ? eq(
+                                                            ctlr.channelFilter,
+                                                            ctlr
+                                                                .selectedGPChannelFilter)
+                                                        : SummaryTypes
+                                                                    .fb.type ==
+                                                                widget.tabType
+                                                            ? eq(
+                                                                ctlr.selectedFBChannelFilter,
+                                                                ctlr.channelFilter)
+                                                            : false,
                                             onChanged: (v) =>
-                                                ctlr.onChangeChannelAllSelect(),
+                                                ctlr.onChangeChannelAllSelect(
+                                                    widget.tabType),
                                           ),
                                         ),
                                         const Flexible(
@@ -141,11 +207,36 @@ class ChannelFilterBottomsheet extends StatelessWidget {
                                               Transform.scale(
                                                 scale: .9,
                                                 child: Checkbox(
-                                                  value: ctlr
-                                                      .selectedChannelFilter
-                                                      .contains(e),
-                                                  onChanged: (v) => ctlr
-                                                      .onChangeChannelValue(e),
+                                                  value: SummaryTypes
+                                                              .retailing.type ==
+                                                          widget.tabType
+                                                      ? ctlr
+                                                          .selectedRetailingChannelFilter
+                                                          .contains(e)
+                                                      : SummaryTypes.coverage
+                                                                  .type ==
+                                                              widget.tabType
+                                                          ? ctlr
+                                                              .selectedCoverageChannelFilter
+                                                              .contains(e)
+                                                          : SummaryTypes.gp
+                                                                      .type ==
+                                                                  widget.tabType
+                                                              ? ctlr
+                                                                  .selectedGPChannelFilter
+                                                                  .contains(e)
+                                                              : SummaryTypes.fb
+                                                                          .type ==
+                                                                      widget
+                                                                          .tabType
+                                                                  ? ctlr
+                                                                      .selectedFBChannelFilter
+                                                                      .contains(
+                                                                          e)
+                                                                  : false,
+                                                  onChanged: (v) =>
+                                                      ctlr.onChangeChannelValue(
+                                                          e, widget.tabType),
                                                 ),
                                               ),
                                               Flexible(
@@ -185,12 +276,16 @@ class ChannelFilterBottomsheet extends StatelessWidget {
                     ),
                     TextButton(
                       onPressed: () {
-                        if (isTrends) {
+                        // ctlr.onChangeChannel(_selectedChannel);
+                        ctlr.onChangeChannel1(_selectedChannel);
+                        // ctlr.onChangeChannelValue(
+                        //     _selectedChannelValue, widget.tabType);
+                        if (widget.isTrends) {
                           ctlr.onApplyMultiFilter('trends', 'geo',
-                              tabType: tabType);
+                              tabType: widget.tabType);
                         } else {
                           ctlr.onApplyMultiFilter('geo', 'channel',
-                              tabType: tabType);
+                              tabType: widget.tabType);
                         }
                         Navigator.pop(context);
                       },

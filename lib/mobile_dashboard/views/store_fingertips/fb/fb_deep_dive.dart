@@ -405,7 +405,7 @@ class FBDeepDiveScreen extends StatelessWidget {
                                 ),
                                 leftTitles: AxisTitles(
                                   sideTitles: SideTitles(showTitles: false),
-                                
+                                 
                                 ),
                                 topTitles: AxisTitles(
                                     sideTitles: SideTitles(showTitles: false)),
@@ -660,6 +660,7 @@ class FBDeepDiveScreen extends StatelessWidget {
   SideTitles get _bottomTitles => SideTitles(
         showTitles: true,
         reservedSize: 30,
+        interval: 1,
         getTitlesWidget: (value, meta) {
           String text = '';
           switch (value.toInt()) {
@@ -700,10 +701,12 @@ class FBDeepDiveScreen extends StatelessWidget {
               text = 'Dec';
               break;
           }
-
           return Text(
             text,
-            style: GoogleFonts.ptSansCaption(color: Colors.black),
+            style: GoogleFonts.ptSansCaption(
+              color: Colors.black,
+              fontSize: 12,
+            ),
           );
         },
       );

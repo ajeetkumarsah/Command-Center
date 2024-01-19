@@ -4,6 +4,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
 import 'package:command_centre/mobile_dashboard/controllers/home_controller.dart';
+import 'package:command_centre/mobile_dashboard/data/models/response/fb_trends_model.dart';
 import 'package:command_centre/mobile_dashboard/data/models/response/gp_trends_model.dart';
 
 class GPTrendsChartWidget extends StatefulWidget {
@@ -111,7 +112,7 @@ class _CustomExpandedChartWidgetState extends State<GPTrendsChartWidget> {
                                       child: Padding(
                                         padding: const EdgeInsets.all(4.0),
                                         child: Text(
-                                          ctlr.selectedTrends,
+                                          ctlr.selectedGPTrends,
                                           overflow: TextOverflow.ellipsis,
                                           maxLines: 1,
                                           style: GoogleFonts.ptSans(
@@ -255,6 +256,11 @@ class _CustomExpandedChartWidgetState extends State<GPTrendsChartWidget> {
                               Expanded(
                                 child: LineChart(
                                   LineChartData(
+                                    maxX: 13,
+                                    minX: 0,
+                                    maxY: widget.trendsList[0].yMax,
+                                    minY: widget.trendsList[0].yMin,
+                                    baselineX: 1,
                                     lineBarsData: [
                                       LineChartBarData(
                                         spots: widget.trendsList[0].data!
@@ -318,16 +324,12 @@ class _CustomExpandedChartWidgetState extends State<GPTrendsChartWidget> {
                                                 );
                                                 return LineTooltipItem(
                                                   ctlr.channelSales
-                                                      ? double.tryParse((widget
-                                                                      .trendsList[
-                                                                          0]
-                                                                      .data![touchedSpot
-                                                                          .spotIndex]
-                                                                      .cyGp ??
-                                                                  '0.0'))
-                                                              ?.toStringAsFixed(
-                                                                  2) ??
-                                                          "0.0"
+                                                      ? (widget
+                                                              .trendsList[0]
+                                                              .data![touchedSpot
+                                                                  .spotIndex]
+                                                              .cyGpRv ??
+                                                          '0.0')
                                                       : double.tryParse((widget
                                                                       .trendsList[
                                                                           0]
@@ -386,8 +388,22 @@ class _CustomExpandedChartWidgetState extends State<GPTrendsChartWidget> {
                                         
                                       ),
                                       leftTitles: AxisTitles(
-                                        sideTitles: _leftTitles,
-                                        
+                                        sideTitles: SideTitles(
+                                          showTitles: true,
+                                          reservedSize: 45,
+                                          interval: widget.trendsList[0]
+                                                      .yInterval !=
+                                                  0
+                                              ? widget.trendsList[0].yInterval
+                                              : 1,
+                                          getTitlesWidget: (value, meta) =>
+                                              getLeftTitles(
+                                                  value,
+                                                  meta,
+                                                  widget.trendsList[0]
+                                                          .yAxisData ??
+                                                      []),
+                                        ),
                                       ),
                                       topTitles: AxisTitles(
                                           sideTitles:
@@ -454,9 +470,30 @@ class _CustomExpandedChartWidgetState extends State<GPTrendsChartWidget> {
     );
   }
 
+  Widget getLeftTitles(
+      double value, TitleMeta meta, List<YAxisData> yaxisData) {
+    final style = GoogleFonts.ptSans(
+      color: AppColors.black,
+      fontWeight: FontWeight.w300,
+      fontSize: 12,
+    );
+    String text = '';
+    for (var v in yaxisData) {
+      if (value == v.yAbs) {
+        text = v.yRv ?? '';
+      }
+    }
+    return SideTitleWidget(
+      axisSide: meta.axisSide,
+      space: 4,
+      child: Text(text, style: style),
+    );
+  }
+
   SideTitles _bottomTitles(List<GPTrendsModel> trendsList) => SideTitles(
         showTitles: true,
         reservedSize: 45,
+        interval: 1,
         getTitlesWidget: (value, meta) {
           String text = '';
           for (var v in trendsList[0].data!) {
@@ -465,28 +502,23 @@ class _CustomExpandedChartWidgetState extends State<GPTrendsChartWidget> {
             }
           }
 
-          return Padding(
-            padding: const EdgeInsets.only(bottom: 8.0),
-            child: RotatedBox(
-              quarterTurns: 3,
-              child: Text(
-                text,
-                style: GoogleFonts.ptSansCaption(
-                  color: Colors.black,
-                  fontSize: 12,
+          return SideTitleWidget(
+            axisSide: meta.axisSide,
+            space: 4,
+            angle: 35,
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 8.0),
+              child: RotatedBox(
+                quarterTurns: 1,
+                child: Text(
+                  text,
+                  style: GoogleFonts.ptSansCaption(
+                    color: Colors.black,
+                    fontSize: 12,
+                  ),
                 ),
               ),
             ),
-          );
-        },
-      );
-  SideTitles get _leftTitles => SideTitles(
-        showTitles: true,
-        reservedSize: 40,
-        getTitlesWidget: (value, meta) {
-          return Text(
-            meta.formattedValue,
-            style: GoogleFonts.ptSansCaption(color: Colors.black),
           );
         },
       );

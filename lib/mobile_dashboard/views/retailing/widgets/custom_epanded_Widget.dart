@@ -36,7 +36,12 @@ class _CustomExpandedWidgetState extends State<CustomExpandedWidget> {
   @override
   void initState() {
     super.initState();
-    if (widget.dataList != null && widget.dataList.isNotEmpty) {
+  }
+
+  bool isFirst = true;
+  void initColor() {
+    if (isFirst && widget.dataList != null && widget.dataList.isNotEmpty) {
+      isFirst = false;
       var divider = (widget.dataList.length / 3).floor();
       for (var i = 0; i <= divider; i++) {
         colorList.addAll(tableColors);
@@ -48,6 +53,7 @@ class _CustomExpandedWidgetState extends State<CustomExpandedWidget> {
 
   @override
   Widget build(BuildContext context) {
+    initColor();
     return GetBuilder<HomeController>(
       init: HomeController(homeRepo: Get.find()),
       builder: (ctlr) {
