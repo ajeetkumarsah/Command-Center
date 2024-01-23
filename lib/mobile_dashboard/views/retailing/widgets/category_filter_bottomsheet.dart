@@ -39,7 +39,7 @@ class _CategoryFilterBottomsheetState extends State<CategoryFilterBottomsheet> {
       } else if (tabType == SummaryTypes.fb.type) {
         _selectedCategory = ctlr.selectedFBCategory;
       }
-      ctlr.onChangeCategory(_selectedCategory);
+      ctlr.onChangeCategory(_selectedCategory, _selectedCategory, isInit: true);
     }
     WidgetsBinding.instance.addPostFrameCallback((_) {
       setState(() {});
@@ -110,7 +110,8 @@ class _CategoryFilterBottomsheetState extends State<CategoryFilterBottomsheet> {
                                   child: ListTile(
                                     onTap: () {
                                       onFilterChange(e);
-                                      ctlr.onChangeCategory(e);
+                                      ctlr.onChangeCategory(
+                                          e, _selectedCategory);
                                     },
                                     visualDensity: const VisualDensity(
                                         horizontal: 0, vertical: -3),
@@ -173,7 +174,8 @@ class _CategoryFilterBottomsheetState extends State<CategoryFilterBottomsheet> {
                                         .map(
                                           (cat) => GestureDetector(
                                             onTap: () =>
-                                                ctlr.onChangeCategoryValue(cat),
+                                                ctlr.onChangeCategoryValue(
+                                                    cat, _selectedCategory),
                                             child: Row(
                                               children: [
                                                 Transform.scale(
@@ -184,7 +186,8 @@ class _CategoryFilterBottomsheetState extends State<CategoryFilterBottomsheet> {
                                                         .contains(cat),
                                                     onChanged: (v) => ctlr
                                                         .onChangeCategoryValue(
-                                                            cat),
+                                                            cat,
+                                                            _selectedCategory),
                                                   ),
                                                 ),
                                                 Flexible(child: Text(cat)),

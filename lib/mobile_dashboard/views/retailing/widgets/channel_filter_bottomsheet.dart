@@ -236,7 +236,9 @@ class _ChannelFilterBottomsheetState extends State<ChannelFilterBottomsheet> {
                                                                   : false,
                                                   onChanged: (v) =>
                                                       ctlr.onChangeChannelValue(
-                                                          e, widget.tabType),
+                                                          e,
+                                                          widget.tabType,
+                                                          _selectedChannel),
                                                 ),
                                               ),
                                               Flexible(

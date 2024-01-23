@@ -116,7 +116,8 @@ class _CustomExpandedWidgetState extends State<CustomExpandedWidget> {
                                 : null,
                           ),
                           child: Padding(
-                            padding: const EdgeInsets.all(12.0),
+                            padding: EdgeInsets.all(
+                                widget.dataList.length == 1 ? 4 : 12.0),
                             child: widget.dataList != null
                                 ? widget.isSummary
                                     ? SizedBox(
@@ -199,68 +200,87 @@ class _CustomExpandedWidgetState extends State<CustomExpandedWidget> {
                                           ),
                                         ),
                                       )
-                                    : Table(
-                                        border: TableBorder.all(
-                                            color: Colors.transparent),
-                                        children: [
-                                          if (widget.dataList.isNotEmpty)
-                                            ...widget.dataList
-                                                .asMap()
-                                                .map(
-                                                  (index, tableData) =>
-                                                      MapEntry(
-                                                    index,
-                                                    TableRow(
-                                                      decoration: BoxDecoration(
-                                                        color: index == 0
-                                                            ? null
-                                                            : colorList[
-                                                                index - 1],
-                                                      ),
-                                                      children: [
-                                                        ...tableData
-                                                            .asMap()
-                                                            .map(
-                                                              (i, value) =>
-                                                                  MapEntry(
-                                                                i,
-                                                                i == 0 &&
-                                                                        index ==
-                                                                            0
-                                                                    ? widget.firstWidget ??
-                                                                        const Padding(
-                                                                          padding:
-                                                                              EdgeInsets.all(8.0),
-                                                                          child:
-                                                                              Text('   '),
-                                                                        )
-                                                                    : Padding(
-                                                                        padding:
-                                                                            const EdgeInsets.all(8.0),
-                                                                        child:
-                                                                            Text(
-                                                                          value,
-                                                                          style:
-                                                                              GoogleFonts.ptSans(
-                                                                            fontSize:
-                                                                                14,
-                                                                            fontWeight:
-                                                                                FontWeight.w500,
-                                                                          ),
-                                                                        ),
-                                                                      ),
-                                                              ),
-                                                            )
-                                                            .values
-                                                            .toList(),
-                                                      ],
-                                                    ),
+                                    : widget.dataList.length == 1
+                                        ? SizedBox(
+                                            height: 200,
+                                            width: double.infinity,
+                                            child: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                SizedBox(
+                                                  width: 70,
+                                                  child: widget.firstWidget ??
+                                                      const SizedBox(),
+                                                ),
+                                                const Expanded(
+                                                  child: Center(
+                                                    child:
+                                                        Text('No Data Found!'),
                                                   ),
-                                                )
-                                                .values
-                                                .toList()
-                                        ],
-                                      )
+                                                ),
+                                              ],
+                                            ),
+                                          )
+                                        : Table(
+                                            border: TableBorder.all(
+                                                color: Colors.transparent),
+                                            children: [
+                                              if (widget.dataList.isNotEmpty)
+                                                ...widget.dataList
+                                                    .asMap()
+                                                    .map(
+                                                      (index, tableData) =>
+                                                          MapEntry(
+                                                        index,
+                                                        TableRow(
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            color: index == 0
+                                                                ? null
+                                                                : colorList[
+                                                                    index - 1],
+                                                          ),
+                                                          children: [
+                                                            ...tableData
+                                                                .asMap()
+                                                                .map(
+                                                                  (i, value) =>
+                                                                      MapEntry(
+                                                                    i,
+                                                                    i == 0 &&
+                                                                            index ==
+                                                                                0
+                                                                        ? widget.firstWidget ??
+                                                                            const Padding(
+                                                                              padding: EdgeInsets.all(8.0),
+                                                                              child: Text('   '),
+                                                                            )
+                                                                        : Padding(
+                                                                            padding:
+                                                                                const EdgeInsets.all(8.0),
+                                                                            child:
+                                                                                Text(
+                                                                              value,
+                                                                              style: GoogleFonts.ptSans(
+                                                                                fontSize: 14,
+                                                                                fontWeight: FontWeight.w500,
+                                                                              ),
+                                                                            ),
+                                                                          ),
+                                                                  ),
+                                                                )
+                                                                .values
+                                                                .toList(),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    )
+                                                    .values
+                                                    .toList(),
+                                            ],
+                                          )
                                 : Table(
                                     border: TableBorder.all(
                                         color: Colors.transparent),

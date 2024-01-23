@@ -136,6 +136,16 @@ class HomeController extends GetxController {
   String get selectedFBCategory => _selectedFBCategory;
   String _selectedTrendsCategory = 'Category';
   String get selectedTrendsCategory => _selectedTrendsCategory;
+  String _selectedTempRetailingChannel = 'Level 1';
+  String get selectedTempRetailingChannel => _selectedTempRetailingChannel;
+  String _selectedTempCoverageChannel = 'Level 1';
+  String get selectedTempCoverageCategory => _selectedTempCoverageChannel;
+  String _selectedTempGPChannel = 'Level 1';
+  String get selectedTempGPChannel => _selectedTempGPChannel;
+  String _selectedTempFBChannel = 'Channel';
+  String get selectedTempFBChannel => _selectedTempFBChannel;
+  String _selectedTempCategory = 'Category';
+  String get selectedTempCategory => _selectedTempCategory;
   String _selectedTrendsCategoryValue = '';
   String get selectedTrendsCategoryValue => _selectedTrendsCategoryValue;
   // String _selectedBrand = 'Brand';
@@ -322,8 +332,9 @@ class HomeController extends GetxController {
     update();
   }
 
-  void onChangeCategory(String value) {
-    selectedCategoryFilters.clear();
+  void onChangeCategory(String value, String category, {bool isInit = false}) {
+    // _selectedTempCategory = category;
+    // if (!isInit) selectedCategoryFilters.clear();
     if (filtersModel != null) {
       if (value.toLowerCase().startsWith('category')) {
         categoryFilters = filtersModel?.category ?? [];
@@ -377,15 +388,15 @@ class HomeController extends GetxController {
   }
 
   void onChangeChannel(String value, String tabType) {
-    if (tabType == SummaryTypes.retailing.type) {
-      selectedRetailingChannelFilter.clear();
-    } else if (tabType == SummaryTypes.coverage.type) {
-      selectedCoverageChannelFilter.clear();
-    } else if (tabType == SummaryTypes.gp.type) {
-      selectedGPChannelFilter.clear();
-    } else if (tabType == SummaryTypes.fb.type) {
-      selectedFBChannelFilter.clear();
-    }
+    // if (tabType == SummaryTypes.retailing.type) {
+    //   selectedRetailingChannelFilter.clear();
+    // } else if (tabType == SummaryTypes.coverage.type) {
+    //   selectedCoverageChannelFilter.clear();
+    // } else if (tabType == SummaryTypes.gp.type) {
+    //   selectedGPChannelFilter.clear();
+    // } else if (tabType == SummaryTypes.fb.type) {
+    //   selectedFBChannelFilter.clear();
+    // }
     if (tabType == SummaryTypes.retailing.type) {
       if (filtersModel != null) {
         if (value.toLowerCase().startsWith('level 1')) {
@@ -447,7 +458,6 @@ class HomeController extends GetxController {
         });
       }
     }
-
     update();
   }
 
@@ -514,7 +524,11 @@ class HomeController extends GetxController {
     update();
   }
 
-  void onChangeCategoryValue(String value) {
+  void onChangeCategoryValue(String value, String cat) {
+    if (_selectedTempCategory.toLowerCase() != cat.toLowerCase()) {
+      _selectedTempCategory = cat;
+      selectedCategoryFilters.clear();
+    }
     if (selectedCategoryFilters.contains(value)) {
       selectedCategoryFilters.remove(value);
     } else {
@@ -560,26 +574,42 @@ class HomeController extends GetxController {
     update();
   }
 
-  void onChangeChannelValue(String value, String tabType) {
+  void onChangeChannelValue(String value, String tabType, String channel) {
     if (tabType == SummaryTypes.retailing.type) {
+      if (_selectedTempRetailingChannel != channel) {
+        _selectedTempRetailingChannel = channel;
+        selectedRetailingChannelFilter.clear();
+      }
       if (selectedRetailingChannelFilter.contains(value)) {
         selectedRetailingChannelFilter.remove(value);
       } else {
         selectedRetailingChannelFilter.add(value);
       }
     } else if (tabType == SummaryTypes.coverage.type) {
+      if (_selectedTempCoverageChannel != channel) {
+        _selectedTempCoverageChannel = channel;
+        selectedRetailingChannelFilter.clear();
+      }
       if (selectedCoverageChannelFilter.contains(value)) {
         selectedCoverageChannelFilter.remove(value);
       } else {
         selectedCoverageChannelFilter.add(value);
       }
     } else if (tabType == SummaryTypes.gp.type) {
+      if (_selectedTempGPChannel != channel) {
+        _selectedTempGPChannel = channel;
+        selectedRetailingChannelFilter.clear();
+      }
       if (selectedGPChannelFilter.contains(value)) {
         selectedGPChannelFilter.remove(value);
       } else {
         selectedGPChannelFilter.add(value);
       }
     } else if (tabType == SummaryTypes.fb.type) {
+      if (_selectedTempFBChannel != channel) {
+        _selectedTempFBChannel = channel;
+        selectedRetailingChannelFilter.clear();
+      }
       if (selectedFBChannelFilter.contains(value)) {
         selectedFBChannelFilter.remove(value);
       } else {
@@ -1543,7 +1573,9 @@ class HomeController extends GetxController {
                           : _selectedTrendsGeo.toLowerCase():
                       _selectedTrendsGeoValue,
                 if (_selectedTrendsCategoryValue.isNotEmpty && isTrendsFilter)
-                  _selectedTrendsCategory.toLowerCase():
+                  _selectedTrendsCategory.toLowerCase() == 'brand form'
+                          ? 'brandForm'
+                          : _selectedTrendsCategory.toLowerCase():
                       _selectedTrendsCategoryValue,
                 if (_selectedTrendsChannelValue.isNotEmpty)
                   selectedChannel.toLowerCase() == 'level 1'
@@ -1559,7 +1591,9 @@ class HomeController extends GetxController {
                                       : 'attr1': _selectedTrendsChannelValue,
                 //
                 if (selectedTrendsCategoryValue.isNotEmpty && !isTrendsFilter)
-                  selectedTrendsCategory.toLowerCase():
+                  _selectedTrendsCategory.toLowerCase() == 'brand form'
+                          ? 'brandForm'
+                          : selectedTrendsCategory.toLowerCase():
                       selectedTrendsCategoryValue,
               },
             ]
@@ -1715,8 +1749,13 @@ class HomeController extends GetxController {
         responseModel = ResponseModel(true, response.body["message"]);
       } else {
         //set value as empty
-        String msg = response.body["message"] ?? '';
-        showCustomSnackBar(msg);
+
+        if (type.startsWith('trends')) {
+          trendsList = response.body["data"] == null
+              ? []
+              : List<TrendsModel>.from(
+                  response.body["data"]!.map((x) => TrendsModel.fromJson(x)));
+        }
         responseModel = ResponseModel(false, 'Somehting went wrong!');
       }
     } else if (response.statusCode == 401) {
@@ -2468,7 +2507,7 @@ class HomeController extends GetxController {
                       _selectedTrendsGeoValue,
                 //
                 if (selectedTrendsCategoryValue.isNotEmpty && !isTrendsFilter)
-                  selectedTrendsCategory.toLowerCase() == 'brand form'
+                  selectedTrendsCategory.toLowerCase().contains('brand form')
                           ? 'brandForm'
                           : selectedTrendsCategory.toLowerCase():
                       selectedTrendsCategoryValue,
@@ -2484,18 +2523,6 @@ class HomeController extends GetxController {
                                   : selectedChannel.toLowerCase() == 'level 5'
                                       ? 'attr5'
                                       : 'attr1': _selectedTrendsChannelValue,
-                // if (selectedFBChannelFilter.isNotEmpty)
-                //   selectedChannel.toLowerCase() == 'level 1'
-                //       ? 'attr1'
-                //       : selectedChannel.toLowerCase() == 'level 2'
-                //           ? 'attr2'
-                //           : selectedChannel.toLowerCase() == 'level 3'
-                //               ? 'attr3'
-                //               : selectedChannel.toLowerCase() == 'level 4'
-                //                   ? 'attr4'
-                //                   : selectedChannel.toLowerCase() == 'level 5'
-                //                       ? 'attr5'
-                //                       : 'attr1': selectedFBChannelFilter,
               },
             ]
           : type.startsWith('channel')
@@ -2592,9 +2619,15 @@ class HomeController extends GetxController {
                                 ? "allIndia"
                                 : _selectedGeoValue,
                         if (selectedCategoryFilters.isNotEmpty)
-                          selectedFBCategory.toLowerCase().contains('sub-brand')
-                                  ? 'subBrandForm'
-                                  : selectedFBCategory.toLowerCase():
+                          selectedFBCategory
+                                      .toLowerCase()
+                                      .contains('brand form')
+                                  ? 'brandForm'
+                                  : selectedFBCategory
+                                          .toLowerCase()
+                                          .contains('sub-brand')
+                                      ? 'subBrandForm'
+                                      : selectedFBCategory.toLowerCase():
                               selectedCategoryFilters,
                         if (selectedCategoryFilters.isEmpty) 'category': []
                       },

@@ -32,12 +32,26 @@ class _CategoryTrendsFilterBottomsheetState
     setState(() {});
   }
 
+  bool isFirst = true;
+  intCall(HomeController ctlr) {
+    if (isFirst) {
+      isFirst = false;
+
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        onFilterChange(ctlr.selectedTrendsCategory);
+        onFilterChangeValue(ctlr.selectedTrendsCategoryValue);
+        setState(() {});
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     List<String> categoryList = ['Category', 'Brand', 'Brand form'];
     return GetBuilder<HomeController>(
       init: HomeController(homeRepo: Get.find()),
       builder: (ctlr) {
+        intCall(ctlr);
         return Container(
           decoration: const BoxDecoration(
             borderRadius: BorderRadius.only(

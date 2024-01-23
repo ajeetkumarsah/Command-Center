@@ -401,12 +401,12 @@ class FBDeepDiveScreen extends StatelessWidget {
                               titlesData: FlTitlesData(
                                 bottomTitles: AxisTitles(
                                   sideTitles: _bottomTitles,
-                                  
+                                 
                                 ),
                                 leftTitles: AxisTitles(
                                   sideTitles: SideTitles(showTitles: false),
                                   // _leftTitles,
-                                  
+                                 
                                 ),
                                 topTitles: AxisTitles(
                                     sideTitles: SideTitles(showTitles: false)),

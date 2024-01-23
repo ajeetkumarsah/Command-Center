@@ -273,198 +273,218 @@ class _CustomExpandedChartWidgetState extends State<CustomExpandedChartWidget> {
                               ),
                               const SizedBox(height: 12),
                               Expanded(
-                                child: LineChart(
-                                  LineChartData(
-                                    maxX: 13,
-                                    minX: 0,
-                                    maxY: widget.trendsList.yMax,
-                                    minY: widget.trendsList.yMin,
-                                    baselineX: 1,
-                                    lineBarsData: [
-                                      LineChartBarData(
-                                        spots: widget.trendsList.data!
-                                            .asMap()
-                                            .map(
-                                              (i, point) => MapEntry(
-                                                i,
-                                                FlSpot(
-                                                  i.toDouble(),
-                                                  widget.summaryType ==
-                                                          SummaryTypes
-                                                              .retailing.type
-                                                      ? double.tryParse(ctlr
-                                                                  .channelSales
-                                                              ? (point.cyRt ??
-                                                                  '0.0')
-                                                              : (point.iya ??
-                                                                  '0.0')) ??
-                                                          0.0
-                                                      : widget.summaryType ==
-                                                              SummaryTypes
-                                                                  .coverage.type
-                                                          ? double.tryParse(
-                                                                  (point.billingPer ??
-                                                                      '0.0')) ??
-                                                              0.0
-                                                          : double.tryParse(ctlr
-                                                                      .channelSales
-                                                                  ? (point.cyRt ??
-                                                                      '0.0')
-                                                                  : (point.iya ??
-                                                                      '0.0')) ??
-                                                              0.0,
-                                                ),
+                                child: widget.trendsList.data != null
+                                    ? LineChart(
+                                        LineChartData(
+                                          maxX: 13,
+                                          minX: 0,
+                                          maxY: widget.trendsList.yMax,
+                                          minY: widget.trendsList.yMin,
+                                          baselineX: 1,
+                                          lineBarsData: [
+                                            LineChartBarData(
+                                              spots: widget.trendsList.data!
+                                                  .asMap()
+                                                  .map(
+                                                    (i, point) => MapEntry(
+                                                      i,
+                                                      FlSpot(
+                                                        i.toDouble(),
+                                                        widget.summaryType ==
+                                                                SummaryTypes
+                                                                    .retailing
+                                                                    .type
+                                                            ? double.tryParse(ctlr
+                                                                        .channelSales
+                                                                    ? (point.cyRt ??
+                                                                        '0.0')
+                                                                    : (point.iya ??
+                                                                        '0.0')) ??
+                                                                0.0
+                                                            : widget.summaryType ==
+                                                                    SummaryTypes
+                                                                        .coverage
+                                                                        .type
+                                                                ? double.tryParse((point.billingPer ?? '0.0')) ??
+                                                                    0.0
+                                                                : double.tryParse(ctlr
+                                                                            .channelSales
+                                                                        ? (point.cyRt ??
+                                                                            '0.0')
+                                                                        : (point.iya ??
+                                                                            '0.0')) ??
+                                                                    0.0,
+                                                      ),
+                                                    ),
+                                                  )
+                                                  .values
+                                                  .toList(),
+                                              isCurved: false,
+                                              dotData: FlDotData(
+                                                show: true,
+                                                getDotPainter: (spot, percent,
+                                                    barData, index) {
+                                                  return FlDotCirclePainter(
+                                                    radius: 4,
+                                                    strokeColor:
+                                                        AppColors.primary,
+                                                    color: Colors.white,
+                                                    strokeWidth: 1.5,
+                                                  );
+                                                },
                                               ),
-                                            )
-                                            .values
-                                            .toList(),
-                                        isCurved: false,
-                                        dotData: FlDotData(
-                                          show: true,
-                                          getDotPainter:
-                                              (spot, percent, barData, index) {
-                                            return FlDotCirclePainter(
-                                              radius: 4,
-                                              strokeColor: AppColors.primary,
-                                              color: Colors.white,
-                                              strokeWidth: 1.5,
-                                            );
-                                          },
-                                        ),
-                                        color: AppColors.primary,
-                                      ),
-                                    ],
-                                    lineTouchData: LineTouchData(
-                                        enabled: true,
-                                        touchCallback: (event, response) {
-                                          if (event is FlTapUpEvent) {
-                                            if (response != null &&
-                                                response.lineBarSpots !=
-                                                    null) {}
-                                          }
-                                        },
-                                        touchTooltipData: LineTouchTooltipData(
-                                          tooltipBgColor: AppColors.primaryDark,
-                                          tooltipRoundedRadius: 20.0,
-                                          showOnTopOfTheChartBoxArea: false,
-                                          fitInsideHorizontally: true,
-                                          fitInsideVertically: true,
-                                          tooltipMargin: 40,
-                                          tooltipHorizontalAlignment:
-                                              FLHorizontalAlignment.center,
-                                          getTooltipItems: (touchedSpots) {
-                                            return touchedSpots.map(
-                                              (LineBarSpot touchedSpot) {
-                                                const textStyle = TextStyle(
-                                                  fontSize: 10,
-                                                  fontWeight: FontWeight.w700,
-                                                  color: Colors.white,
-                                                );
-                                                return LineTooltipItem(
-                                                  widget.summaryType ==
-                                                          SummaryTypes
-                                                              .retailing.type
-                                                      ? ctlr.channelSales
-                                                          ? (widget
-                                                                  .trendsList
-                                                                  .data![touchedSpot
-                                                                      .spotIndex]
-                                                                  .cyRtRv ??
-                                                              '0.0')
-                                                          : double.tryParse((widget.trendsList.data![touchedSpot.spotIndex].iya ?? '0.0'))?.toStringAsFixed(2) ??
-                                                              "0.0"
-                                                      : widget.summaryType ==
-                                                              SummaryTypes
-                                                                  .coverage.type
-                                                          ? double.tryParse((widget.trendsList.data![touchedSpot.spotIndex].billingPer ?? '0.0'))
-                                                                  ?.toStringAsFixed(
-                                                                      2) ??
-                                                              '0.0'
-                                                          : double.tryParse(ctlr.channelSales
-                                                                      ? (widget.trendsList.data![touchedSpot.spotIndex].cyRt ??
-                                                                          '0.0')
-                                                                      : (widget.trendsList.data![touchedSpot.spotIndex].iya ??
-                                                                          '0.0'))
-                                                                  ?.toStringAsFixed(2) ??
-                                                              '0.0',
-                                                  textStyle,
-                                                );
+                                              color: AppColors.primary,
+                                            ),
+                                          ],
+                                          lineTouchData: LineTouchData(
+                                              enabled: true,
+                                              touchCallback: (event, response) {
+                                                if (event is FlTapUpEvent) {
+                                                  if (response != null &&
+                                                      response.lineBarSpots !=
+                                                          null) {}
+                                                }
                                               },
-                                            ).toList();
-                                          },
-                                        ),
-                                        getTouchedSpotIndicator:
-                                            (LineChartBarData barData,
-                                                List<int> indicators) {
-                                          return indicators.map(
-                                            (int index) {
-                                              final line = FlLine(
-                                                  color: Colors.grey,
-                                                  strokeWidth: 1,
-                                                  dashArray: [2, 4]);
-                                              return TouchedSpotIndicatorData(
-                                                line,
-                                                FlDotData(
-                                                  show: false,
-                                                  getDotPainter: (spot, percent,
-                                                      barData, index) {
-                                                    return FlDotCirclePainter(
-                                                      radius: 4,
-                                                      strokeColor:
-                                                          AppColors.primary,
-                                                      color: Colors.white,
-                                                      strokeWidth: 1.5,
+                                              touchTooltipData:
+                                                  LineTouchTooltipData(
+                                                tooltipBgColor:
+                                                    AppColors.primaryDark,
+                                                tooltipRoundedRadius: 20.0,
+                                                showOnTopOfTheChartBoxArea:
+                                                    false,
+                                                fitInsideHorizontally: true,
+                                                fitInsideVertically: true,
+                                                tooltipMargin: 40,
+                                                tooltipHorizontalAlignment:
+                                                    FLHorizontalAlignment
+                                                        .center,
+                                                getTooltipItems:
+                                                    (touchedSpots) {
+                                                  return touchedSpots.map(
+                                                    (LineBarSpot touchedSpot) {
+                                                      const textStyle =
+                                                          TextStyle(
+                                                        fontSize: 10,
+                                                        fontWeight:
+                                                            FontWeight.w700,
+                                                        color: Colors.white,
+                                                      );
+                                                      return LineTooltipItem(
+                                                        widget.summaryType ==
+                                                                SummaryTypes
+                                                                    .retailing
+                                                                    .type
+                                                            ? ctlr.channelSales
+                                                                ? (widget
+                                                                        .trendsList
+                                                                        .data![touchedSpot
+                                                                            .spotIndex]
+                                                                        .cyRtRv ??
+                                                                    '0.0')
+                                                                : double.tryParse((widget.trendsList.data![touchedSpot.spotIndex].iya ?? '0.0'))?.toStringAsFixed(
+                                                                        2) ??
+                                                                    "0.0"
+                                                            : widget.summaryType ==
+                                                                    SummaryTypes
+                                                                        .coverage
+                                                                        .type
+                                                                ? double.tryParse((widget.trendsList.data![touchedSpot.spotIndex].billingPer ?? '0.0'))
+                                                                        ?.toStringAsFixed(
+                                                                            2) ??
+                                                                    '0.0'
+                                                                : double.tryParse(ctlr.channelSales ? (widget.trendsList.data![touchedSpot.spotIndex].cyRt ?? '0.0') : (widget.trendsList.data![touchedSpot.spotIndex].iya ?? '0.0'))
+                                                                        ?.toStringAsFixed(2) ??
+                                                                    '0.0',
+                                                        textStyle,
+                                                      );
+                                                    },
+                                                  ).toList();
+                                                },
+                                              ),
+                                              getTouchedSpotIndicator:
+                                                  (LineChartBarData barData,
+                                                      List<int> indicators) {
+                                                return indicators.map(
+                                                  (int index) {
+                                                    final line = FlLine(
+                                                        color: Colors.grey,
+                                                        strokeWidth: 1,
+                                                        dashArray: [2, 4]);
+                                                    return TouchedSpotIndicatorData(
+                                                      line,
+                                                      FlDotData(
+                                                        show: false,
+                                                        getDotPainter: (spot,
+                                                            percent,
+                                                            barData,
+                                                            index) {
+                                                          return FlDotCirclePainter(
+                                                            radius: 4,
+                                                            strokeColor:
+                                                                AppColors
+                                                                    .primary,
+                                                            color: Colors.white,
+                                                            strokeWidth: 1.5,
+                                                          );
+                                                        },
+                                                      ),
                                                     );
                                                   },
-                                                ),
-                                              );
-                                            },
-                                          ).toList();
-                                        },
-                                        getTouchLineEnd: (_, __) =>
-                                            double.infinity),
-                                    borderData: FlBorderData(
-                                        border: const Border(
-                                            bottom: BorderSide(width: .5),
-                                            left: BorderSide(width: .5))),
-                                    gridData: FlGridData(show: false),
-                                    titlesData: FlTitlesData(
-                                      // leftTitles: _leftTitles,
-                                      bottomTitles: AxisTitles(
-                                        sideTitles:
-                                            _bottomTitles(widget.trendsList),
-                                        
-                                      ),
-                                      leftTitles: AxisTitles(
-                                        sideTitles: SideTitles(
-                                          showTitles: true,
-                                          reservedSize: 46,
-                                          interval:
-                                              widget.trendsList.yInterval != 0
-                                                  ? widget.trendsList.yInterval
-                                                  : 1,
-                                          getTitlesWidget: (value, meta) =>
-                                              getLeftTitles(
-                                                  value,
-                                                  meta,
-                                                  widget.trendsList.yAxisData ??
-                                                      []),
+                                                ).toList();
+                                              },
+                                              getTouchLineEnd: (_, __) =>
+                                                  double.infinity),
+                                          borderData: FlBorderData(
+                                              border: const Border(
+                                                  bottom: BorderSide(width: .5),
+                                                  left: BorderSide(width: .5))),
+                                          gridData: FlGridData(show: false),
+                                          titlesData: FlTitlesData(
+                                            // leftTitles: _leftTitles,
+                                            bottomTitles: AxisTitles(
+                                              sideTitles: _bottomTitles(
+                                                  widget.trendsList),
+                                             
+                                            ),
+                                            leftTitles: AxisTitles(
+                                              sideTitles: SideTitles(
+                                                showTitles: true,
+                                                reservedSize: 46,
+                                                interval: widget.trendsList
+                                                            .yInterval !=
+                                                        0
+                                                    ? widget
+                                                        .trendsList.yInterval
+                                                    : 1,
+                                                getTitlesWidget: (value,
+                                                        meta) =>
+                                                    getLeftTitles(
+                                                        value,
+                                                        meta,
+                                                        widget.trendsList
+                                                                .yAxisData ??
+                                                            []),
+                                              ),
+                                            ),
+                                            topTitles: AxisTitles(
+                                                sideTitles: SideTitles(
+                                                    showTitles: false)),
+                                            rightTitles: AxisTitles(
+                                              sideTitles: SideTitles(
+                                                showTitles: false,
+                                                reservedSize: 15,
+                                                getTitlesWidget: (d, w) =>
+                                                    const SizedBox(width: 12),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                    : const SizedBox(
+                                        child: Center(
+                                          child: Text('No Data Found!'),
                                         ),
                                       ),
-                                      topTitles: AxisTitles(
-                                          sideTitles:
-                                              SideTitles(showTitles: false)),
-                                      rightTitles: AxisTitles(
-                                        sideTitles: SideTitles(
-                                          showTitles: false,
-                                          reservedSize: 15,
-                                          getTitlesWidget: (d, w) =>
-                                              const SizedBox(width: 12),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
                               ),
                             ],
                           ),
