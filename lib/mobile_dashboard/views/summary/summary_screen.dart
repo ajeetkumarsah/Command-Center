@@ -662,33 +662,129 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                           null)
                                     RetailingGraphWidget(
                                       yAxisData: ctlr.isSummaryDirect
-                                          ? ctlr.summaryData.first.mtdRetailing
-                                                  ?.ind?.yAxisData ??
-                                              []
-                                          : ctlr.summaryData.first.mtdRetailing
-                                                  ?.indDir?.yAxisData ??
-                                              [],
+                                          ? ctlr.channelSales
+                                              ? ctlr
+                                                      .summaryData
+                                                      .first
+                                                      .mtdRetailing
+                                                      ?.ind
+                                                      ?.yAxisData ??
+                                                  []
+                                              : ctlr
+                                                      .summaryData
+                                                      .first
+                                                      .mtdRetailing
+                                                      ?.ind
+                                                      ?.yAxisDataPer ??
+                                                  []
+                                          : ctlr.channelSales
+                                              ? ctlr
+                                                      .summaryData
+                                                      .first
+                                                      .mtdRetailing
+                                                      ?.indDir
+                                                      ?.yAxisData ??
+                                                  []
+                                              : ctlr
+                                                      .summaryData
+                                                      .first
+                                                      .mtdRetailing
+                                                      ?.indDir
+                                                      ?.yAxisDataPer ??
+                                                  [],
                                       minValue: ctlr.isSummaryDirect
-                                          ? ctlr.summaryData.first.mtdRetailing
-                                                  ?.ind?.yMin ??
-                                              0.0
-                                          : ctlr.summaryData.first.mtdRetailing
-                                                  ?.indDir?.yMin ??
-                                              0.0,
+                                          ? ctlr.channelSales
+                                              ? ctlr
+                                                      .summaryData
+                                                      .first
+                                                      .mtdRetailing
+                                                      ?.ind
+                                                      ?.yMin ??
+                                                  0.0
+                                              : ctlr
+                                                      .summaryData
+                                                      .first
+                                                      .mtdRetailing
+                                                      ?.ind
+                                                      ?.yPerMin ??
+                                                  0.0
+                                          : ctlr.channelSales
+                                              ? ctlr
+                                                      .summaryData
+                                                      .first
+                                                      .mtdRetailing
+                                                      ?.indDir
+                                                      ?.yMin ??
+                                                  0.0
+                                              : ctlr
+                                                      .summaryData
+                                                      .first
+                                                      .mtdRetailing
+                                                      ?.indDir
+                                                      ?.yPerMin ??
+                                                  0.0,
                                       maxValue: ctlr.isSummaryDirect
-                                          ? ctlr.summaryData.first.mtdRetailing
-                                                  ?.ind?.yMax ??
-                                              0.0
-                                          : ctlr.summaryData.first.mtdRetailing
-                                                  ?.indDir?.yMax ??
-                                              0.0,
+                                          ? ctlr.channelSales
+                                              ? ctlr
+                                                      .summaryData
+                                                      .first
+                                                      .mtdRetailing
+                                                      ?.ind
+                                                      ?.yMax ??
+                                                  0.0
+                                              : ctlr
+                                                      .summaryData
+                                                      .first
+                                                      .mtdRetailing
+                                                      ?.ind
+                                                      ?.yPerMax ??
+                                                  0.0
+                                          : ctlr.channelSales
+                                              ? ctlr
+                                                      .summaryData
+                                                      .first
+                                                      .mtdRetailing
+                                                      ?.indDir
+                                                      ?.yMax ??
+                                                  0.0
+                                              : ctlr
+                                                      .summaryData
+                                                      .first
+                                                      .mtdRetailing
+                                                      ?.indDir
+                                                      ?.yPerMax ??
+                                                  0.0,
                                       interval: ctlr.isSummaryDirect
-                                          ? ctlr.summaryData.first.mtdRetailing
-                                                  ?.ind?.yInterval ??
-                                              0.0
-                                          : ctlr.summaryData.first.mtdRetailing
-                                                  ?.indDir?.yInterval ??
-                                              0.0,
+                                          ? ctlr.channelSales
+                                              ? ctlr
+                                                      .summaryData
+                                                      .first
+                                                      .mtdRetailing
+                                                      ?.ind
+                                                      ?.yInterval ??
+                                                  0.0
+                                              : ctlr
+                                                      .summaryData
+                                                      .first
+                                                      .mtdRetailing
+                                                      ?.ind
+                                                      ?.yPerInterval ??
+                                                  0.0
+                                          : ctlr.channelSales
+                                              ? ctlr
+                                                      .summaryData
+                                                      .first
+                                                      .mtdRetailing
+                                                      ?.indDir
+                                                      ?.yInterval ??
+                                                  0.0
+                                              : ctlr
+                                                      .summaryData
+                                                      .first
+                                                      .mtdRetailing
+                                                      ?.indDir
+                                                      ?.yPerInterval ??
+                                                  0.0,
                                       trendsData: ctlr.isSummaryDirect
                                           ? ctlr.summaryData.first.mtdRetailing
                                                   ?.ind?.trends ??

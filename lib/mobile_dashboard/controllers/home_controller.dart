@@ -1568,9 +1568,11 @@ class HomeController extends GetxController {
                           ? "allIndia"
                           : _selectedGeoValue,
                 if (_selectedTrendsGeoValue.isNotEmpty && isTrendsFilter)
-                  _selectedTrendsGeo.startsWith('Cluster')
-                          ? "district"
-                          : _selectedTrendsGeo.toLowerCase():
+                  _selectedTrendsGeo.startsWith('All India')
+                          ? "allIndia"
+                          : _selectedTrendsGeo.startsWith('Cluster')
+                              ? "district"
+                              : _selectedTrendsGeo.toLowerCase():
                       _selectedTrendsGeoValue,
                 if (_selectedTrendsCategoryValue.isNotEmpty && isTrendsFilter)
                   _selectedTrendsCategory.toLowerCase() == 'brand form'
@@ -1900,10 +1902,22 @@ class HomeController extends GetxController {
         Logger().log(Level.debug,
             '===> Coverage Category Data Start ${stopWatch.elapsed.toString()}');
         _isCoverageCategoryLoading = true;
+        if (categoryCoverageList.isNotEmpty) {
+          List<List<String>> categoryListTemp = [];
+          categoryListTemp.addAll(categoryCoverageList);
+          categoryCoverageList.clear();
+          categoryCoverageList.add(categoryListTemp[0]);
+        }
       } else if (type.startsWith('channel')) {
         Logger().log(Level.debug,
             '===> Coverage Channel Data Start ${stopWatch.elapsed.toString()}');
         _isCoverageChannelLoading = true;
+        if (channelCoverageList.isNotEmpty) {
+          List<List<String>> channelListTemp = [];
+          channelListTemp.addAll(channelCoverageList);
+          channelCoverageList.clear();
+          channelCoverageList.add(channelListTemp[0]);
+        }
       } else {
         _isLoading = true;
       }
@@ -2404,8 +2418,15 @@ class HomeController extends GetxController {
         }
         responseModel = ResponseModel(true, response.body["message"]);
       } else {
-        String msg = response.body["message"] ?? '';
-        showCustomSnackBar(msg);
+        if (name.startsWith('trends')) {
+          // Logger().f('===>Trends Data:${json.encode(response.body)}');
+          trendsGPList = response.body["data"] == null
+              ? []
+              : List<GPTrendsModel>.from(
+                  response.body["data"]!.map((x) => GPTrendsModel.fromJson(x)));
+        }
+        // String msg = response.body["message"] ?? '';
+        // showCustomSnackBar(msg);
         // Logger().i("===>Name:$name --Type:$type  :${response.body}");
         responseModel = ResponseModel(false, 'Somehting went wrong!');
       }
@@ -2461,17 +2482,31 @@ class HomeController extends GetxController {
             '===> Focus Brand Geo Data Start ${stopWatch.elapsed.toString()}');
         _isFBGeoLoading = true;
       } else if (type.startsWith('category')) {
+        //categoryFBList
+        if (categoryFBList.isNotEmpty) {
+          List<List<String>> categoryListTemp = [];
+          categoryListTemp.addAll(categoryFBList);
+          categoryFBList.clear();
+          categoryFBList.add(categoryListTemp[0]);
+        }
+
         Logger().log(Level.debug,
             '===> Focus Brand Category Data Start ${stopWatch.elapsed.toString()}');
         _isFBCategoryLoading = true;
       } else if (type.startsWith('channel')) {
+        _isFBChannelLoading = true;
+
+        if (channelFBList.isNotEmpty) {
+          List<List<String>> channelListTemp = [];
+          channelListTemp.addAll(channelFBList);
+          channelFBList.clear();
+          channelFBList.add(channelListTemp[0]);
+        }
         Logger().log(Level.debug,
             '===> Focus Brand Channel Data Start ${stopWatch.elapsed.toString()}');
-        _isFBChannelLoading = true;
       } else {
         _isLoading = true;
       }
-
       update();
     });
     // debugPrint('=====>FocusBrand Type:$type Name: $name');
@@ -2501,9 +2536,11 @@ class HomeController extends GetxController {
                           ? "allIndia"
                           : _selectedGeoValue,
                 if (_selectedTrendsGeoValue.isNotEmpty && isTrendsFilter)
-                  _selectedTrendsGeo.startsWith('Cluster')
-                          ? "district"
-                          : _selectedTrendsGeo.toLowerCase():
+                  _selectedTrendsGeo.startsWith('All India')
+                          ? "allIndia"
+                          : _selectedTrendsGeo.startsWith('Cluster')
+                              ? "district"
+                              : _selectedTrendsGeo.toLowerCase():
                       _selectedTrendsGeoValue,
                 //
                 if (selectedTrendsCategoryValue.isNotEmpty && !isTrendsFilter)

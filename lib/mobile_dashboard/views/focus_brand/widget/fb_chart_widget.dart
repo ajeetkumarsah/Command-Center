@@ -253,7 +253,9 @@ class _CustomExpandedChartWidgetState extends State<FBTrendsChartWidget> {
                                   LineChartData(
                                     maxX: 13,
                                     minX: 0,
-                                    maxY: widget.trendsList[0].yMax,
+                                    maxY: ctlr.channelSales
+                                        ? widget.trendsList[0].yMax
+                                        : widget.trendsList[0].yPerMax,
                                     minY: 0,
                                     baselineX: 1,
                                     lineBarsData: [
@@ -369,18 +371,30 @@ class _CustomExpandedChartWidgetState extends State<FBTrendsChartWidget> {
                                         sideTitles: SideTitles(
                                           showTitles: true,
                                           reservedSize: 45,
-                                          interval: widget.trendsList[0]
-                                                      .yInterval !=
-                                                  0
-                                              ? widget.trendsList[0].yInterval
-                                              : 1,
+                                          interval: ctlr.channelSales
+                                              ? widget.trendsList[0]
+                                                          .yInterval !=
+                                                      0
+                                                  ? widget
+                                                      .trendsList[0].yInterval
+                                                  : 1
+                                              : widget.trendsList[0]
+                                                          .yPerInterval !=
+                                                      0
+                                                  ? widget.trendsList[0]
+                                                      .yPerInterval
+                                                  : 1,
                                           getTitlesWidget: (value, meta) =>
                                               getLeftTitles(
                                                   value,
                                                   meta,
-                                                  widget.trendsList[0]
-                                                          .yAxisData ??
-                                                      []),
+                                                  ctlr.channelSales
+                                                      ? widget.trendsList[0]
+                                                              .yAxisData ??
+                                                          []
+                                                      : widget.trendsList[0]
+                                                              .yAxisDataPer ??
+                                                          []),
                                         ),
                                       ),
                                       topTitles: AxisTitles(

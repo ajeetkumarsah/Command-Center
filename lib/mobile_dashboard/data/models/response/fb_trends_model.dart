@@ -4,6 +4,10 @@ class FBTrendsModel {
   final double? yRange;
   final double? yInterval;
   final List<FBTrendsDataModel>? data;
+  final double? yPerMin;
+  final double? yPerMax;
+  final double? yPerInterval;
+  final List<YAxisData>? yAxisDataPer;
 
   final List<YAxisData>? yAxisData;
 
@@ -14,6 +18,10 @@ class FBTrendsModel {
     this.yInterval,
     this.data,
     this.yAxisData,
+    this.yPerMin,
+    this.yPerMax,
+    this.yPerInterval,
+    this.yAxisDataPer,
   });
 
   factory FBTrendsModel.fromJson(Map<String, dynamic> json) => FBTrendsModel(
@@ -21,6 +29,9 @@ class FBTrendsModel {
         yMax: json["yMax"].toDouble(),
         yRange: json["yRange"].toDouble(),
         yInterval: json["yInterval"].toDouble(),
+        yPerMin: json["yPerMin"]?.toDouble() ?? 0,
+        yPerMax: json["yPerMax"]?.toDouble() ?? 1,
+        yPerInterval: json["yPerInterval"]?.toDouble() ?? 1,
         yAxisData: json["y_axis_data"] == null
             ? []
             : List<YAxisData>.from(
@@ -29,6 +40,10 @@ class FBTrendsModel {
             ? []
             : List<FBTrendsDataModel>.from(
                 json["data"]!.map((x) => FBTrendsDataModel.fromJson(x))),
+        yAxisDataPer: json["y_axis_data_per"] == null
+            ? []
+            : List<YAxisData>.from(
+                json["y_axis_data_per"]!.map((x) => YAxisData.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {

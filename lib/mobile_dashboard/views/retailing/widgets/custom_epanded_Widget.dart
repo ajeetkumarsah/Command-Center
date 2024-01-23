@@ -42,13 +42,14 @@ class _CustomExpandedWidgetState extends State<CustomExpandedWidget> {
   void initColor() {
     if (isFirst && widget.dataList != null && widget.dataList.isNotEmpty) {
       isFirst = false;
-      var divider = (widget.dataList.length / 3).floor();
+      var divider = (widget.dataList.length / 3).floor() + 1;
       for (var i = 0; i <= divider; i++) {
         colorList.addAll(tableColors);
       }
       debugPrint(
           '===>DAtaList Lenght:${widget.dataList.length} ====>${colorList.length}');
     }
+    setState(() {});
   }
 
   @override
@@ -209,11 +210,8 @@ class _CustomExpandedWidgetState extends State<CustomExpandedWidget> {
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.start,
                                               children: [
-                                                SizedBox(
-                                                  width: 70,
-                                                  child: widget.firstWidget ??
-                                                      const SizedBox(),
-                                                ),
+                                                widget.firstWidget ??
+                                                    const SizedBox(),
                                                 const Expanded(
                                                   child: Center(
                                                     child:

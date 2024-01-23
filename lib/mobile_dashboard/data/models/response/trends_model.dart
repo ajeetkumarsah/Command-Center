@@ -5,16 +5,24 @@ class TrendsModel {
   final double? yMax;
   final double? yRange;
   final double? yInterval;
+  final double? yPerMin;
+  final double? yPerMax;
+  final double? yPerInterval;
   final List<TrendsDataModel>? data;
   final List<YAxisData>? yAxisData;
+  final List<YAxisData>? yAxisDataPer;
 
   TrendsModel({
     this.yMin,
     this.yMax,
     this.yRange,
     this.yInterval,
+    this.yPerMin,
+    this.yPerMax,
+    this.yPerInterval,
     this.data,
     this.yAxisData,
+    this.yAxisDataPer,
   });
 
   factory TrendsModel.fromJson(Map<String, dynamic> json) => TrendsModel(
@@ -22,10 +30,17 @@ class TrendsModel {
         yMax: json["yMax"]?.toDouble() ?? 1,
         yRange: json["yRange"]?.toDouble() ?? 1,
         yInterval: json["yInterval"]?.toDouble() ?? 1,
+        yPerMin: json["yPerMin"]?.toDouble() ?? 0,
+        yPerMax: json["yPerMax"]?.toDouble() ?? 1,
+        yPerInterval: json["yPerInterval"]?.toDouble() ?? 1,
         yAxisData: json["y_axis_data"] == null
             ? []
             : List<YAxisData>.from(
                 json["y_axis_data"]!.map((x) => YAxisData.fromJson(x))),
+        yAxisDataPer: json["y_axis_data_per"] == null
+            ? []
+            : List<YAxisData>.from(
+                json["y_axis_data_per"]!.map((x) => YAxisData.fromJson(x))),
         data: json["data"] == null
             ? []
             : List<TrendsDataModel>.from(

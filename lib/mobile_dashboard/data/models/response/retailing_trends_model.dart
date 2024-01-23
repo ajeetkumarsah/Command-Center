@@ -230,6 +230,7 @@ class Ind {
   final double? yMax;
   final double? yInterval;
   final List<YAxisDatum>? yAxisData;
+  final List<YAxisDatum>? yAxisDataPer;
   final List<Trend>? trends;
 
   Ind({
@@ -245,6 +246,7 @@ class Ind {
     this.yInterval,
     this.yAxisData,
     this.trends,
+    this.yAxisDataPer,
   });
 
   factory Ind.fromJson(Map<String, dynamic> json) => Ind(
@@ -265,6 +267,10 @@ class Ind {
             ? []
             : List<YAxisDatum>.from(
                 json["y_axis_data"]!.map((x) => YAxisDatum.fromJson(x))),
+        yAxisDataPer: json["y_axis_data_per"] == null
+            ? []
+            : List<YAxisDatum>.from(
+                json["y_axis_data_per"]!.map((x) => YAxisDatum.fromJson(x))),
         trends: json["Trends"] == null
             ? []
             : List<Trend>.from(json["Trends"]!.map((x) => Trend.fromJson(x))),

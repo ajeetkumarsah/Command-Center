@@ -95,7 +95,7 @@ class CoverageDeepDiveScreen extends StatelessWidget {
                           Expanded(
                             child: LineChart(
                               sampleData1,
-                            duration:
+                              duration:
                                   const Duration(milliseconds: 500),
                             ),
                           ),

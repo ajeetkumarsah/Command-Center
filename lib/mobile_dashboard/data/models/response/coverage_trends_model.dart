@@ -7,6 +7,10 @@ class CoverageTrendsModel {
   final double? yInterval;
   final List<CoverageTrendsDataModel>? data;
   final List<YAxisData>? yAxisData;
+  final List<YAxisData>? yAxisDataPer;
+  final double? yPerMin;
+  final double? yPerMax;
+  final double? yPerInterval;
 
   CoverageTrendsModel({
     this.yMin,
@@ -15,14 +19,25 @@ class CoverageTrendsModel {
     this.yInterval,
     this.data,
     this.yAxisData,
+    this.yPerMin,
+    this.yPerMax,
+    this.yPerInterval,
+    this.yAxisDataPer,
   });
 
   factory CoverageTrendsModel.fromJson(Map<String, dynamic> json) =>
       CoverageTrendsModel(
-        yMin: json["yMin"].toDouble(),
-        yMax: json["yMax"].toDouble(),
-        yRange: json["yRange"].toDouble(),
-        yInterval: json["yInterval"].toDouble(),
+        yMin: json["yMin"]?.toDouble() ?? 0,
+        yMax: json["yMax"]?.toDouble() ?? 1,
+        yRange: json["yRange"]?.toDouble() ?? 1,
+        yInterval: json["yInterval"]?.toDouble() ?? 1,
+        yPerMin: json["yPerMin"]?.toDouble() ?? 0,
+        yPerMax: json["yPerMax"]?.toDouble() ?? 1,
+        yPerInterval: json["yPerInterval"]?.toDouble() ?? 1,
+        yAxisDataPer: json["y_axis_data_per"] == null
+            ? []
+            : List<YAxisData>.from(
+                json["y_axis_data_per"]!.map((x) => YAxisData.fromJson(x))),
         yAxisData: json["y_axis_data"] == null
             ? []
             : List<YAxisData>.from(

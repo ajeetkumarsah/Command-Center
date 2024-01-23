@@ -14,7 +14,7 @@ class CustomExpandedChartWidget extends StatefulWidget {
   final void Function()? onFilterTap;
   final bool isExpanded;
   final String title;
-  final TrendsModel trendsList;
+  final TrendsModel? trendsList;
   final String summaryType;
   final Widget? coverageWidget;
   const CustomExpandedChartWidget(
@@ -273,17 +273,21 @@ class _CustomExpandedChartWidgetState extends State<CustomExpandedChartWidget> {
                               ),
                               const SizedBox(height: 12),
                               Expanded(
-                                child: widget.trendsList.data != null
+                                child: widget.trendsList?.data != null
                                     ? LineChart(
                                         LineChartData(
                                           maxX: 13,
                                           minX: 0,
-                                          maxY: widget.trendsList.yMax,
-                                          minY: widget.trendsList.yMin,
+                                          maxY: ctlr.channelSales
+                                              ? widget.trendsList?.yMax
+                                              : widget.trendsList?.yPerMax,
+                                          minY: ctlr.channelSales
+                                              ? widget.trendsList?.yMin
+                                              : widget.trendsList?.yPerMin,
                                           baselineX: 1,
                                           lineBarsData: [
                                             LineChartBarData(
-                                              spots: widget.trendsList.data!
+                                              spots: widget.trendsList!.data!
                                                   .asMap()
                                                   .map(
                                                     (i, point) => MapEntry(
@@ -377,22 +381,22 @@ class _CustomExpandedChartWidgetState extends State<CustomExpandedChartWidget> {
                                                             ? ctlr.channelSales
                                                                 ? (widget
                                                                         .trendsList
-                                                                        .data![touchedSpot
+                                                                        ?.data![touchedSpot
                                                                             .spotIndex]
                                                                         .cyRtRv ??
                                                                     '0.0')
-                                                                : double.tryParse((widget.trendsList.data![touchedSpot.spotIndex].iya ?? '0.0'))?.toStringAsFixed(
+                                                                : double.tryParse((widget.trendsList?.data![touchedSpot.spotIndex].iya ?? '0.0'))?.toStringAsFixed(
                                                                         2) ??
                                                                     "0.0"
                                                             : widget.summaryType ==
                                                                     SummaryTypes
                                                                         .coverage
                                                                         .type
-                                                                ? double.tryParse((widget.trendsList.data![touchedSpot.spotIndex].billingPer ?? '0.0'))
+                                                                ? double.tryParse((widget.trendsList?.data![touchedSpot.spotIndex].billingPer ?? '0.0'))
                                                                         ?.toStringAsFixed(
                                                                             2) ??
                                                                     '0.0'
-                                                                : double.tryParse(ctlr.channelSales ? (widget.trendsList.data![touchedSpot.spotIndex].cyRt ?? '0.0') : (widget.trendsList.data![touchedSpot.spotIndex].iya ?? '0.0'))
+                                                                : double.tryParse(ctlr.channelSales ? (widget.trendsList?.data![touchedSpot.spotIndex].cyRt ?? '0.0') : (widget.trendsList?.data![touchedSpot.spotIndex].iya ?? '0.0'))
                                                                         ?.toStringAsFixed(2) ??
                                                                     '0.0',
                                                         textStyle,
@@ -443,27 +447,38 @@ class _CustomExpandedChartWidgetState extends State<CustomExpandedChartWidget> {
                                             // leftTitles: _leftTitles,
                                             bottomTitles: AxisTitles(
                                               sideTitles: _bottomTitles(
-                                                  widget.trendsList),
+                                                  widget.trendsList!),
                                              
                                             ),
                                             leftTitles: AxisTitles(
                                               sideTitles: SideTitles(
                                                 showTitles: true,
                                                 reservedSize: 46,
-                                                interval: widget.trendsList
-                                                            .yInterval !=
-                                                        0
-                                                    ? widget
-                                                        .trendsList.yInterval
-                                                    : 1,
+                                                interval: ctlr.channelSales
+                                                    ? widget.trendsList
+                                                                ?.yInterval !=
+                                                            0
+                                                        ? widget.trendsList
+                                                            ?.yInterval
+                                                        : 1
+                                                    : widget.trendsList
+                                                                ?.yPerInterval !=
+                                                            0
+                                                        ? widget.trendsList
+                                                            ?.yPerInterval
+                                                        : 1,
                                                 getTitlesWidget: (value,
                                                         meta) =>
                                                     getLeftTitles(
                                                         value,
                                                         meta,
-                                                        widget.trendsList
-                                                                .yAxisData ??
-                                                            []),
+                                                        ctlr.channelSales
+                                                            ? widget.trendsList
+                                                                    ?.yAxisData ??
+                                                                []
+                                                            : widget.trendsList
+                                                                    ?.yAxisDataPer ??
+                                                                []),
                                               ),
                                             ),
                                             topTitles: AxisTitles(

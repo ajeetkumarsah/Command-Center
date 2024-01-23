@@ -298,8 +298,8 @@ class _RetailingScreenState extends State<RetailingScreen> {
                                         .onExpandTrends(!ctlr.isExpandedTrends),
                                     isExpanded: ctlr.isExpandedTrends,
                                     trendsList: ctlr.isRetailingDeepDiveInd
-                                        ? ctlr.trendsRetailingModel!.ind!
-                                        : ctlr.trendsRetailingModel!.indDir!,
+                                        ? ctlr.trendsRetailingModel!.ind
+                                        : ctlr.trendsRetailingModel!.indDir,
                                     onFilterTap: () => Get.bottomSheet(
                                       TrendsFilterBottomsheet(
                                           tabType: SummaryTypes.retailing.type),

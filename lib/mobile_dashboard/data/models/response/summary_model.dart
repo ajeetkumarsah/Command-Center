@@ -391,8 +391,11 @@ class Ind {
   final double? yMax;
   final double? yInterval;
   final List<YAxisData>? yAxisData;
+  final List<YAxisData>? yAxisDataPer;
   final bool? dataFound;
-
+  final double? yPerMin;
+  final double? yPerMax;
+  final double? yPerInterval;
   Ind({
     this.cmIya,
     this.progressBarCmIya,
@@ -407,6 +410,10 @@ class Ind {
     this.yInterval,
     this.yAxisData,
     this.dataFound,
+    this.yAxisDataPer,
+    this.yPerInterval,
+    this.yPerMax,
+    this.yPerMin,
   });
 
   factory Ind.fromJson(Map<String, dynamic> json) => Ind(
@@ -425,8 +432,11 @@ class Ind {
             ? []
             : List<Trend>.from(json["Trends"]!.map((x) => Trend.fromJson(x))),
         yMin: json["yMin"]?.toDouble() ?? 0.0,
-        yMax: json["yMax"]?.toDouble(),
-        yInterval: json["yInterval"]?.toDouble(),
+        yMax: json["yMax"]?.toDouble() ?? 1,
+        yInterval: json["yInterval"]?.toDouble() ?? 1,
+        yPerMin: json["yPerMin"]?.toDouble() ?? 0,
+        yPerMax: json["yPerMax"]?.toDouble() ?? 1,
+        yPerInterval: json["yPerInterval"]?.toDouble() ?? 1,
         yAxisData: json["y_axis_data"] == null
             ? []
             : List<YAxisData>.from(

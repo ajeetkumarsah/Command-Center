@@ -4,9 +4,13 @@ class GPTrendsModel {
   final double? yMin;
   final double? yMax;
   final double? yRange;
+  final double? yPerMin;
+  final double? yPerMax;
+  final double? yPerInterval;
   final double? yInterval;
   final List<GPTrendsDataModel>? data;
   final List<YAxisData>? yAxisData;
+  final List<YAxisData>? yAxisDataPer;
 
   GPTrendsModel({
     this.yMin,
@@ -15,6 +19,10 @@ class GPTrendsModel {
     this.yInterval,
     this.data,
     this.yAxisData,
+    this.yPerMin,
+    this.yPerMax,
+    this.yPerInterval,
+    this.yAxisDataPer,
   });
 
   factory GPTrendsModel.fromJson(Map<String, dynamic> json) => GPTrendsModel(
@@ -22,6 +30,13 @@ class GPTrendsModel {
         yMax: json["yMax"]?.toDouble(),
         yRange: json["yRange"]?.toDouble(),
         yInterval: json["yInterval"]?.toDouble(),
+        yPerMin: json["yPerMin"]?.toDouble() ?? 0,
+        yPerMax: json["yPerMax"]?.toDouble() ?? 1,
+        yPerInterval: json["yPerInterval"]?.toDouble() ?? 1,
+        yAxisDataPer: json["y_axis_data_per"] == null
+            ? []
+            : List<YAxisData>.from(
+                json["y_axis_data_per"]!.map((x) => YAxisData.fromJson(x))),
         yAxisData: json["y_axis_data"] == null
             ? []
             : List<YAxisData>.from(
