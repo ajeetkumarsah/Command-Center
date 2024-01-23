@@ -99,7 +99,7 @@ class _CustomExpandedChartWidgetState extends State<GPTrendsChartWidget> {
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: SizedBox(
-                          height: 300,
+                          height: 400,
                           child: Column(
                             children: [
                               Padding(
@@ -253,6 +253,7 @@ class _CustomExpandedChartWidgetState extends State<GPTrendsChartWidget> {
                                   ],
                                 ),
                               ),
+                              const SizedBox(height: 12),
                               Expanded(
                                 child: LineChart(
                                   LineChartData(
@@ -492,7 +493,7 @@ class _CustomExpandedChartWidgetState extends State<GPTrendsChartWidget> {
 
   SideTitles _bottomTitles(List<GPTrendsModel> trendsList) => SideTitles(
         showTitles: true,
-        reservedSize: 45,
+        reservedSize: 60,
         interval: 1,
         getTitlesWidget: (value, meta) {
           String text = '';
@@ -504,7 +505,7 @@ class _CustomExpandedChartWidgetState extends State<GPTrendsChartWidget> {
 
           return SideTitleWidget(
             axisSide: meta.axisSide,
-            space: 4,
+            // space: 4,
             angle: 35,
             child: Padding(
               padding: const EdgeInsets.only(bottom: 8.0),

@@ -655,6 +655,11 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                       ctlr.summaryData.first.mtdRetailing?.ind
                                               ?.trends !=
                                           null)
+                                    const SizedBox(height: 12),
+                                  if (ctlr.getPersona() &&
+                                      ctlr.summaryData.first.mtdRetailing?.ind
+                                              ?.trends !=
+                                          null)
                                     RetailingGraphWidget(
                                       yAxisData: ctlr.isSummaryDirect
                                           ? ctlr.summaryData.first.mtdRetailing

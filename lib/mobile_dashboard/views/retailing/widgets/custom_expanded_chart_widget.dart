@@ -102,7 +102,7 @@ class _CustomExpandedChartWidgetState extends State<CustomExpandedChartWidget> {
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: SizedBox(
-                          height: 300,
+                          height: 400,
                           child: Column(
                             children: [
                               Padding(
@@ -271,6 +271,7 @@ class _CustomExpandedChartWidgetState extends State<CustomExpandedChartWidget> {
                                   ],
                                 ),
                               ),
+                              const SizedBox(height: 12),
                               Expanded(
                                 child: LineChart(
                                   LineChartData(
@@ -437,7 +438,7 @@ class _CustomExpandedChartWidgetState extends State<CustomExpandedChartWidget> {
                                       leftTitles: AxisTitles(
                                         sideTitles: SideTitles(
                                           showTitles: true,
-                                          reservedSize: 40,
+                                          reservedSize: 46,
                                           interval:
                                               widget.trendsList.yInterval != 0
                                                   ? widget.trendsList.yInterval
@@ -522,7 +523,7 @@ class _CustomExpandedChartWidgetState extends State<CustomExpandedChartWidget> {
 
   SideTitles _bottomTitles(TrendsModel trendsList) => SideTitles(
         showTitles: true,
-        reservedSize: 45,
+        reservedSize: 60,
         interval: 1,
         getTitlesWidget: (value, meta) {
           String text = '';
@@ -533,7 +534,7 @@ class _CustomExpandedChartWidgetState extends State<CustomExpandedChartWidget> {
           }
           return SideTitleWidget(
             axisSide: meta.axisSide,
-            space: 4,
+            // space: 8,
             angle: 35,
             child: Padding(
               padding: const EdgeInsets.only(bottom: 8.0),

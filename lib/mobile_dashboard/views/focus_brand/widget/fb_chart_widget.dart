@@ -93,7 +93,7 @@ class _CustomExpandedChartWidgetState extends State<FBTrendsChartWidget> {
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: SizedBox(
-                          height: 300,
+                          height: 400,
                           child: Column(
                             children: [
                               Padding(
@@ -247,6 +247,7 @@ class _CustomExpandedChartWidgetState extends State<FBTrendsChartWidget> {
                                   ],
                                 ),
                               ),
+                              const SizedBox(height: 12),
                               Expanded(
                                 child: LineChart(
                                   LineChartData(

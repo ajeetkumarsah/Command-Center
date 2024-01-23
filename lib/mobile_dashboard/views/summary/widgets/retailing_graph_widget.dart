@@ -37,7 +37,7 @@ class _RetailingGraphWidgetState extends State<RetailingGraphWidget> {
   @override
   Widget build(BuildContext context) {
     return AspectRatio(
-      aspectRatio: 1.6,
+      aspectRatio: 1.4,
       child: widget.trendsData.isNotEmpty
           ? BarChart(
               BarChartData(
@@ -59,8 +59,9 @@ class _RetailingGraphWidgetState extends State<RetailingGraphWidget> {
         enabled: false,
         // handleBuiltInTouches: true,
         longPressDuration: const Duration(milliseconds: 100),
-        handleBuiltInTouches: false,
-        allowTouchBarBackDraw: true,
+        handleBuiltInTouches: true,
+        // allowTouchBarBackDraw: false,
+        // touchExtraThreshold: EdgeInsets.only(right: 30),
         touchCallback: (FlTouchEvent event, barTouchResponse) {
           setState(() {
             if (!event.isInterestedForInteractions ||
@@ -74,18 +75,19 @@ class _RetailingGraphWidgetState extends State<RetailingGraphWidget> {
         },
         touchTooltipData: BarTouchTooltipData(
           // tooltipBgColor: Colors.blueGrey,
-          tooltipHorizontalAlignment: FLHorizontalAlignment.right,
-          tooltipMargin: -4,
-          tooltipBgColor: AppColors.bgLight,
-          tooltipRoundedRadius: 6,
+          tooltipHorizontalAlignment: FLHorizontalAlignment.center,
+          tooltipMargin: 0,
+          tooltipBgColor: AppColors.primary,
+          tooltipRoundedRadius: 100,
           getTooltipItem: (group, groupIndex, rod, rodIndex) {
             return touchedIndex == groupIndex
                 ? BarTooltipItem(
-                    ' ${getHintTitles(group.x.toDouble(), trendList)} : ${getDataTitles(group.x.toDouble(), trendList)}',
+                    getDataTitles(group.x.toDouble(),
+                        trendList), //${getHintTitles(group.x.toDouble(), trendList)} :
                     const TextStyle(
-                      color: AppColors.primaryDark,
+                      color: AppColors.white,
                       fontWeight: FontWeight.bold,
-                      fontSize: 12,
+                      fontSize: 11,
                     ),
                   )
                 : null;
@@ -159,26 +161,17 @@ class _RetailingGraphWidgetState extends State<RetailingGraphWidget> {
           sideTitles: SideTitles(
             showTitles: true,
             interval: 1,
-            reservedSize: 40,
+            reservedSize: 45,
             getTitlesWidget: (d, meta) => getTitles(d, meta, trendsModel),
           ),
         ),
         leftTitles: AxisTitles(
           sideTitles: SideTitles(
             showTitles: true,
-            reservedSize: 45,
+            reservedSize: 50,
             interval: widget.interval != 0 ? widget.interval : 1,
             getTitlesWidget: (value, meta) =>
                 getLeftTitles(value, meta, widget.yAxisData),
-            //   {
-            // return Padding(
-            //   padding: const EdgeInsets.only(left: 8.0),
-            //   child: Text(
-            //     meta.formattedValue,
-            //     style: GoogleFonts.ptSansCaption(color: Colors.black),
-            //   ),
-            // );
-            // },
           ),
         ),
         topTitles: AxisTitles(

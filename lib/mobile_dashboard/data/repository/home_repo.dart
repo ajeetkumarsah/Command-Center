@@ -6,7 +6,6 @@ import 'package:command_centre/mobile_dashboard/data/api/api_client.dart';
 // ignore_for_file: no_leading_underscores_for_local_identifiers
 
 
-
 class HomeRepo {
   final ApiClient apiClient;
   final SharedPreferences sharedPreferences;

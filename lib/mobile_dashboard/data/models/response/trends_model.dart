@@ -1,3 +1,5 @@
+
+
 import 'package:command_centre/mobile_dashboard/data/models/response/fb_trends_model.dart';
 
 class TrendsModel {
@@ -18,9 +20,9 @@ class TrendsModel {
   });
 
   factory TrendsModel.fromJson(Map<String, dynamic> json) => TrendsModel(
-        yMin: json["yMin"].toDouble(),
-        yMax: json["yMax"].toDouble(),
-        yRange: json["yRange"].toDouble(),
+        yMin: json["yMin"]?.toDouble() ?? 0,
+        yMax: json["yMax"]?.toDouble() ?? 1,
+        yRange: json["yRange"]?.toDouble() ?? 1,
         yInterval: json["yInterval"].toDouble(),
         yAxisData: json["y_axis_data"] == null
             ? []

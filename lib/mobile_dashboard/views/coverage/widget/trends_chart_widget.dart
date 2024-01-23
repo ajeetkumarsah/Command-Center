@@ -102,7 +102,7 @@ class _CustomExpandedChartWidgetState extends State<CoverageTrendsChartWidget> {
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: SizedBox(
-                          height: 300,
+                          height: 400,
                           child: Column(
                             children: [
                               Padding(
@@ -115,7 +115,7 @@ class _CustomExpandedChartWidgetState extends State<CoverageTrendsChartWidget> {
                                       child: Padding(
                                         padding: const EdgeInsets.all(4.0),
                                         child: Text(
-                                          ctlr.selectedTrends,
+                                          ctlr.selectedCoverageTrends,
                                           overflow: TextOverflow.ellipsis,
                                           maxLines: 1,
                                           style: GoogleFonts.ptSans(
@@ -154,6 +154,7 @@ class _CustomExpandedChartWidgetState extends State<CoverageTrendsChartWidget> {
                                   ],
                                 ),
                               ),
+                              const SizedBox(height: 12),
                               Expanded(
                                 child: LineChart(
                                   LineChartData(
@@ -274,7 +275,7 @@ class _CustomExpandedChartWidgetState extends State<CoverageTrendsChartWidget> {
                                               final line = FlLine(
                                                   color: Colors.grey,
                                                   strokeWidth: 1,
-                                                  dashArray: [2, 4]);
+                                                  dashArray: [4, 2]);
                                               return TouchedSpotIndicatorData(
                                                 line,
                                                 FlDotData(
@@ -305,7 +306,7 @@ class _CustomExpandedChartWidgetState extends State<CoverageTrendsChartWidget> {
                                       bottomTitles: AxisTitles(
                                         sideTitles:
                                             _bottomTitles(widget.trendsList),
-                                       
+                                        
                                       ),
                                       leftTitles: AxisTitles(
                                         sideTitles: SideTitles(
@@ -412,7 +413,8 @@ class _CustomExpandedChartWidgetState extends State<CoverageTrendsChartWidget> {
 
   SideTitles _bottomTitles(List<CoverageTrendsModel> trendsList) => SideTitles(
         showTitles: true,
-        reservedSize: 45,
+        reservedSize: 60,
+        interval: 1,
         getTitlesWidget: (value, meta) {
           String text = '';
           for (var v in trendsList[0].data!) {
@@ -422,7 +424,7 @@ class _CustomExpandedChartWidgetState extends State<CoverageTrendsChartWidget> {
           }
           return SideTitleWidget(
             axisSide: meta.axisSide,
-            space: 4,
+            // space: 4,
             angle: 35,
             child: Padding(
               padding: const EdgeInsets.only(bottom: 8.0),

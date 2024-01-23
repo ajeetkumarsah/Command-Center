@@ -26,7 +26,7 @@ class _PersonalizeBottomsheetState extends State<PersonalizeBottomsheet> {
         'Golden Points',
         'Focus Brand'
       ],
-      moreMetrics = ['Shipment', 'Inventory'];
+      moreMetrics = ['Shipment (TBD)']; //'Inventory'
   List<PesonalizedHeaderBody> allLists(List<String> includedMetrics,
           List<String> moreMet, Function(bool, String, bool) onChange) =>
       [

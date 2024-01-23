@@ -44,6 +44,7 @@ class AllMetricsScreen extends StatelessWidget {
                             style: GoogleFonts.ptSans(
                               fontSize: 22,
                               fontWeight: FontWeight.w700,
+                              color: AppColors.white,
                             ),
                           ),
                           if (ctlr.activeMetrics
@@ -292,6 +293,7 @@ class AllMetricsScreen extends StatelessWidget {
                                                 ],
                                               ),
                                             ),
+
                                           if (ctlr.getPersona() &&
                                               ctlr
                                                       .summaryData
@@ -424,6 +426,15 @@ class AllMetricsScreen extends StatelessWidget {
                                                 ],
                                               ),
                                             ),
+                                          if (ctlr.getPersona() &&
+                                              ctlr
+                                                      .summaryData
+                                                      .first
+                                                      .mtdRetailing
+                                                      ?.ind
+                                                      ?.trends !=
+                                                  null)
+                                            const SizedBox(height: 12),
                                           if (ctlr.getPersona() &&
                                               ctlr
                                                       .summaryData

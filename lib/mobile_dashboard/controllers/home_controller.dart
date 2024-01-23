@@ -2,11 +2,11 @@ import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
 import 'package:collection/collection.dart';
 import 'package:command_centre/mobile_dashboard/utils/summary_types.dart';
 import 'package:command_centre/mobile_dashboard/utils/routes/app_pages.dart';
 import 'package:command_centre/mobile_dashboard/data/repository/home_repo.dart';
+import 'package:command_centre/mobile_dashboard/views/widgets/custom_snackbar.dart';
 import 'package:command_centre/mobile_dashboard/data/models/response/trends_model.dart';
 import 'package:command_centre/mobile_dashboard/data/models/response/filters_model.dart';
 import 'package:command_centre/mobile_dashboard/data/models/response/summary_model.dart';
@@ -200,7 +200,7 @@ class HomeController extends GetxController {
         'Golden Points',
         'Focus Brand'
       ],
-      moreMetrics = ['Shipment', 'Inventory'];
+      moreMetrics = ['Shipment (TBD)']; // 'Inventory'
   //Models
   FiltersModel? _filtersModel;
   FiltersModel? get filtersModel => _filtersModel;
@@ -1473,6 +1473,9 @@ class HomeController extends GetxController {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (name.startsWith('trends')) {
         _isRetailingTrendsLoading = true;
+        RetailingTrendsModel retailingTrendsModel =
+            RetailingTrendsModel(ind: TrendsModel(), indDir: TrendsModel());
+        trendsRetailingModel = retailingTrendsModel;
         var elapsedString = stopWatch.elapsed.toString();
         Logger().log(
             Level.debug, '===> Retailing Trends Data Start $elapsedString');
@@ -1481,13 +1484,27 @@ class HomeController extends GetxController {
             '===> Retailing Geo Data Start ${stopWatch.elapsed.toString()}');
         _isRetailingGeoLoading = true;
       } else if (type.startsWith('category')) {
+        _isRetailingCategoryLoading = true;
+        RetailingGeoModel categoryListTemp =
+            RetailingGeoModel(ind: [], indDir: []);
+        categoryListTemp.ind?.addAll(categoryRetailingModel?.ind ?? []);
+        categoryListTemp.indDir?.addAll(categoryRetailingModel?.indDir ?? []);
+        categoryRetailingModel = RetailingGeoModel(ind: [], indDir: []);
+        categoryRetailingModel?.ind?.add(categoryListTemp.ind?[0] ?? []);
+        categoryRetailingModel?.indDir?.add(categoryListTemp.indDir?[0] ?? []);
         Logger().log(Level.debug,
             '===> Retailing Category Data Start ${stopWatch.elapsed.toString()}');
-        _isRetailingCategoryLoading = true;
       } else if (type.startsWith('channel')) {
+        _isRetailingChannelLoading = true;
+        RetailingGeoModel channelListTemp =
+            RetailingGeoModel(ind: [], indDir: []);
+        channelListTemp.ind?.addAll(channelRetailingModel?.ind ?? []);
+        channelListTemp.indDir?.addAll(channelRetailingModel?.indDir ?? []);
+        channelRetailingModel = RetailingGeoModel(ind: [], indDir: []);
+        channelRetailingModel?.ind?.add(channelListTemp.ind?[0] ?? []);
+        channelRetailingModel?.indDir?.add(channelListTemp.indDir?[0] ?? []);
         Logger().log(Level.debug,
             '===> Retailing Channel Data Start ${stopWatch.elapsed.toString()}');
-        _isRetailingChannelLoading = true;
       } else {
         _isLoading = true;
       }
@@ -1544,19 +1561,6 @@ class HomeController extends GetxController {
                 if (selectedTrendsCategoryValue.isNotEmpty && !isTrendsFilter)
                   selectedTrendsCategory.toLowerCase():
                       selectedTrendsCategoryValue,
-                // if (selectedRetailingChannelFilter.isNotEmpty &&
-                //     !isTrendsFilter)
-                //   selectedChannel.toLowerCase() == 'level 1'
-                //       ? 'attr1'
-                //       : selectedChannel.toLowerCase() == 'level 2'
-                //           ? 'attr2'
-                //           : selectedChannel.toLowerCase() == 'level 3'
-                //               ? 'attr3'
-                //               : selectedChannel.toLowerCase() == 'level 4'
-                //                   ? 'attr4'
-                //                   : selectedChannel.toLowerCase() == 'level 5'
-                //                       ? 'attr5'
-                //                       : 'attr1': selectedRetailingChannelFilter,
               },
             ]
           : type.startsWith('channel')
@@ -1711,7 +1715,8 @@ class HomeController extends GetxController {
         responseModel = ResponseModel(true, response.body["message"]);
       } else {
         //set value as empty
-
+        String msg = response.body["message"] ?? '';
+        showCustomSnackBar(msg);
         responseModel = ResponseModel(false, 'Somehting went wrong!');
       }
     } else if (response.statusCode == 401) {
@@ -1892,9 +1897,11 @@ class HomeController extends GetxController {
                           ? "allIndia"
                           : _selectedGeoValue,
                 if (_selectedTrendsGeoValue.isNotEmpty && isTrendsFilter)
-                  _selectedTrendsGeo.startsWith('Cluster')
-                          ? "district"
-                          : _selectedTrendsGeo.toLowerCase():
+                  _selectedTrendsGeo.startsWith('All India')
+                          ? "allIndia"
+                          : _selectedTrendsGeo.startsWith('Cluster')
+                              ? "district"
+                              : _selectedTrendsGeo.toLowerCase():
                       _selectedTrendsGeoValue,
                 // if (_selectedTrendsCategoryValue.isNotEmpty)
                 //   _selectedTrendsCategory.toLowerCase():
@@ -2115,10 +2122,18 @@ class HomeController extends GetxController {
             '===> Golden Points Geo Data Start ${stopWatch.elapsed.toString()}');
         _isGPGeoLoading = true;
       } else if (type.startsWith('category')) {
+        List<List<String>> categoryListTemp = [];
+        categoryListTemp.addAll(categoryGPList);
+        categoryGPList.clear();
+        categoryGPList.add(categoryListTemp[0]);
         Logger().log(Level.debug,
             '===> Golden Points Category Data Start ${stopWatch.elapsed.toString()}');
         _isGPCategoryLoading = true;
       } else if (type.startsWith('channel')) {
+        List<List<String>> channelListTemp = [];
+        channelListTemp.addAll(channelGPList);
+        channelGPList.clear();
+        channelGPList.add(channelListTemp[0]);
         Logger().log(Level.debug,
             '===> Golden Points Channel Data Start ${stopWatch.elapsed.toString()}');
         _isGPChannelLoading = true;
@@ -2328,6 +2343,7 @@ class HomeController extends GetxController {
                     .map((x) => List<String>.from(x.map((x) => x.toString()))));
           } else if (type.startsWith('category')) {
             // Logger().i('===>Category Data:${json.encode(response.body)}');
+
             categoryGPList = response.body["data"] == null
                 ? []
                 : List<List<String>>.from(response.body["data"]
@@ -2349,7 +2365,8 @@ class HomeController extends GetxController {
         }
         responseModel = ResponseModel(true, response.body["message"]);
       } else {
-        // showCustomSnackBar(response.body["message"] ?? '');
+        String msg = response.body["message"] ?? '';
+        showCustomSnackBar(msg);
         // Logger().i("===>Name:$name --Type:$type  :${response.body}");
         responseModel = ResponseModel(false, 'Somehting went wrong!');
       }
@@ -2426,8 +2443,6 @@ class HomeController extends GetxController {
           ? [
               {
                 "date": selectedMonth,
-
-                ////
                 if (isTrendsFilter && _selectedTrendsGeoValue.isEmpty)
                   _selectedTrendsGeo.startsWith('All India')
                           ? "allIndia"
@@ -2577,9 +2592,9 @@ class HomeController extends GetxController {
                                 ? "allIndia"
                                 : _selectedGeoValue,
                         if (selectedCategoryFilters.isNotEmpty)
-                          selectedCategory.toLowerCase().contains('sub-brand')
+                          selectedFBCategory.toLowerCase().contains('sub-brand')
                                   ? 'subBrandForm'
-                                  : selectedCategory.toLowerCase():
+                                  : selectedFBCategory.toLowerCase():
                               selectedCategoryFilters,
                         if (selectedCategoryFilters.isEmpty) 'category': []
                       },
