@@ -9,8 +9,12 @@ import 'package:command_centre/mobile_dashboard/views/widgets/custom_snackbar.da
 class SelectMonthBottomsheet extends StatelessWidget {
   final bool isLoadRetailing;
   final String tabType;
+  final bool isSummary;
   const SelectMonthBottomsheet(
-      {super.key, this.isLoadRetailing = false, required this.tabType});
+      {super.key,
+      this.isLoadRetailing = false,
+      required this.tabType,
+      this.isSummary = false});
 
   @override
   Widget build(BuildContext context) {

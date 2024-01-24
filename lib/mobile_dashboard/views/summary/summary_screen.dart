@@ -148,6 +148,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                       const GeographyBottomsheet(
                                         tabType: 'All',
                                         isLoadRetailing: true,
+                                        isSummary: true,
                                       ),
                                       isScrollControlled: true,
                                     ),
@@ -207,6 +208,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
                               const SelectMonthBottomsheet(
                                 tabType: 'All',
                                 isLoadRetailing: true,
+                                isSummary: true,
                               ),
                               isScrollControlled: true,
                             ),

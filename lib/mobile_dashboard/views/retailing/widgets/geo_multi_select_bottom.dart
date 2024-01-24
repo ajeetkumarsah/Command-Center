@@ -196,14 +196,20 @@ class _GeographyMultiSelectBottomsheetState
                                                                               .toLowerCase() ==
                                                                           'Branch'
                                                                               .toLowerCase()
-                                                                      ? ctlr
-                                                                          .selectedMultiBranches
-                                                                          .contains(
-                                                                              e)
-                                                                      : ctlr
-                                                                          .selectedMultiFilters
-                                                                          .contains(
-                                                                              e),
+                                                                      ? widget.tabType ==
+                                                                              SummaryTypes
+                                                                                  .retailing.type
+                                                                          ? ctlr
+                                                                              .selectedRetailingMultiBranches
+                                                                              .contains(e)
+                                                                          : widget.tabType == SummaryTypes.coverage.type
+                                                                              ? ctlr.selectedCoverageMultiBranches.contains(e)
+                                                                              : widget.tabType == SummaryTypes.gp.type
+                                                                                  ? ctlr.selectedGPMultiBranches.contains(e)
+                                                                                  : widget.tabType == SummaryTypes.fb.type
+                                                                                      ? ctlr.selectedFBMultiBranches.contains(e)
+                                                                                      : false
+                                                                      : ctlr.selectedMultiFilters.contains(e),
                                                                   onChanged:
                                                                       (v) {
                                                                     ctlr.onChangeMultiFilters(
@@ -274,28 +280,32 @@ class _GeographyMultiSelectBottomsheetState
                                                                               : selectedFilter.toLowerCase() == 'Site'.toLowerCase()
                                                                                   ? ctlr.selectedRetailingMultiSites.contains(e)
                                                                                   : selectedFilter.toLowerCase() == 'Branch'.toLowerCase()
-                                                                                      ? ctlr.selectedMultiBranches.contains(e)
+                                                                                      ? ctlr.selectedRetailingMultiBranches.contains(e)
                                                                                       : ctlr.selectedMultiFilters.contains(e)
                                                                   : widget.tabType == SummaryTypes.coverage.type
-                                                                      ? selectedFilter.trim().toLowerCase() == 'Division'.trim().toLowerCase()
-                                                                          ? ctlr.selectedCoverageMultiDivisions.contains(e)
-                                                                          : selectedFilter.toLowerCase() == 'Cluster'.toLowerCase()
-                                                                              ? ctlr.selectedCoverageMultiClusters.contains(e)
-                                                                              : selectedFilter.toLowerCase() == 'Site'.toLowerCase()
-                                                                                  ? ctlr.selectedCoverageMultiSites.contains(e)
-                                                                                  : selectedFilter.toLowerCase() == 'Branch'.toLowerCase()
-                                                                                      ? ctlr.selectedMultiBranches.contains(e)
-                                                                                      : ctlr.selectedMultiFilters.contains(e)
-                                                                      : widget.tabType == SummaryTypes.gp.type
-                                                                          ? selectedFilter.trim().toLowerCase() == 'Division'.trim().toLowerCase()
-                                                                              ? ctlr.selectedGPMultiDivisions.contains(e)
+                                                                      ? selectedFilter == 'All India'
+                                                                          ? ctlr.selectedCoverageMultiAllIndia.contains(e)
+                                                                          : selectedFilter.trim().toLowerCase() == 'Division'.trim().toLowerCase()
+                                                                              ? ctlr.selectedCoverageMultiDivisions.contains(e)
                                                                               : selectedFilter.toLowerCase() == 'Cluster'.toLowerCase()
-                                                                                  ? ctlr.selectedGPMultiClusters.contains(e)
+                                                                                  ? ctlr.selectedCoverageMultiClusters.contains(e)
                                                                                   : selectedFilter.toLowerCase() == 'Site'.toLowerCase()
-                                                                                      ? ctlr.selectedGPMultiSites.contains(e)
+                                                                                      ? ctlr.selectedCoverageMultiSites.contains(e)
                                                                                       : selectedFilter.toLowerCase() == 'Branch'.toLowerCase()
-                                                                                          ? ctlr.selectedMultiBranches.contains(e)
+                                                                                          ? ctlr.selectedCoverageMultiBranches.contains(e)
                                                                                           : ctlr.selectedMultiFilters.contains(e)
+                                                                      : widget.tabType == SummaryTypes.gp.type
+                                                                          ? selectedFilter == 'All India'
+                                                                              ? ctlr.selectedGPMultiAllIndia.contains(e)
+                                                                              : selectedFilter.trim().toLowerCase() == 'Division'.trim().toLowerCase()
+                                                                                  ? ctlr.selectedGPMultiDivisions.contains(e)
+                                                                                  : selectedFilter.toLowerCase() == 'Cluster'.toLowerCase()
+                                                                                      ? ctlr.selectedGPMultiClusters.contains(e)
+                                                                                      : selectedFilter.toLowerCase() == 'Site'.toLowerCase()
+                                                                                          ? ctlr.selectedGPMultiSites.contains(e)
+                                                                                          : selectedFilter.toLowerCase() == 'Branch'.toLowerCase()
+                                                                                              ? ctlr.selectedGPMultiBranches.contains(e)
+                                                                                              : ctlr.selectedMultiFilters.contains(e)
                                                                           : widget.tabType == SummaryTypes.fb.type
                                                                               ? selectedFilter == 'All India'
                                                                                   ? ctlr.selectedFBMultiAllIndia.contains(e)
@@ -306,7 +316,7 @@ class _GeographyMultiSelectBottomsheetState
                                                                                           : selectedFilter.toLowerCase() == 'Site'.toLowerCase()
                                                                                               ? ctlr.selectedFBMultiSites.contains(e)
                                                                                               : selectedFilter.toLowerCase() == 'Branch'.toLowerCase()
-                                                                                                  ? ctlr.selectedMultiBranches.contains(e)
+                                                                                                  ? ctlr.selectedFBMultiBranches.contains(e)
                                                                                                   : ctlr.selectedMultiFilters.contains(e)
                                                                               : false,
                                                               // ctlr.selectedMultiFilters

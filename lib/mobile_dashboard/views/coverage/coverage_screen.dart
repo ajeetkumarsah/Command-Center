@@ -56,6 +56,7 @@ class _CoverageScreenState extends State<CoverageScreen> {
               title: 'Coverage',
               onDivisionTap: () => Get.bottomSheet(
                 GeographyBottomsheet(
+                  isSummary: false,
                   isLoadRetailing: true,
                   tabType: SummaryTypes.coverage.type,
                 ),
@@ -79,7 +80,7 @@ class _CoverageScreenState extends State<CoverageScreen> {
                     child: Column(
                       children: [
                         const SizedBox(height: 16),
-                        ctlr.isRetailingGeoLoading
+                        ctlr.isCoverageGeoLoading
                             ? loadingWidget(context)
                             : ctlr.coverageList.isNotEmpty
                                 ? CustomExpandedWidget(

@@ -59,6 +59,7 @@ class _GoldenPointScreenState extends State<GoldenPointScreen> {
               onDivisionTap: () => Get.bottomSheet(
                 GeographyBottomsheet(
                   isLoadRetailing: true,
+                  isSummary: false,
                   tabType: SummaryTypes.gp.type,
                 ),
                 isScrollControlled: true,

@@ -58,6 +58,7 @@ class _FocusBrandScreenState extends State<FocusBrandScreen> {
               title: 'Focus Brand',
               onDivisionTap: () => Get.bottomSheet(
                 GeographyBottomsheet(
+                  isSummary: false,
                   isLoadRetailing: true,
                   tabType: SummaryTypes.fb.type,
                 ),

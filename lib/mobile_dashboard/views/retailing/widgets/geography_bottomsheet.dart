@@ -10,10 +10,12 @@ class GeographyBottomsheet extends StatelessWidget {
   final Function(Map<String, dynamic>)? onApplyFilter;
   final bool isLoadRetailing;
   final String tabType;
+  final bool isSummary;
   const GeographyBottomsheet(
       {super.key,
       this.onApplyFilter,
       this.isLoadRetailing = false,
+      required this.isSummary,
       required this.tabType});
 
   @override
@@ -264,7 +266,8 @@ class GeographyBottomsheet extends StatelessWidget {
                         if (ctlr.selectedTempGeoValue.isNotEmpty) {
                           ctlr.onApplyFilter(
                               isLoadRetailing: isLoadRetailing,
-                              tabType: tabType);
+                              tabType: tabType,
+                              isSummary: isSummary);
                           Navigator.pop(context);
                         } else {
                           showCustomSnackBar('Please select a geo!');

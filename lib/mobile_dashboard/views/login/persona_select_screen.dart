@@ -193,9 +193,10 @@ class _PersonaScreenState extends State<PersonaScreen>
                       Text(
                         'Select Geography',
                         style: GoogleFonts.ptSans(
-                            fontWeight: FontWeight.w700,
-                            fontSize: 18,
-                            letterSpacing: 0.6),
+                          fontWeight: FontWeight.w700,
+                          fontSize: 18,
+                          letterSpacing: 0.6,
+                        ),
                       ),
                       const SizedBox(width: 5),
                       selectedContainerIndex == 0

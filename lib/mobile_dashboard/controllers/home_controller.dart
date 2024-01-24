@@ -17,7 +17,6 @@ import 'package:command_centre/mobile_dashboard/data/models/response/retailing_g
 import 'package:command_centre/mobile_dashboard/data/models/response/coverage_trends_model.dart';
 import 'package:command_centre/mobile_dashboard/data/models/response/retailing_trends_model.dart';
 
-
 class HomeController extends GetxController {
   //
   final HomeRepo homeRepo;
@@ -113,13 +112,13 @@ class HomeController extends GetxController {
   String get fbTrendsValue => _fbTrendsValue;
   String _selectedCoverageTrendsFilter = 'Billing %';
   String get selectedCoverageTrendsFilter => _selectedCoverageTrendsFilter;
-  String _selectedTrends = 'Channel';
+  String _selectedTrends = 'Geography';
   String get selectedTrends => _selectedTrends;
-  String _selectedCoverageTrends = 'Channel';
+  String _selectedCoverageTrends = 'Geography';
   String get selectedCoverageTrends => _selectedCoverageTrends;
-  String _selectedGPTrends = 'Channel';
+  String _selectedGPTrends = 'Geography';
   String get selectedGPTrends => _selectedGPTrends;
-  String _selectedFBTrends = 'Channel';
+  String _selectedFBTrends = 'Geography';
   String get selectedFBTrends => _selectedFBTrends;
 
   String _selectedChannel = 'attr1';
@@ -178,7 +177,10 @@ class HomeController extends GetxController {
   List<String> selectedMultiFilters = [], branchFilter = [], subBrandForm = [];
   List<String> categoryFilters = [],
       categoryTrendsFilters = [],
-      selectedCategoryFilters = [],
+      selectedRetailingCategoryFilters = [],
+      selectedCoverageCategoryFilters = [],
+      selectedGPCategoryFilters = [],
+      selectedFBCategoryFilters = [],
       selectedSubBrandFilters = [],
       // subBrandsFilters = [],
       channelFilter = [],
@@ -190,6 +192,8 @@ class HomeController extends GetxController {
       // selectedMultiDivisions = [],
       selectedRetailingMultiAllIndia = [],
       selectedFBMultiAllIndia = [],
+      selectedCoverageMultiAllIndia = [],
+      selectedGPMultiAllIndia = [],
       selectedRetailingMultiDivisions = [],
       selectedCoverageMultiDivisions = [],
       selectedGPMultiDivisions = [],
@@ -203,7 +207,10 @@ class HomeController extends GetxController {
       selectedCoverageMultiSites = [],
       selectedGPMultiSites = [],
       selectedFBMultiSites = [],
-      selectedMultiBranches = [];
+      selectedRetailingMultiBranches = [],
+      selectedCoverageMultiBranches = [],
+      selectedGPMultiBranches = [],
+      selectedFBMultiBranches = [];
   List<String> activeMetrics = [
         'Retailing',
         'Coverage',
@@ -524,20 +531,56 @@ class HomeController extends GetxController {
         });
       }
     }
-
     update();
   }
 
-  void onChangeCategoryValue(String value, String cat) {
+  void onChangeCategoryValue(String value, String cat, String tabType) {
     if (_selectedTempCategory.toLowerCase() != cat.toLowerCase()) {
       _selectedTempCategory = cat;
-      selectedCategoryFilters.clear();
+      if (tabType == SummaryTypes.retailing.type) {
+        //retaling tab
+        selectedRetailingCategoryFilters.clear();
+      } else if (tabType == SummaryTypes.coverage.type) {
+        //Coverage tab
+        selectedCoverageCategoryFilters.clear();
+      } else if (tabType == SummaryTypes.gp.type) {
+        //Golden Points tab
+        selectedGPCategoryFilters.clear();
+      } else if (tabType == SummaryTypes.fb.type) {
+        //Focus Brand tab
+        selectedFBCategoryFilters.clear();
+      }
     }
-    if (selectedCategoryFilters.contains(value)) {
-      selectedCategoryFilters.remove(value);
-    } else {
-      selectedCategoryFilters.add(value);
+    if (tabType == SummaryTypes.retailing.type) {
+      //retaling tab
+      if (selectedRetailingCategoryFilters.contains(value)) {
+        selectedRetailingCategoryFilters.remove(value);
+      } else {
+        selectedRetailingCategoryFilters.add(value);
+      }
+    } else if (tabType == SummaryTypes.coverage.type) {
+      //Coverage tab
+      if (selectedCoverageCategoryFilters.contains(value)) {
+        selectedCoverageCategoryFilters.remove(value);
+      } else {
+        selectedCoverageCategoryFilters.add(value);
+      }
+    } else if (tabType == SummaryTypes.gp.type) {
+      //Golden Points tab
+      if (selectedGPCategoryFilters.contains(value)) {
+        selectedGPCategoryFilters.remove(value);
+      } else {
+        selectedGPCategoryFilters.add(value);
+      }
+    } else if (tabType == SummaryTypes.fb.type) {
+      //Focus Brand tab
+      if (selectedFBCategoryFilters.contains(value)) {
+        selectedFBCategoryFilters.remove(value);
+      } else {
+        selectedFBCategoryFilters.add(value);
+      }
     }
+
     update();
   }
 
@@ -558,7 +601,7 @@ class HomeController extends GetxController {
     update();
   }
 
-  void onChangeFiltersAll({type = 'branch'}) {
+  void onChangeFiltersAll({String type = 'branch', required String tabType}) {
     if (type == 'branch') {
       if (eq(selectedMultiFilters, branchFilter)) {
         selectedMultiFilters.clear();
@@ -567,11 +610,38 @@ class HomeController extends GetxController {
         selectedMultiFilters.addAll(branchFilter);
       }
     } else if (type == 'category') {
-      if (eq(selectedCategoryFilters, categoryFilters)) {
-        selectedCategoryFilters.clear();
-      } else {
-        selectedCategoryFilters.clear();
-        selectedCategoryFilters.addAll(categoryFilters);
+      if (tabType == SummaryTypes.retailing.type) {
+        //retaling tab
+        if (eq(selectedRetailingCategoryFilters, categoryFilters)) {
+          selectedRetailingCategoryFilters.clear();
+        } else {
+          selectedRetailingCategoryFilters.clear();
+          selectedRetailingCategoryFilters.addAll(categoryFilters);
+        }
+      } else if (tabType == SummaryTypes.coverage.type) {
+        //Coverage tab
+        if (eq(selectedCoverageCategoryFilters, categoryFilters)) {
+          selectedCoverageCategoryFilters.clear();
+        } else {
+          selectedCoverageCategoryFilters.clear();
+          selectedCoverageCategoryFilters.addAll(categoryFilters);
+        }
+      } else if (tabType == SummaryTypes.gp.type) {
+        //Golden Points tab
+        if (eq(selectedGPCategoryFilters, categoryFilters)) {
+          selectedGPCategoryFilters.clear();
+        } else {
+          selectedGPCategoryFilters.clear();
+          selectedGPCategoryFilters.addAll(categoryFilters);
+        }
+      } else if (tabType == SummaryTypes.fb.type) {
+        //Focus Brand tab
+        if (eq(selectedFBCategoryFilters, categoryFilters)) {
+          selectedFBCategoryFilters.clear();
+        } else {
+          selectedFBCategoryFilters.clear();
+          selectedFBCategoryFilters.addAll(categoryFilters);
+        }
       }
     }
 
@@ -620,7 +690,6 @@ class HomeController extends GetxController {
         selectedFBChannelFilter.add(value);
       }
     }
-
     update();
   }
 
@@ -772,12 +841,17 @@ class HomeController extends GetxController {
       _selectedGeo = getGeo();
       _selectedTrendsGeo = getGeo();
       _selectedTrendsGeoValue = getGeoValue();
+
       onGeoChange(_selectedGeo);
     }
     if (getGeoValue().trim().isNotEmpty) {
       _selectedTempGeoValue = getGeoValue();
       _selectedGeoValue = getGeoValue();
       _selectedTrendsGeoValue = getGeoValue();
+      _retailingTrendsValue = getGeoValue();
+      _coverageTrendsValue = getGeoValue();
+      _gpTrendsValue = getGeoValue();
+      _fbTrendsValue = getGeoValue();
     }
     if (!getOnlyShared) {
       var futures = await Future.wait([
@@ -822,10 +896,16 @@ class HomeController extends GetxController {
   }
 
   void onChangeDate(
-      {bool isLoadRetailing = false, String tabType = 'Retailing'}) async {
+      {bool isLoadRetailing = false,
+      String tabType = 'Retailing',
+      bool isSummary = false}) async {
     _selectedMonth = _selectedTempMonth;
     setMonth(_selectedTempMonth ?? '');
-    await getSummaryData();
+    if (isSummary) {
+      await getSummaryData();
+    } else {
+      getSummaryData();
+    }
     if (isLoadRetailing) {
       if (SummaryTypes.retailing.type == tabType) {
         //retailing screen data
@@ -985,7 +1065,9 @@ class HomeController extends GetxController {
   }
 
   void onApplyFilter(
-      {bool isLoadRetailing = false, String tabType = 'Retailing'}) async {
+      {bool isLoadRetailing = false,
+      String tabType = 'Retailing',
+      bool isSummary = false}) async {
     debugPrint(
         '===>selected Filter $selectedTempGeo  -- $selectedTempGeoValue');
     _selectedGeo = _selectedTempGeo;
@@ -998,7 +1080,17 @@ class HomeController extends GetxController {
 
     saveGeo(_selectedTempGeo);
     saveGeoValue(_selectedTempGeoValue);
-    await getSummaryData();
+    _retailingTrendsValue = _selectedTempGeoValue;
+    _coverageTrendsValue = _selectedTempGeoValue;
+    _gpTrendsValue = _selectedTempGeoValue;
+    _fbTrendsValue = _selectedTempGeoValue;
+
+    if (isSummary) {
+      await getSummaryData();
+    } else {
+      getSummaryData();
+    }
+
     if (isLoadRetailing) {
       if (SummaryTypes.retailing.type == tabType) {
         //retailing screen data
@@ -1121,7 +1213,10 @@ class HomeController extends GetxController {
     selectedCoverageMultiSites.clear();
     selectedGPMultiSites.clear();
     selectedFBMultiSites.clear();
-    selectedMultiBranches.clear();
+    selectedRetailingMultiBranches.clear();
+    selectedCoverageMultiBranches.clear();
+    selectedGPMultiBranches.clear();
+    selectedFBMultiBranches.clear();
     selectedMultiFilters.clear();
     onApplyMultiFilter(name, type, tabType: tabType);
   }
@@ -1132,28 +1227,27 @@ class HomeController extends GetxController {
 
     if (selectedMultiGeoFilter == 'All India') {
       // selectedRetailingMultiAllIndia
-      debugPrint('====>All India $value');
+      debugPrint('====>All India --Value: $value');
       if (tabType == SummaryTypes.retailing.type) {
         if (selectedRetailingMultiAllIndia.contains(value)) {
           selectedRetailingMultiAllIndia.remove(value);
         } else {
           selectedRetailingMultiAllIndia.add(value);
         }
-      }
-      //  else if (tabType == SummaryTypes.coverage.type) {
-      //   if (selectedCoverageMultiDivisions.contains(value)) {
-      //     selectedCoverageMultiDivisions.remove(value);
-      //   } else {
-      //     selectedCoverageMultiDivisions.add(value);
-      //   }
-      // } else if (tabType == SummaryTypes.gp.type) {
-      //   if (selectedGPMultiDivisions.contains(value)) {
-      //     selectedGPMultiDivisions.remove(value);
-      //   } else {
-      //     selectedGPMultiDivisions.add(value);
-      //   }
-      // }
-      else if (tabType == SummaryTypes.fb.type) {
+      } else if (tabType == SummaryTypes.coverage.type) {
+        debugPrint('====>Coverage');
+        if (selectedCoverageMultiAllIndia.contains(value)) {
+          selectedCoverageMultiAllIndia.remove(value);
+        } else {
+          selectedCoverageMultiAllIndia.add(value);
+        }
+      } else if (tabType == SummaryTypes.gp.type) {
+        if (selectedGPMultiAllIndia.contains(value)) {
+          selectedGPMultiAllIndia.remove(value);
+        } else {
+          selectedGPMultiAllIndia.add(value);
+        }
+      } else if (tabType == SummaryTypes.fb.type) {
         if (selectedFBMultiAllIndia.contains(value)) {
           selectedFBMultiAllIndia.remove(value);
         } else {
@@ -1245,11 +1339,36 @@ class HomeController extends GetxController {
       }
     } else if (selectedMultiGeoFilter.toLowerCase() == 'Branch'.toLowerCase()) {
       debugPrint('===>Adding Branch');
-      if (selectedMultiBranches.contains(value)) {
-        selectedMultiBranches.remove(value);
-      } else {
-        selectedMultiBranches.add(value);
+      if (tabType == SummaryTypes.retailing.type) {
+        if (selectedRetailingMultiBranches.contains(value)) {
+          selectedRetailingMultiBranches.remove(value);
+        } else {
+          selectedRetailingMultiBranches.add(value);
+        }
+      } else if (tabType == SummaryTypes.coverage.type) {
+        if (selectedCoverageMultiBranches.contains(value)) {
+          selectedCoverageMultiBranches.remove(value);
+        } else {
+          selectedCoverageMultiBranches.add(value);
+        }
+      } else if (tabType == SummaryTypes.gp.type) {
+        if (selectedGPMultiBranches.contains(value)) {
+          selectedGPMultiBranches.remove(value);
+        } else {
+          selectedGPMultiBranches.add(value);
+        }
+      } else if (tabType == SummaryTypes.fb.type) {
+        if (selectedFBMultiBranches.contains(value)) {
+          selectedFBMultiBranches.remove(value);
+        } else {
+          selectedFBMultiBranches.add(value);
+        }
       }
+      // if (selectedMultiBranches.contains(value)) {
+      //   selectedMultiBranches.remove(value);
+      // } else {
+      //   selectedMultiBranches.add(value);
+      // }
     } else {
       debugPrint('===>Adding else');
       if (selectedMultiFilters.contains(value)) {
@@ -1644,9 +1763,7 @@ class HomeController extends GetxController {
                                   : _selectedGeo.startsWith('Cluster')
                                       ? "district"
                                       : _selectedGeo.toLowerCase():
-                              _selectedGeo.startsWith('All India')
-                                  ? "allIndia"
-                                  : _selectedGeoValue,
+                              _selectedGeoValue,
                         },
                         ...selectedRetailingMultiAllIndia
                             .map((e) => {
@@ -1675,7 +1792,7 @@ class HomeController extends GetxController {
                                   "site": e,
                                 })
                             .toList(),
-                        ...selectedMultiBranches
+                        ...selectedRetailingMultiBranches
                             .map((e) => {
                                   "date": selectedMonth,
                                   //"${selectedMonth!.substring(0, 3)}-$selectedYear",
@@ -1702,7 +1819,7 @@ class HomeController extends GetxController {
                             _selectedGeo.startsWith('All India')
                                 ? "allIndia"
                                 : _selectedGeoValue,
-                        if (selectedCategoryFilters.isNotEmpty)
+                        if (selectedRetailingCategoryFilters.isNotEmpty)
                           selectedCategory.toLowerCase().contains('sub-brand')
                                   ? 'subBrandForm'
                                   : selectedCategory
@@ -1710,9 +1827,10 @@ class HomeController extends GetxController {
                                           .contains('brand form')
                                       ? 'brandForm'
                                       : selectedCategory.toLowerCase():
-                              selectedCategoryFilters,
+                              selectedRetailingCategoryFilters,
 
-                        if (selectedCategoryFilters.isEmpty) "category": [],
+                        if (selectedRetailingCategoryFilters.isEmpty)
+                          "category": [],
                       },
                     ]
     };
@@ -2019,10 +2137,14 @@ class HomeController extends GetxController {
                                   : _selectedGeo.startsWith('Cluster')
                                       ? "district"
                                       : _selectedGeo.toLowerCase():
-                              _selectedGeo.startsWith('All India')
-                                  ? "allIndia"
-                                  : _selectedGeoValue,
+                              _selectedGeoValue,
                         },
+                        ...selectedCoverageMultiAllIndia
+                            .map((e) => {
+                                  "date": _selectedTempMonth,
+                                  "allIndia": e,
+                                })
+                            .toList(),
                         ...selectedCoverageMultiDivisions
                             .map((e) => {
                                   "date": selectedMonth,
@@ -2044,7 +2166,7 @@ class HomeController extends GetxController {
                                   "site": e,
                                 })
                             .toList(),
-                        ...selectedMultiBranches
+                        ...selectedCoverageMultiBranches
                             .map((e) => {
                                   "date": selectedMonth,
                                   //"${selectedMonth!.substring(0, 3)}-$selectedYear",
@@ -2071,12 +2193,13 @@ class HomeController extends GetxController {
                             _selectedGeo.startsWith('All India')
                                 ? "allIndia"
                                 : _selectedGeoValue,
-                        if (selectedCategoryFilters.isNotEmpty)
+                        if (selectedCoverageCategoryFilters.isNotEmpty)
                           selectedCategory.toLowerCase().contains('sub-brand')
                                   ? 'subBrandForm'
                                   : selectedCategory.toLowerCase():
-                              selectedCategoryFilters,
-                        if (selectedCategoryFilters.isEmpty) "category": [],
+                              selectedCoverageCategoryFilters,
+                        if (selectedCoverageCategoryFilters.isEmpty)
+                          "category": [],
                       },
                     ]
     });
@@ -2308,10 +2431,14 @@ class HomeController extends GetxController {
                                     : _selectedGeo.startsWith('Cluster')
                                         ? "district"
                                         : _selectedGeo.toLowerCase():
-                                _selectedGeo.startsWith('All India')
-                                    ? "allIndia"
-                                    : _selectedGeoValue,
+                                _selectedGeoValue,
                           },
+                          ...selectedGPMultiAllIndia
+                              .map((e) => {
+                                    "date": selectedMonth,
+                                    "allIndia": e,
+                                  })
+                              .toList(),
                           ...selectedGPMultiDivisions
                               .map((e) => {
                                     "date": selectedMonth,
@@ -2336,7 +2463,7 @@ class HomeController extends GetxController {
                                     "category": [],
                                   })
                               .toList(),
-                          ...selectedMultiBranches
+                          ...selectedGPMultiBranches
                               .map((e) => {
                                     "date": selectedMonth,
                                     // "${selectedMonth!.substring(0, 3)}-$selectedYear",
@@ -2365,7 +2492,7 @@ class HomeController extends GetxController {
                               _selectedGeo.startsWith('All India')
                                   ? "allIndia"
                                   : _selectedGeoValue,
-                          if (selectedCategoryFilters.isNotEmpty)
+                          if (selectedGPCategoryFilters.isNotEmpty)
                             _selectedGPCategory
                                         .toLowerCase()
                                         .contains('sub-brand')
@@ -2375,8 +2502,8 @@ class HomeController extends GetxController {
                                             .contains('brand form')
                                         ? 'brandForm'
                                         : _selectedGPCategory.toLowerCase():
-                                selectedCategoryFilters,
-                          if (selectedCategoryFilters.isEmpty) 'category': []
+                                selectedGPCategoryFilters,
+                          if (selectedGPCategoryFilters.isEmpty) 'category': []
                         },
                       ],
       },
@@ -2607,42 +2734,41 @@ class HomeController extends GetxController {
                                   : _selectedGeo.startsWith('Cluster')
                                       ? "district"
                                       : _selectedGeo.toLowerCase():
-                              _selectedGeo.startsWith('All India')
-                                  ? "allIndia"
-                                  : _selectedGeoValue,
+                              _selectedGeoValue,
                         },
+                        ...selectedFBMultiAllIndia
+                            .map((e) => {
+                                  "date": selectedMonth,
+                                  "allIndia": e,
+                                })
+                            .toList(),
                         ...selectedFBMultiDivisions
                             .map((e) => {
                                   "date": selectedMonth,
-                                  // "${selectedMonth!.substring(0, 3)}-$selectedYear",
                                   "division": e,
                                 })
                             .toList(),
                         ...selectedFBMultiClusters
                             .map((e) => {
                                   "date": selectedMonth,
-                                  //"${selectedMonth!.substring(0, 3)}-$selectedYear",
                                   "district": e,
                                 })
                             .toList(),
                         ...selectedFBMultiSites
                             .map((e) => {
                                   "date": selectedMonth,
-                                  //"${selectedMonth!.substring(0, 3)}-$selectedYear",
                                   "site": e,
                                 })
                             .toList(),
-                        ...selectedMultiBranches
+                        ...selectedFBMultiBranches
                             .map((e) => {
                                   "date": selectedMonth,
-                                  //"${selectedMonth!.substring(0, 3)}-$selectedYear",
                                   "branch": e,
                                 })
                             .toList(),
                         ...selectedMultiFilters
                             .map((e) => {
                                   "date": selectedMonth,
-                                  //"${selectedMonth!.substring(0, 3)}-$selectedYear",
                                   "allIndia": e,
                                 })
                             .toList(),
@@ -2650,7 +2776,6 @@ class HomeController extends GetxController {
                   : [
                       {
                         "date": selectedMonth,
-                        // "${selectedMonth!.substring(0, 3)}-$selectedYear",
                         _selectedGeo.startsWith('All India')
                                 ? "allIndia"
                                 : _selectedGeo.startsWith('Cluster')
@@ -2659,7 +2784,7 @@ class HomeController extends GetxController {
                             _selectedGeo.startsWith('All India')
                                 ? "allIndia"
                                 : _selectedGeoValue,
-                        if (selectedCategoryFilters.isNotEmpty)
+                        if (selectedFBCategoryFilters.isNotEmpty)
                           selectedFBCategory
                                       .toLowerCase()
                                       .contains('brand form')
@@ -2669,8 +2794,8 @@ class HomeController extends GetxController {
                                           .contains('sub-brand')
                                       ? 'subBrandForm'
                                       : selectedFBCategory.toLowerCase():
-                              selectedCategoryFilters,
-                        if (selectedCategoryFilters.isEmpty) 'category': []
+                              selectedFBCategoryFilters,
+                        if (selectedFBCategoryFilters.isEmpty) 'category': []
                       },
                     ]
     });

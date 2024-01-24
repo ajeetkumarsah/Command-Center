@@ -441,6 +441,10 @@ class Ind {
             ? []
             : List<YAxisData>.from(
                 json["y_axis_data"]!.map((x) => YAxisData.fromJson(x))),
+        yAxisDataPer: json["y_axis_data_per"] == null
+            ? []
+            : List<YAxisData>.from(
+                json["y_axis_data_per"]!.map((x) => YAxisData.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
@@ -480,6 +484,7 @@ class YAxisData {
 class Trend {
   final String? month;
   final String? cyRt;
+  final String? cmIya;
   final String? pyRt;
   final String? iya;
   final String? cyRtRv;
@@ -494,12 +499,14 @@ class Trend {
     this.cyRtRv,
     this.pyRtRv,
     this.index,
+    this.cmIya,
   });
 
   factory Trend.fromJson(Map<String, dynamic> json) => Trend(
         month: json["month"].toString(),
         cyRt: json["cy_rt"].toString(),
         pyRt: json["py_rt"].toString(),
+        cmIya: json["cmIya"].toString(),
         iya: json["IYA"].toString(),
         cyRtRv: json["cy_rt_rv"].toString(),
         pyRtRv: json["py_rt_rv"].toString(),

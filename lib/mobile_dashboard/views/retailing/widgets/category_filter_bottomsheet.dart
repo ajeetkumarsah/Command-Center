@@ -149,18 +149,51 @@ class _CategoryFilterBottomsheetState extends State<CategoryFilterBottomsheet> {
                                         ? InkWell(
                                             onTap: () =>
                                                 ctlr.onChangeFiltersAll(
-                                                    type: 'category'),
+                                                    type: 'category',
+                                                    tabType: widget.tabType),
                                             child: Row(
                                               children: [
                                                 Transform.scale(
                                                   scale: .9,
                                                   child: Checkbox(
-                                                    value: eq(
-                                                        ctlr.selectedCategoryFilters,
-                                                        ctlr.categoryFilters),
+                                                    value: widget.tabType ==
+                                                            SummaryTypes
+                                                                .retailing.type
+                                                        ? eq(
+                                                            ctlr
+                                                                .selectedRetailingCategoryFilters,
+                                                            ctlr
+                                                                .categoryFilters)
+                                                        : widget.tabType ==
+                                                                SummaryTypes
+                                                                    .coverage
+                                                                    .type
+                                                            ? eq(
+                                                                ctlr
+                                                                    .selectedCoverageCategoryFilters,
+                                                                ctlr
+                                                                    .categoryFilters)
+                                                            : widget.tabType ==
+                                                                    SummaryTypes
+                                                                        .gp.type
+                                                                ? eq(
+                                                                    ctlr
+                                                                        .selectedGPCategoryFilters,
+                                                                    ctlr
+                                                                        .categoryFilters)
+                                                                : widget.tabType ==
+                                                                        SummaryTypes
+                                                                            .fb
+                                                                            .type
+                                                                    ? eq(
+                                                                        ctlr.selectedFBCategoryFilters,
+                                                                        ctlr.categoryFilters)
+                                                                    : false,
                                                     onChanged: (v) =>
                                                         ctlr.onChangeFiltersAll(
-                                                            type: 'category'),
+                                                            type: 'category',
+                                                            tabType:
+                                                                widget.tabType),
                                                   ),
                                                 ),
                                                 const Flexible(
@@ -175,19 +208,48 @@ class _CategoryFilterBottomsheetState extends State<CategoryFilterBottomsheet> {
                                           (cat) => GestureDetector(
                                             onTap: () =>
                                                 ctlr.onChangeCategoryValue(
-                                                    cat, _selectedCategory),
+                                                    cat,
+                                                    _selectedCategory,
+                                                    widget.tabType),
                                             child: Row(
                                               children: [
                                                 Transform.scale(
                                                   scale: .9,
                                                   child: Checkbox(
-                                                    value: ctlr
-                                                        .selectedCategoryFilters
-                                                        .contains(cat),
+                                                    value: widget.tabType ==
+                                                            SummaryTypes
+                                                                .retailing.type
+                                                        ? ctlr
+                                                            .selectedRetailingCategoryFilters
+                                                            .contains(cat)
+                                                        : widget.tabType ==
+                                                                SummaryTypes
+                                                                    .coverage
+                                                                    .type
+                                                            ? ctlr
+                                                                .selectedCoverageCategoryFilters
+                                                                .contains(cat)
+                                                            : widget.tabType ==
+                                                                    SummaryTypes
+                                                                        .gp.type
+                                                                ? ctlr
+                                                                    .selectedGPCategoryFilters
+                                                                    .contains(
+                                                                        cat)
+                                                                : widget.tabType ==
+                                                                        SummaryTypes
+                                                                            .fb
+                                                                            .type
+                                                                    ? ctlr
+                                                                        .selectedFBCategoryFilters
+                                                                        .contains(
+                                                                            cat)
+                                                                    : false,
                                                     onChanged: (v) => ctlr
                                                         .onChangeCategoryValue(
                                                             cat,
-                                                            _selectedCategory),
+                                                            _selectedCategory,
+                                                            widget.tabType),
                                                   ),
                                                 ),
                                                 Flexible(child: Text(cat)),

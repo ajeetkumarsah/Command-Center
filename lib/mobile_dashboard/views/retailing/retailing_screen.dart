@@ -136,6 +136,7 @@ class _RetailingScreenState extends State<RetailingScreen> {
                 GeographyBottomsheet(
                   isLoadRetailing: true,
                   tabType: SummaryTypes.retailing.type,
+                  isSummary: false,
                 ),
                 isScrollControlled: true,
               ),

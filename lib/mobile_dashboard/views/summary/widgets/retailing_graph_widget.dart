@@ -41,10 +41,68 @@ class _RetailingGraphWidgetState extends State<RetailingGraphWidget> {
       child: widget.trendsData.isNotEmpty
           ? BarChart(
               BarChartData(
-                barTouchData: barTouchData(widget.trendsData),
+                barTouchData: BarTouchData(
+                  enabled: false,
+                  // handleBuiltInTouches: true,
+                  longPressDuration: const Duration(milliseconds: 100),
+                  handleBuiltInTouches: true,
+                  // allowTouchBarBackDraw: false,
+                  // touchExtraThreshold: EdgeInsets.only(right: 30),
+                  touchCallback: (FlTouchEvent event, barTouchResponse) {
+                    setState(() {
+                      if (!event.isInterestedForInteractions ||
+                          barTouchResponse == null ||
+                          barTouchResponse.spot == null) {
+                        touchedIndex = -1;
+                        return;
+                      }
+                      touchedIndex =
+                          barTouchResponse.spot!.touchedBarGroupIndex;
+                    });
+                  },
+                  touchTooltipData: BarTouchTooltipData(
+                    // tooltipBgColor: Colors.blueGrey,
+                    tooltipHorizontalAlignment: FLHorizontalAlignment.center,
+                    tooltipMargin: 0,
+                    tooltipBgColor: AppColors.primary,
+                    tooltipRoundedRadius: 100,
+                    getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                      return touchedIndex == groupIndex
+                          ? BarTooltipItem(
+                              getDataTitles(group.x.toDouble(),
+                                  widget.trendsData, widget.salesValue),
+                              const TextStyle(
+                                color: AppColors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 11,
+                              ),
+                            )
+                          : null;
+                    },
+                  ),
+                ),
                 titlesData: titlesData(widget.trendsData),
                 borderData: borderData,
-                barGroups: barGroups(widget.trendsData),
+                barGroups: [
+                  if (widget.trendsData.isNotEmpty)
+                    ...widget.trendsData
+                        .map(
+                          (v) => BarChartGroupData(
+                            x: v.index ?? 0,
+                            barRods: [
+                              BarChartRodData(
+                                toY: widget.salesValue
+                                    ? double.tryParse(v.cyRt ?? '0.0') ?? 0
+                                    : double.tryParse(v.iya ?? '0.0') ?? 0,
+                                gradient: _barsGradient,
+                              )
+                            ],
+                            showingTooltipIndicators: [0],
+                            groupVertically: true,
+                          ),
+                        )
+                        .toList(),
+                ],
                 gridData: FlGridData(show: false),
                 alignment: BarChartAlignment.spaceAround,
                 maxY: widget.maxValue,
@@ -54,46 +112,6 @@ class _RetailingGraphWidgetState extends State<RetailingGraphWidget> {
           : const SizedBox(),
     );
   }
-
-  BarTouchData barTouchData(List<Trend> trendList) => BarTouchData(
-        enabled: false,
-        // handleBuiltInTouches: true,
-        longPressDuration: const Duration(milliseconds: 100),
-        handleBuiltInTouches: true,
-        // allowTouchBarBackDraw: false,
-        // touchExtraThreshold: EdgeInsets.only(right: 30),
-        touchCallback: (FlTouchEvent event, barTouchResponse) {
-          setState(() {
-            if (!event.isInterestedForInteractions ||
-                barTouchResponse == null ||
-                barTouchResponse.spot == null) {
-              touchedIndex = -1;
-              return;
-            }
-            touchedIndex = barTouchResponse.spot!.touchedBarGroupIndex;
-          });
-        },
-        touchTooltipData: BarTouchTooltipData(
-          // tooltipBgColor: Colors.blueGrey,
-          tooltipHorizontalAlignment: FLHorizontalAlignment.center,
-          tooltipMargin: 0,
-          tooltipBgColor: AppColors.primary,
-          tooltipRoundedRadius: 100,
-          getTooltipItem: (group, groupIndex, rod, rodIndex) {
-            return touchedIndex == groupIndex
-                ? BarTooltipItem(
-                    getDataTitles(group.x.toDouble(),
-                        trendList), //${getHintTitles(group.x.toDouble(), trendList)} :
-                    const TextStyle(
-                      color: AppColors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 11,
-                    ),
-                  )
-                : null;
-          },
-        ),
-      );
 
   Widget getTitles(double value, TitleMeta meta, List<Trend> trendsModel) {
     final style = GoogleFonts.ptSans(
@@ -145,11 +163,11 @@ class _RetailingGraphWidgetState extends State<RetailingGraphWidget> {
     return text;
   }
 
-  String getDataTitles(double value, List<Trend> trendsModel) {
+  String getDataTitles(double value, List<Trend> trendsModel, bool isSales) {
     String text = '';
     for (var v in trendsModel) {
       if (value.toInt() == v.index) {
-        text = v.cyRtRv ?? '';
+        text = isSales ? v.cyRtRv ?? '' : v.iya ?? '';
       }
     }
     return text;
@@ -204,25 +222,4 @@ class _RetailingGraphWidgetState extends State<RetailingGraphWidget> {
         begin: Alignment.bottomCenter,
         end: Alignment.topCenter,
       );
-
-  List<BarChartGroupData> barGroups(List<Trend> trendsData) => [
-        if (trendsData.isNotEmpty)
-          ...trendsData
-              .map(
-                (v) => BarChartGroupData(
-                  x: v.index ?? 0,
-                  barRods: [
-                    BarChartRodData(
-                      toY: widget.salesValue
-                          ? double.tryParse(v.cyRt ?? '0.0') ?? 0
-                          : double.tryParse(v.iya ?? '0.0') ?? 0,
-                      gradient: _barsGradient,
-                    )
-                  ],
-                  showingTooltipIndicators: [0],
-                  groupVertically: true,
-                ),
-              )
-              .toList(),
-      ];
 }
