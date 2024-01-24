@@ -334,7 +334,7 @@ class _CustomExpandedWidgetState extends State<CustomExpandedWidget> {
                                   ),
                           ),
                         ),
-                        if (widget.isSummary)
+                        if (widget.isSummary && ctlr.isRetailingDeepDiveInd)
                           Positioned(
                             top: 6,
                             right: 12,

@@ -6,4 +6,5 @@ class SvgFiles {
   static const String pen = 'assets/svg/pen.svg';
   static const String compare = 'assets/svg/compare.svg';
   static const String search = 'assets/svg/search.svg';
+  //
 }

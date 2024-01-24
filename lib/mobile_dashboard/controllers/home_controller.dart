@@ -225,6 +225,7 @@ class HomeController extends GetxController {
   }
 
   void getReatilingInit() {
+    _isRetailingDeepDiveInd = true;
     debugPrint('===> Calling Retailing Init');
     if (retailingGeoModel == null) {
       getRetailingData();
@@ -242,6 +243,7 @@ class HomeController extends GetxController {
   }
 
   void getCoverageInit() {
+    _isRetailingDeepDiveInd = true;
     if (coverageList.isEmpty) {
       getCoverageData();
     }
@@ -255,6 +257,7 @@ class HomeController extends GetxController {
   }
 
   void getGPInit() {
+    _isRetailingDeepDiveInd = true;
     if (gpList.isEmpty) {
       getGPData();
     }
@@ -271,6 +274,7 @@ class HomeController extends GetxController {
   }
 
   void getFBInit() {
+    _isRetailingDeepDiveInd = true;
     if (fbList.isEmpty) {
       getFocusBrandData();
     }

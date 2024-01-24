@@ -311,7 +311,7 @@ class _CustomExpandedChartWidgetState extends State<CoverageTrendsChartWidget> {
                                               border: const Border(
                                                   bottom: BorderSide(width: .5),
                                                   left: BorderSide(width: .5))),
-                                          gridData:const FlGridData(show: false),
+                                          gridData: FlGridData(show: false),
                                           titlesData: FlTitlesData(
                                             bottomTitles: AxisTitles(
                                               sideTitles: _bottomTitles(
