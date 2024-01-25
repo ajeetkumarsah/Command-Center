@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import '../retailing/widgets/geography_bottomsheet.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import '../retailing/widgets/select_month_bottomsheet.dart';
@@ -32,7 +33,6 @@ class _SummaryScreenState extends State<SummaryScreen> {
         ctlr.getInitValues();
       });
     }
-    //
   }
 
   @override
@@ -109,6 +109,29 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                   color: Colors.white,
                                   fontWeight: FontWeight.w400,
                                 ),
+                              ),
+                              Row( mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  const Text("Version:  ",
+                                      style: TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w400)),
+                                  FutureBuilder(
+                                    future: getVersionNumber(),
+                                    builder: (BuildContext context,
+                                        AsyncSnapshot<String> snapshot) =>
+                                        Text(
+                                          snapshot.hasData
+                                              ? "${snapshot.data}"
+                                              : "Loading ...",
+                                          style: const TextStyle(
+                                              fontSize: 14,
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.w500),
+                                        ),
+                                  ),
+                                ],
                               ),
                             ],
                           ),
@@ -1222,5 +1245,11 @@ class _SummaryScreenState extends State<SummaryScreen> {
         );
       },
     );
+  }
+  Future<String> getVersionNumber() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    String version = packageInfo.version;
+    print(version);
+    return version;
   }
 }
