@@ -37,14 +37,16 @@ class _ChannelFilterBottomsheetState extends State<ChannelFilterBottomsheet> {
   }
 
   bool isFirst = true;
-  void initCall(String value) {
+  void initCall(HomeController ctlr) {
     if (isFirst) {
       isFirst = false;
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (value == 'attr1') {
+        if (ctlr.selectedChannel == 'attr1') {
           onChangeFilter('Level 1');
+          ctlr.onChangeChannel('Level 1', widget.tabType);
         } else {
-          onChangeFilter(value);
+          onChangeFilter(ctlr.selectedChannel);
+          ctlr.onChangeChannel(ctlr.selectedChannel, widget.tabType);
         }
       });
     }
@@ -55,7 +57,7 @@ class _ChannelFilterBottomsheetState extends State<ChannelFilterBottomsheet> {
     return GetBuilder<HomeController>(
       init: HomeController(homeRepo: Get.find()),
       builder: (ctlr) {
-        initCall(ctlr.selectedChannel);
+        initCall(ctlr);
         return Container(
           decoration: const BoxDecoration(
             borderRadius: BorderRadius.only(
@@ -192,7 +194,8 @@ class _ChannelFilterBottomsheetState extends State<ChannelFilterBottomsheet> {
                                                             : false,
                                             onChanged: (v) =>
                                                 ctlr.onChangeChannelAllSelect(
-                                                    widget.tabType),
+                                                    widget.tabType,
+                                                    _selectedChannel),
                                           ),
                                         ),
                                         const Flexible(
@@ -277,20 +280,23 @@ class _ChannelFilterBottomsheetState extends State<ChannelFilterBottomsheet> {
                       ),
                     ),
                     TextButton(
-                      onPressed: () {
-                        // ctlr.onChangeChannel(_selectedChannel);
-                        ctlr.onChangeChannel1(_selectedChannel);
-                        // ctlr.onChangeChannelValue(
-                        //     _selectedChannelValue, widget.tabType);
-                        if (widget.isTrends) {
-                          ctlr.onApplyMultiFilter('trends', 'geo',
-                              tabType: widget.tabType);
-                        } else {
-                          ctlr.onApplyMultiFilter('geo', 'channel',
-                              tabType: widget.tabType);
-                        }
-                        Navigator.pop(context);
-                      },
+                      onPressed: SummaryTypes.retailing.type == widget.tabType
+                          ? ctlr.selectedRetailingChannelFilter.isNotEmpty
+                              ? () => onApplyFilter(ctlr)
+                              : null
+                          : SummaryTypes.coverage.type == widget.tabType
+                              ? ctlr.selectedCoverageChannelFilter.isNotEmpty
+                                  ? () => onApplyFilter(ctlr)
+                                  : null
+                              : SummaryTypes.gp.type == widget.tabType
+                                  ? ctlr.selectedGPChannelFilter.isNotEmpty
+                                      ? () => onApplyFilter(ctlr)
+                                      : null
+                                  : SummaryTypes.fb.type == widget.tabType
+                                      ? ctlr.selectedFBChannelFilter.isNotEmpty
+                                          ? () => onApplyFilter(ctlr)
+                                          : null
+                                      : () => onApplyFilter(ctlr),
                       style: ButtonStyle(
                         overlayColor:
                             MaterialStateProperty.all(Colors.transparent),
@@ -300,7 +306,25 @@ class _ChannelFilterBottomsheetState extends State<ChannelFilterBottomsheet> {
                         style: GoogleFonts.ptSans(
                           fontSize: 16,
                           fontWeight: FontWeight.w700,
-                          color: AppColors.primary,
+                          color: SummaryTypes.retailing.type == widget.tabType
+                              ? ctlr.selectedRetailingChannelFilter.isNotEmpty
+                                  ? AppColors.primary
+                                  : Colors.grey
+                              : SummaryTypes.coverage.type == widget.tabType
+                                  ? ctlr.selectedCoverageChannelFilter
+                                          .isNotEmpty
+                                      ? AppColors.primary
+                                      : Colors.grey
+                                  : SummaryTypes.gp.type == widget.tabType
+                                      ? ctlr.selectedGPChannelFilter.isNotEmpty
+                                          ? AppColors.primary
+                                          : Colors.grey
+                                      : SummaryTypes.fb.type == widget.tabType
+                                          ? ctlr.selectedFBChannelFilter
+                                                  .isNotEmpty
+                                              ? AppColors.primary
+                                              : Colors.grey
+                                          : Colors.grey,
                         ),
                       ),
                     ),
@@ -313,5 +337,18 @@ class _ChannelFilterBottomsheetState extends State<ChannelFilterBottomsheet> {
         );
       },
     );
+  }
+
+  void onApplyFilter(HomeController ctlr) {
+    // ctlr.onChangeChannel(_selectedChannel);
+    ctlr.onChangeChannel1(_selectedChannel);
+    // ctlr.onChangeChannelValue(
+    //     _selectedChannelValue, widget.tabType);
+    if (widget.isTrends) {
+      ctlr.onApplyMultiFilter('trends', 'geo', tabType: widget.tabType);
+    } else {
+      ctlr.onApplyMultiFilter('geo', 'channel', tabType: widget.tabType);
+    }
+    Navigator.pop(context);
   }
 }

@@ -186,7 +186,7 @@ class _CustomExpandedChartWidgetState extends State<CoverageTrendsChartWidget> {
                                                                             '0.0')) ??
                                                                     0.0
                                                                 : ctlr.selectedCoverageTrendsFilter ==
-                                                                        'CCR %'
+                                                                        'Call Hit Rate %'
                                                                     ? double.tryParse((point.ccPer ??
                                                                             '0.0')) ??
                                                                         0.0
@@ -316,7 +316,7 @@ class _CustomExpandedChartWidgetState extends State<CoverageTrendsChartWidget> {
                                             bottomTitles: AxisTitles(
                                               sideTitles: _bottomTitles(
                                                   widget.trendsList),
-                                             
+                                              
                                             ),
                                             leftTitles: AxisTitles(
                                               sideTitles: SideTitles(

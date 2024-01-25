@@ -405,7 +405,7 @@ class _CustomExpandedChartWidgetState extends State<GPTrendsChartWidget> {
                                             bottomTitles: AxisTitles(
                                               sideTitles: _bottomTitles(
                                                   widget.trendsList),
-                                             
+                                              
                                             ),
                                             leftTitles: AxisTitles(
                                               sideTitles: SideTitles(

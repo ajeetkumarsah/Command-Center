@@ -5,6 +5,7 @@ import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
 import 'package:command_centre/mobile_dashboard/utils/summary_types.dart';
 import 'package:command_centre/mobile_dashboard/controllers/home_controller.dart';
 import 'package:command_centre/mobile_dashboard/views/widgets/custom_loader.dart';
+import 'package:command_centre/mobile_dashboard/views/widgets/custom_snackbar.dart';
 
 class GeographyMultiSelectBottomsheet extends StatefulWidget {
   final bool isTrends;
@@ -378,20 +379,53 @@ class _GeographyMultiSelectBottomsheetState
                       ),
                     ),
                     TextButton(
-                      onPressed: () async {
-                        ctlr.onMultiGeoChange(_selectedFilter);
-                        // ctlr.onChangeMultiFilters(_selectedFilter,
-                        //     tabType: widget.tabType,
-                        //     selectedMultiGeoFilter: _selectedFilter);
-                        if (widget.isTrends) {
-                          ctlr.onApplyMultiFilter('trends', 'geo',
-                              tabType: widget.tabType, isTrendsFilter: true);
-                        } else {
-                          ctlr.onApplyMultiFilter('geo', 'geo',
-                              tabType: widget.tabType);
-                        }
-                        Navigator.pop(context);
-                      },
+                      onPressed: widget.tabType == SummaryTypes.retailing.type
+                          ? ctlr.selectedRetailingMultiAllIndia.isNotEmpty ||
+                                  ctlr.selectedRetailingMultiDivisions
+                                      .isNotEmpty ||
+                                  ctlr.selectedRetailingMultiClusters
+                                      .isNotEmpty ||
+                                  ctlr.selectedRetailingMultiSites.isNotEmpty ||
+                                  ctlr.selectedRetailingMultiBranches.isNotEmpty
+                              ? () => onApplyFilter(ctlr)
+                              : null
+                          : widget.tabType == SummaryTypes.coverage.type
+                              ? ctlr.selectedCoverageMultiAllIndia.isNotEmpty ||
+                                      ctlr.selectedCoverageMultiDivisions
+                                          .isNotEmpty ||
+                                      ctlr.selectedCoverageMultiClusters
+                                          .isNotEmpty ||
+                                      ctlr.selectedCoverageMultiSites
+                                          .isNotEmpty ||
+                                      ctlr.selectedCoverageMultiBranches
+                                          .isNotEmpty
+                                  ? () => onApplyFilter(ctlr)
+                                  : null
+                              : widget.tabType == SummaryTypes.gp.type
+                                  ? ctlr.selectedGPMultiAllIndia.isNotEmpty ||
+                                          ctlr.selectedGPMultiDivisions
+                                              .isNotEmpty ||
+                                          ctlr.selectedGPMultiClusters
+                                              .isNotEmpty ||
+                                          ctlr.selectedGPMultiSites
+                                              .isNotEmpty ||
+                                          ctlr.selectedGPMultiBranches
+                                              .isNotEmpty
+                                      ? () => onApplyFilter(ctlr)
+                                      : null
+                                  : widget.tabType == SummaryTypes.fb.type
+                                      ? ctlr.selectedFBMultiAllIndia.isNotEmpty ||
+                                              ctlr.selectedFBMultiDivisions
+                                                  .isNotEmpty ||
+                                              ctlr.selectedFBMultiClusters
+                                                  .isNotEmpty ||
+                                              ctlr.selectedFBMultiSites
+                                                  .isNotEmpty ||
+                                              ctlr.selectedFBMultiBranches
+                                                  .isNotEmpty
+                                          ? () => onApplyFilter(ctlr)
+                                          : null
+                                      : () => onApplyFilter(ctlr),
                       style: ButtonStyle(
                         overlayColor:
                             MaterialStateProperty.all(Colors.transparent),
@@ -401,7 +435,55 @@ class _GeographyMultiSelectBottomsheetState
                         style: GoogleFonts.ptSans(
                           fontSize: 16,
                           fontWeight: FontWeight.w700,
-                          color: AppColors.primary,
+                          color: widget.tabType == SummaryTypes.retailing.type
+                              ? ctlr.selectedRetailingMultiAllIndia.isNotEmpty ||
+                                      ctlr.selectedRetailingMultiDivisions
+                                          .isNotEmpty ||
+                                      ctlr.selectedRetailingMultiClusters
+                                          .isNotEmpty ||
+                                      ctlr.selectedRetailingMultiSites
+                                          .isNotEmpty ||
+                                      ctlr.selectedRetailingMultiBranches
+                                          .isNotEmpty
+                                  ? AppColors.primary
+                                  : Colors.grey
+                              : widget.tabType == SummaryTypes.coverage.type
+                                  ? ctlr.selectedCoverageMultiAllIndia.isNotEmpty ||
+                                          ctlr.selectedCoverageMultiDivisions
+                                              .isNotEmpty ||
+                                          ctlr.selectedCoverageMultiClusters
+                                              .isNotEmpty ||
+                                          ctlr.selectedCoverageMultiSites
+                                              .isNotEmpty ||
+                                          ctlr.selectedCoverageMultiBranches
+                                              .isNotEmpty
+                                      ? AppColors.primary
+                                      : Colors.grey
+                                  : widget.tabType == SummaryTypes.gp.type
+                                      ? ctlr.selectedGPMultiAllIndia.isNotEmpty ||
+                                              ctlr.selectedGPMultiDivisions
+                                                  .isNotEmpty ||
+                                              ctlr.selectedGPMultiClusters
+                                                  .isNotEmpty ||
+                                              ctlr.selectedGPMultiSites
+                                                  .isNotEmpty ||
+                                              ctlr.selectedGPMultiBranches
+                                                  .isNotEmpty
+                                          ? AppColors.primary
+                                          : Colors.grey
+                                      : widget.tabType == SummaryTypes.fb.type
+                                          ? ctlr.selectedFBMultiAllIndia.isNotEmpty ||
+                                                  ctlr.selectedFBMultiDivisions
+                                                      .isNotEmpty ||
+                                                  ctlr.selectedFBMultiClusters
+                                                      .isNotEmpty ||
+                                                  ctlr.selectedFBMultiSites
+                                                      .isNotEmpty ||
+                                                  ctlr.selectedFBMultiBranches
+                                                      .isNotEmpty
+                                              ? AppColors.primary
+                                              : Colors.grey
+                                          : Colors.grey,
                         ),
                       ),
                     ),
@@ -414,5 +496,17 @@ class _GeographyMultiSelectBottomsheetState
         );
       },
     );
+  }
+
+  void onApplyFilter(HomeController ctlr) {
+    ctlr.onMultiGeoChange(_selectedFilter);
+
+    if (widget.isTrends) {
+      ctlr.onApplyMultiFilter('trends', 'geo',
+          tabType: widget.tabType, isTrendsFilter: true);
+    } else {
+      ctlr.onApplyMultiFilter('geo', 'geo', tabType: widget.tabType);
+    }
+    Navigator.pop(context);
   }
 }

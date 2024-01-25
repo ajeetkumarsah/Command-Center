@@ -6,7 +6,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
 import 'package:command_centre/mobile_dashboard/utils/summary_types.dart';
 import 'package:command_centre/mobile_dashboard/controllers/home_controller.dart';
-import 'package:command_centre/mobile_dashboard/views/widgets/custom_loader.dart';
 
 class CategoryFilterBottomsheet extends StatefulWidget {
   final bool isTrends;
@@ -287,19 +286,24 @@ class _CategoryFilterBottomsheetState extends State<CategoryFilterBottomsheet> {
                       ),
                     ),
                     TextButton(
-                      onPressed: () {
-                        ctlr.onChangeCategory1(_selectedCategory,
-                            tabType: widget.tabType);
-                        if (widget.isTrends) {
-                          ctlr.onApplyMultiFilter('trends', 'geo',
-                              tabType: widget.tabType);
-                        } else {
-                          ctlr.onApplyMultiFilter('category', 'category',
-                              tabType: widget.tabType);
-                        }
-
-                        Navigator.pop(context);
-                      },
+                      onPressed: widget.tabType == SummaryTypes.retailing.type
+                          ? ctlr.selectedRetailingCategoryFilters.isNotEmpty
+                              ? () => onApplyFilter(ctlr)
+                              : null
+                          : widget.tabType == SummaryTypes.coverage.type
+                              ? ctlr.selectedCoverageCategoryFilters.isNotEmpty
+                                  ? () => onApplyFilter(ctlr)
+                                  : null
+                              : widget.tabType == SummaryTypes.gp.type
+                                  ? ctlr.selectedGPCategoryFilters.isNotEmpty
+                                      ? () => onApplyFilter(ctlr)
+                                      : null
+                                  : widget.tabType == SummaryTypes.fb.type
+                                      ? ctlr.selectedFBCategoryFilters
+                                              .isNotEmpty
+                                          ? () => onApplyFilter(ctlr)
+                                          : null
+                                      : () => onApplyFilter(ctlr),
                       style: ButtonStyle(
                         overlayColor:
                             MaterialStateProperty.all(Colors.transparent),
@@ -309,7 +313,20 @@ class _CategoryFilterBottomsheetState extends State<CategoryFilterBottomsheet> {
                         style: GoogleFonts.ptSans(
                           fontSize: 16,
                           fontWeight: FontWeight.w700,
-                          color: AppColors.primary,
+                          color: widget.tabType == SummaryTypes.retailing.type
+                              ? ctlr.selectedRetailingCategoryFilters.isNotEmpty
+                                  ? AppColors.primary
+                                  : Colors.grey
+                              : widget.tabType == SummaryTypes.gp.type
+                                  ? ctlr.selectedGPCategoryFilters.isNotEmpty
+                                      ? AppColors.primary
+                                      : Colors.grey
+                                  : widget.tabType == SummaryTypes.fb.type
+                                      ? ctlr.selectedFBCategoryFilters
+                                              .isNotEmpty
+                                          ? AppColors.primary
+                                          : Colors.grey
+                                      : Colors.grey,
                         ),
                       ),
                     ),
@@ -322,5 +339,16 @@ class _CategoryFilterBottomsheetState extends State<CategoryFilterBottomsheet> {
         );
       },
     );
+  }
+
+  void onApplyFilter(HomeController ctlr) {
+    ctlr.onChangeCategory1(_selectedCategory, tabType: widget.tabType);
+    if (widget.isTrends) {
+      ctlr.onApplyMultiFilter('trends', 'geo', tabType: widget.tabType);
+    } else {
+      ctlr.onApplyMultiFilter('category', 'category', tabType: widget.tabType);
+    }
+
+    Navigator.pop(context);
   }
 }

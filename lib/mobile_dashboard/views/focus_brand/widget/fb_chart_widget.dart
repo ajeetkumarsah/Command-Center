@@ -365,7 +365,7 @@ class _CustomExpandedChartWidgetState extends State<FBTrendsChartWidget> {
                                       bottomTitles: AxisTitles(
                                         sideTitles:
                                             _bottomTitles(widget.trendsList),
-                                       
+                                        
                                       ),
                                       leftTitles: AxisTitles(
                                         sideTitles: SideTitles(

@@ -158,20 +158,6 @@ class _RetailingScreenState extends State<RetailingScreen> {
                     child: Column(
                       children: [
                         const SizedBox(height: 16),
-                        // SwitchListTile(
-                        //   title: Text(ctlr.isRetailingDeepDiveInd
-                        //       ? 'Indirect'
-                        //       : 'Indirect + Direct'),
-                        //   value: ctlr.isRetailingDeepDiveInd,
-                        //   onChanged: (v) => ctlr.onChangeDeepDiveIndirect(v),
-                        //   activeColor: AppColors.primary,
-                        // ),
-                        // Row(
-                        //   children: [
-
-                        //   ],
-                        // ),
-                        // const SizedBox(height: 16),
                         ctlr.isRetailingGeoLoading
                             ? loadingWidget(context)
                             : ctlr.retailingGeoModel != null

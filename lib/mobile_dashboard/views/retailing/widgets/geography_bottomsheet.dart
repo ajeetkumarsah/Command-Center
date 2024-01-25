@@ -262,7 +262,7 @@ class GeographyBottomsheet extends StatelessWidget {
                       ),
                     ),
                     TextButton(
-                      onPressed: () async {
+                      onPressed: () {
                         if (ctlr.selectedTempGeoValue.isNotEmpty) {
                           ctlr.onApplyFilter(
                               isLoadRetailing: isLoadRetailing,

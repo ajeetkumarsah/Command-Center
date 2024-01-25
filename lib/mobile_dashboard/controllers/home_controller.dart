@@ -232,7 +232,11 @@ class HomeController extends GetxController {
   }
 
   void getReatilingInit() {
-    _isRetailingDeepDiveInd = true;
+    if (_selectedGeoValue.toLowerCase() == 'all india') {
+      _isRetailingDeepDiveInd = false;
+    } else {
+      _isRetailingDeepDiveInd = true;
+    }
     debugPrint('===> Calling Retailing Init');
     if (retailingGeoModel == null) {
       getRetailingData();
@@ -662,7 +666,7 @@ class HomeController extends GetxController {
     } else if (tabType == SummaryTypes.coverage.type) {
       if (_selectedTempCoverageChannel != channel) {
         _selectedTempCoverageChannel = channel;
-        selectedRetailingChannelFilter.clear();
+        selectedCoverageChannelFilter.clear();
       }
       if (selectedCoverageChannelFilter.contains(value)) {
         selectedCoverageChannelFilter.remove(value);
@@ -672,7 +676,7 @@ class HomeController extends GetxController {
     } else if (tabType == SummaryTypes.gp.type) {
       if (_selectedTempGPChannel != channel) {
         _selectedTempGPChannel = channel;
-        selectedRetailingChannelFilter.clear();
+        selectedGPChannelFilter.clear();
       }
       if (selectedGPChannelFilter.contains(value)) {
         selectedGPChannelFilter.remove(value);
@@ -682,7 +686,7 @@ class HomeController extends GetxController {
     } else if (tabType == SummaryTypes.fb.type) {
       if (_selectedTempFBChannel != channel) {
         _selectedTempFBChannel = channel;
-        selectedRetailingChannelFilter.clear();
+        selectedFBChannelFilter.clear();
       }
       if (selectedFBChannelFilter.contains(value)) {
         selectedFBChannelFilter.remove(value);
@@ -720,37 +724,49 @@ class HomeController extends GetxController {
     update();
   }
 
-  void onChangeChannelAllSelect(String tabType) {
+  void onChangeChannelAllSelect(String tabType, String channel) {
     if (tabType == SummaryTypes.retailing.type) {
+      if (_selectedTempRetailingChannel != channel) {
+        _selectedTempRetailingChannel = channel;
+        selectedRetailingChannelFilter.clear();
+      }
       if (eq(selectedRetailingChannelFilter, channelFilter)) {
-        debugPrint('===>Select All Clear');
         selectedRetailingChannelFilter.clear();
       } else {
-        debugPrint('===>Select All ADD');
+        selectedRetailingChannelFilter.clear();
         selectedRetailingChannelFilter.addAll(channelFilter);
       }
     } else if (tabType == SummaryTypes.coverage.type) {
+      if (_selectedTempCoverageChannel != channel) {
+        _selectedTempCoverageChannel = channel;
+        selectedCoverageChannelFilter.clear();
+      }
       if (eq(selectedCoverageChannelFilter, channelFilter)) {
-        debugPrint('===>Select All Clear');
         selectedCoverageChannelFilter.clear();
       } else {
-        debugPrint('===>Select All ADD');
+        selectedCoverageChannelFilter.clear();
         selectedCoverageChannelFilter.addAll(channelFilter);
       }
     } else if (tabType == SummaryTypes.gp.type) {
+      if (_selectedTempGPChannel != channel) {
+        _selectedTempGPChannel = channel;
+        selectedGPChannelFilter.clear();
+      }
       if (eq(selectedGPChannelFilter, channelFilter)) {
-        debugPrint('===>Select All Clear');
         selectedGPChannelFilter.clear();
       } else {
-        debugPrint('===>Select All ADD');
+        selectedGPChannelFilter.clear();
         selectedGPChannelFilter.addAll(channelFilter);
       }
     } else if (tabType == SummaryTypes.fb.type) {
+      if (_selectedTempRetailingChannel != channel) {
+        _selectedTempRetailingChannel = channel;
+        selectedRetailingChannelFilter.clear();
+      }
       if (eq(selectedFBChannelFilter, channelFilter)) {
-        debugPrint('===>Select All Clear');
         selectedFBChannelFilter.clear();
       } else {
-        debugPrint('===>Select All ADD');
+        selectedFBChannelFilter.clear();
         selectedFBChannelFilter.addAll(channelFilter);
       }
     }
@@ -856,8 +872,24 @@ class HomeController extends GetxController {
     if (!getOnlyShared) {
       var futures = await Future.wait([
         getSummaryData(),
-        getAllFilters().then((value) {
+        getAllFilters().then((v) {
           categoryFilters = filtersModel?.category ?? [];
+          onChangeFiltersAll(
+              type: 'category', tabType: SummaryTypes.retailing.type);
+          onChangeFiltersAll(type: 'category', tabType: SummaryTypes.gp.type);
+          onChangeFiltersAll(type: 'category', tabType: SummaryTypes.fb.type);
+          selectedRetailingChannelFilter = filtersModel?.attr1 ?? [];
+          selectedCoverageChannelFilter = filtersModel?.otherAttrs?.attr1 ?? [];
+          selectedGPChannelFilter = filtersModel?.otherAttrs?.attr1 ?? [];
+          selectedFBChannelFilter = filtersModel?.otherAttrs?.attr1 ?? [];
+          // onChangeChannelAllSelect(SummaryTypes.retailing.type, 'Level 1');
+          // onChangeChannelAllSelect(SummaryTypes.coverage.type, 'Level 1');
+          // onChangeChannelAllSelect(SummaryTypes.gp.type, 'Level 1');
+          // onChangeChannelAllSelect(SummaryTypes.fb.type, 'Level 1');
+          selectedGPChannelFilter = filtersModel?.otherAttrs?.attr1 ?? [];
+          selectedFBChannelFilter = filtersModel?.otherAttrs?.attr1 ?? [];
+          selectedCoverageChannelFilter = filtersModel?.otherAttrs?.attr1 ?? [];
+
           categoryTrendsFilters = filtersModel?.category ?? [];
           channelFilter = filtersModel?.attr1 ?? [];
           channelTrendsFilter = filtersModel?.attr1 ?? [];
@@ -1073,6 +1105,7 @@ class HomeController extends GetxController {
     _selectedGeo = _selectedTempGeo;
     _selectedGeoValue = _selectedTempGeoValue;
     if (_selectedGeo == 'All India') {
+      _isRetailingDeepDiveInd = false;
     } else {
       _isRetailingDeepDiveInd = true;
       _isSummaryDirect = true;

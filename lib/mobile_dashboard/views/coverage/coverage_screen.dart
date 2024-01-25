@@ -33,7 +33,7 @@ class _CoverageScreenState extends State<CoverageScreen> {
 
   @override
   Widget build(BuildContext context) {
-    List<String> coverageFilter = ['Billing %', 'Prod %', 'CCR %'];
+    List<String> coverageFilter = ['Billing %', 'Prod %', 'Call Hit Rate %'];
     return GetBuilder<HomeController>(
       init: HomeController(homeRepo: Get.find()),
       initState: (_) {
@@ -213,6 +213,7 @@ class _CoverageScreenState extends State<CoverageScreen> {
                                         value:
                                             ctlr.selectedCoverageTrendsFilter,
                                         underline: const SizedBox(),
+                                        isExpanded: false,
                                         icon: const Icon(
                                           Icons.arrow_drop_down_rounded,
                                           size: 24,
