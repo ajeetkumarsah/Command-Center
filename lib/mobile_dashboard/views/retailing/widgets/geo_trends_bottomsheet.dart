@@ -19,7 +19,13 @@ class GeographyTrendsBottomsheet extends StatefulWidget {
 
 class _GeographyTrendsBottomsheetState
     extends State<GeographyTrendsBottomsheet> {
-  List<String> geoList = ['All India', 'Division', 'Cluster', 'Site', 'Branch'];
+  List<String> geoList = [
+    'All India',
+    'Division',
+    'Cluster',
+    'Focus Area',
+    'Branch'
+  ];
   String _selectedGeo = 'All India', _selectedGeoValue = '';
   String get selectedGeo => _selectedGeo;
   String get selectedGeoValue => _selectedGeoValue;

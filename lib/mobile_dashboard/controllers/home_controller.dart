@@ -803,7 +803,7 @@ class HomeController extends GetxController {
         //"${selectedMonth!.substring(0, 3)}-$selectedYear",
         _selectedGeo.startsWith('All India')
             ? "allIndia"
-            : _selectedGeo.startsWith('Site')
+            : _selectedGeo.startsWith('Focus Area')
                 ? "site"
                 : _selectedGeo.startsWith('Cluster')
                     ? "district"
@@ -882,10 +882,6 @@ class HomeController extends GetxController {
           selectedCoverageChannelFilter = filtersModel?.otherAttrs?.attr1 ?? [];
           selectedGPChannelFilter = filtersModel?.otherAttrs?.attr1 ?? [];
           selectedFBChannelFilter = filtersModel?.otherAttrs?.attr1 ?? [];
-          // onChangeChannelAllSelect(SummaryTypes.retailing.type, 'Level 1');
-          // onChangeChannelAllSelect(SummaryTypes.coverage.type, 'Level 1');
-          // onChangeChannelAllSelect(SummaryTypes.gp.type, 'Level 1');
-          // onChangeChannelAllSelect(SummaryTypes.fb.type, 'Level 1');
           selectedGPChannelFilter = filtersModel?.otherAttrs?.attr1 ?? [];
           selectedFBChannelFilter = filtersModel?.otherAttrs?.attr1 ?? [];
           selectedCoverageChannelFilter = filtersModel?.otherAttrs?.attr1 ?? [];
@@ -988,7 +984,7 @@ class HomeController extends GetxController {
           multiFilters = filtersModel!.division;
         } else if (value.startsWith('Cluster')) {
           multiFilters = filtersModel!.district;
-        } else if (value.startsWith('Site')) {
+        } else if (value.startsWith('Focus Area')) {
           multiFilters = filtersModel!.site;
         } else if (value.startsWith('Branch')) {
           multiFilters = [];
@@ -1004,7 +1000,7 @@ class HomeController extends GetxController {
             multiFilters = filtersModel?.division ?? [];
           } else if (value.startsWith('Cluster')) {
             multiFilters = filtersModel?.district ?? [];
-          } else if (value.startsWith('Site')) {
+          } else if (value.startsWith('Focus Area')) {
             multiFilters = filtersModel?.site ?? [];
           } else if (value.startsWith('Branch')) {
             multiFilters = [];
@@ -1022,7 +1018,7 @@ class HomeController extends GetxController {
           filters = filtersModel!.division;
         } else if (value.startsWith('Cluster')) {
           filters = filtersModel!.district;
-        } else if (value.startsWith('Site')) {
+        } else if (value.startsWith('Focus Area')) {
           filters = filtersModel!.site;
         } else if (value.startsWith('Branch')) {
           filters = [];
@@ -1038,7 +1034,7 @@ class HomeController extends GetxController {
             filters = filtersModel?.division ?? [];
           } else if (value.startsWith('Cluster')) {
             filters = filtersModel?.district ?? [];
-          } else if (value.startsWith('Site')) {
+          } else if (value.startsWith('Focus Area')) {
             filters = filtersModel?.site ?? [];
           } else if (value.startsWith('Branch')) {
             filters = [];
@@ -1071,7 +1067,7 @@ class HomeController extends GetxController {
         trendsFilter = filtersModel!.division;
       } else if (value.startsWith('Cluster')) {
         trendsFilter = filtersModel!.district;
-      } else if (value.startsWith('Site')) {
+      } else if (value.startsWith('Focus Area')) {
         trendsFilter = filtersModel!.site;
       } else if (value.startsWith('Branch')) {
         trendsFilter = [];
@@ -1085,7 +1081,7 @@ class HomeController extends GetxController {
           trendsFilter = filtersModel?.division ?? [];
         } else if (value.startsWith('Cluster')) {
           trendsFilter = filtersModel?.district ?? [];
-        } else if (value.startsWith('Site')) {
+        } else if (value.startsWith('Focus Area')) {
           trendsFilter = filtersModel?.site ?? [];
         } else if (value.startsWith('Branch')) {
           trendsFilter = [];
@@ -1125,6 +1121,8 @@ class HomeController extends GetxController {
     }
 
     if (isLoadRetailing) {
+      //retailing screen data
+
       if (SummaryTypes.retailing.type == tabType) {
         //retailing screen data
         getRetailingData();
@@ -1344,7 +1342,8 @@ class HomeController extends GetxController {
           selectedFBMultiClusters.add(value);
         }
       }
-    } else if (selectedMultiGeoFilter.toLowerCase() == 'Site'.toLowerCase()) {
+    } else if (selectedMultiGeoFilter.toLowerCase() ==
+        'Focus Area'.toLowerCase()) {
       if (tabType == SummaryTypes.retailing.type) {
         if (selectedRetailingMultiSites.contains(value)) {
           selectedRetailingMultiSites.remove(value);
@@ -1578,7 +1577,7 @@ class HomeController extends GetxController {
       //"${selectedMonth!.substring(0, 3)}-$selectedYear",
       _selectedGeo.startsWith('All India')
               ? "allIndia"
-              : _selectedGeo.startsWith('Site')
+              : _selectedGeo.startsWith('Focus Area')
                   ? "site"
                   : _selectedGeo.startsWith('Cluster')
                       ? "district"
@@ -1708,27 +1707,28 @@ class HomeController extends GetxController {
                 if (isTrendsFilter && _selectedTrendsGeoValue.isEmpty)
                   _selectedTrendsGeo.startsWith('All India')
                           ? "allIndia"
-                          : _selectedTrendsGeo.startsWith('Cluster')
-                              ? "district"
-                              : _selectedTrendsGeo.toLowerCase():
-                      _selectedTrendsGeo.startsWith('All India')
-                          ? "allIndia"
-                          : _selectedTrendsGeoValue,
+                          : _selectedTrendsGeo.startsWith('Focus Area')
+                              ? "site"
+                              : _selectedTrendsGeo.startsWith('Cluster')
+                                  ? "district"
+                                  : _selectedTrendsGeo.toLowerCase():
+                      _selectedTrendsGeoValue,
                 if (!isTrendsFilter)
                   _selectedGeo.startsWith('All India')
-                          ? "allIndia"
+                      ? "allIndia"
+                      : _selectedGeo.startsWith('Focus Area')
+                          ? "site"
                           : _selectedGeo.startsWith('Cluster')
                               ? "district"
-                              : _selectedGeo.toLowerCase():
-                      _selectedGeo.startsWith('All India')
-                          ? "allIndia"
-                          : _selectedGeoValue,
+                              : _selectedGeo.toLowerCase(): _selectedGeoValue,
                 if (_selectedTrendsGeoValue.isNotEmpty && isTrendsFilter)
                   _selectedTrendsGeo.startsWith('All India')
                           ? "allIndia"
-                          : _selectedTrendsGeo.startsWith('Cluster')
-                              ? "district"
-                              : _selectedTrendsGeo.toLowerCase():
+                          : _selectedTrendsGeo.startsWith('Focus Area')
+                              ? "site"
+                              : _selectedTrendsGeo.startsWith('Cluster')
+                                  ? "district"
+                                  : _selectedTrendsGeo.toLowerCase():
                       _selectedTrendsGeoValue,
                 if (_selectedTrendsCategoryValue.isNotEmpty && isTrendsFilter)
                   _selectedTrendsCategory.toLowerCase() == 'brand form'
@@ -1762,9 +1762,11 @@ class HomeController extends GetxController {
                       "date": _selectedTempMonth,
                       _selectedGeo.startsWith('All India')
                               ? "allIndia"
-                              : _selectedGeo.startsWith('Cluster')
-                                  ? "district"
-                                  : _selectedGeo.toLowerCase():
+                              : _selectedGeo.startsWith('Focus Area')
+                                  ? "site"
+                                  : _selectedGeo.startsWith('Cluster')
+                                      ? "district"
+                                      : _selectedGeo.toLowerCase():
                           _selectedGeo.startsWith('All India')
                               ? "allIndia"
                               : _selectedGeoValue,
@@ -1793,9 +1795,11 @@ class HomeController extends GetxController {
                           // "${selectedMonth!.substring(0, 3)}-$selectedYear",
                           _selectedGeo.startsWith('All India')
                                   ? "allIndia"
-                                  : _selectedGeo.startsWith('Cluster')
-                                      ? "district"
-                                      : _selectedGeo.toLowerCase():
+                                  : _selectedGeo.startsWith('Focus Area')
+                                      ? "site"
+                                      : _selectedGeo.startsWith('Cluster')
+                                          ? "district"
+                                          : _selectedGeo.toLowerCase():
                               _selectedGeoValue,
                         },
                         ...selectedRetailingMultiAllIndia
@@ -1846,9 +1850,11 @@ class HomeController extends GetxController {
                         // "${selectedMonth!.substring(0, 3)}-$selectedYear",
                         _selectedGeo.startsWith('All India')
                                 ? "allIndia"
-                                : _selectedGeo.startsWith('Cluster')
-                                    ? "district"
-                                    : _selectedGeo.toLowerCase():
+                                : _selectedGeo.startsWith('Focus Area')
+                                    ? "site"
+                                    : _selectedGeo.startsWith('Cluster')
+                                        ? "district"
+                                        : _selectedGeo.toLowerCase():
                             _selectedGeo.startsWith('All India')
                                 ? "allIndia"
                                 : _selectedGeoValue,
@@ -1967,6 +1973,12 @@ class HomeController extends GetxController {
         final data = response.body["data"];
         if (data != null && data.isNotEmpty) {
           _filtersModel = FiltersModel.fromJson(data[0]);
+          if (_filtersModel != null) {
+            _filtersModel?.district.removeWhere(
+                (element) => element == 'Sri Lanka' || element == 'Nepal');
+            _filtersModel?.site.removeWhere(
+                (element) => element == 'Sri Lanka' || element == 'Nepal');
+          }
         }
         responseModel = ResponseModel(true, 'Success');
       } else {
@@ -2089,27 +2101,33 @@ class HomeController extends GetxController {
                 if (isTrendsFilter && _selectedTrendsGeoValue.isEmpty)
                   _selectedTrendsGeo.startsWith('All India')
                           ? "allIndia"
-                          : _selectedTrendsGeo.startsWith('Cluster')
-                              ? "district"
-                              : _selectedTrendsGeo.toLowerCase():
+                          : _selectedTrendsGeo.startsWith('Focus Area')
+                              ? "site"
+                              : _selectedTrendsGeo.startsWith('Cluster')
+                                  ? "district"
+                                  : _selectedTrendsGeo.toLowerCase():
                       _selectedTrendsGeo.startsWith('All India')
                           ? "allIndia"
                           : _selectedTrendsGeoValue,
                 if (!isTrendsFilter)
                   _selectedGeo.startsWith('All India')
                           ? "allIndia"
-                          : _selectedGeo.startsWith('Cluster')
-                              ? "district"
-                              : _selectedGeo.toLowerCase():
+                          : _selectedGeo.startsWith('Focus Area')
+                              ? "site"
+                              : _selectedGeo.startsWith('Cluster')
+                                  ? "district"
+                                  : _selectedGeo.toLowerCase():
                       _selectedGeo.startsWith('All India')
                           ? "allIndia"
                           : _selectedGeoValue,
                 if (_selectedTrendsGeoValue.isNotEmpty && isTrendsFilter)
                   _selectedTrendsGeo.startsWith('All India')
                           ? "allIndia"
-                          : _selectedTrendsGeo.startsWith('Cluster')
-                              ? "district"
-                              : _selectedTrendsGeo.toLowerCase():
+                          : _selectedTrendsGeo.startsWith('Focus Area')
+                              ? "site"
+                              : _selectedTrendsGeo.startsWith('Cluster')
+                                  ? "district"
+                                  : _selectedTrendsGeo.toLowerCase():
                       _selectedTrendsGeoValue,
                 // if (_selectedTrendsCategoryValue.isNotEmpty)
                 //   _selectedTrendsCategory.toLowerCase():
@@ -2136,9 +2154,11 @@ class HomeController extends GetxController {
                       //"${selectedMonth!.substring(0, 3)}-$selectedYear",
                       _selectedGeo.startsWith('All India')
                               ? "allIndia"
-                              : _selectedGeo.startsWith('Cluster')
-                                  ? "district"
-                                  : _selectedGeo.toLowerCase():
+                              : _selectedGeo.startsWith('Focus Area')
+                                  ? "site"
+                                  : _selectedGeo.startsWith('Cluster')
+                                      ? "district"
+                                      : _selectedGeo.toLowerCase():
                           _selectedGeo.startsWith('All India')
                               ? "allIndia"
                               : _selectedGeoValue,
@@ -2167,9 +2187,11 @@ class HomeController extends GetxController {
                           //"${selectedMonth!.substring(0, 3)}-$selectedYear",
                           _selectedGeo.startsWith('All India')
                                   ? "allIndia"
-                                  : _selectedGeo.startsWith('Cluster')
-                                      ? "district"
-                                      : _selectedGeo.toLowerCase():
+                                  : _selectedGeo.startsWith('Focus Area')
+                                      ? "site"
+                                      : _selectedGeo.startsWith('Cluster')
+                                          ? "district"
+                                          : _selectedGeo.toLowerCase():
                               _selectedGeoValue,
                         },
                         ...selectedCoverageMultiAllIndia
@@ -2220,9 +2242,11 @@ class HomeController extends GetxController {
                         // "${selectedMonth!.substring(0, 3)}-$selectedYear",
                         _selectedGeo.startsWith('All India')
                                 ? "allIndia"
-                                : _selectedGeo.startsWith('Cluster')
-                                    ? "district"
-                                    : _selectedGeo.toLowerCase():
+                                : _selectedGeo.startsWith('Focus Area')
+                                    ? "site"
+                                    : _selectedGeo.startsWith('Cluster')
+                                        ? "district"
+                                        : _selectedGeo.toLowerCase():
                             _selectedGeo.startsWith('All India')
                                 ? "allIndia"
                                 : _selectedGeoValue,
@@ -2368,9 +2392,11 @@ class HomeController extends GetxController {
                   if (!isTrendsFilter)
                     _selectedGeo.startsWith('All India')
                             ? "allIndia"
-                            : _selectedGeo.startsWith('Cluster')
-                                ? "district"
-                                : _selectedGeo.toLowerCase():
+                            : _selectedGeo.startsWith('Focus Area')
+                                ? "site"
+                                : _selectedGeo.startsWith('Cluster')
+                                    ? "district"
+                                    : _selectedGeo.toLowerCase():
                         _selectedGeo.startsWith('All India')
                             ? "allIndia"
                             : _selectedGeoValue,
@@ -2383,18 +2409,22 @@ class HomeController extends GetxController {
                   if (isTrendsFilter)
                     _selectedTrendsGeo.startsWith('All India')
                             ? "allIndia"
-                            : _selectedTrendsGeo.startsWith('Cluster')
-                                ? "district"
-                                : _selectedTrendsGeo.toLowerCase():
+                            : _selectedTrendsGeo.startsWith('Focus Area')
+                                ? "site"
+                                : _selectedTrendsGeo.startsWith('Cluster')
+                                    ? "district"
+                                    : _selectedTrendsGeo.toLowerCase():
                         _selectedTrendsGeo.startsWith('All India')
                             ? "allIndia"
                             : _selectedTrendsGeoValue,
                   if (!isTrendsFilter)
                     _selectedGeo.startsWith('All India')
                             ? "allIndia"
-                            : _selectedGeo.startsWith('Cluster')
-                                ? "district"
-                                : _selectedGeo.toLowerCase():
+                            : _selectedGeo.startsWith('Focus Area')
+                                ? "site"
+                                : _selectedGeo.startsWith('Cluster')
+                                    ? "district"
+                                    : _selectedGeo.toLowerCase():
                         _selectedGeo.startsWith('All India')
                             ? "allIndia"
                             : _selectedGeoValue,
@@ -2429,9 +2459,11 @@ class HomeController extends GetxController {
                         //"${selectedMonth!.substring(0, 3)}-$selectedYear",
                         _selectedGeo.startsWith('All India')
                                 ? "allIndia"
-                                : _selectedGeo.startsWith('Cluster')
-                                    ? "district"
-                                    : _selectedGeo.toLowerCase():
+                                : _selectedGeo.startsWith('Focus Area')
+                                    ? "site"
+                                    : _selectedGeo.startsWith('Cluster')
+                                        ? "district"
+                                        : _selectedGeo.toLowerCase():
                             _selectedGeo.startsWith('All India')
                                 ? "allIndia"
                                 : _selectedGeoValue,
@@ -2461,9 +2493,11 @@ class HomeController extends GetxController {
                             //"${selectedMonth!.substring(0, 3)}-$selectedYear",
                             _selectedGeo.startsWith('All India')
                                     ? "allIndia"
-                                    : _selectedGeo.startsWith('Cluster')
-                                        ? "district"
-                                        : _selectedGeo.toLowerCase():
+                                    : _selectedGeo.startsWith('Focus Area')
+                                        ? "site"
+                                        : _selectedGeo.startsWith('Cluster')
+                                            ? "district"
+                                            : _selectedGeo.toLowerCase():
                                 _selectedGeoValue,
                           },
                           ...selectedGPMultiAllIndia
@@ -2519,9 +2553,11 @@ class HomeController extends GetxController {
                           // "${selectedMonth!.substring(0, 3)}-$selectedYear",
                           _selectedGeo.startsWith('All India')
                                   ? "allIndia"
-                                  : _selectedGeo.startsWith('Cluster')
-                                      ? "district"
-                                      : _selectedGeo.toLowerCase():
+                                  : _selectedGeo.startsWith('Focus Area')
+                                      ? "site"
+                                      : _selectedGeo.startsWith('Cluster')
+                                          ? "district"
+                                          : _selectedGeo.toLowerCase():
                               _selectedGeo.startsWith('All India')
                                   ? "allIndia"
                                   : _selectedGeoValue,
@@ -2684,27 +2720,33 @@ class HomeController extends GetxController {
                 if (isTrendsFilter && _selectedTrendsGeoValue.isEmpty)
                   _selectedTrendsGeo.startsWith('All India')
                           ? "allIndia"
-                          : _selectedTrendsGeo.startsWith('Cluster')
-                              ? "district"
-                              : _selectedTrendsGeo.toLowerCase():
+                          : _selectedTrendsGeo.startsWith('Focus Area')
+                              ? "site"
+                              : _selectedTrendsGeo.startsWith('Cluster')
+                                  ? "district"
+                                  : _selectedTrendsGeo.toLowerCase():
                       _selectedTrendsGeo.startsWith('All India')
                           ? "allIndia"
                           : _selectedTrendsGeoValue,
                 if (!isTrendsFilter)
                   _selectedGeo.startsWith('All India')
                           ? "allIndia"
-                          : _selectedGeo.startsWith('Cluster')
-                              ? "district"
-                              : _selectedGeo.toLowerCase():
+                          : _selectedGeo.startsWith('Focus Area')
+                              ? "site"
+                              : _selectedGeo.startsWith('Cluster')
+                                  ? "district"
+                                  : _selectedGeo.toLowerCase():
                       _selectedGeo.startsWith('All India')
                           ? "allIndia"
                           : _selectedGeoValue,
                 if (_selectedTrendsGeoValue.isNotEmpty && isTrendsFilter)
                   _selectedTrendsGeo.startsWith('All India')
                           ? "allIndia"
-                          : _selectedTrendsGeo.startsWith('Cluster')
-                              ? "district"
-                              : _selectedTrendsGeo.toLowerCase():
+                          : _selectedTrendsGeo.startsWith('Focus Area')
+                              ? "site"
+                              : _selectedTrendsGeo.startsWith('Cluster')
+                                  ? "district"
+                                  : _selectedTrendsGeo.toLowerCase():
                       _selectedTrendsGeoValue,
                 //
                 if (selectedTrendsCategoryValue.isNotEmpty && !isTrendsFilter)
@@ -2734,9 +2776,11 @@ class HomeController extends GetxController {
                       // "${selectedMonth!.substring(0, 3)}-$selectedYear",
                       _selectedGeo.startsWith('All India')
                               ? "allIndia"
-                              : _selectedGeo.startsWith('Cluster')
-                                  ? "district"
-                                  : _selectedGeo.toLowerCase():
+                              : _selectedGeo.startsWith('Focus Area')
+                                  ? "site"
+                                  : _selectedGeo.startsWith('Cluster')
+                                      ? "district"
+                                      : _selectedGeo.toLowerCase():
                           _selectedGeo.startsWith('All India')
                               ? "allIndia"
                               : _selectedGeoValue,
@@ -2764,9 +2808,11 @@ class HomeController extends GetxController {
                           //"${selectedMonth!.substring(0, 3)}-$selectedYear",
                           _selectedGeo.startsWith('All India')
                                   ? "allIndia"
-                                  : _selectedGeo.startsWith('Cluster')
-                                      ? "district"
-                                      : _selectedGeo.toLowerCase():
+                                  : _selectedGeo.startsWith('Focus Area')
+                                      ? "site"
+                                      : _selectedGeo.startsWith('Cluster')
+                                          ? "district"
+                                          : _selectedGeo.toLowerCase():
                               _selectedGeoValue,
                         },
                         ...selectedFBMultiAllIndia
@@ -2811,9 +2857,11 @@ class HomeController extends GetxController {
                         "date": selectedMonth,
                         _selectedGeo.startsWith('All India')
                                 ? "allIndia"
-                                : _selectedGeo.startsWith('Cluster')
-                                    ? "district"
-                                    : _selectedGeo.toLowerCase():
+                                : _selectedGeo.startsWith('Focus Area')
+                                    ? "site"
+                                    : _selectedGeo.startsWith('Cluster')
+                                        ? "district"
+                                        : _selectedGeo.toLowerCase():
                             _selectedGeo.startsWith('All India')
                                 ? "allIndia"
                                 : _selectedGeoValue,

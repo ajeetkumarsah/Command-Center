@@ -52,7 +52,7 @@ class _GeographyMultiSelectBottomsheetState
       'All India',
       'Division',
       'Cluster',
-      'Site',
+      'Focus Area',
       'Branch'
     ];
     return GetBuilder<HomeController>(
@@ -278,7 +278,7 @@ class _GeographyMultiSelectBottomsheetState
                                                                           ? ctlr.selectedRetailingMultiDivisions.contains(e)
                                                                           : selectedFilter.toLowerCase() == 'Cluster'.toLowerCase()
                                                                               ? ctlr.selectedRetailingMultiClusters.contains(e)
-                                                                              : selectedFilter.toLowerCase() == 'Site'.toLowerCase()
+                                                                              : selectedFilter.toLowerCase() == 'Focus Area'.toLowerCase()
                                                                                   ? ctlr.selectedRetailingMultiSites.contains(e)
                                                                                   : selectedFilter.toLowerCase() == 'Branch'.toLowerCase()
                                                                                       ? ctlr.selectedRetailingMultiBranches.contains(e)
@@ -290,7 +290,7 @@ class _GeographyMultiSelectBottomsheetState
                                                                               ? ctlr.selectedCoverageMultiDivisions.contains(e)
                                                                               : selectedFilter.toLowerCase() == 'Cluster'.toLowerCase()
                                                                                   ? ctlr.selectedCoverageMultiClusters.contains(e)
-                                                                                  : selectedFilter.toLowerCase() == 'Site'.toLowerCase()
+                                                                                  : selectedFilter.toLowerCase() == 'Focus Area'.toLowerCase()
                                                                                       ? ctlr.selectedCoverageMultiSites.contains(e)
                                                                                       : selectedFilter.toLowerCase() == 'Branch'.toLowerCase()
                                                                                           ? ctlr.selectedCoverageMultiBranches.contains(e)
@@ -302,7 +302,7 @@ class _GeographyMultiSelectBottomsheetState
                                                                                   ? ctlr.selectedGPMultiDivisions.contains(e)
                                                                                   : selectedFilter.toLowerCase() == 'Cluster'.toLowerCase()
                                                                                       ? ctlr.selectedGPMultiClusters.contains(e)
-                                                                                      : selectedFilter.toLowerCase() == 'Site'.toLowerCase()
+                                                                                      : selectedFilter.toLowerCase() == 'Focus Area'.toLowerCase()
                                                                                           ? ctlr.selectedGPMultiSites.contains(e)
                                                                                           : selectedFilter.toLowerCase() == 'Branch'.toLowerCase()
                                                                                               ? ctlr.selectedGPMultiBranches.contains(e)
@@ -314,7 +314,7 @@ class _GeographyMultiSelectBottomsheetState
                                                                                       ? ctlr.selectedFBMultiDivisions.contains(e)
                                                                                       : selectedFilter.toLowerCase() == 'Cluster'.toLowerCase()
                                                                                           ? ctlr.selectedFBMultiClusters.contains(e)
-                                                                                          : selectedFilter.toLowerCase() == 'Site'.toLowerCase()
+                                                                                          : selectedFilter.toLowerCase() == 'Focus Area'.toLowerCase()
                                                                                               ? ctlr.selectedFBMultiSites.contains(e)
                                                                                               : selectedFilter.toLowerCase() == 'Branch'.toLowerCase()
                                                                                                   ? ctlr.selectedFBMultiBranches.contains(e)

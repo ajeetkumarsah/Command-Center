@@ -24,7 +24,7 @@ class GeographyBottomsheet extends StatelessWidget {
       'All India',
       'Division',
       'Cluster',
-      'Site',
+      'Focus Area',
       'Branch'
     ];
     return GetBuilder<HomeController>(
@@ -266,7 +266,7 @@ class GeographyBottomsheet extends StatelessWidget {
                         if (ctlr.selectedTempGeoValue.isNotEmpty) {
                           ctlr.onApplyFilter(
                               isLoadRetailing: isLoadRetailing,
-                              tabType: tabType,
+                              tabType: 'All',
                               isSummary: isSummary);
                           Navigator.pop(context);
                         } else {

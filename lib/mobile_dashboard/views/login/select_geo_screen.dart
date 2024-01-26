@@ -303,7 +303,7 @@ class _SelectGeoScreenState extends State<SelectGeoScreen>
                                 child: Align(
                                   alignment: Alignment.center,
                                   child: Text(
-                                    'Site',
+                                    'Focus Area',
                                     // textAlign: TextAlign.start,
                                     style: GoogleFonts.ptSansCaption(
                                       fontSize: 18,
@@ -442,7 +442,8 @@ class _SelectGeoScreenState extends State<SelectGeoScreen>
                           }
                         } else if (selectedContainerIndex == 4) {
                           if (selectedSiteValue != null) {
-                            ctlr.onChangeGeo('Site', selectedSiteValue ?? '');
+                            ctlr.onChangeGeo(
+                                'Focus Area', selectedSiteValue ?? '');
                             Get.offAndToNamed(AppPages.SPLASH_SCREEN);
                           } else {
                             showCustomSnackBar('Please select a site.');
