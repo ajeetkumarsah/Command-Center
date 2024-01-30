@@ -268,6 +268,7 @@ class _SelectProfileState extends State<SelectProfile> {
                           fontWeight: FontWeight.w700,
                           fontFamily: fontFamily,
                           fontSize: 18,
+                          color: Colors.white,
                           letterSpacing: 0.6),
                     ),
                     SizedBox(

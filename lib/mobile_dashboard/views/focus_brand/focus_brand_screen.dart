@@ -96,7 +96,7 @@ class _FocusBrandScreenState extends State<FocusBrandScreen> {
                                       GeographyMultiSelectBottomsheet(
                                           tabType: SummaryTypes.fb.type),
                                       isScrollControlled: true,
-                                    ),
+                                    ), tabType: 'Focus Brand by Geography',
                                   )
                                 : const SizedBox(),
                         SizedBox(height: ctlr.fbList.isNotEmpty ? 16 : 0),
@@ -139,7 +139,7 @@ class _FocusBrandScreenState extends State<FocusBrandScreen> {
                                     dataList: ctlr.categoryFBList,
                                     onTap: () => ctlr.onExpandCategory(
                                         !ctlr.isExpandedCategory),
-                                    isExpanded: ctlr.isExpandedCategory,
+                                    isExpanded: ctlr.isExpandedCategory, tabType: '',
                                   )
                                 : const SizedBox(),
                         SizedBox(
@@ -179,7 +179,7 @@ class _FocusBrandScreenState extends State<FocusBrandScreen> {
                                     onTap: () => ctlr.onExpandChannel(
                                         !ctlr.isExpandedChannel),
                                     dataList: ctlr.channelFBList,
-                                    isExpanded: ctlr.isExpandedChannel,
+                                    isExpanded: ctlr.isExpandedChannel, tabType: '',
                                   )
                                 : const SizedBox(),
                         SizedBox(

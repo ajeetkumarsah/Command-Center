@@ -35,6 +35,13 @@ class _RetailingGraphWidgetState extends State<RetailingGraphWidget> {
   int touchedIndex = -1;
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    print('=====< ${widget.yAxisData.runtimeType}');
+  }
+
+  @override
   Widget build(BuildContext context) {
     return AspectRatio(
       aspectRatio: 1.4,
@@ -138,7 +145,7 @@ class _RetailingGraphWidgetState extends State<RetailingGraphWidget> {
     final style = GoogleFonts.ptSans(
       color: AppColors.black,
       fontWeight: FontWeight.w300,
-      fontSize: 12,
+      fontSize: 11,
     );
     String text = '';
     for (var v in yaxisData) {
@@ -186,7 +193,7 @@ class _RetailingGraphWidgetState extends State<RetailingGraphWidget> {
         leftTitles: AxisTitles(
           sideTitles: SideTitles(
             showTitles: true,
-            reservedSize: 50,
+            reservedSize: 53,
             interval: widget.interval != 0 ? widget.interval : 1,
             getTitlesWidget: (value, meta) =>
                 getLeftTitles(value, meta, widget.yAxisData),

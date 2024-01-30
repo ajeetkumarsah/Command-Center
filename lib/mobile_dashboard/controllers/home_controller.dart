@@ -57,7 +57,7 @@ class HomeController extends GetxController {
       _isGPTrendsLoading = false,
       _isFBTrendsLoading = false,
       _channelSales = true,
-      _isSummaryDirect = true,
+      _isSummaryDirect = false,
       _isDirectIndirectLoading = false,
       _isSummaryPageLoading = false,
       _isRetailingDeepDiveInd = true;
@@ -415,7 +415,7 @@ class HomeController extends GetxController {
     if (tabType == SummaryTypes.retailing.type) {
       if (filtersModel != null) {
         if (value.toLowerCase().startsWith('level 1')) {
-          debugPrint('===> $value');
+          debugPrint('===> $value ===>${filtersModel?.attr1}');
           channelFilter = filtersModel?.attr1 ?? [];
         } else if (value.toLowerCase().startsWith('level 2')) {
           debugPrint('===> $value  ==>${filtersModel?.attr2}');
@@ -1873,7 +1873,7 @@ class HomeController extends GetxController {
                       },
                     ]
     };
-    debugPrint('===>Body : $_body');
+    debugPrint('===>Body Retailing : $_body');
     Response response = await homeRepo.getRetailingData(_body);
     ResponseModel responseModel;
     if (response.statusCode == 200) {

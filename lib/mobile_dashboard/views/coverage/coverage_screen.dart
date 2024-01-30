@@ -94,7 +94,7 @@ class _CoverageScreenState extends State<CoverageScreen> {
                                       GeographyMultiSelectBottomsheet(
                                           tabType: SummaryTypes.coverage.type),
                                       isScrollControlled: true,
-                                    ),
+                                    ), tabType: 'Coverage by Geography',
                                   )
                                 : const SizedBox(),
                         SizedBox(height: ctlr.coverageList.isNotEmpty ? 16 : 0),
@@ -182,7 +182,7 @@ class _CoverageScreenState extends State<CoverageScreen> {
                                     onTap: () => ctlr.onExpandChannel(
                                         !ctlr.isExpandedChannel),
                                     dataList: ctlr.channelCoverageList,
-                                    isExpanded: ctlr.isExpandedChannel,
+                                    isExpanded: ctlr.isExpandedChannel, tabType: '',
                                   )
                                 : const SizedBox(),
                         SizedBox(

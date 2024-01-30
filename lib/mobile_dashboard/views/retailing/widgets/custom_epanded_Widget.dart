@@ -1,3 +1,4 @@
+import 'package:command_centre/mobile_dashboard/utils/summary_types.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -8,10 +9,12 @@ class CustomExpandedWidget extends StatefulWidget {
   final void Function()? onTap;
   final bool isExpanded;
   final String title;
+  final String tabType;
   final Widget? firstWidget;
   final void Function()? onFilterTap;
   final List<List<String>> dataList;
   final bool isSummary;
+
   const CustomExpandedWidget(
       {super.key,
       required this.title,
@@ -20,7 +23,8 @@ class CustomExpandedWidget extends StatefulWidget {
       this.onFilterTap,
       required this.dataList,
       this.isSummary = false,
-      this.firstWidget});
+      this.firstWidget,
+      required this.tabType});
 
   @override
   State<CustomExpandedWidget> createState() => _CustomExpandedWidgetState();
@@ -33,12 +37,17 @@ class _CustomExpandedWidgetState extends State<CustomExpandedWidget> {
         AppColors.blueLight.withOpacity(.15),
       ],
       colorList = [];
+
   @override
   void initState() {
     super.initState();
+
+    print('==== ${widget.tabType}');
+    print('==== ${SummaryTypes.retailing.type}');
   }
 
   bool isFirst = true;
+
   void initColor() {
     if (isFirst && widget.dataList != null && widget.dataList.isNotEmpty) {
       isFirst = false;
@@ -143,7 +152,7 @@ class _CustomExpandedWidgetState extends State<CustomExpandedWidget> {
                                                           Container(
                                                             margin:
                                                                 const EdgeInsets
-                                                                        .symmetric(
+                                                                    .symmetric(
                                                                     vertical:
                                                                         .5),
                                                             color: index == 0
@@ -159,8 +168,9 @@ class _CustomExpandedWidgetState extends State<CustomExpandedWidget> {
                                                                           MapEntry(
                                                                         i,
                                                                         Container(
-                                                                          padding:
-                                                                              const EdgeInsets.all(8.0),
+                                                                          padding: const EdgeInsets
+                                                                              .all(
+                                                                              8.0),
                                                                           width:
                                                                               86,
                                                                           child:
@@ -315,7 +325,8 @@ class _CustomExpandedWidgetState extends State<CustomExpandedWidget> {
                                                                             .blueLight
                                                                             .withOpacity(.25),
                                                                     padding:
-                                                                        const EdgeInsets.all(
+                                                                        const EdgeInsets
+                                                                            .all(
                                                                             8.0),
                                                                     child: Text(
                                                                         value),
@@ -334,18 +345,51 @@ class _CustomExpandedWidgetState extends State<CustomExpandedWidget> {
                                   ),
                           ),
                         ),
-                        if (widget.isSummary && ctlr.isRetailingDeepDiveInd)
-                          Positioned(
-                            top: 6,
-                            right: 12,
-                            child: IconButton(
-                              onPressed: widget.onFilterTap,
-                              icon: const Icon(
-                                Icons.add,
-                                size: 20,
+                        widget.isSummary && ctlr.isRetailingDeepDiveInd
+                            ? Positioned(
+                                top: 6,
+                                right: 12,
+                                child: IconButton(
+                                  onPressed: widget.onFilterTap,
+                                  icon: const Icon(
+                                    Icons.add,
+                                    size: 20,
+                                  ),
+                                ),
+                              )
+                            : Positioned(
+                                top: 16,
+                                right: 25,
+                                child: widget.tabType ==
+                                        'Retailing by Geography'
+                                    ? const Text('Switch \'Ind\' to Add Geo',
+                                        style: TextStyle(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w400))
+                                    : widget.tabType == 'Coverage by Geography'
+                                        ? const Text(
+                                            'Switch \'Ind\' to Add Geo',
+                                            style: TextStyle(
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w400))
+                                        : widget.tabType ==
+                                                'Focus Brand by Geography'
+                                            ? const Text(
+                                                'Switch \'Ind\' to Add Geo',
+                                                style: TextStyle(
+                                                    fontSize: 12,
+                                                    fontWeight:
+                                                        FontWeight.w400))
+                                            : widget.tabType ==
+                                    'Golden Points by Geography'
+                                    ? const Text(
+                                    'Switch \'Ind\' to Add Geo',
+                                    style: TextStyle(
+                                        fontSize: 12,
+                                        fontWeight:
+                                        FontWeight.w400))
+                                    :const Text(''),
                               ),
-                            ),
-                          ),
                       ],
                     ),
                   ],

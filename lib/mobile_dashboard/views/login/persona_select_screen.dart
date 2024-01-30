@@ -195,6 +195,7 @@ class _PersonaScreenState extends State<PersonaScreen>
                         style: GoogleFonts.ptSans(
                           fontWeight: FontWeight.w700,
                           fontSize: 18,
+                          color: Colors.white,
                           letterSpacing: 0.6,
                         ),
                       ),
@@ -204,6 +205,7 @@ class _PersonaScreenState extends State<PersonaScreen>
                           : const Icon(
                               Icons.arrow_forward,
                               size: 20,
+                              color: Colors.white,
                               weight: 100,
                             ),
                     ],

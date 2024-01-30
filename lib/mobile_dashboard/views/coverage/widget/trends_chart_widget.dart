@@ -262,7 +262,7 @@ class _CustomExpandedChartWidgetState extends State<CoverageTrendsChartWidget> {
                                                                             2) ??
                                                                     '0.0'
                                                                 : ctlr.selectedCoverageTrendsFilter ==
-                                                                        'CCR %'
+                                                                        'Call Hit Rate %'
                                                                     ? double.tryParse((widget.trendsList[0].data![touchedSpot.spotIndex].ccPer ??
                                                                                 '0.0'))
                                                                             ?.toStringAsFixed(2) ??

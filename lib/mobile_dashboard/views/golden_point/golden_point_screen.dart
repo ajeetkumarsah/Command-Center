@@ -96,7 +96,7 @@ class _GoldenPointScreenState extends State<GoldenPointScreen> {
                                       GeographyMultiSelectBottomsheet(
                                           tabType: SummaryTypes.gp.type),
                                       isScrollControlled: true,
-                                    ),
+                                    ), tabType: '',
                                   )
                                 : const SizedBox(),
                         SizedBox(height: ctlr.gpList.isNotEmpty ? 16 : 0),
@@ -140,7 +140,7 @@ class _GoldenPointScreenState extends State<GoldenPointScreen> {
                                         : [],
                                     onTap: () => ctlr.onExpandCategory(
                                         !ctlr.isExpandedCategory),
-                                    isExpanded: ctlr.isExpandedCategory,
+                                    isExpanded: ctlr.isExpandedCategory, tabType: '',
                                   )
                                 : const SizedBox(),
                         SizedBox(
@@ -180,7 +180,7 @@ class _GoldenPointScreenState extends State<GoldenPointScreen> {
                                     onTap: () => ctlr.onExpandChannel(
                                         !ctlr.isExpandedChannel),
                                     dataList: ctlr.channelGPList,
-                                    isExpanded: ctlr.isExpandedChannel,
+                                    isExpanded: ctlr.isExpandedChannel, tabType: '',
                                   )
                                 : const SizedBox(),
                         SizedBox(

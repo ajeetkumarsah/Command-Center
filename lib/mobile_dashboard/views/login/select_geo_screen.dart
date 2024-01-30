@@ -375,7 +375,7 @@ class _SelectGeoScreenState extends State<SelectGeoScreen>
                                               : selectedContainerIndex == 3
                                                   ? 'Select Cluster'
                                                   : selectedContainerIndex == 4
-                                                      ? 'Select Site'
+                                                      ? 'Select Focus Area'
                                                       : '',
                                           dropDownItem:
                                               selectedContainerIndex == 2
@@ -464,6 +464,7 @@ class _SelectGeoScreenState extends State<SelectGeoScreen>
                               style: GoogleFonts.ptSansCaption(
                                   fontWeight: FontWeight.w700,
                                   fontSize: 18,
+                                  color: Colors.white,
                                   letterSpacing: 0.6)),
                         ],
                       ),
