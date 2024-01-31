@@ -164,13 +164,15 @@ class _RetailingScreenState extends State<RetailingScreen> {
                                 ? CustomExpandedWidget(
                                     title: 'Retailing by Geography',
                                     isSummary: true,
+                                    selectedFilterValue: '',
                                     onTap: () => ctlr.onExpandSummary(
                                         !ctlr.isSummaryExpanded),
                                     isExpanded: ctlr.isSummaryExpanded,
                                     dataList: ctlr.isRetailingDeepDiveInd
                                         ? ctlr.retailingGeoModel?.ind ?? []
                                         : ctlr.retailingGeoModel?.indDir ?? [],
-                                    onFilterTap: () => Get.bottomSheet(
+                                    onFilterTap: () {},
+                                    onAddGeoTap: () => Get.bottomSheet(
                                       GeographyMultiSelectBottomsheet(
                                           tabType: SummaryTypes.retailing.type),
                                       isScrollControlled: true,
@@ -184,37 +186,12 @@ class _RetailingScreenState extends State<RetailingScreen> {
                             : ctlr.categoryRetailingModel != null
                                 ? CustomExpandedWidget(
                                     title: 'Retailing by Category',
-                                    firstWidget: InkWell(
-                                      onTap: () => Get.bottomSheet(
-                                        CategoryFilterBottomsheet(
-                                            tabType:
-                                                SummaryTypes.retailing.type),
-                                        isScrollControlled: true,
-                                      ),
-                                      child: Container(
-                                        padding: const EdgeInsets.all(6),
-                                        child: Row(
-                                          children: [
-                                            Expanded(
-                                              child: Text(
-                                                ctlr.selectedCategory,
-                                                maxLines: 2,
-                                                overflow: TextOverflow.ellipsis,
-                                                style: GoogleFonts.ptSans(
-                                                  fontSize: 16,
-                                                  color: AppColors.primary,
-                                                ),
-                                              ),
-                                            ),
-                                            const Icon(
-                                              Icons.edit,
-                                              size: 16,
-                                              color: AppColors.primary,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
+                                    onFilterTap: () => Get.bottomSheet(
+                                      CategoryFilterBottomsheet(
+                                          tabType: SummaryTypes.retailing.type),
+                                      isScrollControlled: true,
                                     ),
+                                    selectedFilterValue: ctlr.selectedCategory,
                                     dataList: ctlr.isRetailingDeepDiveInd
                                         ? ctlr.categoryRetailingModel?.ind ?? []
                                         : ctlr.categoryRetailingModel?.indDir ??
@@ -232,37 +209,13 @@ class _RetailingScreenState extends State<RetailingScreen> {
                             : ctlr.channelRetailingModel != null
                                 ? CustomExpandedWidget(
                                     title: 'Retailing by Channel',
-                                    firstWidget: InkWell(
-                                      onTap: () => Get.bottomSheet(
-                                        ChannelFilterBottomsheet(
-                                            tabType:
-                                                SummaryTypes.retailing.type),
-                                        isScrollControlled: true,
-                                      ),
-                                      child: Container(
-                                        padding: const EdgeInsets.all(6),
-                                        child: Row(
-                                          children: [
-                                            Flexible(
-                                              child: Text(
-                                                'Channels',
-                                                overflow: TextOverflow.ellipsis,
-                                                maxLines: 1,
-                                                style: GoogleFonts.ptSans(
-                                                  fontSize: 16,
-                                                  color: AppColors.primary,
-                                                ),
-                                              ),
-                                            ),
-                                            const Icon(
-                                              Icons.edit,
-                                              size: 16,
-                                              color: AppColors.primary,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
+                                    onFilterTap: () => Get.bottomSheet(
+                                      ChannelFilterBottomsheet(
+                                          tabType: SummaryTypes.retailing.type),
+                                      isScrollControlled: true,
                                     ),
+                                    selectedFilterValue:
+                                        ctlr.selectedRetailingChannel,
                                     onTap: () => ctlr.onExpandChannel(
                                         !ctlr.isExpandedChannel),
                                     dataList: ctlr.isRetailingDeepDiveInd

@@ -87,12 +87,14 @@ class _GoldenPointScreenState extends State<GoldenPointScreen> {
                             : ctlr.gpList.isNotEmpty
                                 ? CustomExpandedWidget(
                                     title: 'Golden Points by Geography',
+                                    selectedFilterValue: '',
                                     isSummary: true,
                                     onTap: () => ctlr.onExpandSummary(
                                         !ctlr.isSummaryExpanded),
                                     isExpanded: ctlr.isSummaryExpanded,
                                     dataList: ctlr.gpList,
-                                    onFilterTap: () => Get.bottomSheet(
+                                    onFilterTap: () {},
+                                    onAddGeoTap: () => Get.bottomSheet(
                                       GeographyMultiSelectBottomsheet(
                                           tabType: SummaryTypes.gp.type),
                                       isScrollControlled: true,
@@ -105,36 +107,13 @@ class _GoldenPointScreenState extends State<GoldenPointScreen> {
                             : ctlr.categoryGPList.isNotEmpty
                                 ? CustomExpandedWidget(
                                     title: 'Golden Points by Category',
-                                    firstWidget: InkWell(
-                                      onTap: () => Get.bottomSheet(
-                                        CategoryFilterBottomsheet(
-                                            tabType: SummaryTypes.gp.type),
-                                        isScrollControlled: true,
-                                      ),
-                                      child: Container(
-                                        padding: const EdgeInsets.all(6),
-                                        child: Row(
-                                          children: [
-                                            Flexible(
-                                              child: Text(
-                                                ctlr.selectedGPCategory,
-                                                maxLines: 2,
-                                                overflow: TextOverflow.ellipsis,
-                                                style: GoogleFonts.ptSans(
-                                                  fontSize: 16,
-                                                  color: AppColors.primary,
-                                                ),
-                                              ),
-                                            ),
-                                            const Icon(
-                                              Icons.edit,
-                                              size: 16,
-                                              color: AppColors.primary,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
+                                    onFilterTap: () => Get.bottomSheet(
+                                      CategoryFilterBottomsheet(
+                                          tabType: SummaryTypes.gp.type),
+                                      isScrollControlled: true,
                                     ),
+                                    selectedFilterValue:
+                                        ctlr.selectedGPCategory,
                                     dataList: ctlr.categoryGPList.isNotEmpty
                                         ? ctlr.categoryGPList
                                         : [],
@@ -150,33 +129,13 @@ class _GoldenPointScreenState extends State<GoldenPointScreen> {
                             : ctlr.channelGPList.isNotEmpty
                                 ? CustomExpandedWidget(
                                     title: 'Golden Points by Channel',
-                                    firstWidget: InkWell(
-                                      onTap: () => Get.bottomSheet(
-                                        ChannelFilterBottomsheet(
-                                          tabType: SummaryTypes.gp.type,
-                                        ),
-                                        isScrollControlled: true,
+                                    onFilterTap: () => Get.bottomSheet(
+                                      ChannelFilterBottomsheet(
+                                        tabType: SummaryTypes.gp.type,
                                       ),
-                                      child: Container(
-                                        padding: const EdgeInsets.all(6),
-                                        child: Row(
-                                          children: [
-                                            Text(
-                                              'Channels',
-                                              style: GoogleFonts.ptSans(
-                                                fontSize: 16,
-                                                color: AppColors.primary,
-                                              ),
-                                            ),
-                                            const Icon(
-                                              Icons.edit,
-                                              size: 16,
-                                              color: AppColors.primary,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
+                                      isScrollControlled: true,
                                     ),
+                                    selectedFilterValue: ctlr.selectedGPChannel,
                                     onTap: () => ctlr.onExpandChannel(
                                         !ctlr.isExpandedChannel),
                                     dataList: ctlr.channelGPList,

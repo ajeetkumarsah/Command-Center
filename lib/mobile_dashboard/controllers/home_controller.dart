@@ -123,6 +123,14 @@ class HomeController extends GetxController {
 
   String _selectedChannel = 'attr1';
   String get selectedChannel => _selectedChannel;
+  String _selectedRetailingChannel = 'Level 1';
+  String get selectedRetailingChannel => _selectedRetailingChannel;
+  String _selectedCoverageChannel = 'Level 1';
+  String get selectedCoverageChannel => _selectedCoverageChannel;
+  String _selectedGPChannel = 'Level 1';
+  String get selectedGPChannel => _selectedGPChannel;
+  String _selectedFBChannel = 'Level 1';
+  String get selectedFBChannel => _selectedFBChannel;
   String _selectedTrendsChannel = 'attr1';
   String get selectedTrendsChannel => _selectedTrendsChannel;
   String _selectedTrendsChannelValue = '';
@@ -392,8 +400,20 @@ class HomeController extends GetxController {
     update();
   }
 
-  void onChangeChannel1(String value) {
+  void onChangeChannel1(String value, {String? tabType}) {
     _selectedChannel = value;
+    if (tabType != null) {
+      if (tabType == SummaryTypes.retailing.type) {
+        _selectedRetailingChannel = value;
+      } else if (tabType == SummaryTypes.coverage.type) {
+        _selectedCoverageChannel = value;
+      } else if (tabType == SummaryTypes.gp.type) {
+        _selectedGPChannel = value;
+      } else if (tabType == SummaryTypes.fb.type) {
+        _selectedFBChannel = value;
+      }
+    }
+
     update();
   }
 
@@ -403,29 +423,21 @@ class HomeController extends GetxController {
   }
 
   void onChangeChannel(String value, String tabType) {
-    // if (tabType == SummaryTypes.retailing.type) {
-    //   selectedRetailingChannelFilter.clear();
-    // } else if (tabType == SummaryTypes.coverage.type) {
-    //   selectedCoverageChannelFilter.clear();
-    // } else if (tabType == SummaryTypes.gp.type) {
-    //   selectedGPChannelFilter.clear();
-    // } else if (tabType == SummaryTypes.fb.type) {
-    //   selectedFBChannelFilter.clear();
-    // }
     if (tabType == SummaryTypes.retailing.type) {
       if (filtersModel != null) {
         if (value.toLowerCase().startsWith('level 1')) {
-          debugPrint('===> $value ===>${filtersModel?.attr1}');
-          channelFilter = filtersModel?.attr1 ?? [];
+          debugPrint('===> $value  ==>${filtersModel?.attr1}');
+
+          channelFilter = _filtersModel?.attr1 ?? [];
         } else if (value.toLowerCase().startsWith('level 2')) {
           debugPrint('===> $value  ==>${filtersModel?.attr2}');
-          channelFilter = filtersModel?.attr2 ?? [];
+          channelFilter = _filtersModel?.attr2 ?? [];
         } else if (value.toLowerCase().startsWith('level 3')) {
-          channelFilter = filtersModel?.attr3 ?? [];
+          channelFilter = _filtersModel?.attr3 ?? [];
         } else if (value.toLowerCase().startsWith('level 4')) {
-          channelFilter = filtersModel?.attr4 ?? [];
+          channelFilter = _filtersModel?.attr4 ?? [];
         } else if (value.toLowerCase().startsWith('level 5')) {
-          channelFilter = filtersModel?.attr5 ?? [];
+          channelFilter = _filtersModel?.attr5 ?? [];
         }
       } else {
         getAllFilters().then((v) {
@@ -1092,10 +1104,11 @@ class HomeController extends GetxController {
     update();
   }
 
-  void onApplyFilter(
-      {bool isLoadRetailing = false,
-      String tabType = 'Retailing',
-      bool isSummary = false}) async {
+  void onApplyFilter({
+    bool isLoadRetailing = false,
+    String tabType = 'Retailing',
+    bool isSummary = false,
+  }) async {
     debugPrint(
         '===>selected Filter $selectedTempGeo  -- $selectedTempGeoValue');
     _selectedGeo = _selectedTempGeo;
@@ -1109,10 +1122,50 @@ class HomeController extends GetxController {
 
     saveGeo(_selectedTempGeo);
     saveGeoValue(_selectedTempGeoValue);
-    _retailingTrendsValue = _selectedTempGeoValue;
-    _coverageTrendsValue = _selectedTempGeoValue;
-    _gpTrendsValue = _selectedTempGeoValue;
-    _fbTrendsValue = _selectedTempGeoValue;
+    debugPrint('===>Trends Value:${_selectedTrendsGeoValue}');
+    if (SummaryTypes.retailing.type == tabType) {
+      if (_selectedTrendsGeoValue.trim().isNotEmpty) {
+        _retailingTrendsValue = _selectedTempGeoValue;
+      }
+      _coverageTrendsValue = _selectedTempGeoValue;
+      _gpTrendsValue = _selectedTempGeoValue;
+      _fbTrendsValue = _selectedTempGeoValue;
+    } else if (SummaryTypes.coverage.type == tabType) {
+      if (_selectedTrendsGeoValue.trim().isNotEmpty) {
+        _coverageTrendsValue = _selectedTempGeoValue;
+      }
+      _retailingTrendsValue = _selectedTempGeoValue;
+      _gpTrendsValue = _selectedTempGeoValue;
+      _fbTrendsValue = _selectedTempGeoValue;
+    } else if (SummaryTypes.gp.type == tabType) {
+      if (_selectedTrendsGeoValue.trim().isNotEmpty) {
+        _gpTrendsValue = _selectedTempGeoValue;
+      }
+      _retailingTrendsValue = _selectedTempGeoValue;
+      _coverageTrendsValue = _selectedTempGeoValue;
+      _fbTrendsValue = _selectedTempGeoValue;
+    } else if (SummaryTypes.fb.type == tabType) {
+      if (_selectedTrendsGeoValue.trim().isNotEmpty) {
+        _fbTrendsValue = _selectedTempGeoValue;
+      }
+      _retailingTrendsValue = _selectedTempGeoValue;
+      _coverageTrendsValue = _selectedTempGeoValue;
+      _gpTrendsValue = _selectedTempGeoValue;
+    }
+    //  else {
+    // if (_selectedTrendsGeoValue.isEmpty) {
+    //   _retailingTrendsValue = _selectedTempGeoValue;
+    // }
+    // if (_coverageTrendsValue.isEmpty) {
+    //   _coverageTrendsValue = _selectedTempGeoValue;
+    // }
+    // if (_gpTrendsValue.isEmpty) {
+    //   _gpTrendsValue = _selectedTempGeoValue;
+    // }
+    // if (_fbTrendsValue.isEmpty) {
+    //   _fbTrendsValue = _selectedTempGeoValue;
+    // }
+    // }
 
     if (isSummary) {
       await getSummaryData();
@@ -1670,24 +1723,14 @@ class HomeController extends GetxController {
         _isRetailingGeoLoading = true;
       } else if (type.startsWith('category')) {
         _isRetailingCategoryLoading = true;
-        RetailingGeoModel categoryListTemp =
-            RetailingGeoModel(ind: [], indDir: []);
-        categoryListTemp.ind?.addAll(categoryRetailingModel?.ind ?? []);
-        categoryListTemp.indDir?.addAll(categoryRetailingModel?.indDir ?? []);
-        categoryRetailingModel = RetailingGeoModel(ind: [], indDir: []);
-        categoryRetailingModel?.ind?.add(categoryListTemp.ind?[0] ?? []);
-        categoryRetailingModel?.indDir?.add(categoryListTemp.indDir?[0] ?? []);
+        categoryRetailingModel?.ind?.clear();
+        categoryRetailingModel?.indDir?.clear();
         Logger().log(Level.debug,
             '===> Retailing Category Data Start ${stopWatch.elapsed.toString()}');
       } else if (type.startsWith('channel')) {
         _isRetailingChannelLoading = true;
-        RetailingGeoModel channelListTemp =
-            RetailingGeoModel(ind: [], indDir: []);
-        channelListTemp.ind?.addAll(channelRetailingModel?.ind ?? []);
-        channelListTemp.indDir?.addAll(channelRetailingModel?.indDir ?? []);
-        channelRetailingModel = RetailingGeoModel(ind: [], indDir: []);
-        channelRetailingModel?.ind?.add(channelListTemp.ind?[0] ?? []);
-        channelRetailingModel?.indDir?.add(channelListTemp.indDir?[0] ?? []);
+        channelRetailingModel?.ind?.clear();
+        channelRetailingModel?.indDir?.clear();
         Logger().log(Level.debug,
             '===> Retailing Channel Data Start ${stopWatch.elapsed.toString()}');
       } else {
@@ -1771,15 +1814,20 @@ class HomeController extends GetxController {
                               ? "allIndia"
                               : _selectedGeoValue,
                       if (selectedRetailingChannelFilter.isNotEmpty)
-                        selectedChannel.toLowerCase() == 'level 1'
+                        selectedRetailingChannel.toLowerCase() == 'level 1'
                                 ? 'attr1'
-                                : selectedChannel.toLowerCase() == 'level 2'
+                                : selectedRetailingChannel.toLowerCase() ==
+                                        'level 2'
                                     ? 'attr2'
-                                    : selectedChannel.toLowerCase() == 'level 3'
+                                    : selectedRetailingChannel.toLowerCase() ==
+                                            'level 3'
                                         ? 'attr3'
-                                        : selectedChannel.toLowerCase() == 'level 4'
+                                        : selectedRetailingChannel
+                                                    .toLowerCase() ==
+                                                'level 4'
                                             ? 'attr4'
-                                            : selectedChannel.toLowerCase() ==
+                                            : selectedRetailingChannel
+                                                        .toLowerCase() ==
                                                     'level 5'
                                                 ? 'attr5'
                                                 : 'attr1':
@@ -1873,7 +1921,7 @@ class HomeController extends GetxController {
                       },
                     ]
     };
-    debugPrint('===>Body Retailing : $_body');
+    debugPrint('===>Body : $_body');
     Response response = await homeRepo.getRetailingData(_body);
     ResponseModel responseModel;
     if (response.statusCode == 200) {
@@ -1977,7 +2025,7 @@ class HomeController extends GetxController {
             _filtersModel?.district.removeWhere(
                 (element) => element == 'Sri Lanka' || element == 'Nepal');
             _filtersModel?.site.removeWhere(
-                    (element) => element == 'Bhutan' || element == 'Test Faridabad' || element == 'TEST DEHRADUN' || element == 'Test Bhopal' || element == 'Sri Lanka' || element == 'Nepal');
+                (element) => element == 'Sri Lanka' || element == 'Nepal');
           }
         }
         responseModel = ResponseModel(true, 'Success');
@@ -2022,8 +2070,6 @@ class HomeController extends GetxController {
         if (data != null && data.isNotEmpty) {
           if (type.toLowerCase() == 'branch') {
             branchFilter = List<String>.from(data!.map((x) => x));
-            branchFilter.removeWhere(
-                    (element) => element.contains('TEST ') || element.contains('Test '));
           } else if (type.toLowerCase() == 'subBrandForm'.toLowerCase() ||
               type.toLowerCase() == 'subBrandGroup'.toLowerCase()) {
             subBrandForm = List<String>.from(data!.map((x) => x));
@@ -2165,15 +2211,19 @@ class HomeController extends GetxController {
                               ? "allIndia"
                               : _selectedGeoValue,
                       if (selectedCoverageChannelFilter.isNotEmpty)
-                        selectedChannel.toLowerCase() == 'level 1'
+                        selectedCoverageChannel.toLowerCase() == 'level 1'
                                 ? 'attr1'
-                                : selectedChannel.toLowerCase() == 'level 2'
+                                : selectedCoverageChannel.toLowerCase() == 'level 2'
                                     ? 'attr2'
-                                    : selectedChannel.toLowerCase() == 'level 3'
+                                    : selectedCoverageChannel.toLowerCase() ==
+                                            'level 3'
                                         ? 'attr3'
-                                        : selectedChannel.toLowerCase() == 'level 4'
+                                        : selectedCoverageChannel
+                                                    .toLowerCase() ==
+                                                'level 4'
                                             ? 'attr4'
-                                            : selectedChannel.toLowerCase() ==
+                                            : selectedCoverageChannel
+                                                        .toLowerCase() ==
                                                     'level 5'
                                                 ? 'attr5'
                                                 : 'attr1':
@@ -2471,16 +2521,16 @@ class HomeController extends GetxController {
                                 : _selectedGeoValue,
 
                         if (selectedGPChannelFilter.isNotEmpty)
-                          selectedChannel.toLowerCase() == 'level 1'
+                          selectedGPChannel.toLowerCase() == 'level 1'
                               ? 'attr1'
-                              : selectedChannel.toLowerCase() == 'level 2'
+                              : selectedGPChannel.toLowerCase() == 'level 2'
                                   ? 'attr2'
-                                  : selectedChannel.toLowerCase() == 'level 3'
+                                  : selectedGPChannel.toLowerCase() == 'level 3'
                                       ? 'attr3'
-                                      : selectedChannel.toLowerCase() ==
+                                      : selectedGPChannel.toLowerCase() ==
                                               'level 4'
                                           ? 'attr4'
-                                          : selectedChannel.toLowerCase() ==
+                                          : selectedGPChannel.toLowerCase() ==
                                                   'level 5'
                                               ? 'attr5'
                                               : 'attr1': selectedGPChannelFilter,
@@ -2787,15 +2837,16 @@ class HomeController extends GetxController {
                               ? "allIndia"
                               : _selectedGeoValue,
                       if (selectedFBChannelFilter.isNotEmpty)
-                        selectedChannel.toLowerCase() == 'level 1'
+                        selectedFBChannel.toLowerCase() == 'level 1'
                             ? 'attr1'
-                            : selectedChannel.toLowerCase() == 'level 2'
+                            : selectedFBChannel.toLowerCase() == 'level 2'
                                 ? 'attr2'
-                                : selectedChannel.toLowerCase() == 'level 3'
+                                : selectedFBChannel.toLowerCase() == 'level 3'
                                     ? 'attr3'
-                                    : selectedChannel.toLowerCase() == 'level 4'
+                                    : selectedFBChannel.toLowerCase() ==
+                                            'level 4'
                                         ? 'attr4'
-                                        : selectedChannel.toLowerCase() ==
+                                        : selectedFBChannel.toLowerCase() ==
                                                 'level 5'
                                             ? 'attr5'
                                             : 'attr1': selectedFBChannelFilter,

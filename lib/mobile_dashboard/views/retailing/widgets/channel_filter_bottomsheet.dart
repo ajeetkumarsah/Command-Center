@@ -129,33 +129,6 @@ class _ChannelFilterBottomsheetState extends State<ChannelFilterBottomsheet> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            // TextFormField(
-                            //   decoration: const InputDecoration(
-                            //     hintText: 'Search ',
-                            //     prefixIcon: Icon(
-                            //       Icons.search,
-                            //       color: Colors.grey,
-                            //     ),
-                            //     border: UnderlineInputBorder(
-                            //       borderSide: BorderSide(
-                            //         width: .5,
-                            //         color: Colors.grey,
-                            //       ),
-                            //     ),
-                            //     enabledBorder: UnderlineInputBorder(
-                            //       borderSide: BorderSide(
-                            //         width: .5,
-                            //         color: Colors.grey,
-                            //       ),
-                            //     ),
-                            //     focusedBorder: UnderlineInputBorder(
-                            //       borderSide: BorderSide(
-                            //         width: .5,
-                            //         color: Colors.grey,
-                            //       ),
-                            //     ),
-                            //   ),
-                            // ),
                             SizedBox(
                               height: 250,
                               child: SingleChildScrollView(
@@ -341,7 +314,7 @@ class _ChannelFilterBottomsheetState extends State<ChannelFilterBottomsheet> {
 
   void onApplyFilter(HomeController ctlr) {
     // ctlr.onChangeChannel(_selectedChannel);
-    ctlr.onChangeChannel1(_selectedChannel);
+    ctlr.onChangeChannel1(_selectedChannel, tabType: widget.tabType);
     // ctlr.onChangeChannelValue(
     //     _selectedChannelValue, widget.tabType);
     if (widget.isTrends) {

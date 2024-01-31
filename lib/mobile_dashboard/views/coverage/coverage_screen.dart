@@ -85,12 +85,14 @@ class _CoverageScreenState extends State<CoverageScreen> {
                             : ctlr.coverageList.isNotEmpty
                                 ? CustomExpandedWidget(
                                     title: 'Coverage by Geography',
+                                    selectedFilterValue: '',
                                     isSummary: true,
                                     onTap: () => ctlr.onExpandSummary(
                                         !ctlr.isSummaryExpanded),
                                     isExpanded: ctlr.isSummaryExpanded,
                                     dataList: ctlr.coverageList,
-                                    onFilterTap: () => Get.bottomSheet(
+                                    onFilterTap: () {},
+                                    onAddGeoTap: () => Get.bottomSheet(
                                       GeographyMultiSelectBottomsheet(
                                           tabType: SummaryTypes.coverage.type),
                                       isScrollControlled: true,
@@ -148,37 +150,13 @@ class _CoverageScreenState extends State<CoverageScreen> {
                             : ctlr.channelCoverageList.isNotEmpty
                                 ? CustomExpandedWidget(
                                     title: 'Coverage by Channel',
-                                    firstWidget: InkWell(
-                                      onTap: () => Get.bottomSheet(
-                                        ChannelFilterBottomsheet(
-                                            tabType:
-                                                SummaryTypes.coverage.type),
-                                        isScrollControlled: true,
-                                      ),
-                                      child: Container(
-                                        padding: const EdgeInsets.all(6),
-                                        child: Row(
-                                          children: [
-                                            Expanded(
-                                              child: FittedBox(
-                                                child: Text(
-                                                  'Channels',
-                                                  style: GoogleFonts.ptSans(
-                                                    fontSize: 16,
-                                                    color: AppColors.primary,
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                            const Icon(
-                                              Icons.edit,
-                                              size: 16,
-                                              color: AppColors.primary,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
+                                    onFilterTap: () => Get.bottomSheet(
+                                      ChannelFilterBottomsheet(
+                                          tabType: SummaryTypes.coverage.type),
+                                      isScrollControlled: true,
                                     ),
+                                    selectedFilterValue:
+                                        ctlr.selectedCoverageChannel,
                                     onTap: () => ctlr.onExpandChannel(
                                         !ctlr.isExpandedChannel),
                                     dataList: ctlr.channelCoverageList,
