@@ -67,6 +67,7 @@ class _SplashScreenState extends State<SplashScreen> {
               width: MediaQuery.of(context).size.width,
               fit: BoxFit.fill,
             ),
+
             // SvgPicture.asset(
             //   SvgFiles.splashScreen,
             //   fit: BoxFit.cover,
