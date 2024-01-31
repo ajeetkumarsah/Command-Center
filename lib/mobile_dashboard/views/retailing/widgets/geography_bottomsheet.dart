@@ -265,9 +265,10 @@ class GeographyBottomsheet extends StatelessWidget {
                       onPressed: () {
                         if (ctlr.selectedTempGeoValue.isNotEmpty) {
                           ctlr.onApplyFilter(
-                              isLoadRetailing: isLoadRetailing,
-                              tabType: 'All',
-                              isSummary: isSummary);
+                            isLoadRetailing: isLoadRetailing,
+                            tabType: 'All',
+                            isSummary: isSummary,
+                          );
                           Navigator.pop(context);
                         } else {
                           showCustomSnackBar('Please select a geo!');

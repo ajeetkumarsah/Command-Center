@@ -8,7 +8,9 @@ class CustomExpandedWidget extends StatefulWidget {
   final void Function()? onTap;
   final bool isExpanded;
   final String title;
-  final Widget? firstWidget;
+  // final Widget? firstWidget;
+  final void Function()? onAddGeoTap;
+  final String selectedFilterValue;
   final void Function()? onFilterTap;
   final List<List<String>> dataList;
   final bool isSummary;
@@ -17,10 +19,11 @@ class CustomExpandedWidget extends StatefulWidget {
       required this.title,
       this.onTap,
       required this.isExpanded,
-      this.onFilterTap,
+      required this.onFilterTap,
+      this.onAddGeoTap,
       required this.dataList,
       this.isSummary = false,
-      this.firstWidget});
+      required this.selectedFilterValue});
 
   @override
   State<CustomExpandedWidget> createState() => _CustomExpandedWidgetState();
@@ -117,229 +120,226 @@ class _CustomExpandedWidgetState extends State<CustomExpandedWidget> {
                                 : null,
                           ),
                           child: Padding(
-                            padding: EdgeInsets.all(
-                                widget.dataList.length == 1 ? 4 : 12.0),
-                            child: widget.dataList != null
-                                ? widget.isSummary
-                                    ? SizedBox(
-                                        // height: 300,
-                                        width:
-                                            MediaQuery.of(context).size.width,
-                                        child: SingleChildScrollView(
-                                          scrollDirection: Axis.horizontal,
-                                          child: Row(
-                                            children: [
-                                              Column(
-                                                mainAxisSize: MainAxisSize.min,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  ...widget.dataList
-                                                      .asMap()
-                                                      .map(
-                                                        (index, data) =>
-                                                            MapEntry(
-                                                          index,
-                                                          Container(
-                                                            margin:
-                                                                const EdgeInsets
-                                                                        .symmetric(
-                                                                    vertical:
-                                                                        .5),
-                                                            color: index == 0
-                                                                ? null
-                                                                : colorList[
-                                                                    index - 1],
-                                                            child: Row(
-                                                              children: [
-                                                                ...data
-                                                                    .asMap()
-                                                                    .map(
-                                                                      (i, item) =>
-                                                                          MapEntry(
-                                                                        i,
-                                                                        Container(
-                                                                          padding:
-                                                                              const EdgeInsets.all(8.0),
-                                                                          width:
-                                                                              86,
-                                                                          child:
-                                                                              Row(
-                                                                            mainAxisSize:
-                                                                                MainAxisSize.min,
-                                                                            children: [
-                                                                              index == 0 && i == 0
-                                                                                  ? widget.firstWidget ?? const Flexible(child: Text('     '))
-                                                                                  : Flexible(
-                                                                                      child: Text(
-                                                                                        item,
-                                                                                        overflow: TextOverflow.ellipsis,
-                                                                                        maxLines: 2,
-                                                                                        style: GoogleFonts.ptSans(
-                                                                                          fontSize: 14,
-                                                                                          fontWeight: FontWeight.w500,
-                                                                                        ),
-                                                                                      ),
-                                                                                    ),
-                                                                            ],
-                                                                          ),
-                                                                        ),
-                                                                      ),
-                                                                    )
-                                                                    .values
-                                                                    .toList(),
-                                                              ],
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      )
-                                                      .values
-                                                      .toList(),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      )
-                                    : widget.dataList.length == 1
-                                        ? SizedBox(
-                                            height: 200,
-                                            width: double.infinity,
-                                            child: Column(
+                              padding: EdgeInsets.all(
+                                  widget.dataList.length == 1 ? 4 : 12.0),
+                              child: widget.isSummary
+                                  ? SizedBox(
+                                      // height: 300,
+                                      width: MediaQuery.of(context).size.width,
+                                      child: SingleChildScrollView(
+                                        scrollDirection: Axis.horizontal,
+                                        child: Row(
+                                          children: [
+                                            Column(
                                               mainAxisSize: MainAxisSize.min,
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.start,
                                               children: [
-                                                widget.firstWidget ??
-                                                    const SizedBox(),
-                                                const Expanded(
-                                                  child: Center(
-                                                    child:
-                                                        Text('No Data Found!'),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          )
-                                        : Table(
-                                            border: TableBorder.all(
-                                                color: Colors.transparent),
-                                            children: [
-                                              if (widget.dataList.isNotEmpty)
                                                 ...widget.dataList
                                                     .asMap()
                                                     .map(
-                                                      (index, tableData) =>
-                                                          MapEntry(
+                                                      (index, data) => MapEntry(
                                                         index,
-                                                        TableRow(
-                                                          decoration:
-                                                              BoxDecoration(
-                                                            color: index == 0
-                                                                ? null
-                                                                : colorList[
-                                                                    index - 1],
+                                                        Container(
+                                                          margin:
+                                                              const EdgeInsets
+                                                                      .symmetric(
+                                                                  vertical: .5),
+                                                          color: index == 0
+                                                              ? null
+                                                              : colorList[
+                                                                  index - 1],
+                                                          child: Row(
+                                                            children: [
+                                                              ...data
+                                                                  .asMap()
+                                                                  .map(
+                                                                    (i, item) =>
+                                                                        MapEntry(
+                                                                      i,
+                                                                      Container(
+                                                                        padding:
+                                                                            const EdgeInsets.all(8.0),
+                                                                        width:
+                                                                            86,
+                                                                        child:
+                                                                            Row(
+                                                                          mainAxisSize:
+                                                                              MainAxisSize.min,
+                                                                          children: [
+                                                                            index == 0 && i == 0
+                                                                                ? const Flexible(child: Text('     '))
+                                                                                : Flexible(
+                                                                                    child: Text(
+                                                                                      item,
+                                                                                      overflow: TextOverflow.ellipsis,
+                                                                                      maxLines: 2,
+                                                                                      style: GoogleFonts.ptSans(
+                                                                                        fontSize: 14,
+                                                                                        fontWeight: FontWeight.w500,
+                                                                                      ),
+                                                                                    ),
+                                                                                  ),
+                                                                          ],
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                  )
+                                                                  .values
+                                                                  .toList(),
+                                                            ],
                                                           ),
-                                                          children: [
-                                                            ...tableData
-                                                                .asMap()
-                                                                .map(
-                                                                  (i, value) =>
-                                                                      MapEntry(
-                                                                    i,
-                                                                    i == 0 &&
-                                                                            index ==
-                                                                                0
-                                                                        ? widget.firstWidget ??
-                                                                            const Padding(
-                                                                              padding: EdgeInsets.all(8.0),
-                                                                              child: Text('   '),
-                                                                            )
-                                                                        : Padding(
-                                                                            padding:
-                                                                                const EdgeInsets.all(8.0),
-                                                                            child:
-                                                                                Text(
-                                                                              value,
-                                                                              style: GoogleFonts.ptSans(
-                                                                                fontSize: 14,
-                                                                                fontWeight: FontWeight.w500,
-                                                                              ),
-                                                                            ),
-                                                                          ),
-                                                                  ),
-                                                                )
-                                                                .values
-                                                                .toList(),
-                                                          ],
                                                         ),
                                                       ),
                                                     )
                                                     .values
                                                     .toList(),
-                                            ],
-                                          )
-                                : Table(
-                                    border: TableBorder.all(
-                                        color: Colors.transparent),
-                                    children: [
-                                      if (widget.dataList.isNotEmpty)
-                                        ...widget.dataList
-                                            .asMap()
-                                            .map(
-                                              (index, tableData) => MapEntry(
-                                                index,
-                                                TableRow(
-                                                  children: [
-                                                    ...tableData
-                                                        .asMap()
-                                                        .map(
-                                                          (key, value) =>
-                                                              MapEntry(
-                                                            key,
-                                                            key == 0 &&
-                                                                    index == 0
-                                                                ? widget.firstWidget ??
-                                                                    const Padding(
-                                                                      padding:
-                                                                          EdgeInsets.all(
-                                                                              8.0),
-                                                                      child: Text(
-                                                                          '   '),
-                                                                    )
-                                                                : Container(
-                                                                    color: index ==
-                                                                            0
-                                                                        ? null
-                                                                        : AppColors
-                                                                            .blueLight
-                                                                            .withOpacity(.25),
-                                                                    padding:
-                                                                        const EdgeInsets.all(
-                                                                            8.0),
-                                                                    child: Text(
-                                                                        value),
-                                                                  ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    )
+                                  : widget.dataList.isEmpty
+                                      ? SizedBox(
+                                          height: 200,
+                                          width: double.infinity,
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              InkWell(
+                                                onTap: widget.onFilterTap,
+                                                child: Container(
+                                                  padding:
+                                                      const EdgeInsets.all(6),
+                                                  child: Row(
+                                                    children: [
+                                                      Flexible(
+                                                        child: Text(
+                                                          widget
+                                                              .selectedFilterValue,
+                                                          maxLines: 2,
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                          style: GoogleFonts
+                                                              .ptSans(
+                                                            fontSize: 16,
+                                                            color: AppColors
+                                                                .primary,
                                                           ),
-                                                        )
-                                                        .values
-                                                        .toList(),
-                                                  ],
+                                                        ),
+                                                      ),
+                                                      const Icon(
+                                                        Icons.edit,
+                                                        size: 16,
+                                                        color:
+                                                            AppColors.primary,
+                                                      ),
+                                                    ],
+                                                  ),
                                                 ),
                                               ),
-                                            )
-                                            .values
-                                            .toList(),
-                                    ],
-                                  ),
-                          ),
+                                              const Expanded(
+                                                child: Center(
+                                                  child: Text('No Data Found!'),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        )
+                                      : Table(
+                                          border: TableBorder.all(
+                                              color: Colors.transparent),
+                                          children: [
+                                            if (widget.dataList.isNotEmpty)
+                                              ...widget.dataList
+                                                  .asMap()
+                                                  .map(
+                                                    (index, tableData) =>
+                                                        MapEntry(
+                                                      index,
+                                                      TableRow(
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          color: index == 0
+                                                              ? null
+                                                              : colorList[
+                                                                  index - 1],
+                                                        ),
+                                                        children: [
+                                                          ...tableData
+                                                              .asMap()
+                                                              .map(
+                                                                (i, value) =>
+                                                                    MapEntry(
+                                                                  i,
+                                                                  i == 0 &&
+                                                                          index ==
+                                                                              0
+                                                                      ? InkWell(
+                                                                          onTap:
+                                                                              widget.onFilterTap,
+                                                                          child:
+                                                                              Container(
+                                                                            padding:
+                                                                                const EdgeInsets.all(6),
+                                                                            child:
+                                                                                Row(
+                                                                              children: [
+                                                                                Flexible(
+                                                                                  child: Text(
+                                                                                    widget.selectedFilterValue,
+                                                                                    maxLines: 2,
+                                                                                    overflow: TextOverflow.ellipsis,
+                                                                                    style: GoogleFonts.ptSans(
+                                                                                      fontSize: 16,
+                                                                                      color: AppColors.primary,
+                                                                                    ),
+                                                                                  ),
+                                                                                ),
+                                                                                const Icon(
+                                                                                  Icons.edit,
+                                                                                  size: 16,
+                                                                                  color: AppColors.primary,
+                                                                                ),
+                                                                              ],
+                                                                            ),
+                                                                          ),
+                                                                        )
+                                                                      : Padding(
+                                                                          padding:
+                                                                              const EdgeInsets.all(8.0),
+                                                                          child:
+                                                                              Text(
+                                                                            value,
+                                                                            style:
+                                                                                GoogleFonts.ptSans(
+                                                                              fontSize: 14,
+                                                                              fontWeight: FontWeight.w500,
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                ),
+                                                              )
+                                                              .values
+                                                              .toList(),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  )
+                                                  .values
+                                                  .toList(),
+                                          ],
+                                        )),
                         ),
                         if (widget.isSummary && ctlr.isRetailingDeepDiveInd)
                           Positioned(
                             top: 6,
                             right: 12,
                             child: IconButton(
-                              onPressed: widget.onFilterTap,
+                              onPressed: widget.onAddGeoTap,
                               icon: const Icon(
                                 Icons.add,
                                 size: 20,

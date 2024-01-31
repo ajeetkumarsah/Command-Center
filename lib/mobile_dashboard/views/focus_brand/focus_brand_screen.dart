@@ -92,7 +92,9 @@ class _FocusBrandScreenState extends State<FocusBrandScreen> {
                                         !ctlr.isSummaryExpanded),
                                     isExpanded: ctlr.isSummaryExpanded,
                                     dataList: ctlr.fbList,
-                                    onFilterTap: () => Get.bottomSheet(
+                                    onFilterTap: () {},
+                                    selectedFilterValue: '',
+                                    onAddGeoTap: () => Get.bottomSheet(
                                       GeographyMultiSelectBottomsheet(
                                           tabType: SummaryTypes.fb.type),
                                       isScrollControlled: true,
@@ -105,37 +107,14 @@ class _FocusBrandScreenState extends State<FocusBrandScreen> {
                             : ctlr.categoryFBList.isNotEmpty
                                 ? CustomExpandedWidget(
                                     title: 'Focus Brand by Category',
-                                    firstWidget: InkWell(
-                                      onTap: () => Get.bottomSheet(
-                                        CategoryFilterBottomsheet(
-                                          tabType: SummaryTypes.fb.type,
-                                        ),
-                                        isScrollControlled: true,
+                                    onFilterTap: () => Get.bottomSheet(
+                                      CategoryFilterBottomsheet(
+                                        tabType: SummaryTypes.fb.type,
                                       ),
-                                      child: Container(
-                                        padding: const EdgeInsets.all(6),
-                                        child: Row(
-                                          children: [
-                                            Flexible(
-                                              child: Text(
-                                                ctlr.selectedFBCategory,
-                                                maxLines: 2,
-                                                overflow: TextOverflow.ellipsis,
-                                                style: GoogleFonts.ptSans(
-                                                  fontSize: 16,
-                                                  color: AppColors.primary,
-                                                ),
-                                              ),
-                                            ),
-                                            const Icon(
-                                              Icons.edit,
-                                              size: 16,
-                                              color: AppColors.primary,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
+                                      isScrollControlled: true,
                                     ),
+                                    selectedFilterValue:
+                                        ctlr.selectedFBCategory,
                                     dataList: ctlr.categoryFBList,
                                     onTap: () => ctlr.onExpandCategory(
                                         !ctlr.isExpandedCategory),
@@ -149,33 +128,13 @@ class _FocusBrandScreenState extends State<FocusBrandScreen> {
                             : ctlr.channelFBList.isNotEmpty
                                 ? CustomExpandedWidget(
                                     title: 'Focus Brand by Channel',
-                                    firstWidget: InkWell(
-                                      onTap: () => Get.bottomSheet(
-                                        ChannelFilterBottomsheet(
-                                          tabType: SummaryTypes.fb.type,
-                                        ),
-                                        isScrollControlled: true,
+                                    onFilterTap: () => Get.bottomSheet(
+                                      ChannelFilterBottomsheet(
+                                        tabType: SummaryTypes.fb.type,
                                       ),
-                                      child: Container(
-                                        padding: const EdgeInsets.all(6),
-                                        child: Row(
-                                          children: [
-                                            Text(
-                                              'Channels',
-                                              style: GoogleFonts.ptSans(
-                                                fontSize: 16,
-                                                color: AppColors.primary,
-                                              ),
-                                            ),
-                                            const Icon(
-                                              Icons.edit,
-                                              size: 16,
-                                              color: AppColors.primary,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
+                                      isScrollControlled: true,
                                     ),
+                                    selectedFilterValue: ctlr.selectedFBChannel,
                                     onTap: () => ctlr.onExpandChannel(
                                         !ctlr.isExpandedChannel),
                                     dataList: ctlr.channelFBList,
