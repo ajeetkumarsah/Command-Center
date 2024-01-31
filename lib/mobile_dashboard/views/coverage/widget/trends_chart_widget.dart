@@ -161,7 +161,7 @@ class _CustomExpandedChartWidgetState extends State<CoverageTrendsChartWidget> {
                                         LineChartData(
                                           maxX: 13,
                                           minX: 0,
-                                          maxY: widget.trendsList[0].yMax,
+                                          maxY: widget.trendsList[0].yPerMax,
                                           minY: 0,
                                           baselineX: 1,
                                           lineBarsData: [
@@ -323,10 +323,10 @@ class _CustomExpandedChartWidgetState extends State<CoverageTrendsChartWidget> {
                                                 showTitles: true,
                                                 reservedSize: 45,
                                                 interval: widget.trendsList[0]
-                                                            .yInterval !=
+                                                            .yPerInterval !=
                                                         0
                                                     ? widget
-                                                        .trendsList[0].yInterval
+                                                        .trendsList[0].yPerInterval
                                                     : 1,
                                                 getTitlesWidget: (value,
                                                         meta) =>
@@ -334,7 +334,7 @@ class _CustomExpandedChartWidgetState extends State<CoverageTrendsChartWidget> {
                                                         value,
                                                         meta,
                                                         widget.trendsList[0]
-                                                                .yAxisData ??
+                                                                .yAxisDataPer ??
                                                             []),
                                               ),
                                             ),
