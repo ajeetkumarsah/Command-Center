@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:command_centre/mobile_dashboard/utils/png_files.dart';
 import 'package:command_centre/mobile_dashboard/utils/routes/app_pages.dart';
@@ -88,9 +89,9 @@ class _RetryAccessDeniedState extends State<RetryAccessDeniedScreen>
                   const SizedBox(
                     height: 15,
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 50, right: 50),
-                    child: const Text(
+                  const Padding(
+                    padding: EdgeInsets.only(left: 50, right: 50),
+                    child: Text(
                       'Something is wrong. Try Again After sometime.',
                       textAlign: TextAlign.center,
                       style: TextStyle(
@@ -120,11 +121,12 @@ class _RetryAccessDeniedState extends State<RetryAccessDeniedScreen>
                       ),
                   onPressed: () {
                     _onClearCookies(context);
-                    Get.toNamed(AppPages.FED_AUTH_LOGIN);
+                    main();
+                    // Get.toNamed(AppPages.FED_AUTH_LOGIN);
                   },
-                  child: Row(
+                  child: const Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
+                    children: [
                       Padding(
                         padding: EdgeInsets.all(15),
                         child: Text(
@@ -139,6 +141,22 @@ class _RetryAccessDeniedState extends State<RetryAccessDeniedScreen>
         ),
       ),
     );
+  }
+  Future<void> main() async {
+    SharedPreferences session = await SharedPreferences.getInstance();
+    await session.remove('token');
+    await session.remove("id");
+    await session.remove("token");
+    await session.remove("name");
+    await session.remove("email");
+    Get.offAndToNamed(AppPages.FED_AUTH_LOGIN);
+    // Navigator.of(context).pushAndRemoveUntil(
+    //   // the new route
+    //   MaterialPageRoute(
+    //     builder: (BuildContext context) => FedAuthLoginPage(),
+    //   ),
+    //   (Route route) => false,
+    // );
   }
 
   void _onClearCookies(BuildContext context) async {

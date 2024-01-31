@@ -8,6 +8,7 @@ import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
 import 'package:command_centre/mobile_dashboard/utils/routes/app_pages.dart';
 import 'package:command_centre/mobile_dashboard/controllers/auth_controller.dart';
 import 'package:command_centre/mobile_dashboard/controllers/home_controller.dart';
+import 'package:lottie/lottie.dart';
 
 
 class SplashScreen extends StatefulWidget {
@@ -61,10 +62,15 @@ class _SplashScreenState extends State<SplashScreen> {
           SizedBox(
             height: MediaQuery.of(context).size.height,
             width: MediaQuery.of(context).size.width,
-            child: SvgPicture.asset(
-              SvgFiles.splashScreen,
-              fit: BoxFit.cover,
+            child: Lottie.asset(
+              'assets/json/splashbglottie.json',
+              width: MediaQuery.of(context).size.width,
+              fit: BoxFit.fill,
             ),
+            // SvgPicture.asset(
+            //   SvgFiles.splashScreen,
+            //   fit: BoxFit.cover,
+            // ),
           ),
           Align(
             alignment: Alignment.center,

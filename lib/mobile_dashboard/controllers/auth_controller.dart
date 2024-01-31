@@ -128,6 +128,12 @@ class AuthController extends GetxController {
         final data = response.body["data"];
         if (data != null && data.isNotEmpty) {
           _filtersModel = FiltersModel.fromJson(data[0]);
+          if (_filtersModel != null) {
+            _filtersModel?.district.removeWhere(
+                    (element) => element == 'Sri Lanka' || element == 'Nepal');
+            _filtersModel?.site.removeWhere(
+                    (element) => element == 'Bhutan' || element == 'Test Faridabad' || element == 'TEST DEHRADUN' || element == 'Test Bhopal' || element == 'Sri Lanka' || element == 'Nepal');
+          }
           // List<String>.from(data[0]!.map((x) => x));
         }
         responseModel = ResponseModel(true, 'Success');

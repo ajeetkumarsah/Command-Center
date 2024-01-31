@@ -1977,7 +1977,7 @@ class HomeController extends GetxController {
             _filtersModel?.district.removeWhere(
                 (element) => element == 'Sri Lanka' || element == 'Nepal');
             _filtersModel?.site.removeWhere(
-                (element) => element == 'Sri Lanka' || element == 'Nepal');
+                    (element) => element == 'Bhutan' || element == 'Test Faridabad' || element == 'TEST DEHRADUN' || element == 'Test Bhopal' || element == 'Sri Lanka' || element == 'Nepal');
           }
         }
         responseModel = ResponseModel(true, 'Success');
@@ -2022,6 +2022,8 @@ class HomeController extends GetxController {
         if (data != null && data.isNotEmpty) {
           if (type.toLowerCase() == 'branch') {
             branchFilter = List<String>.from(data!.map((x) => x));
+            branchFilter.removeWhere(
+                    (element) => element.contains('TEST ') || element.contains('Test '));
           } else if (type.toLowerCase() == 'subBrandForm'.toLowerCase() ||
               type.toLowerCase() == 'subBrandGroup'.toLowerCase()) {
             subBrandForm = List<String>.from(data!.map((x) => x));

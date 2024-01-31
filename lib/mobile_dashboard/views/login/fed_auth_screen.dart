@@ -176,10 +176,10 @@ class _FedAuthScreenState extends State<FedAuthScreen> {
         globals.authorization = session.getString(AppConstants.ACCESS_TOKEN)!;
         employeeAuthentication(mapResponse['access_token']);
       } else {
-        _onClearCookies(context);
+        _onClearCookies();
       }
     } on SocketException {
-      _showToast(context);
+      _showToast();
     } catch (e) {
       Get.offAndToNamed(AppPages.RETRY_ACCESS_DENIED);
       // Navigator.pushReplacement(
@@ -235,29 +235,32 @@ class _FedAuthScreenState extends State<FedAuthScreen> {
                 .trim()
                 .isNotEmpty) {
           debugPrint('===>After Token check');
+          _onClearCookies();
           Get.offAndToNamed(AppPages.INITIAL);
           // Get.offAndToNamed(AppPages.PERSONA_SCREEN);
         } else {
+          _onClearCookies();
           Get.offAndToNamed(AppPages.PERSONA_SCREEN);
         }
       } else if (response.statusCode == 401) {
+        _onClearCookies();
         Get.offAndToNamed(AppPages.FED_AUTH_LOGIN);
       } else if (response.statusCode == 403) {
-        _onClearCookies(context);
+        _onClearCookies();
         Get.offAndToNamed(AppPages.ACCESS_DENIED,
             arguments: AccessDeniedBody(
                 statusCode: response.statusCode,
                 reason: "ACCESS_DENIED_BY_BACKEND"));
       } else {
-        _onClearCookies(context);
+        _onClearCookies();
         Get.offAndToNamed(AppPages.RETRY_ACCESS_DENIED);
       }
     } catch (e) {
-      _onClearCookies(context);
+      _onClearCookies();
     }
   }
 
-  void _showToast(BuildContext context) {
+  void _showToast() {
     final scaffold = ScaffoldMessenger.of(context);
     scaffold.showSnackBar(
       SnackBar(
@@ -268,7 +271,16 @@ class _FedAuthScreenState extends State<FedAuthScreen> {
     );
   }
 
-  void _onClearCookies(BuildContext context) async {
+  // void _onClearCookies(BuildContext context) async {
+  //   final WebViewCookieManager cookieManager = WebViewCookieManager();
+  //   final bool hadCookies = await cookieManager.clearCookies();
+  //   String message = 'There were cookies. Now, they are gone!';
+  //   if (!hadCookies) {
+  //     message = 'There are no cookies.';
+  //   }
+  // }
+
+  void _onClearCookies() async {
     final WebViewCookieManager cookieManager = WebViewCookieManager();
     final bool hadCookies = await cookieManager.clearCookies();
     String message = 'There were cookies. Now, they are gone!';
