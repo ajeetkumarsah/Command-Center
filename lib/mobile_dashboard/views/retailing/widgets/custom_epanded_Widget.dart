@@ -8,11 +8,9 @@ class CustomExpandedWidget extends StatefulWidget {
   final void Function()? onTap;
   final bool isExpanded;
   final String title;
-  // final Widget? firstWidget;
+  final String tabType;
   final void Function()? onAddGeoTap;
   final String selectedFilterValue;
-  final String tabType;
-  final Widget? firstWidget;
   final void Function()? onFilterTap;
   final List<List<String>> dataList;
   final bool isSummary;
@@ -26,8 +24,7 @@ class CustomExpandedWidget extends StatefulWidget {
       this.onAddGeoTap,
       required this.dataList,
       this.isSummary = false,
-      required this.selectedFilterValue});
-      this.firstWidget,
+      required this.selectedFilterValue,
       required this.tabType});
 
   @override

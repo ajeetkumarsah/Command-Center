@@ -19,7 +19,7 @@ class SupportAndHelpScreen extends StatelessWidget {
       body: Column(
         children: [
           SupportButton(
-            icon: '',
+            icon: Icons.email_outlined,
             title: 'Email',
             color: Colors.blue,
             // : index == 1

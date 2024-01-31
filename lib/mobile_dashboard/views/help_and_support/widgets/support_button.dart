@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class SupportButton extends StatelessWidget {
-  final String icon;
+  final IconData icon;
   final String title;
   final String info;
   final Color color;
@@ -42,7 +42,7 @@ class SupportButton extends StatelessWidget {
                 color: Colors.grey.withOpacity(0.2),
               ),
               padding: const EdgeInsets.all(8),
-              child: Image.asset(icon, height: 18, width: 24),
+              child: Icon(icon, size: 20,),
             ),
             const SizedBox(width: 10),
             Expanded(

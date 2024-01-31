@@ -1,3 +1,4 @@
+import 'package:command_centre/mobile_dashboard/views/help_and_support/help_and_support_screen.dart';
 import 'package:get/get.dart';
 import '../../views/home_view.dart';
 import '../../bindings/home_binding.dart';
@@ -52,6 +53,7 @@ class AppPages {
   static const GP_DEEP_DIVE_SCREEN = Routes.GP_DEEP_DIVE_SCREEN;
   static const COVERAGE_DEEP_DIVE = Routes.COVERAGE_DEEP_DIVE_SCREEN;
   static const SALES_DEEP_DIVE = Routes.SALES_DEEP_DIVE_SCREEN;
+  static const HELP_SUPPORT = Routes.HELP_SUPPORT_SCREEN;
 
   static final routes = [
     GetPage(
@@ -116,7 +118,7 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.GOLDEN_POINT_SCREEN,
-      page: () => GoldenPointScreen(),
+      page: () => const GoldenPointScreen(),
       binding: HomeBinding(),
     ),
     GetPage(
@@ -156,7 +158,12 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.PERSONA_SCREEN,
-      page: () => PersonaScreen(),
+      page: () => const PersonaScreen(),
+      binding: HomeBinding(),
+    ),
+    GetPage(
+      name: _Paths.HELP_SUPPORT,
+      page: () => const SupportAndHelpScreen(),
       binding: HomeBinding(),
     ),
   ];
