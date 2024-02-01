@@ -115,7 +115,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
                         ),
                         IconButton(
                           onPressed: () => Get.bottomSheet(
-                            const MenuBottomsheet(),
+                            MenuBottomsheet(version: ctlr.appVersion),
                             isScrollControlled: true,
                           ),
                           icon: const Icon(

@@ -176,7 +176,8 @@ class _RetailingScreenState extends State<RetailingScreen> {
                                       GeographyMultiSelectBottomsheet(
                                           tabType: SummaryTypes.retailing.type),
                                       isScrollControlled: true,
-                                    ), tabType: 'Retailing by Geography',
+                                    ),
+                                    tabType: 'Retailing by Geography',
                                   )
                                 : const SizedBox(),
                         SizedBox(
@@ -186,6 +187,7 @@ class _RetailingScreenState extends State<RetailingScreen> {
                             : ctlr.categoryRetailingModel != null
                                 ? CustomExpandedWidget(
                                     title: 'Retailing by Category',
+                                    firstColumnWidth: true,
                                     onFilterTap: () => Get.bottomSheet(
                                       CategoryFilterBottomsheet(
                                           tabType: SummaryTypes.retailing.type),
@@ -198,7 +200,8 @@ class _RetailingScreenState extends State<RetailingScreen> {
                                             [],
                                     onTap: () => ctlr.onExpandCategory(
                                         !ctlr.isExpandedCategory),
-                                    isExpanded: ctlr.isExpandedCategory, tabType: '',
+                                    isExpanded: ctlr.isExpandedCategory,
+                                    tabType: '',
                                   )
                                 : const SizedBox(),
                         SizedBox(
@@ -222,7 +225,8 @@ class _RetailingScreenState extends State<RetailingScreen> {
                                         ? ctlr.channelRetailingModel?.ind ?? []
                                         : ctlr.channelRetailingModel?.indDir ??
                                             [],
-                                    isExpanded: ctlr.isExpandedChannel, tabType: '',
+                                    isExpanded: ctlr.isExpandedChannel,
+                                    tabType: '',
                                   )
                                 : const SizedBox(),
                         SizedBox(

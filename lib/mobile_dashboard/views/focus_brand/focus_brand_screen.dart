@@ -98,69 +98,66 @@ class _FocusBrandScreenState extends State<FocusBrandScreen> {
                                       GeographyMultiSelectBottomsheet(
                                           tabType: SummaryTypes.fb.type),
                                       isScrollControlled: true,
-                                    ), tabType: 'Focus Brand by Geography',
+                                    ),
+                                    tabType: 'Focus Brand by Geography',
                                   )
                                 : const SizedBox(),
                         SizedBox(height: ctlr.fbList.isNotEmpty ? 16 : 0),
                         ctlr.isFBCategoryLoading
                             ? loadingWidget(context)
-                            : ctlr.categoryFBList.isNotEmpty
-                                ? CustomExpandedWidget(
-                                    title: 'Focus Brand by Category',
-                                    onFilterTap: () => Get.bottomSheet(
-                                      CategoryFilterBottomsheet(
-                                        tabType: SummaryTypes.fb.type,
-                                      ),
-                                      isScrollControlled: true,
-                                    ),
-                                    selectedFilterValue:
-                                        ctlr.selectedFBCategory,
-                                    dataList: ctlr.categoryFBList,
-                                    onTap: () => ctlr.onExpandCategory(
-                                        !ctlr.isExpandedCategory),
-                                    isExpanded: ctlr.isExpandedCategory, tabType: '',
-                                  )
-                                : const SizedBox(),
+                            : CustomExpandedWidget(
+                                title: 'Focus Brand by Category',
+                                firstColumnWidth: true,
+                                onFilterTap: () => Get.bottomSheet(
+                                  CategoryFilterBottomsheet(
+                                    tabType: SummaryTypes.fb.type,
+                                  ),
+                                  isScrollControlled: true,
+                                ),
+                                selectedFilterValue: ctlr.selectedFBCategory,
+                                dataList: ctlr.categoryFBList,
+                                onTap: () => ctlr
+                                    .onExpandCategory(!ctlr.isExpandedCategory),
+                                isExpanded: ctlr.isExpandedCategory,
+                                tabType: '',
+                              ),
                         SizedBox(
                             height: ctlr.categoryFBList.isNotEmpty ? 16 : 0),
                         ctlr.isFBChannelLoading
                             ? loadingWidget(context)
-                            : ctlr.channelFBList.isNotEmpty
-                                ? CustomExpandedWidget(
-                                    title: 'Focus Brand by Channel',
-                                    onFilterTap: () => Get.bottomSheet(
-                                      ChannelFilterBottomsheet(
-                                        tabType: SummaryTypes.fb.type,
-                                      ),
-                                      isScrollControlled: true,
-                                    ),
-                                    selectedFilterValue: ctlr.selectedFBChannel,
-                                    onTap: () => ctlr.onExpandChannel(
-                                        !ctlr.isExpandedChannel),
-                                    dataList: ctlr.channelFBList,
-                                    isExpanded: ctlr.isExpandedChannel, tabType: '',
-                                  )
-                                : const SizedBox(),
+                            : CustomExpandedWidget(
+                                title: 'Focus Brand by Channel',
+                                onFilterTap: () => Get.bottomSheet(
+                                  ChannelFilterBottomsheet(
+                                    tabType: SummaryTypes.fb.type,
+                                  ),
+                                  isScrollControlled: true,
+                                ),
+                                selectedFilterValue: ctlr.selectedFBChannel,
+                                onTap: () => ctlr
+                                    .onExpandChannel(!ctlr.isExpandedChannel),
+                                dataList: ctlr.channelFBList,
+                                isExpanded: ctlr.isExpandedChannel,
+                                tabType: '',
+                              ),
                         SizedBox(
                             height: ctlr.channelFBList.isNotEmpty ? 16 : 0),
                         ctlr.isFBTrendsLoading
                             ? loadingWidget(context)
-                            : ctlr.trendsFBList.isNotEmpty
-                                ? FBTrendsChartWidget(
-                                    summaryType: SummaryTypes.fb.type,
-                                    title: 'Focus Brand Trends',
-                                    onTap: () => ctlr
-                                        .onExpandTrends(!ctlr.isExpandedTrends),
-                                    isExpanded: ctlr.isExpandedTrends,
-                                    trendsList: ctlr.trendsFBList,
-                                    onFilterTap: () => Get.bottomSheet(
-                                      TrendsFilterBottomsheet(
-                                        tabType: SummaryTypes.fb.type,
-                                      ),
-                                      isScrollControlled: true,
-                                    ),
-                                  )
-                                : const SizedBox(),
+                            : FBTrendsChartWidget(
+                                summaryType: SummaryTypes.fb.type,
+                                title: 'Focus Brand Trends',
+                                onTap: () =>
+                                    ctlr.onExpandTrends(!ctlr.isExpandedTrends),
+                                isExpanded: ctlr.isExpandedTrends,
+                                trendsList: ctlr.trendsFBList,
+                                onFilterTap: () => Get.bottomSheet(
+                                  TrendsFilterBottomsheet(
+                                    tabType: SummaryTypes.fb.type,
+                                  ),
+                                  isScrollControlled: true,
+                                ),
+                              ),
                         const SizedBox(height: 20),
                       ],
                     ),

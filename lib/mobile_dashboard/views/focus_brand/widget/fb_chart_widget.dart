@@ -249,163 +249,184 @@ class _CustomExpandedChartWidgetState extends State<FBTrendsChartWidget> {
                               ),
                               const SizedBox(height: 12),
                               Expanded(
-                                child: LineChart(
-                                  LineChartData(
-                                    maxX: 13,
-                                    minX: 0,
-                                    maxY: ctlr.channelSales
-                                        ? widget.trendsList[0].yMax
-                                        : widget.trendsList[0].yPerMax,
-                                    minY: 0,
-                                    baselineX: 1,
-                                    lineBarsData: [
-                                      LineChartBarData(
-                                        spots: widget.trendsList[0].data!
-                                            .map(
-                                              (point) => FlSpot(
-                                                point.index ?? 0,
-                                                ctlr.channelSales
-                                                    ? double.tryParse((point
-                                                                .fbAchieveSum ??
-                                                            '0.0')) ??
-                                                        0.0
-                                                    : double.tryParse(
-                                                            (point.fb ??
-                                                                '0.0')) ??
-                                                        0.0,
+                                child: widget.trendsList.isNotEmpty &&
+                                        widget.trendsList[0].data != null
+                                    ? LineChart(
+                                        LineChartData(
+                                          maxX: 13,
+                                          minX: 0,
+                                          maxY: ctlr.channelSales
+                                              ? widget.trendsList[0].yMax
+                                              : widget.trendsList[0].yPerMax,
+                                          minY: 0,
+                                          baselineX: 1,
+                                          lineBarsData: [
+                                            LineChartBarData(
+                                              spots: widget.trendsList[0].data!
+                                                  .map(
+                                                    (point) => FlSpot(
+                                                      point.index ?? 0,
+                                                      ctlr.channelSales
+                                                          ? double.tryParse(
+                                                                  (point.fbAchieveSum ??
+                                                                      '0.0')) ??
+                                                              0.0
+                                                          : double.tryParse(
+                                                                  (point.fb ??
+                                                                      '0.0')) ??
+                                                              0.0,
+                                                    ),
+                                                  )
+                                                  .toList(),
+                                              isCurved: false,
+                                              dotData: FlDotData(
+                                                show: true,
+                                                getDotPainter: (spot, percent,
+                                                    barData, index) {
+                                                  return FlDotCirclePainter(
+                                                    radius: 4,
+                                                    strokeColor:
+                                                        AppColors.primary,
+                                                    color: Colors.white,
+                                                    strokeWidth: 1.5,
+                                                  );
+                                                },
                                               ),
-                                            )
-                                            .toList(),
-                                        isCurved: false,
-                                        dotData: FlDotData(
-                                          show: true,
-                                          getDotPainter:
-                                              (spot, percent, barData, index) {
-                                            return FlDotCirclePainter(
-                                              radius: 4,
-                                              strokeColor: AppColors.primary,
-                                              color: Colors.white,
-                                              strokeWidth: 1.5,
-                                            );
-                                          },
-                                        ),
-                                        color: AppColors.primary,
-                                      ),
-                                    ],
-                                    lineTouchData: LineTouchData(
-                                        enabled: true,
-                                        touchCallback: (FlTouchEvent event,
-                                            LineTouchResponse?
-                                                touchResponse) {},
-                                        touchTooltipData: LineTouchTooltipData(
-                                          tooltipBgColor: AppColors.primaryDark,
-                                          tooltipRoundedRadius: 20.0,
-                                          showOnTopOfTheChartBoxArea: false,
-                                          fitInsideHorizontally: true,
-                                          fitInsideVertically: true,
-                                          tooltipMargin: 40,
-                                          tooltipHorizontalAlignment:
-                                              FLHorizontalAlignment.center,
-                                          getTooltipItems: (touchedSpots) {
-                                            return touchedSpots.map(
-                                              (LineBarSpot touchedSpot) {
-                                                const textStyle = TextStyle(
-                                                  fontSize: 10,
-                                                  fontWeight: FontWeight.w700,
-                                                  color: Colors.white,
-                                                );
-                                                return LineTooltipItem(
-                                                  ctlr.channelSales
-                                                      ? (widget
-                                                              .trendsList[0]
-                                                              .data![touchedSpot
-                                                                  .spotIndex]
-                                                              .fbAchieveSumRv ??
-                                                          '0.0')
-                                                      : double.tryParse((widget
-                                                                      .trendsList[
-                                                                          0]
-                                                                      .data![touchedSpot
-                                                                          .spotIndex]
-                                                                      .fb ??
-                                                                  '0.0'))
-                                                              ?.toStringAsFixed(
-                                                                  2) ??
-                                                          '0.0',
-                                                  textStyle,
-                                                );
+                                              color: AppColors.primary,
+                                            ),
+                                          ],
+                                          lineTouchData: LineTouchData(
+                                              enabled: true,
+                                              touchCallback:
+                                                  (FlTouchEvent event,
+                                                      LineTouchResponse?
+                                                          touchResponse) {},
+                                              touchTooltipData:
+                                                  LineTouchTooltipData(
+                                                tooltipBgColor:
+                                                    AppColors.primaryDark,
+                                                tooltipRoundedRadius: 20.0,
+                                                showOnTopOfTheChartBoxArea:
+                                                    false,
+                                                fitInsideHorizontally: true,
+                                                fitInsideVertically: true,
+                                                tooltipMargin: 40,
+                                                tooltipHorizontalAlignment:
+                                                    FLHorizontalAlignment
+                                                        .center,
+                                                getTooltipItems:
+                                                    (touchedSpots) {
+                                                  return touchedSpots.map(
+                                                    (LineBarSpot touchedSpot) {
+                                                      const textStyle =
+                                                          TextStyle(
+                                                        fontSize: 10,
+                                                        fontWeight:
+                                                            FontWeight.w700,
+                                                        color: Colors.white,
+                                                      );
+                                                      return LineTooltipItem(
+                                                        ctlr.channelSales
+                                                            ? (widget
+                                                                    .trendsList[
+                                                                        0]
+                                                                    .data![touchedSpot
+                                                                        .spotIndex]
+                                                                    .fbAchieveSumRv ??
+                                                                '0.0')
+                                                            : double.tryParse((widget
+                                                                            .trendsList[
+                                                                                0]
+                                                                            .data![touchedSpot
+                                                                                .spotIndex]
+                                                                            .fb ??
+                                                                        '0.0'))
+                                                                    ?.toStringAsFixed(
+                                                                        2) ??
+                                                                '0.0',
+                                                        textStyle,
+                                                      );
+                                                    },
+                                                  ).toList();
+                                                },
+                                              ),
+                                              getTouchedSpotIndicator:
+                                                  (LineChartBarData barData,
+                                                      List<int> indicators) {
+                                                return indicators.map(
+                                                  (int index) {
+                                                    final line = FlLine(
+                                                        color: Colors.grey,
+                                                        strokeWidth: 1,
+                                                        dashArray: [2, 4]);
+                                                    return TouchedSpotIndicatorData(
+                                                      line,
+                                                      FlDotData(show: false),
+                                                    );
+                                                  },
+                                                ).toList();
                                               },
-                                            ).toList();
-                                          },
+                                              getTouchLineEnd: (_, __) =>
+                                                  double.infinity),
+                                          borderData: FlBorderData(
+                                              border: const Border(
+                                                  bottom: BorderSide(width: .5),
+                                                  left: BorderSide(width: .5))),
+                                          gridData: FlGridData(show: false),
+                                          titlesData: FlTitlesData(
+                                            bottomTitles: AxisTitles(
+                                              sideTitles: _bottomTitles(
+                                                  widget.trendsList),
+                                            ),
+                                            leftTitles: AxisTitles(
+                                              sideTitles: SideTitles(
+                                                showTitles: true,
+                                                reservedSize: 45,
+                                                interval: ctlr.channelSales
+                                                    ? widget.trendsList[0]
+                                                                .yInterval !=
+                                                            0
+                                                        ? widget.trendsList[0]
+                                                            .yInterval
+                                                        : 1
+                                                    : widget.trendsList[0]
+                                                                .yPerInterval !=
+                                                            0
+                                                        ? widget.trendsList[0]
+                                                            .yPerInterval
+                                                        : 1,
+                                                getTitlesWidget: (value,
+                                                        meta) =>
+                                                    getLeftTitles(
+                                                        value,
+                                                        meta,
+                                                        ctlr.channelSales
+                                                            ? widget
+                                                                    .trendsList[
+                                                                        0]
+                                                                    .yAxisData ??
+                                                                []
+                                                            : widget
+                                                                    .trendsList[
+                                                                        0]
+                                                                    .yAxisDataPer ??
+                                                                []),
+                                              ),
+                                            ),
+                                            topTitles: AxisTitles(
+                                                sideTitles: SideTitles(
+                                                    showTitles: false)),
+                                            rightTitles: AxisTitles(
+                                                sideTitles: SideTitles(
+                                                    showTitles: false)),
+                                          ),
                                         ),
-                                        getTouchedSpotIndicator:
-                                            (LineChartBarData barData,
-                                                List<int> indicators) {
-                                          return indicators.map(
-                                            (int index) {
-                                              final line = FlLine(
-                                                  color: Colors.grey,
-                                                  strokeWidth: 1,
-                                                  dashArray: [2, 4]);
-                                              return TouchedSpotIndicatorData(
-                                                line,
-                                                FlDotData(show: false),
-                                              );
-                                            },
-                                          ).toList();
-                                        },
-                                        getTouchLineEnd: (_, __) =>
-                                            double.infinity),
-                                    borderData: FlBorderData(
-                                        border: const Border(
-                                            bottom: BorderSide(width: .5),
-                                            left: BorderSide(width: .5))),
-                                    gridData: FlGridData(show: false),
-                                    titlesData: FlTitlesData(
-                                      bottomTitles: AxisTitles(
-                                        sideTitles:
-                                            _bottomTitles(widget.trendsList),
-                                        
-                                      ),
-                                      leftTitles: AxisTitles(
-                                        sideTitles: SideTitles(
-                                          showTitles: true,
-                                          reservedSize: 45,
-                                          interval: ctlr.channelSales
-                                              ? widget.trendsList[0]
-                                                          .yInterval !=
-                                                      0
-                                                  ? widget
-                                                      .trendsList[0].yInterval
-                                                  : 1
-                                              : widget.trendsList[0]
-                                                          .yPerInterval !=
-                                                      0
-                                                  ? widget.trendsList[0]
-                                                      .yPerInterval
-                                                  : 1,
-                                          getTitlesWidget: (value, meta) =>
-                                              getLeftTitles(
-                                                  value,
-                                                  meta,
-                                                  ctlr.channelSales
-                                                      ? widget.trendsList[0]
-                                                              .yAxisData ??
-                                                          []
-                                                      : widget.trendsList[0]
-                                                              .yAxisDataPer ??
-                                                          []),
+                                      )
+                                    : const SizedBox(
+                                        child: Center(
+                                          child: Text('No Data Found!'),
                                         ),
                                       ),
-                                      topTitles: AxisTitles(
-                                          sideTitles:
-                                              SideTitles(showTitles: false)),
-                                      rightTitles: AxisTitles(
-                                          sideTitles:
-                                              SideTitles(showTitles: false)),
-                                    ),
-                                  ),
-                                ),
                               ),
                             ],
                           ),
@@ -484,7 +505,7 @@ class _CustomExpandedChartWidgetState extends State<FBTrendsChartWidget> {
 
   SideTitles _bottomTitles(List<FBTrendsModel> trendsList) => SideTitles(
         showTitles: true,
-        reservedSize: 45,
+        reservedSize: 60,
         interval: 1,
         getTitlesWidget: (value, meta) {
           String text = '';

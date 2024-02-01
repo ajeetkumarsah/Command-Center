@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:command_centre/mobile_dashboard/utils/summary_types.dart';
 import 'package:command_centre/mobile_dashboard/utils/routes/app_pages.dart';
 import 'package:command_centre/mobile_dashboard/data/repository/home_repo.dart';
@@ -104,8 +105,10 @@ class HomeController extends GetxController {
   String _retailingTrendsValue = '',
       _coverageTrendsValue = '',
       _gpTrendsValue = '',
-      _fbTrendsValue = '';
+      _fbTrendsValue = '',
+      _appVersion = '';
 
+  String get appVersion => _appVersion;
   String get retailingTrendsValue => _retailingTrendsValue;
   String get coverageTrendsValue => _coverageTrendsValue;
   String get gpTrendsValue => _gpTrendsValue;
@@ -229,6 +232,17 @@ class HomeController extends GetxController {
   //Models
   FiltersModel? _filtersModel;
   FiltersModel? get filtersModel => _filtersModel;
+
+  void getAppVersion() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+
+    // String appName = packageInfo.appName;
+    // String packageName = packageInfo.packageName;
+    _appVersion = packageInfo.version;
+    // String buildNumber = packageInfo.buildNumber;
+    update();
+  }
+
   void onChannelSalesChange(bool value) {
     _channelSales = value;
     update();
@@ -806,6 +820,7 @@ class HomeController extends GetxController {
     getPersonalizedData();
     getInitValues(getOnlyShared: true);
     getInitData();
+    getAppVersion();
     getMonthFilters();
     filters = ['All India'];
     multiFilters = ['All India'];
@@ -2735,25 +2750,13 @@ class HomeController extends GetxController {
         _isFBGeoLoading = true;
       } else if (type.startsWith('category')) {
         //categoryFBList
-        if (categoryFBList.isNotEmpty) {
-          List<List<String>> categoryListTemp = [];
-          categoryListTemp.addAll(categoryFBList);
-          categoryFBList.clear();
-          categoryFBList.add(categoryListTemp[0]);
-        }
-
+        categoryFBList.clear();
         Logger().log(Level.debug,
             '===> Focus Brand Category Data Start ${stopWatch.elapsed.toString()}');
         _isFBCategoryLoading = true;
       } else if (type.startsWith('channel')) {
         _isFBChannelLoading = true;
-
-        if (channelFBList.isNotEmpty) {
-          List<List<String>> channelListTemp = [];
-          channelListTemp.addAll(channelFBList);
-          channelFBList.clear();
-          channelFBList.add(channelListTemp[0]);
-        }
+        channelFBList.clear();
         Logger().log(Level.debug,
             '===> Focus Brand Channel Data Start ${stopWatch.elapsed.toString()}');
       } else {

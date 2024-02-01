@@ -124,7 +124,7 @@ class _RetryAccessDeniedState extends State<RetryAccessDeniedScreen>
                     main();
                     // Get.toNamed(AppPages.FED_AUTH_LOGIN);
                   },
-                  child: const Row(
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Padding(
@@ -142,6 +142,7 @@ class _RetryAccessDeniedState extends State<RetryAccessDeniedScreen>
       ),
     );
   }
+
   Future<void> main() async {
     SharedPreferences session = await SharedPreferences.getInstance();
     await session.remove('token');

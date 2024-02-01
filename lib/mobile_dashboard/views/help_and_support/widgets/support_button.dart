@@ -42,7 +42,11 @@ class SupportButton extends StatelessWidget {
                 color: Colors.grey.withOpacity(0.2),
               ),
               padding: const EdgeInsets.all(8),
-              child: Icon(icon, size: 20,),
+              child: Icon(
+                icon,
+                size: 20,
+                color: color,
+              ),
             ),
             const SizedBox(width: 10),
             Expanded(
@@ -55,8 +59,8 @@ class SupportButton extends StatelessWidget {
                   const SizedBox(height: 5),
                   Text(
                     info,
-                    style: GoogleFonts.ptSansCaption(),
-                    maxLines: 1,
+                    style: GoogleFonts.ptSansCaption(fontSize: 14),
+                    maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
                 ],

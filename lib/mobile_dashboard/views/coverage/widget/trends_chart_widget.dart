@@ -156,7 +156,8 @@ class _CustomExpandedChartWidgetState extends State<CoverageTrendsChartWidget> {
                               ),
                               const SizedBox(height: 12),
                               Expanded(
-                                child: widget.trendsList[0].data != null
+                                child: widget.trendsList.isNotEmpty &&
+                                        widget.trendsList[0].data != null
                                     ? LineChart(
                                         LineChartData(
                                           maxX: 13,
@@ -316,7 +317,6 @@ class _CustomExpandedChartWidgetState extends State<CoverageTrendsChartWidget> {
                                             bottomTitles: AxisTitles(
                                               sideTitles: _bottomTitles(
                                                   widget.trendsList),
-                                              
                                             ),
                                             leftTitles: AxisTitles(
                                               sideTitles: SideTitles(
@@ -325,8 +325,8 @@ class _CustomExpandedChartWidgetState extends State<CoverageTrendsChartWidget> {
                                                 interval: widget.trendsList[0]
                                                             .yPerInterval !=
                                                         0
-                                                    ? widget
-                                                        .trendsList[0].yPerInterval
+                                                    ? widget.trendsList[0]
+                                                        .yPerInterval
                                                     : 1,
                                                 getTitlesWidget: (value,
                                                         meta) =>
