@@ -32,7 +32,7 @@ void main() async {
   }
   bool isSecure = await securityCheck();
 
-  if(!isSecure){
+  if(isSecure){
 
     // You can show an error message, log the event, or simply terminate the app.
     // For simplicity, this example terminates the app.
