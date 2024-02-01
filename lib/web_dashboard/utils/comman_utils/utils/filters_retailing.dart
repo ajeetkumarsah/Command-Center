@@ -80,8 +80,7 @@ class _FiltersRetailingState extends State<FiltersRetailing> {
   // List arrayCategory = ['Category', 'Brand', 'Brand form'];
 
   List<DropdownMenuItem<String>> _dropDownItem() {
-    print("Here ${widget.clusterCount}");
-    // List<String> ddl = widget.clusterCount;
+
     List<String> ddl = [
       "Select..",
       "null",
@@ -256,8 +255,6 @@ class _FiltersRetailingState extends State<FiltersRetailing> {
   void initState() {
     super.initState();
     selectedAllCategory = widget.selectedCategoryList;
-    print(selectedAllCategory);
-    print(widget.selectedCategoryList);
   }
 
   @override

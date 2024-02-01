@@ -72,11 +72,11 @@ class _CCWebContainerState extends State<CCWebContainer> {
                                   //     .allSummaryCCList.map((item) {
                                   //   return {"filter": item["filter"]};
                                   // }).toList();
-                                  // print("FilterCC $filterCC");
+
                                   // SharedPreferencesUtils.setString("cc", jsonEncode(widget.ccDataList[newIndex]['data']));
                                   // sheetProvider.allSummaryCCList = widget.ccDataList[newIndex]['data'];
-                                  // print("$index sheetProvider.allSummaryCCList");
-                                  // print(widget.ccDataList[3]['data'][index]);
+
+
                                   return Padding(
                                     padding: const EdgeInsets.only(right: 15.0),
                                     child: Column(

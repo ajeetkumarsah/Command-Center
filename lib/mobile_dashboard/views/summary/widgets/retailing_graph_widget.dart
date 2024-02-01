@@ -38,7 +38,7 @@ class _RetailingGraphWidgetState extends State<RetailingGraphWidget> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    print('=====< ${widget.yAxisData.runtimeType}');
+
   }
 
   @override

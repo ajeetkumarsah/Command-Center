@@ -132,13 +132,13 @@ class _SupplyChainDivState extends State<SupplyChainDiv> {
       "name": provider.selectedGraph,
       "physicalYear": ""
     });
-    print("Body Retailing Tab 1 $body");
+
     var response =
         await http.post(Uri.parse(url), headers: {"Content-Type": "application/json"}, body: body);
     if (response.statusCode == 200) {
       setState(() {
         graphData = jsonDecode(response.body);
-        print('data : $graphData');
+
         provider.setGraphDataList(graphData);
       });
     } else {
@@ -153,13 +153,13 @@ class _SupplyChainDivState extends State<SupplyChainDiv> {
   Widget build(BuildContext context) {
     final provider = Provider.of<TransportationProvider>(context);
     var size = MediaQuery.of(context).size;
-    print(size);
+
 
     List<DraggableGridItem> draggableCardList =
         List.generate(widget.matrixCardDataList.length-2, (index) {
           index = index + 2;
       List<dynamic> item = widget.matrixCardDataList;
-      // print('item: $item');
+
       // return DraggableGridItem(child: Text('data'));
       return DraggableGridItem(
         isDraggable: true,

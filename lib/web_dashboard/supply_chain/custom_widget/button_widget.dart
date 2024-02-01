@@ -73,7 +73,7 @@ class _MenuWidgetState extends State<MenuWidget> {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<TransportationProvider>(context);
-    print(searchController.text);
+
     List<dynamic>? filteredList = widget.list?.where((item) => item.toLowerCase().contains(searchController.text.toLowerCase())).toList();
     List<dynamic> selectedCategoryIndices = provider.catFilter;
     List<dynamic> selectedSourceIndices = provider.sourceFilter;
@@ -113,7 +113,7 @@ class _MenuWidgetState extends State<MenuWidget> {
                   ),
                 ),
                 onChanged: (value) {
-                  // print(value);
+
                   setState(() {
                     // Filter the list based on the search query
                     // Reset selected indices and "Select All" when searching
@@ -224,8 +224,8 @@ class _MenuWidgetState extends State<MenuWidget> {
                         } else {
                           // Regular list item
                           final actualIndex = filteredList[index-1];
-                          // print("HERE $filteredList");
-                          // print("HERE $actualIndex");
+
+
                           return Padding(
                             padding: const EdgeInsets.only(left: 30, top: 10),
                             child: InkWell(
@@ -238,9 +238,9 @@ class _MenuWidgetState extends State<MenuWidget> {
                                     } else {
                                       selectedCategoryIndices.add(actualIndex);
                                     }
-                                    print(selectedCategoryIndices);
+
                                     provider.setCatFilter(selectedCategoryIndices);
-                                    print(provider.catFilter);
+
                                   }
 
                                   if (widget.SelectedDropdownindex == 2) {

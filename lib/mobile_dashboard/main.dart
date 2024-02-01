@@ -1,12 +1,43 @@
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:command_centre/mobile_dashboard/bindings/home_binding.dart';
 import 'package:command_centre/mobile_dashboard/utils/routes/app_pages.dart';
+import 'package:safe_device/safe_device.dart';
 
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await HomeBinding().dependencies();
+  Future<bool> securityCheck() async {
+    bool isJailBroken = await SafeDevice.isJailBroken;
+    bool isCanMockLocation = await SafeDevice.canMockLocation;
+    bool isRealDevice = await SafeDevice.isRealDevice;
+    bool isSafeDevice = await SafeDevice.isSafeDevice;
+
+    if (isJailBroken || isCanMockLocation || !isRealDevice || !isSafeDevice) {
+      return false;
+    }
+
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      bool isDevelopmentModeEnable = await SafeDevice.isDevelopmentModeEnable;
+      bool isOnExternalStorage = await SafeDevice.isOnExternalStorage;
+
+      if (isDevelopmentModeEnable || isOnExternalStorage) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+  bool isSecure = await securityCheck();
+
+  if(!isSecure){
+
+    // You can show an error message, log the event, or simply terminate the app.
+    // For simplicity, this example terminates the app.
+    return;
+  };
   runApp(
     GetMaterialApp(
       title: "Command Center",

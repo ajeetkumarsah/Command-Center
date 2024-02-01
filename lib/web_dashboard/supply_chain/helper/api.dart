@@ -27,13 +27,13 @@
 //       "vehicleType": vehicleType,
 //       "physicalYear": ""
 //     });
-//     print("Body Retailing Tab 1 $body");
+//
 //     var response = await http.post(Uri.parse(url), headers: {"Content-Type": "application/json"}, body: body);
 //     if (response.statusCode == 200) {
 //       setState(() {
 //         matrixCardDataList = jsonDecode(response.body);
 //         provider.setMasterData(matrixCardDataList);
-//         // print('data : $matrixCardDataList');
+//
 //       });
 //     } else {
 //       var snackBar = SnackBar(content: Text(response.body));
@@ -57,12 +57,12 @@
 //       "vehicleType": filterData.vehicleFilter,
 //       "movement": ''
 //     });
-//     // print("Body Retailing Tab 1 $body");
+//
 //     var response = await http.post(Uri.parse(url), headers: {"Content-Type": "application/json"}, body: body);
 //     if (response.statusCode == 200) {
 //       setState(() {
 //         filterCategoryDataList = jsonDecode(response.body);
-//         print('data : $filterCategoryDataList');
+//
 //       });
 //     } else {
 //       var snackBar = SnackBar(content: Text(response.body));
@@ -89,7 +89,7 @@
 //     if (response.statusCode == 200) {
 //       setState(() {
 //         filterDestinationDataList = jsonDecode(response.body);
-//         print('data : $filterDestinationDataList');
+//
 //       });
 //     } else {
 //       var snackBar = SnackBar(content: Text(response.body));
@@ -117,7 +117,7 @@
 //     if (response.statusCode == 200) {
 //       setState(() {
 //         filterSourceList = jsonDecode(response.body);
-//         print('data : $filterSourceList');
+//
 //       });
 //     } else {
 //       var snackBar = SnackBar(content: Text(response.body));
@@ -145,7 +145,7 @@
 //     if (response.statusCode == 200) {
 //       setState(() {
 //         filterSbfDataList = jsonDecode(response.body);
-//         print('data : $filterSbfDataList');
+//
 //       });
 //     } else {
 //       var snackBar = SnackBar(content: Text(response.body));
@@ -173,7 +173,7 @@
 //     if (response.statusCode == 200) {
 //       setState(() {
 //         filterVehicleDataList = jsonDecode(response.body);
-//         print('data : $filterVehicleDataList');
+//
 //       });
 //     } else {
 //       var snackBar = SnackBar(content: Text(response.body));

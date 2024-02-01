@@ -29,7 +29,7 @@ class _RetailingScreenState extends State<RetailingScreen> {
   void initCall(HomeController ctlr) {
     if (isFirst) {
       isFirst = false;
-      debugPrint('===> calling');
+
       ctlr.getReatilingInit();
     }
   }

@@ -55,7 +55,7 @@ class _DrawerWidgetState extends State<DrawerAlerts> {
 
   void _handleLogout() {
     // Perform logout action
-    print('Logged out');
+
   }
 
   @override
