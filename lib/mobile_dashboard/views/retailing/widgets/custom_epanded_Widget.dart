@@ -10,6 +10,7 @@ class CustomExpandedWidget extends StatefulWidget {
   final String title;
   final String tabType;
   final void Function()? onAddGeoTap;
+  final bool firstColumnWidth;
   final String selectedFilterValue;
   final void Function()? onFilterTap;
   final List<List<String>> dataList;
@@ -25,6 +26,7 @@ class CustomExpandedWidget extends StatefulWidget {
       required this.dataList,
       this.isSummary = false,
       required this.selectedFilterValue,
+      this.firstColumnWidth = false,
       required this.tabType});
 
   @override
@@ -251,6 +253,11 @@ class _CustomExpandedWidgetState extends State<CustomExpandedWidget> {
                                           ),
                                         )
                                       : Table(
+                                          columnWidths: widget.firstColumnWidth
+                                              ? {
+                                                  0: FlexColumnWidth(2),
+                                                }
+                                              : null,
                                           border: TableBorder.all(
                                               color: Colors.transparent),
                                           children: [
@@ -317,7 +324,7 @@ class _CustomExpandedWidgetState extends State<CustomExpandedWidget> {
                                                                             value,
                                                                             style:
                                                                                 GoogleFonts.ptSans(
-                                                                              fontSize: 14,
+                                                                              fontSize: 13,
                                                                               fontWeight: FontWeight.w500,
                                                                             ),
                                                                           ),
@@ -371,14 +378,14 @@ class _CustomExpandedWidgetState extends State<CustomExpandedWidget> {
                                                     fontWeight:
                                                         FontWeight.w400))
                                             : widget.tabType ==
-                                    'Golden Points by Geography'
-                                    ? const Text(
-                                    'Switch \'Ind\' to Add Geo',
-                                    style: TextStyle(
-                                        fontSize: 12,
-                                        fontWeight:
-                                        FontWeight.w400))
-                                    :const Text(''),
+                                                    'Golden Points by Geography'
+                                                ? const Text(
+                                                    'Switch \'Ind\' to Add Geo',
+                                                    style: TextStyle(
+                                                        fontSize: 12,
+                                                        fontWeight:
+                                                            FontWeight.w400))
+                                                : const Text(''),
                               ),
                         if (widget.isSummary && ctlr.isRetailingDeepDiveInd)
                           Positioned(

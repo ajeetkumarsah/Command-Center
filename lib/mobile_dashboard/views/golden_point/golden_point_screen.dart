@@ -98,69 +98,66 @@ class _GoldenPointScreenState extends State<GoldenPointScreen> {
                                       GeographyMultiSelectBottomsheet(
                                           tabType: SummaryTypes.gp.type),
                                       isScrollControlled: true,
-                                    ), tabType: '',
+                                    ),
+                                    tabType: '',
                                   )
                                 : const SizedBox(),
                         SizedBox(height: ctlr.gpList.isNotEmpty ? 16 : 0),
                         ctlr.isGPCategoryLoading
                             ? loadingWidget(context)
-                            : ctlr.categoryGPList.isNotEmpty
-                                ? CustomExpandedWidget(
-                                    title: 'Golden Points by Category',
-                                    onFilterTap: () => Get.bottomSheet(
-                                      CategoryFilterBottomsheet(
-                                          tabType: SummaryTypes.gp.type),
-                                      isScrollControlled: true,
-                                    ),
-                                    selectedFilterValue:
-                                        ctlr.selectedGPCategory,
-                                    dataList: ctlr.categoryGPList.isNotEmpty
-                                        ? ctlr.categoryGPList
-                                        : [],
-                                    onTap: () => ctlr.onExpandCategory(
-                                        !ctlr.isExpandedCategory),
-                                    isExpanded: ctlr.isExpandedCategory, tabType: '',
-                                  )
-                                : const SizedBox(),
+                            : CustomExpandedWidget(
+                                title: 'Golden Points by Category',
+                                firstColumnWidth: true,
+                                onFilterTap: () => Get.bottomSheet(
+                                  CategoryFilterBottomsheet(
+                                      tabType: SummaryTypes.gp.type),
+                                  isScrollControlled: true,
+                                ),
+                                selectedFilterValue: ctlr.selectedGPCategory,
+                                dataList: ctlr.categoryGPList.isNotEmpty
+                                    ? ctlr.categoryGPList
+                                    : [],
+                                onTap: () => ctlr
+                                    .onExpandCategory(!ctlr.isExpandedCategory),
+                                isExpanded: ctlr.isExpandedCategory,
+                                tabType: '',
+                              ),
                         SizedBox(
                             height: ctlr.categoryGPList.isNotEmpty ? 16 : 0),
                         ctlr.isGPChannelLoading
                             ? loadingWidget(context)
-                            : ctlr.channelGPList.isNotEmpty
-                                ? CustomExpandedWidget(
-                                    title: 'Golden Points by Channel',
-                                    onFilterTap: () => Get.bottomSheet(
-                                      ChannelFilterBottomsheet(
-                                        tabType: SummaryTypes.gp.type,
-                                      ),
-                                      isScrollControlled: true,
-                                    ),
-                                    selectedFilterValue: ctlr.selectedGPChannel,
-                                    onTap: () => ctlr.onExpandChannel(
-                                        !ctlr.isExpandedChannel),
-                                    dataList: ctlr.channelGPList,
-                                    isExpanded: ctlr.isExpandedChannel, tabType: '',
-                                  )
-                                : const SizedBox(),
+                            : CustomExpandedWidget(
+                                title: 'Golden Points by Channel',
+                                onFilterTap: () => Get.bottomSheet(
+                                  ChannelFilterBottomsheet(
+                                    tabType: SummaryTypes.gp.type,
+                                  ),
+                                  isScrollControlled: true,
+                                ),
+                                selectedFilterValue: ctlr.selectedGPChannel,
+                                onTap: () => ctlr
+                                    .onExpandChannel(!ctlr.isExpandedChannel),
+                                dataList: ctlr.channelGPList,
+                                isExpanded: ctlr.isExpandedChannel,
+                                tabType: '',
+                              ),
                         SizedBox(
                             height: ctlr.channelGPList.isNotEmpty ? 16 : 0),
                         ctlr.isGPTrendsLoading
                             ? loadingWidget(context)
-                            : ctlr.trendsGPList.isNotEmpty
-                                ? GPTrendsChartWidget(
-                                    summaryType: SummaryTypes.gp.type,
-                                    title: 'Golden Points Trends',
-                                    onTap: () => ctlr
-                                        .onExpandTrends(!ctlr.isExpandedTrends),
-                                    isExpanded: ctlr.isExpandedTrends,
-                                    trendsList: ctlr.trendsGPList,
-                                    onFilterTap: () => Get.bottomSheet(
-                                      TrendsFilterBottomsheet(
-                                          tabType: SummaryTypes.gp.type),
-                                      isScrollControlled: true,
-                                    ),
-                                  )
-                                : const SizedBox(),
+                            : GPTrendsChartWidget(
+                                summaryType: SummaryTypes.gp.type,
+                                title: 'Golden Points Trends',
+                                onTap: () =>
+                                    ctlr.onExpandTrends(!ctlr.isExpandedTrends),
+                                isExpanded: ctlr.isExpandedTrends,
+                                trendsList: ctlr.trendsGPList,
+                                onFilterTap: () => Get.bottomSheet(
+                                  TrendsFilterBottomsheet(
+                                      tabType: SummaryTypes.gp.type),
+                                  isScrollControlled: true,
+                                ),
+                              ),
                         const SizedBox(height: 20),
                       ],
                     ),

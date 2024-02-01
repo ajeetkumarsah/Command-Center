@@ -2,12 +2,11 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
-import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
 import 'package:command_centre/mobile_dashboard/utils/routes/app_pages.dart';
-import 'package:command_centre/mobile_dashboard/views/store_fingertips/onboarding_screen.dart';
 
 class MenuBottomsheet extends StatelessWidget {
-  const MenuBottomsheet({super.key});
+  final String version;
+  const MenuBottomsheet({super.key, required this.version});
 
   @override
   Widget build(BuildContext context) {
@@ -167,6 +166,10 @@ class MenuBottomsheet extends StatelessWidget {
             // ),
 
             ListTile(
+              onTap: () {
+                Get.back();
+                Get.toNamed(AppPages.HELP_SUPPORT);
+              },
               title: Text(
                 '  Help & Support',
                 style: GoogleFonts.ptSans(
@@ -174,15 +177,10 @@ class MenuBottomsheet extends StatelessWidget {
                   fontWeight: FontWeight.w700,
                 ),
               ),
-              trailing: TextButton(
-                onPressed: () {
-                  Get.toNamed(AppPages.HELP_SUPPORT);
-                },
-                child: const Icon(
-                  Icons.arrow_outward_rounded,
-                  color: AppColors.primary,
-                  size: 18,
-                ),
+              trailing: const Icon(
+                Icons.arrow_outward_rounded,
+                color: AppColors.primary,
+                size: 18,
               ),
             ),
             Container(
@@ -190,9 +188,23 @@ class MenuBottomsheet extends StatelessWidget {
               width: double.infinity,
               color: AppColors.borderColor,
             ),
-
-            ///
-            const SizedBox(height: 30),
+            ListTile(
+              title: Text(
+                ' App Version',
+                style: GoogleFonts.ptSans(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              trailing: Text(
+                version,
+                style: GoogleFonts.ptSans(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
           ],
         ),
       ),

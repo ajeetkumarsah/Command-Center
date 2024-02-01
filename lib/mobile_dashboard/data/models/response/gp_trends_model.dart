@@ -82,7 +82,7 @@ class GPTrendsDataModel {
         month: json["month"],
         cyGp: json["CY GP"]?.toString(),
         pyGp: json["PY GP"].toString(),
-        gpIya: json["GP IYA"],
+        gpIya: json["IYA"],
         cyGpRv: json["CY GP RV"].toString(),
         pyGpRv: json["PY GP RV"].toString(),
         index: json["index"],

@@ -96,7 +96,8 @@ class _CoverageScreenState extends State<CoverageScreen> {
                                       GeographyMultiSelectBottomsheet(
                                           tabType: SummaryTypes.coverage.type),
                                       isScrollControlled: true,
-                                    ), tabType: 'Coverage by Geography',
+                                    ),
+                                    tabType: 'Coverage by Geography',
                                   )
                                 : const SizedBox(),
                         SizedBox(height: ctlr.coverageList.isNotEmpty ? 16 : 0),
@@ -147,75 +148,67 @@ class _CoverageScreenState extends State<CoverageScreen> {
                                 ctlr.categoryCoverageList.isNotEmpty ? 16 : 0),
                         ctlr.isCoverageChannelLoading
                             ? loadingWidget(context)
-                            : ctlr.channelCoverageList.isNotEmpty
-                                ? CustomExpandedWidget(
-                                    title: 'Coverage by Channel',
-                                    onFilterTap: () => Get.bottomSheet(
-                                      ChannelFilterBottomsheet(
-                                          tabType: SummaryTypes.coverage.type),
-                                      isScrollControlled: true,
-                                    ),
-                                    selectedFilterValue:
-                                        ctlr.selectedCoverageChannel,
-                                    onTap: () => ctlr.onExpandChannel(
-                                        !ctlr.isExpandedChannel),
-                                    dataList: ctlr.channelCoverageList,
-                                    isExpanded: ctlr.isExpandedChannel, tabType: '',
-                                  )
-                                : const SizedBox(),
-                        SizedBox(
-                            height:
-                                ctlr.channelCoverageList.isNotEmpty ? 16 : 0),
+                            : CustomExpandedWidget(
+                                title: 'Coverage by Channel',
+                                onFilterTap: () => Get.bottomSheet(
+                                  ChannelFilterBottomsheet(
+                                      tabType: SummaryTypes.coverage.type),
+                                  isScrollControlled: true,
+                                ),
+                                selectedFilterValue:
+                                    ctlr.selectedCoverageChannel,
+                                onTap: () => ctlr
+                                    .onExpandChannel(!ctlr.isExpandedChannel),
+                                dataList: ctlr.channelCoverageList,
+                                isExpanded: ctlr.isExpandedChannel,
+                                tabType: '',
+                              ),
+                        const SizedBox(height: 16),
                         ctlr.isCoverageTrendsLoading
                             ? loadingWidget(context)
-                            : ctlr.trendsCoverageList.isNotEmpty
-                                ? CoverageTrendsChartWidget(
-                                    title: 'Coverage Trends',
-                                    onTap: () => ctlr
-                                        .onExpandTrends(!ctlr.isExpandedTrends),
-                                    isExpanded: ctlr.isExpandedTrends,
-                                    trendsList: ctlr.trendsCoverageList,
-                                    summaryType: SummaryTypes.coverage.type,
-                                    coverageWidget: Container(
-                                      height: 26,
-                                      padding: const EdgeInsets.only(
-                                          left: 12, right: 6),
-                                      decoration: BoxDecoration(
-                                          border: Border.all(
-                                            width: 1,
-                                            color: AppColors.lightGrey,
-                                          ),
-                                          borderRadius:
-                                              BorderRadius.circular(100)),
-                                      child: DropdownButton<String>(
-                                        value:
-                                            ctlr.selectedCoverageTrendsFilter,
-                                        underline: const SizedBox(),
-                                        isExpanded: false,
-                                        icon: const Icon(
-                                          Icons.arrow_drop_down_rounded,
-                                          size: 24,
-                                        ),
-                                        items:
-                                            coverageFilter.map((String value) {
-                                          return DropdownMenuItem<String>(
-                                            value: value,
-                                            child: Text(value),
-                                          );
-                                        }).toList(),
-                                        onChanged: (v) =>
-                                            ctlr.onChangeCoverageTrends(v!),
+                            : CoverageTrendsChartWidget(
+                                title: 'Coverage Trends',
+                                onTap: () =>
+                                    ctlr.onExpandTrends(!ctlr.isExpandedTrends),
+                                isExpanded: ctlr.isExpandedTrends,
+                                trendsList: ctlr.trendsCoverageList,
+                                summaryType: SummaryTypes.coverage.type,
+                                coverageWidget: Container(
+                                  height: 26,
+                                  padding:
+                                      const EdgeInsets.only(left: 12, right: 6),
+                                  decoration: BoxDecoration(
+                                      border: Border.all(
+                                        width: 1,
+                                        color: AppColors.lightGrey,
                                       ),
+                                      borderRadius: BorderRadius.circular(100)),
+                                  child: DropdownButton<String>(
+                                    value: ctlr.selectedCoverageTrendsFilter,
+                                    underline: const SizedBox(),
+                                    isExpanded: false,
+                                    icon: const Icon(
+                                      Icons.arrow_drop_down_rounded,
+                                      size: 24,
                                     ),
-                                    onFilterTap: () => Get.bottomSheet(
-                                      TrendsFilterBottomsheet(
-                                        tabType: SummaryTypes.coverage.type,
-                                        isCoverage: true,
-                                      ),
-                                      isScrollControlled: true,
-                                    ),
-                                  )
-                                : const SizedBox(),
+                                    items: coverageFilter.map((String value) {
+                                      return DropdownMenuItem<String>(
+                                        value: value,
+                                        child: Text(value),
+                                      );
+                                    }).toList(),
+                                    onChanged: (v) =>
+                                        ctlr.onChangeCoverageTrends(v!),
+                                  ),
+                                ),
+                                onFilterTap: () => Get.bottomSheet(
+                                  TrendsFilterBottomsheet(
+                                    tabType: SummaryTypes.coverage.type,
+                                    isCoverage: true,
+                                  ),
+                                  isScrollControlled: true,
+                                ),
+                              ),
                         const SizedBox(height: 20),
                       ],
                     ),

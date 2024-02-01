@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:command_centre/mobile_dashboard/utils/summary_types.dart';
 import 'package:command_centre/mobile_dashboard/utils/routes/app_pages.dart';
 import 'package:command_centre/mobile_dashboard/data/repository/home_repo.dart';
@@ -20,7 +21,6 @@ import 'package:command_centre/mobile_dashboard/data/models/response/retailing_t
 class HomeController extends GetxController {
   //
   final HomeRepo homeRepo;
-
   //constructor :)
   HomeController({required this.homeRepo});
 
@@ -28,7 +28,6 @@ class HomeController extends GetxController {
 
   final ScrollController sScrollController = ScrollController();
   final ScrollController mScrollController = ScrollController();
-
   //
   bool _isLoading = false,
       _isSummaryExpanded = false,
@@ -49,6 +48,7 @@ class HomeController extends GetxController {
       _isCoverageCategoryLoading = false,
       _isGPCategoryLoading = false,
       _isFBCategoryLoading = false,
+      // _isChannelLoading = false,
       _isRetailingChannelLoading = false,
       _isCoverageChannelLoading = false,
       _isGPChannelLoading = false,
@@ -62,74 +62,42 @@ class HomeController extends GetxController {
       _isDirectIndirectLoading = false,
       _isSummaryPageLoading = false,
       _isRetailingDeepDiveInd = true;
-
   bool get isLoading => _isLoading;
-
   bool get isSummaryExpanded => _isSummaryExpanded;
-
   bool get isExpandedCategory => _isExpandedCategory;
-
   bool get isExpandedTrends => _isExpandedTrends;
-
   bool get isExpandedChannel => _isExpandedChannel;
-
   bool get showRetailing => _showRetailing;
-
   bool get showCoverage => _showCoverage;
-
   bool get showGoldenPoints => _showGoldenPoints;
-
   bool get showFocusBrand => _showFocusBrand;
-
   bool get isFilterLoading => _isFilterLoading;
-
   bool get isSummaryLoading => _isSummaryLoading;
-
   bool get isRetailingGeoLoading => _isRetailingGeoLoading;
-
   bool get isCoverageGeoLoading => _isCoverageGeoLoading;
-
   bool get isGPGeoLoading => _isGPGeoLoading;
-
   bool get isFBGeoLoading => _isFBGeoLoading;
-
   bool get isRetailingCategoryLoading => _isRetailingCategoryLoading;
-
   bool get isCoverageCategoryLoading => _isCoverageCategoryLoading;
-
   bool get isGPCategoryLoading => _isGPCategoryLoading;
-
   bool get isFBCategoryLoading => _isFBCategoryLoading;
 
   bool get isRetailingChannelLoading => _isRetailingChannelLoading;
-
   bool get isCoverageChannelLoading => _isCoverageChannelLoading;
-
   bool get isGPChannelLoading => _isGPChannelLoading;
-
   bool get isFBChannelLoading => _isFBChannelLoading;
-
   bool get isRetailingTrendsLoading => _isRetailingTrendsLoading;
-
   bool get channelSales => _channelSales;
-
   bool get isSummaryPageLoading => _isSummaryPageLoading;
-
   bool get isCoverageTrendsLoading => _isCoverageTrendsLoading;
-
   bool get isGPTrendsLoading => _isGPTrendsLoading;
-
   bool get isFBTrendsLoading => _isFBTrendsLoading;
-
   bool get isSummaryDirect => _isSummaryDirect;
-
   bool get isDirectIndirectLoading => _isDirectIndirectLoading;
-
   bool get isRetailingDeepDiveInd => _isRetailingDeepDiveInd;
 
   //int
   int _selectedNav = 0;
-
   int get selectedNav => _selectedNav;
 
   //
@@ -137,116 +105,82 @@ class HomeController extends GetxController {
   String _retailingTrendsValue = '',
       _coverageTrendsValue = '',
       _gpTrendsValue = '',
-      _fbTrendsValue = '';
+      _fbTrendsValue = '',
+      _appVersion = '';
 
+  String get appVersion => _appVersion;
   String get retailingTrendsValue => _retailingTrendsValue;
-
   String get coverageTrendsValue => _coverageTrendsValue;
-
   String get gpTrendsValue => _gpTrendsValue;
-
   String get fbTrendsValue => _fbTrendsValue;
   String _selectedCoverageTrendsFilter = 'Billing %';
-
   String get selectedCoverageTrendsFilter => _selectedCoverageTrendsFilter;
   String _selectedTrends = 'Geography';
-
   String get selectedTrends => _selectedTrends;
   String _selectedCoverageTrends = 'Geography';
-
   String get selectedCoverageTrends => _selectedCoverageTrends;
   String _selectedGPTrends = 'Geography';
-
   String get selectedGPTrends => _selectedGPTrends;
   String _selectedFBTrends = 'Geography';
-
   String get selectedFBTrends => _selectedFBTrends;
 
   String _selectedChannel = 'attr1';
-
   String get selectedChannel => _selectedChannel;
   String _selectedRetailingChannel = 'Level 1';
-
   String get selectedRetailingChannel => _selectedRetailingChannel;
   String _selectedCoverageChannel = 'Level 1';
-
   String get selectedCoverageChannel => _selectedCoverageChannel;
   String _selectedGPChannel = 'Level 1';
-
   String get selectedGPChannel => _selectedGPChannel;
   String _selectedFBChannel = 'Level 1';
-
   String get selectedFBChannel => _selectedFBChannel;
   String _selectedTrendsChannel = 'attr1';
-
   String get selectedTrendsChannel => _selectedTrendsChannel;
   String _selectedTrendsChannelValue = '';
-
   String get selectedTrendsChannelValue => _selectedTrendsChannelValue;
   String _selectedCategory = 'Category';
-
   String get selectedCategory => _selectedCategory;
   String _selectedGPCategory = 'Category';
-
   String get selectedGPCategory => _selectedGPCategory;
   String _selectedFBCategory = 'Category';
-
   String get selectedFBCategory => _selectedFBCategory;
   String _selectedTrendsCategory = 'Category';
-
   String get selectedTrendsCategory => _selectedTrendsCategory;
   String _selectedTempRetailingChannel = 'Level 1';
-
   String get selectedTempRetailingChannel => _selectedTempRetailingChannel;
   String _selectedTempCoverageChannel = 'Level 1';
-
   String get selectedTempCoverageCategory => _selectedTempCoverageChannel;
   String _selectedTempGPChannel = 'Level 1';
-
   String get selectedTempGPChannel => _selectedTempGPChannel;
   String _selectedTempFBChannel = 'Channel';
-
   String get selectedTempFBChannel => _selectedTempFBChannel;
   String _selectedTempCategory = 'Category';
-
   String get selectedTempCategory => _selectedTempCategory;
   String _selectedTrendsCategoryValue = '';
-
   String get selectedTrendsCategoryValue => _selectedTrendsCategoryValue;
 
   String _selectedGeo = 'All India';
-
   String get selectedGeo => _selectedGeo;
   String _selectedMultiGeo = 'All India';
-
   String get selectedMultiGeo => _selectedMultiGeo;
   String _selectedGeoValue = 'All India';
-
   String get selectedGeoValue => _selectedGeoValue;
 
   String? _selectedMonth = 'Dec-2023';
-
   String? get selectedMonth => _selectedMonth;
   String? _selectedYear = '2023';
-
   String? get selectedYear => _selectedYear;
   String? _selectedTempMonth = 'Dec-2023';
-
   String? get selectedTempMonth => _selectedTempMonth;
   String? _selectedTempYear = 'Date';
-
   String? get selectedTempYear => _selectedTempYear;
   String _selectedTempGeo = 'All India';
-
   String get selectedTempGeo => _selectedTempGeo;
   String _selectedTempGeoValue = 'All India';
-
   String get selectedTempGeoValue => _selectedTempGeoValue;
   String _selectedTrendsGeo = 'All India';
-
   String get selectedTrendsGeo => _selectedTrendsGeo;
   String _selectedTrendsGeoValue = '';
-
   String get selectedTrendsGeoValue => _selectedTrendsGeoValue;
 
   //
@@ -296,8 +230,17 @@ class HomeController extends GetxController {
       moreMetrics = ['Shipment (TBD)']; // 'Inventory'
   //Models
   FiltersModel? _filtersModel;
-
   FiltersModel? get filtersModel => _filtersModel;
+
+  void getAppVersion() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+
+    // String appName = packageInfo.appName;
+    // String packageName = packageInfo.packageName;
+    _appVersion = packageInfo.version;
+    // String buildNumber = packageInfo.buildNumber;
+    update();
+  }
 
   void onChannelSalesChange(bool value) {
     _channelSales = value;
@@ -858,6 +801,7 @@ class HomeController extends GetxController {
     getPersonalizedData();
     getInitValues(getOnlyShared: true);
     getInitData();
+    getAppVersion();
     getMonthFilters();
     filters = ['All India'];
     multiFilters = ['All India'];
@@ -2738,25 +2682,15 @@ class HomeController extends GetxController {
         _isFBGeoLoading = true;
       } else if (type.startsWith('category')) {
         //categoryFBList
-        if (categoryFBList.isNotEmpty) {
-          List<List<String>> categoryListTemp = [];
-          categoryListTemp.addAll(categoryFBList);
-          categoryFBList.clear();
-          categoryFBList.add(categoryListTemp[0]);
-        }
-
-
+        categoryFBList.clear();
+        Logger().log(Level.debug,
+            '===> Focus Brand Category Data Start ${stopWatch.elapsed.toString()}');
         _isFBCategoryLoading = true;
       } else if (type.startsWith('channel')) {
         _isFBChannelLoading = true;
-
-        if (channelFBList.isNotEmpty) {
-          List<List<String>> channelListTemp = [];
-          channelListTemp.addAll(channelFBList);
-          channelFBList.clear();
-          channelFBList.add(channelListTemp[0]);
-        }
-
+        channelFBList.clear();
+        Logger().log(Level.debug,
+            '===> Focus Brand Channel Data Start ${stopWatch.elapsed.toString()}');
       } else {
         _isLoading = true;
       }
