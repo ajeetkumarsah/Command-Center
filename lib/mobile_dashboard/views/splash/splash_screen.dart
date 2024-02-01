@@ -1,7 +1,10 @@
 import 'dart:async';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:command_centre/mobile_dashboard/utils/png_files.dart';
+import 'package:command_centre/mobile_dashboard/utils/svg_files.dart';
+import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
 import 'package:command_centre/mobile_dashboard/utils/routes/app_pages.dart';
 import 'package:command_centre/mobile_dashboard/controllers/auth_controller.dart';
 import 'package:lottie/lottie.dart';
@@ -16,7 +19,7 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   final AuthController controller =
       Get.put(AuthController(authRepo: Get.find()));
-
+  // final HomeController homeCtlr = Get.put(HomeController(homeRepo: Get.find()));
   @override
   void initState() {
     super.initState();
@@ -36,6 +39,7 @@ class _SplashScreenState extends State<SplashScreen> {
           if (geo.isNotEmpty && geoValue.isNotEmpty) {
 
             Get.offAndToNamed(AppPages.INITIAL);
+            // Get.offAndToNamed(AppPages.PERSONA_SCREEN);
           } else {
             Get.offAndToNamed(AppPages.PERSONA_SCREEN);
           }
@@ -61,6 +65,11 @@ class _SplashScreenState extends State<SplashScreen> {
               width: MediaQuery.of(context).size.width,
               fit: BoxFit.fill,
             ),
+
+            // SvgPicture.asset(
+            //   SvgFiles.splashScreen,
+            //   fit: BoxFit.cover,
+            // ),
           ),
           Align(
             alignment: Alignment.center,

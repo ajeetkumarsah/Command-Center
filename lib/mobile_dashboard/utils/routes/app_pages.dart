@@ -1,4 +1,3 @@
-import 'package:command_centre/mobile_dashboard/views/help_and_support/help_and_support_screen.dart';
 import 'package:get/get.dart';
 import '../../views/home_view.dart';
 import '../../bindings/home_binding.dart';
@@ -20,6 +19,7 @@ import 'package:command_centre/mobile_dashboard/views/focus_brand/focus_brand_sc
 import 'package:command_centre/mobile_dashboard/views/store_fingertips/fb/fb_deep_dive.dart';
 import 'package:command_centre/mobile_dashboard/views/golden_point/golden_point_screen.dart';
 import 'package:command_centre/mobile_dashboard/views/store_fingertips/gp/gp_deep_dive_screen.dart';
+import 'package:command_centre/mobile_dashboard/views/help_and_support/help_and_support_screen.dart';
 import 'package:command_centre/mobile_dashboard/views/store_fingertips/store_fingertips_screen.dart';
 import 'package:command_centre/mobile_dashboard/views/store_fingertips/coverage/coverage_deep_dive.dart';
 // ignore_for_file: constant_identifier_names
