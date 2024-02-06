@@ -102,7 +102,7 @@ class _FocusBrandScreenState extends State<FocusBrandScreen> {
                                     tabType: 'Focus Brand by Geography',
                                   )
                                 : const SizedBox(),
-                        SizedBox(height: ctlr.fbList.isNotEmpty ? 16 : 0),
+                        const SizedBox(height: 16),
                         ctlr.isFBCategoryLoading
                             ? loadingWidget(context)
                             : CustomExpandedWidget(
@@ -121,8 +121,7 @@ class _FocusBrandScreenState extends State<FocusBrandScreen> {
                                 isExpanded: ctlr.isExpandedCategory,
                                 tabType: '',
                               ),
-                        SizedBox(
-                            height: ctlr.categoryFBList.isNotEmpty ? 16 : 0),
+                        const SizedBox(height: 16),
                         ctlr.isFBChannelLoading
                             ? loadingWidget(context)
                             : CustomExpandedWidget(
@@ -140,8 +139,7 @@ class _FocusBrandScreenState extends State<FocusBrandScreen> {
                                 isExpanded: ctlr.isExpandedChannel,
                                 tabType: '',
                               ),
-                        SizedBox(
-                            height: ctlr.channelFBList.isNotEmpty ? 16 : 0),
+                        const SizedBox(height: 16),
                         ctlr.isFBTrendsLoading
                             ? loadingWidget(context)
                             : FBTrendsChartWidget(

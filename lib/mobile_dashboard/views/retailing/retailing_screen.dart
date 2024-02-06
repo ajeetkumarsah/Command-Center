@@ -180,8 +180,7 @@ class _RetailingScreenState extends State<RetailingScreen> {
                                     tabType: 'Retailing by Geography',
                                   )
                                 : const SizedBox(),
-                        SizedBox(
-                            height: ctlr.retailingGeoModel != null ? 16 : 0),
+                        const SizedBox(height: 16),
                         ctlr.isRetailingCategoryLoading
                             ? loadingWidget(context)
                             : ctlr.categoryRetailingModel != null
@@ -204,9 +203,7 @@ class _RetailingScreenState extends State<RetailingScreen> {
                                     tabType: '',
                                   )
                                 : const SizedBox(),
-                        SizedBox(
-                            height:
-                                ctlr.categoryRetailingModel != null ? 16 : 0),
+                        const SizedBox(height: 16),
                         ctlr.isRetailingChannelLoading
                             ? loadingWidget(context)
                             : ctlr.channelRetailingModel != null
@@ -229,9 +226,7 @@ class _RetailingScreenState extends State<RetailingScreen> {
                                     tabType: '',
                                   )
                                 : const SizedBox(),
-                        SizedBox(
-                            height:
-                                ctlr.channelRetailingModel != null ? 16 : 0),
+                        const SizedBox(height: 16),
                         ctlr.isRetailingTrendsLoading
                             ? loadingWidget(context)
                             : ctlr.trendsRetailingModel != null

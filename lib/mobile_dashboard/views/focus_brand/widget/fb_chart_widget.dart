@@ -95,155 +95,164 @@ class _CustomExpandedChartWidgetState extends State<FBTrendsChartWidget> {
                         child: SizedBox(
                           height: 400,
                           child: Column(
+                            mainAxisSize: MainAxisSize.min,
                             children: [
                               Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 20, vertical: 8.0),
+                                padding: const EdgeInsets.only(
+                                    left: 20, right: 20, top: 8.0),
                                 child: Row(
                                   children: [
-                                    GestureDetector(
-                                      onTap: widget.onFilterTap,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(4.0),
-                                        child: Text(
-                                          ctlr.selectedFBTrends,
-                                          overflow: TextOverflow.ellipsis,
-                                          maxLines: 1,
-                                          style: GoogleFonts.ptSans(
-                                            fontSize: 16,
-                                            color: AppColors.primary,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    GestureDetector(
-                                      onTap: widget.onFilterTap,
-                                      child: const Padding(
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal: 2, vertical: 4.0),
-                                        child: Icon(
-                                          Icons.edit,
-                                          size: 16,
-                                          color: AppColors.primary,
-                                        ),
-                                      ),
-                                    ),
                                     Expanded(
-                                      child: Row(
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
                                         children: [
-                                          Expanded(
-                                            child: Text(
-                                              ctlr.fbTrendsValue,
-                                            ),
-                                          ),
-                                          widget.coverageWidget ??
-                                              Container(
-                                                // height: 26,
-                                                decoration: BoxDecoration(
-                                                    border: Border.all(
-                                                      width: 1,
-                                                      color:
-                                                          AppColors.lightGrey,
+                                          Row(
+                                            children: [
+                                              GestureDetector(
+                                                onTap: widget.onFilterTap,
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(4.0),
+                                                  child: Text(
+                                                    ctlr.selectedFBTrends,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    maxLines: 1,
+                                                    style: GoogleFonts
+                                                        .ptSansCaption(
+                                                      fontSize: 14,
+                                                      color: AppColors.primary,
                                                     ),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            100)),
-                                                child: Row(
-                                                  children: [
-                                                    GestureDetector(
-                                                      onTap: () => ctlr
-                                                          .onChannelSalesChange(
-                                                              true),
-                                                      child: Container(
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          color: ctlr
-                                                                  .channelSales
-                                                              ? AppColors
-                                                                  .primary
-                                                              : AppColors.white,
-                                                          border: Border.all(
-                                                            width: 1,
-                                                            color:
-                                                                ctlr.channelSales
-                                                                    ? AppColors
-                                                                        .primary
-                                                                    : AppColors
-                                                                        .white,
-                                                          ),
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                                      100),
-                                                        ),
-                                                        padding:
-                                                            const EdgeInsets
-                                                                    .symmetric(
-                                                                horizontal: 10,
-                                                                vertical: 4),
-                                                        child: Text(
-                                                          'FB Abs.',
-                                                          style: GoogleFonts
-                                                              .ptSansCaption(
-                                                            color: ctlr
-                                                                    .channelSales
-                                                                ? Colors.white
-                                                                : Colors.grey,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    GestureDetector(
-                                                      onTap: () => ctlr
-                                                          .onChannelSalesChange(
-                                                              false),
-                                                      child: Container(
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          color: ctlr
-                                                                  .channelSales
-                                                              ? AppColors.white
-                                                              : AppColors
-                                                                  .primary,
-                                                          border:
-                                                              ctlr.channelSales
-                                                                  ? null
-                                                                  : Border.all(
-                                                                      width: 1,
-                                                                      color: !ctlr.channelSales
-                                                                          ? AppColors
-                                                                              .primary
-                                                                          : AppColors
-                                                                              .white,
-                                                                    ),
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                                      100),
-                                                        ),
-                                                        padding:
-                                                            const EdgeInsets
-                                                                    .symmetric(
-                                                                horizontal: 10,
-                                                                vertical: 4),
-                                                        child: Text(
-                                                          '  FB%  ',
-                                                          style: GoogleFonts
-                                                              .ptSansCaption(
-                                                            color: !ctlr
-                                                                    .channelSales
-                                                                ? Colors.white
-                                                                : Colors.grey,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    )
-                                                  ],
+                                                  ),
                                                 ),
                                               ),
+                                              GestureDetector(
+                                                onTap: widget.onFilterTap,
+                                                child: const Padding(
+                                                  padding: EdgeInsets.symmetric(
+                                                      horizontal: 2,
+                                                      vertical: 4.0),
+                                                  child: Icon(
+                                                    Icons.edit,
+                                                    size: 16,
+                                                    color: AppColors.primary,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          Row(
+                                            children: [
+                                              Expanded(
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          left: 4.0,
+                                                          right: 4,
+                                                          bottom: 4),
+                                                  child: Text(
+                                                    ctlr.fbTrendsValue,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    maxLines: 3,
+                                                    style: GoogleFonts
+                                                        .ptSansCaption(
+                                                            fontSize: 12),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                         ],
                                       ),
                                     ),
+                                    widget.coverageWidget ??
+                                        Container(
+                                          // height: 26,
+                                          decoration: BoxDecoration(
+                                              border: Border.all(
+                                                width: 1,
+                                                color: AppColors.lightGrey,
+                                              ),
+                                              borderRadius:
+                                                  BorderRadius.circular(100)),
+                                          child: Row(
+                                            children: [
+                                              GestureDetector(
+                                                onTap: () => ctlr
+                                                    .onChannelSalesChange(true),
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                    color: ctlr.channelSales
+                                                        ? AppColors.primary
+                                                        : AppColors.white,
+                                                    border: Border.all(
+                                                      width: 1,
+                                                      color: ctlr.channelSales
+                                                          ? AppColors.primary
+                                                          : AppColors.white,
+                                                    ),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            100),
+                                                  ),
+                                                  padding: const EdgeInsets
+                                                          .symmetric(
+                                                      horizontal: 10,
+                                                      vertical: 4),
+                                                  child: Text(
+                                                    'FB Abs.',
+                                                    style: GoogleFonts
+                                                        .ptSansCaption(
+                                                      color: ctlr.channelSales
+                                                          ? Colors.white
+                                                          : Colors.grey,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                              GestureDetector(
+                                                onTap: () =>
+                                                    ctlr.onChannelSalesChange(
+                                                        false),
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                    color: ctlr.channelSales
+                                                        ? AppColors.white
+                                                        : AppColors.primary,
+                                                    border: ctlr.channelSales
+                                                        ? null
+                                                        : Border.all(
+                                                            width: 1,
+                                                            color: !ctlr
+                                                                    .channelSales
+                                                                ? AppColors
+                                                                    .primary
+                                                                : AppColors
+                                                                    .white,
+                                                          ),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            100),
+                                                  ),
+                                                  padding: const EdgeInsets
+                                                          .symmetric(
+                                                      horizontal: 10,
+                                                      vertical: 4),
+                                                  child: Text(
+                                                    '  FB%  ',
+                                                    style: GoogleFonts
+                                                        .ptSansCaption(
+                                                      color: !ctlr.channelSales
+                                                          ? Colors.white
+                                                          : Colors.grey,
+                                                    ),
+                                                  ),
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                        ),
                                   ],
                                 ),
                               ),
@@ -326,24 +335,7 @@ class _CustomExpandedChartWidgetState extends State<FBTrendsChartWidget> {
                                                         color: Colors.white,
                                                       );
                                                       return LineTooltipItem(
-                                                        ctlr.channelSales
-                                                            ? (widget
-                                                                    .trendsList[
-                                                                        0]
-                                                                    .data![touchedSpot
-                                                                        .spotIndex]
-                                                                    .fbAchieveSumRv ??
-                                                                '0.0')
-                                                            : double.tryParse((widget
-                                                                            .trendsList[
-                                                                                0]
-                                                                            .data![touchedSpot
-                                                                                .spotIndex]
-                                                                            .fb ??
-                                                                        '0.0'))
-                                                                    ?.toStringAsFixed(
-                                                                        2) ??
-                                                                '0.0',
+                                                        '${widget.trendsList[0].data![touchedSpot.spotIndex].calendarMonth}\n${ctlr.channelSales ? (widget.trendsList[0].data![touchedSpot.spotIndex].fbAchieveSumRv ?? '0.0') : double.tryParse((widget.trendsList[0].data![touchedSpot.spotIndex].fb ?? '0.0'))?.toStringAsFixed(2) ?? '0.0'}',
                                                         textStyle,
                                                       );
                                                     },
