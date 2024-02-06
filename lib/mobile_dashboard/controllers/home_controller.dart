@@ -1137,7 +1137,7 @@ class HomeController extends GetxController {
 
     saveGeo(_selectedTempGeo);
     saveGeoValue(_selectedTempGeoValue);
-    debugPrint('===>Trends Value:${_selectedTrendsGeoValue}');
+    debugPrint('===>Trends Value:$_selectedTrendsGeoValue');
     if (SummaryTypes.retailing.type == tabType) {
       if (_selectedTrendsGeoValue.trim().isNotEmpty) {
         _retailingTrendsValue = _selectedTempGeoValue;
@@ -1163,6 +1163,11 @@ class HomeController extends GetxController {
       if (_selectedTrendsGeoValue.trim().isNotEmpty) {
         _fbTrendsValue = _selectedTempGeoValue;
       }
+      _retailingTrendsValue = _selectedTempGeoValue;
+      _coverageTrendsValue = _selectedTempGeoValue;
+      _gpTrendsValue = _selectedTempGeoValue;
+    } else if (tabType == 'All') {
+      _fbTrendsValue = _selectedTempGeoValue;
       _retailingTrendsValue = _selectedTempGeoValue;
       _coverageTrendsValue = _selectedTempGeoValue;
       _gpTrendsValue = _selectedTempGeoValue;

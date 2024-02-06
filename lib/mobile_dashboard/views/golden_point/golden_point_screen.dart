@@ -102,7 +102,7 @@ class _GoldenPointScreenState extends State<GoldenPointScreen> {
                                     tabType: '',
                                   )
                                 : const SizedBox(),
-                        SizedBox(height: ctlr.gpList.isNotEmpty ? 16 : 0),
+                        const SizedBox(height: 16),
                         ctlr.isGPCategoryLoading
                             ? loadingWidget(context)
                             : CustomExpandedWidget(
@@ -122,8 +122,7 @@ class _GoldenPointScreenState extends State<GoldenPointScreen> {
                                 isExpanded: ctlr.isExpandedCategory,
                                 tabType: '',
                               ),
-                        SizedBox(
-                            height: ctlr.categoryGPList.isNotEmpty ? 16 : 0),
+                        const SizedBox(height: 16),
                         ctlr.isGPChannelLoading
                             ? loadingWidget(context)
                             : CustomExpandedWidget(
@@ -141,8 +140,7 @@ class _GoldenPointScreenState extends State<GoldenPointScreen> {
                                 isExpanded: ctlr.isExpandedChannel,
                                 tabType: '',
                               ),
-                        SizedBox(
-                            height: ctlr.channelGPList.isNotEmpty ? 16 : 0),
+                        const SizedBox(height: 16),
                         ctlr.isGPTrendsLoading
                             ? loadingWidget(context)
                             : GPTrendsChartWidget(

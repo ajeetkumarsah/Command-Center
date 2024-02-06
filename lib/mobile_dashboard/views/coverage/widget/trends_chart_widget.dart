@@ -110,47 +110,98 @@ class _CustomExpandedChartWidgetState extends State<CoverageTrendsChartWidget> {
                                     horizontal: 20, vertical: 8.0),
                                 child: Row(
                                   children: [
-                                    GestureDetector(
-                                      onTap: widget.onFilterTap,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(4.0),
-                                        child: Text(
-                                          ctlr.selectedCoverageTrends,
-                                          overflow: TextOverflow.ellipsis,
-                                          maxLines: 1,
-                                          style: GoogleFonts.ptSans(
-                                            fontSize: 16,
-                                            color: AppColors.primary,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    GestureDetector(
-                                      onTap: widget.onFilterTap,
-                                      child: const Padding(
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal: 2, vertical: 4.0),
-                                        child: Icon(
-                                          Icons.edit,
-                                          size: 16,
-                                          color: AppColors.primary,
-                                        ),
-                                      ),
-                                    ),
                                     Expanded(
-                                      child: Row(
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
                                         children: [
-                                          Expanded(
-                                            child: Text(
-                                              ctlr.coverageTrendsValue,
-                                            ),
+                                          Row(
+                                            children: [
+                                              GestureDetector(
+                                                onTap: widget.onFilterTap,
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(4.0),
+                                                  child: Text(
+                                                    ctlr.selectedCoverageTrends,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    maxLines: 1,
+                                                    style: GoogleFonts.ptSans(
+                                                      fontSize: 14,
+                                                      color: AppColors.primary,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                              GestureDetector(
+                                                onTap: widget.onFilterTap,
+                                                child: const Padding(
+                                                  padding: EdgeInsets.symmetric(
+                                                      horizontal: 2,
+                                                      vertical: 4.0),
+                                                  child: Icon(
+                                                    Icons.edit,
+                                                    size: 16,
+                                                    color: AppColors.primary,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
                                           ),
-                                          // const Spacer(),
-                                          widget.coverageWidget ??
-                                              const SizedBox()
+                                          Row(
+                                            children: [
+                                              Expanded(
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          left: 4.0,
+                                                          right: 4,
+                                                          bottom: 4),
+                                                  child: Text(
+                                                    ctlr.coverageTrendsValue,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    maxLines: 3,
+                                                    style: GoogleFonts
+                                                        .ptSansCaption(
+                                                            fontSize: 12),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                         ],
                                       ),
                                     ),
+                                    // GestureDetector(
+                                    //   onTap: widget.onFilterTap,
+                                    //   child: Padding(
+                                    //     padding: const EdgeInsets.all(4.0),
+                                    //     child: Text(
+                                    //       ctlr.selectedCoverageTrends,
+                                    //       overflow: TextOverflow.ellipsis,
+                                    //       maxLines: 1,
+                                    //       style: GoogleFonts.ptSans(
+                                    //         fontSize: 16,
+                                    //         color: AppColors.primary,
+                                    //       ),
+                                    //     ),
+                                    //   ),
+                                    // ),
+                                    // GestureDetector(
+                                    //   onTap: widget.onFilterTap,
+                                    //   child: const Padding(
+                                    //     padding: EdgeInsets.symmetric(
+                                    //         horizontal: 2, vertical: 4.0),
+                                    //     child: Icon(
+                                    //       Icons.edit,
+                                    //       size: 16,
+                                    //       color: AppColors.primary,
+                                    //     ),
+                                    //   ),
+                                    // ),
+
+                                    widget.coverageWidget ?? const SizedBox(),
                                   ],
                                 ),
                               ),
@@ -245,30 +296,7 @@ class _CustomExpandedChartWidgetState extends State<CoverageTrendsChartWidget> {
                                                         color: Colors.white,
                                                       );
                                                       return LineTooltipItem(
-                                                        ctlr.selectedCoverageTrendsFilter ==
-                                                                'Billing %'
-                                                            ? widget
-                                                                    .trendsList[
-                                                                        0]
-                                                                    .data![touchedSpot
-                                                                        .spotIndex]
-                                                                    .billingPer
-                                                                    ?.toString() ??
-                                                                '0.0'
-                                                            : ctlr.selectedCoverageTrendsFilter ==
-                                                                    'Prod %'
-                                                                ? double.tryParse((widget.trendsList[0].data![touchedSpot.spotIndex].productivityPer ??
-                                                                            '0.0'))
-                                                                        ?.toStringAsFixed(
-                                                                            2) ??
-                                                                    '0.0'
-                                                                : ctlr.selectedCoverageTrendsFilter ==
-                                                                        'Call Hit Rate %'
-                                                                    ? double.tryParse((widget.trendsList[0].data![touchedSpot.spotIndex].ccPer ??
-                                                                                '0.0'))
-                                                                            ?.toStringAsFixed(2) ??
-                                                                        '0.0'
-                                                                    : '0.0',
+                                                        '${widget.trendsList[0].data![touchedSpot.spotIndex].monthYear}\n${ctlr.selectedCoverageTrendsFilter == 'Billing %' ? widget.trendsList[0].data![touchedSpot.spotIndex].billingPer?.toString() ?? '0.0' : ctlr.selectedCoverageTrendsFilter == 'Prod %' ? double.tryParse((widget.trendsList[0].data![touchedSpot.spotIndex].productivityPer ?? '0.0'))?.toStringAsFixed(2) ?? '0.0' : ctlr.selectedCoverageTrendsFilter == 'Call Hit Rate %' ? double.tryParse((widget.trendsList[0].data![touchedSpot.spotIndex].ccPer ?? '0.0'))?.toStringAsFixed(2) ?? '0.0' : '0.0'}',
                                                         textStyle,
                                                       );
                                                     },

@@ -10,7 +10,6 @@ import 'package:command_centre/mobile_dashboard/utils/routes/app_pages.dart';
 import 'package:command_centre/mobile_dashboard/controllers/auth_controller.dart';
 import 'package:command_centre/mobile_dashboard/controllers/home_controller.dart';
 
-
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 

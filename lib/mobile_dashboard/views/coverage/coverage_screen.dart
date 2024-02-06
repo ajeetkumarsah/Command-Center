@@ -100,7 +100,7 @@ class _CoverageScreenState extends State<CoverageScreen> {
                                     tabType: 'Coverage by Geography',
                                   )
                                 : const SizedBox(),
-                        SizedBox(height: ctlr.coverageList.isNotEmpty ? 16 : 0),
+                        const SizedBox(height: 16),
                         // ctlr.isCategoryLoading
                         //     ? loadingWidget(context)
                         //     : ctlr.categoryCoverageList.isNotEmpty
@@ -143,9 +143,7 @@ class _CoverageScreenState extends State<CoverageScreen> {
                         //             isExpanded: ctlr.isExpandedCategory,
                         //           )
                         //         : const SizedBox(),
-                        SizedBox(
-                            height:
-                                ctlr.categoryCoverageList.isNotEmpty ? 16 : 0),
+                        const SizedBox(height: 16),
                         ctlr.isCoverageChannelLoading
                             ? loadingWidget(context)
                             : CustomExpandedWidget(
