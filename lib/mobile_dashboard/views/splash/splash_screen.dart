@@ -7,11 +7,7 @@ import 'package:command_centre/mobile_dashboard/utils/svg_files.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
 import 'package:command_centre/mobile_dashboard/utils/routes/app_pages.dart';
 import 'package:command_centre/mobile_dashboard/controllers/auth_controller.dart';
-<<<<<<< HEAD
-import 'package:command_centre/mobile_dashboard/controllers/home_controller.dart';
-=======
 import 'package:lottie/lottie.dart';
->>>>>>> 4285a7201590eaa5304b821a3347532e75c5e6ad
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
