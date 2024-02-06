@@ -84,13 +84,13 @@ class _AvgLandingPAgeState extends State<AvgLandingPAge> {
       "vehicleType": vehicleType,
       "physicalYear": ""
     });
-    print("Body Retailing Tab 1 $body");
+
     var response = await http.post(Uri.parse(url), headers: {"Content-Type": "application/json"}, body: body);
     if (response.statusCode == 200) {
       setState(() {
         matrixCardDataList = jsonDecode(response.body);
         provider.setMasterData(matrixCardDataList);
-        // print('data : $matrixCardDataList');
+
       });
     } else {
       var snackBar = SnackBar(content: Text(response.body));
@@ -114,12 +114,12 @@ class _AvgLandingPAgeState extends State<AvgLandingPAge> {
       "vehicleType": filterData.vehicleFilter,
       "movement": ''
     });
-    // print("Body Retailing Tab 1 $body");
+
     var response = await http.post(Uri.parse(url), headers: {"Content-Type": "application/json"}, body: body);
     if (response.statusCode == 200) {
       setState(() {
         filterCategoryDataList = jsonDecode(response.body);
-        print('data : $filterCategoryDataList');
+
       });
     } else {
       var snackBar = SnackBar(content: Text(response.body));
@@ -146,7 +146,7 @@ class _AvgLandingPAgeState extends State<AvgLandingPAge> {
     if (response.statusCode == 200) {
       setState(() {
         filterDestinationDataList = jsonDecode(response.body);
-        print('data : $filterDestinationDataList');
+
       });
     } else {
       var snackBar = SnackBar(content: Text(response.body));
@@ -174,7 +174,7 @@ class _AvgLandingPAgeState extends State<AvgLandingPAge> {
     if (response.statusCode == 200) {
       setState(() {
         filterSourceList = jsonDecode(response.body);
-        print('data : $filterSourceList');
+
       });
     } else {
       var snackBar = SnackBar(content: Text(response.body));
@@ -202,7 +202,7 @@ class _AvgLandingPAgeState extends State<AvgLandingPAge> {
     if (response.statusCode == 200) {
       setState(() {
         filterSbfDataList = jsonDecode(response.body);
-        print('data : $filterSbfDataList');
+
       });
     } else {
       var snackBar = SnackBar(content: Text(response.body));
@@ -230,7 +230,7 @@ class _AvgLandingPAgeState extends State<AvgLandingPAge> {
     if (response.statusCode == 200) {
       setState(() {
         filterVehicleDataList = jsonDecode(response.body);
-        print('data : $filterVehicleDataList');
+
       });
     } else {
       var snackBar = SnackBar(content: Text(response.body));
@@ -430,7 +430,7 @@ class _AvgLandingPAgeState extends State<AvgLandingPAge> {
                                           onFilterClick: () async {
                                             provider.setLoad(true);
                                             _tooltipController.hide();
-                                            // print(provider.selectedFilter);
+
                                             await postRequest(context, provider.filterDate!, provider.catFilter!, provider.sbfFilter!, provider.destinationFilter!,
                                                 provider.sourceFilter!, provider.movementFilter! , provider.vehicleFilter!);
                                             provider.setLoad(false);
@@ -485,7 +485,7 @@ class _AvgLandingPAgeState extends State<AvgLandingPAge> {
                                             onFilterClick: () async {
                                               provider.setLoad(true);
                                               _tooltipController2.hide();
-                                              // print(provider.selectedFilter);
+
                                               await postRequest(context, provider.filterDate!, provider.catFilter!, provider.sbfFilter!, provider.destinationFilter!,
                                                   provider.sourceFilter!, provider.movementFilter! , provider.vehicleFilter!);
                                               provider.setLoad(false);
@@ -541,7 +541,7 @@ class _AvgLandingPAgeState extends State<AvgLandingPAge> {
                                             onFilterClick: () async {
                                               provider.setLoad(true);
                                               _tooltipController3.hide();
-                                              // print(provider.selectedFilter);
+
                                               await postRequest(context, provider.filterDate!, provider.catFilter!, provider.sbfFilter!, provider.destinationFilter!,
                                                   provider.sourceFilter!, provider.movementFilter! , provider.vehicleFilter!);
                                               provider.setLoad(false);
@@ -597,7 +597,7 @@ class _AvgLandingPAgeState extends State<AvgLandingPAge> {
                                             onFilterClick: () async {
                                               provider.setLoad(true);
                                               _tooltipController4.hide();
-                                              // print(provider.selectedFilter);
+
                                               await postRequest(context, provider.filterDate!, provider.catFilter!, provider.sbfFilter!, provider.destinationFilter!,
                                                   provider.sourceFilter!, provider.movementFilter! , provider.vehicleFilter!);
                                               provider.setLoad(false);
@@ -653,7 +653,7 @@ class _AvgLandingPAgeState extends State<AvgLandingPAge> {
                                             onFilterClick: () async {
                                               provider.setLoad(true);
                                               _tooltipController5.hide();
-                                              // print(provider.selectedFilter);
+
                                               await postRequest(context, provider.filterDate!, provider.catFilter!, provider.sbfFilter!, provider.destinationFilter!,
                                                   provider.sourceFilter!, provider.movementFilter!, provider.vehicleFilter!);
                                               provider.setLoad(false);
@@ -723,7 +723,7 @@ class _AvgLandingPAgeState extends State<AvgLandingPAge> {
                                                                         onTap: () {
                                                                           setState(() {
                                                                             statusTypeIndex = index;
-                                                                            print(statusTypeIndex);
+
                                                                           });
                                                                         },
                                                                         child: Container(

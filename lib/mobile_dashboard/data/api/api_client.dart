@@ -39,8 +39,7 @@ class ApiClient extends GetxService {
   // Future<Response> getLocation(String text) async {
   //   var client = Http.Client();
   //   try {
-  //     debugPrint(
-  //         'Final URL==>${Uri.parse(AppConstants.BASE_URL + AppConstants.SEARCH_LOCATION_URI + text)}');
+  //
   //     Http.Response _response = await client
   //         .get(
   //           Uri.parse(AppConstants.BASE_URL +
@@ -49,10 +48,10 @@ class ApiClient extends GetxService {
   //         )
   //         .timeout(const Duration(seconds: 30));
   //     Response response = handleResponse(_response);
-  //     debugPrint('API Response===> Return Success ');
+  //
   //     return response;
   //   } catch (e) {
-  //     debugPrint(e.toString());
+  //
   //     return Response(statusCode: 1, statusText: e.toString());
   //   }
   // }
@@ -63,8 +62,7 @@ class ApiClient extends GetxService {
       if (headers != null) {
         headers['Authorization'] =
             'Bearer ${sharedPreferences.getString(AppConstants.TOKEN)}';
-        debugPrint(
-            '===>TOKEN:${sharedPreferences.getString(AppConstants.TOKEN)}');
+
         headers['Content-Type'] = 'application/json';
       }
       _mainHeaders = {'Content-Type': 'application/json'};
@@ -75,8 +73,7 @@ class ApiClient extends GetxService {
       ).timeout(const Duration(seconds: 30));
       Response response = handleResponse(_response);
       if (Foundation.kDebugMode) {
-        debugPrint(
-            '====> API Response: [${response.statusCode}] $uri\n${response.body}');
+
       }
       return response;
     } catch (e) {
@@ -91,7 +88,7 @@ class ApiClient extends GetxService {
     if (headers != null) {
       headers['Authorization'] =
           'Bearer ${sharedPreferences.getString(AppConstants.ACCESS_TOKEN)}';
-      // debugPrint('Token: ${sharedPreferences.getString(AppConstants.TOKEN)}');
+
     }
     try {
       Http.Response _response = await Http.get(
@@ -100,12 +97,11 @@ class ApiClient extends GetxService {
       ).timeout(const Duration(seconds: 30));
       Response response = handleResponse(_response);
       if (Foundation.kDebugMode) {
-        debugPrint(
-            '====> API Response: [${response.statusCode}] $uri\n${response.body}');
+
       }
       return response;
     } catch (e) {
-      debugPrint(e.toString());
+
       return Response(statusCode: 1, statusText: e.toString());
     }
   }
@@ -127,12 +123,11 @@ class ApiClient extends GetxService {
       ).timeout(const Duration(seconds: 30));
       Response response = handleResponse(_response);
       if (Foundation.kDebugMode) {
-        debugPrint(
-            '====> API Response: [${response.statusCode}] $uri\n${response.body}');
+
       }
       return response;
     } catch (e) {
-      debugPrint(e.toString());
+
       return Response(statusCode: 1, statusText: e.toString());
     }
   }
@@ -143,8 +138,7 @@ class ApiClient extends GetxService {
         await SharedPreferences.getInstance();
 
     if (headers != null) {
-      debugPrint(
-          '===>TOKEN:${sharedPreferences.getString(AppConstants.ACCESS_TOKEN)}');
+
       headers['Authorization'] =
           'Bearer ${sharedPreferences.getString(AppConstants.ACCESS_TOKEN)}';
       headers['Content-Type'] = 'application/json';
@@ -159,11 +153,7 @@ class ApiClient extends GetxService {
 
     _mainHeaders = {'Content-Type': 'application/json'};
     try {
-      debugPrint('==>Final URL: ${Uri.parse(appBaseUrl + uri)}');
-      debugPrint('==>Body : ${jsonEncode(body)}');
 
-      Logger().log(Level.info, '==>Header: ${headers ?? _mainHeaders}');
-      debugPrint('==>Header: ${headers ?? _mainHeaders}');
       Http.Response _response = await Http.post(
         Uri.parse(appBaseUrl + uri),
         body: jsonEncode(body),
@@ -171,8 +161,7 @@ class ApiClient extends GetxService {
       ).timeout(const Duration(seconds: 60));
       Response response = handleResponse(_response);
       if (Foundation.kDebugMode) {
-        debugPrint(
-            '====> API Response: [${response.statusCode}] $uri\n${response.body}');
+
       }
       return response;
     } catch (e) {
@@ -187,15 +176,12 @@ class ApiClient extends GetxService {
     if (headers != null) {
       headers['Authorization'] =
           'Bearer ${sharedPreferences.getString(AppConstants.TOKEN)}';
-      debugPrint(
-          '===>TOKEN:${sharedPreferences.getString(AppConstants.TOKEN)}');
+
       headers['Content-Type'] = 'application/json';
     }
     _mainHeaders = {'Content-Type': 'application/json'};
     try {
-      debugPrint('==>Final URL: ${Uri.parse(appBaseUrl + uri)}');
-      debugPrint('==>Body : ${jsonEncode(body)}');
-      debugPrint('==>Header: $_mainHeaders');
+
       Http.Response _response = await Http.delete(
         Uri.parse(appBaseUrl + uri),
         body: body != null ? jsonEncode(body) : null,
@@ -203,8 +189,7 @@ class ApiClient extends GetxService {
       ).timeout(const Duration(seconds: 30));
       Response response = handleResponse(_response);
       if (Foundation.kDebugMode) {
-        debugPrint(
-            '====> API Response: [${response.statusCode}] $uri\n${response.body}');
+
       }
       return response;
     } catch (e) {
@@ -219,15 +204,12 @@ class ApiClient extends GetxService {
     if (headers != null) {
       headers['Authorization'] =
           'Bearer ${sharedPreferences.getString(AppConstants.TOKEN)}';
-      debugPrint(
-          '===>TOKEN:${sharedPreferences.getString(AppConstants.TOKEN)}');
+
       headers['Content-Type'] = 'application/json';
     }
     _mainHeaders = {'Content-Type': 'application/json'};
     try {
-      debugPrint('==>Final URL: ${Uri.parse(appBaseUrl + uri)}');
-      debugPrint('==>Body : ${jsonEncode(body)}');
-      debugPrint('==>Header: $_mainHeaders');
+
       Http.Response _response = await Http.patch(
         Uri.parse(appBaseUrl + uri),
         body: jsonEncode(body),
@@ -235,8 +217,7 @@ class ApiClient extends GetxService {
       ).timeout(const Duration(seconds: 30));
       Response response = handleResponse(_response);
       if (Foundation.kDebugMode) {
-        debugPrint(
-            '====> API Response: [${response.statusCode}] $uri\n${response.body}');
+
       }
       return response;
     } catch (e) {
@@ -249,14 +230,12 @@ class ApiClient extends GetxService {
       {Map<String, String>? headers}) async {
     try {
       if (Foundation.kDebugMode) {
-        debugPrint('====> API Call: $uri\nToken: $token');
-        debugPrint('====> API Body: $body');
+
       }
       if (headers != null) {
         headers['Authorization'] =
             'Bearer ${sharedPreferences.getString(AppConstants.TOKEN)}';
-        debugPrint(
-            '===>TOKEN:${sharedPreferences.getString(AppConstants.TOKEN)}');
+
         headers['Content-Type'] = 'application/json';
       }
       _mainHeaders = {'Content-Type': 'application/json'};
@@ -295,8 +274,7 @@ class ApiClient extends GetxService {
           await Http.Response.fromStream(await _request.send());
       Response response = handleResponse(_response);
       if (Foundation.kDebugMode) {
-        debugPrint(
-            '====> API Response: [${response.statusCode}] $uri\n${response.body}');
+
       }
       return response;
     } catch (e) {
@@ -309,7 +287,7 @@ class ApiClient extends GetxService {
     try {
       _body = jsonDecode(response.body.toString());
     } catch (e) {
-      debugPrint('Exception ===>$e');
+
     }
     Response _response = Response(
       body: _body ?? response.body,
@@ -322,20 +300,20 @@ class ApiClient extends GetxService {
         _response.body != null &&
         _response.body is! String) {
       if (_response.body.toString().startsWith('{errors: [{code:')) {
-        debugPrint('==>from if');
+
         ErrorResponse _errorResponse = ErrorResponse.fromJson(_response.body);
         _response = Response(
             statusCode: _response.statusCode,
             body: _response.body,
             statusText: _errorResponse.errors[0].message);
       } else if (_response.body.toString().startsWith('{success')) {
-        debugPrint('==>from else if');
+
         _response = Response(
             statusCode: _response.statusCode,
             body: _response.body,
             statusText: _response.body['message']);
       } else if (_response.body.toString().startsWith('{status')) {
-        debugPrint('==>from status');
+
         _response = Response(
             statusCode: _response.statusCode,
             body: _response.body,

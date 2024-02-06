@@ -45,7 +45,7 @@ class _ShipmentWebContainerState extends State<ShipmentWebContainer> {
     //       return Center(child: Text('Error: ${snapshot.error}'));
     //     } else {
     //       final appData = snapshot.data;
-    //       print("FB : $appData");
+    //
     //       return Retailing(
     //         site: "110",
     //         tgtSite: "111",

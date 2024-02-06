@@ -49,19 +49,19 @@ class TransportationProvider extends ChangeNotifier {
 
   void setSelectedGraph(value) {
     _selectedGraph = value;
-    print(_selectedGraph);
+
     notifyListeners();
   }
 
   void setSelectedFilterIndexName(value) {
     _selectedFilterIndexName = value;
-    print(_selectedFilterIndexName);
+
     notifyListeners();
   }
 
   void setGraphVisible(value) {
     _graphVisible = value;
-    print(_graphVisible);
+
   notifyListeners();
   }
 
