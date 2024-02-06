@@ -60,7 +60,6 @@ class _FiltersAllRetailingSummaryState
 
     var body =
         json.encode({"table": "fb", "date": "Jun-2023", "channel": value2});
-    print("Body Filter Category $body");
     var response = await http.post(Uri.parse(url),
         headers: {"Content-Type": "application/json"}, body: body);
     Map<String, dynamic> parsedJson = jsonDecode(response.body);

@@ -508,8 +508,6 @@ class _FiltersRetailingState extends State<FiltersRetailing> {
                                       selectedCategory = newValue!;
                                       selectedAllCategory = newValue;
                                       widget.selectedItemValueCategory[0] = newValue;
-                                      print(selectedAllCategory);
-                                      print(selectedCategory);
                                       sheetProvider
                                           .selectedCategoryFilter =
                                           newValue;

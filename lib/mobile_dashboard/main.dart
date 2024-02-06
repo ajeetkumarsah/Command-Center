@@ -36,6 +36,7 @@ void main() async {
 
     // You can show an error message, log the event, or simply terminate the app.
     // For simplicity, this example terminates the app.
+    debugPrint("Rooted device or emulator detected. The app cannot be installed.");
     return;
   };
   runApp(

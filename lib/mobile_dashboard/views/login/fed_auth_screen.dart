@@ -25,7 +25,7 @@ class FedAuthScreen extends StatefulWidget {
 
 class _FedAuthScreenState extends State<FedAuthScreen> {
   final Completer<WebViewController> _controller =
-      Completer<WebViewController>();
+  Completer<WebViewController>();
   late final WebViewController _controller1;
   late final WebViewCookieManager cookieManager = WebViewCookieManager();
 
@@ -33,13 +33,13 @@ class _FedAuthScreenState extends State<FedAuthScreen> {
   bool isLoading = false;
   final logger = Logger(
       printer: PrettyPrinter(
-    methodCount: 0,
-    errorMethodCount: 5,
-    lineLength: 50,
-    colors: true,
-    printEmojis: true,
-    printTime: false,
-  ));
+        methodCount: 0,
+        errorMethodCount: 5,
+        lineLength: 50,
+        colors: true,
+        printEmojis: true,
+        printTime: false,
+      ));
 
   @override
   void initState() {
@@ -56,12 +56,12 @@ class _FedAuthScreenState extends State<FedAuthScreen> {
     }
 
     final WebViewController controller =
-        WebViewController.fromPlatformCreationParams(params);
+    WebViewController.fromPlatformCreationParams(params);
     // #enddocregion platform_features
 
     controller
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      // ..setBackgroundColor(const Color(0x00000000))
+    // ..setBackgroundColor(const Color(0x00000000))
       ..setNavigationDelegate(
         NavigationDelegate(
           onProgress: (int progress) {
@@ -154,7 +154,7 @@ class _FedAuthScreenState extends State<FedAuthScreen> {
     try {
       http.Response response;
       response =
-          await http.post(Uri.parse(AppConstants.FED_AUTH_TOKEN), headers: {
+      await http.post(Uri.parse(AppConstants.FED_AUTH_TOKEN), headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/x-www-form-urlencoded',
         'Cookie': 'PF=gAvY5cL83UUST7sxealWO2',
@@ -197,7 +197,7 @@ class _FedAuthScreenState extends State<FedAuthScreen> {
   }
 
   Future employeeAuthentication(authorization) async {
-   try {
+    try {
       http.Response response;
       response = await http.post(
           Uri.parse("${AppConstants.BASE_URL}appData/employeeAuthentication"),
@@ -286,3 +286,4 @@ class _FedAuthScreenState extends State<FedAuthScreen> {
     }
   }
 }
+

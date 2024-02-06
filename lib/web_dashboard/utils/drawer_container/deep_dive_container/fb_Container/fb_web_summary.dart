@@ -179,7 +179,7 @@ class _FBWebSummaryState extends State<FBWebSummary> {
         }
         // Save the Excel file
         excel.save();
-        print('Excel file saved successfully.');
+
       });
     } else {
     }
@@ -1475,7 +1475,7 @@ class _FBWebSummaryState extends State<FBWebSummary> {
                                     )
                                   : Container(),
                   ExcelImportButton(onClickExcel: () async{
-                    print('hello');
+
                     setState(() {});
                     await postRequest(context);
                   },),

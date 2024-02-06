@@ -163,7 +163,7 @@ class _GPWebSummaryState extends State<GPWebSummary> {
         }
         // Save the Excel file
         excel.save();
-        print('Excel file saved successfully.');
+
       });
     } else {
     }
@@ -247,8 +247,6 @@ class _GPWebSummaryState extends State<GPWebSummary> {
     scrollController2 = ScrollController();
     _scrollControllerTable = ScrollController();
     selectedMonth = widget.selectedMonthList;
-    print(selectedMonth);
-    print(widget.selectedMonthList);
   }
 
   @override

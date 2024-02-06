@@ -2374,14 +2374,14 @@ class HomeController extends GetxController {
         List<List<String>> categoryListTemp = [];
         categoryListTemp.addAll(categoryGPList);
         categoryGPList.clear();
-        categoryGPList.add(categoryListTemp[0]);
+        // categoryGPList.add(categoryListTemp[0]);
 
         _isGPCategoryLoading = true;
       } else if (type.startsWith('channel')) {
         List<List<String>> channelListTemp = [];
         channelListTemp.addAll(channelGPList);
         channelGPList.clear();
-        channelGPList.add(channelListTemp[0]);
+        // channelGPList.add(channelListTemp[0]);
 
         _isGPChannelLoading = true;
       } else {
@@ -2683,14 +2683,10 @@ class HomeController extends GetxController {
       } else if (type.startsWith('category')) {
         //categoryFBList
         categoryFBList.clear();
-        Logger().log(Level.debug,
-            '===> Focus Brand Category Data Start ${stopWatch.elapsed.toString()}');
         _isFBCategoryLoading = true;
       } else if (type.startsWith('channel')) {
         _isFBChannelLoading = true;
         channelFBList.clear();
-        Logger().log(Level.debug,
-            '===> Focus Brand Channel Data Start ${stopWatch.elapsed.toString()}');
       } else {
         _isLoading = true;
       }
