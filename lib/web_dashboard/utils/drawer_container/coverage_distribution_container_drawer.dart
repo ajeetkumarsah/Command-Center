@@ -511,7 +511,7 @@ class _CoverageDistributionContainerDrawerState
             if (!flattenedListProd.contains(jsonToAdd[0])) {
               flattenedListProd.add(jsonToAdd[0]);
             } else {
-              print("Value already exists in flattenedListCC");
+
             }
           }
         }
@@ -566,7 +566,7 @@ class _CoverageDistributionContainerDrawerState
             if (!flattenedListBilling.contains(jsonToAdd[0])) {
               flattenedListBilling.add(jsonToAdd[0]);
             } else {
-              print("Value already exists in flattenedListCC");
+
             }
           }
         }
@@ -584,7 +584,7 @@ class _CoverageDistributionContainerDrawerState
         });
         saveDataCoverageAll();
       } catch (e) {
-        print("Error: $e");
+
       }
     }
   }

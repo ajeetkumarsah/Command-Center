@@ -2445,6 +2445,7 @@ class HomeController extends GetxController {
         _isGPGeoLoading = true;
       } else if (type.startsWith('category')) {
         categoryGPList.clear();
+        // categoryGPList.add(categoryListTemp[0]);
 
         Logger().log(Level.debug,
             '===> Golden Points Category Data Start ${stopWatch.elapsed.toString()}');
@@ -2765,14 +2766,10 @@ class HomeController extends GetxController {
       } else if (type.startsWith('category')) {
         //categoryFBList
         categoryFBList.clear();
-        Logger().log(Level.debug,
-            '===> Focus Brand Category Data Start ${stopWatch.elapsed.toString()}');
         _isFBCategoryLoading = true;
       } else if (type.startsWith('channel')) {
         _isFBChannelLoading = true;
         channelFBList.clear();
-        Logger().log(Level.debug,
-            '===> Focus Brand Channel Data Start ${stopWatch.elapsed.toString()}');
       } else {
         _isLoading = true;
       }
