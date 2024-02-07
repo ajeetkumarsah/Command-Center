@@ -43,7 +43,7 @@ class SupportAndHelpScreen extends StatelessWidget {
             icon: Icons.email_outlined,
             title: 'Email',
             color: Colors.blue,
-            info: 'support@pg.com',
+            info: 'dv.nb@pg.com',
             onTap: () {},
           ),
           const SizedBox(height: 12),

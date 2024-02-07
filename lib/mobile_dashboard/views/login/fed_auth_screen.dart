@@ -149,7 +149,7 @@ class _FedAuthScreenState extends State<FedAuthScreen> {
   }
 
   Future getUserProfileFromCode(pingCode) async {
-
+    debugPrint('===>Getting User Profile');
     SharedPreferences session = await SharedPreferences.getInstance();
     try {
       http.Response response;
@@ -166,7 +166,7 @@ class _FedAuthScreenState extends State<FedAuthScreen> {
         'client_secret': AppConstants.CLIENT_SECRET,
         'scope': 'openid profile',
       });
-
+      // debugPrint('===>User Profile Response:${response.body}');
       logger.d('===>User Response:${response.body}');
       if (response.statusCode == 200) {
         var mapResponse = json.decode(response.body);
@@ -197,7 +197,9 @@ class _FedAuthScreenState extends State<FedAuthScreen> {
   }
 
   Future employeeAuthentication(authorization) async {
-   try {
+    debugPrint(
+        '==>Employee Authentication Complete URL:${AppConstants.BASE_URL}appData/employeeAuthentication');
+    try {
       http.Response response;
       response = await http.post(
           Uri.parse("${AppConstants.BASE_URL}appData/employeeAuthentication"),
@@ -211,7 +213,8 @@ class _FedAuthScreenState extends State<FedAuthScreen> {
             'Ocp-Apim-Trace': true.toString(),
             'Ocp-Apim-Subscription-Key': AppConstants.SUBSCRIPTION_KEY,
           });
-
+      // debugPrint('==>Employee Response ${response.body}');
+      logger.v('====>Employee Response:${response.body}');
       if (response.statusCode == 200) {
         var mapResponse = json.decode(response.body);
         SharedPreferences session = await SharedPreferences.getInstance();
@@ -223,7 +226,7 @@ class _FedAuthScreenState extends State<FedAuthScreen> {
         globals.token = session.getString(AppConstants.TOKEN) ?? '';
         globals.name = session.getString(AppConstants.NAME) ?? '';
         globals.email = session.getString(AppConstants.EMAIL) ?? '';
-
+        debugPrint('===>Before Token check');
         if (session.getString(AppConstants.DEFAULT_GEO) != null &&
             session.getString(AppConstants.DEFAULT_GEO)!.trim().isNotEmpty &&
             session.getString(AppConstants.DEFAULT_GEO_VALUE) != null &&
@@ -231,7 +234,7 @@ class _FedAuthScreenState extends State<FedAuthScreen> {
                 .getString(AppConstants.DEFAULT_GEO_VALUE)!
                 .trim()
                 .isNotEmpty) {
-
+          debugPrint('===>After Token check');
           _onClearCookies();
           Get.offAndToNamed(AppPages.INITIAL);
           // Get.offAndToNamed(AppPages.PERSONA_SCREEN);

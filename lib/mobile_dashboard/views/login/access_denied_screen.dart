@@ -155,7 +155,7 @@ class _AccessDeniedState extends State<AccessDeniedScreen> {
   Future<String> getVersionNumber() async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     String version = packageInfo.version;
-
+    print(version);
     return version;
   }
 

@@ -71,7 +71,7 @@ class _PersonalizeBottomsheetState extends State<PersonalizeBottomsheet> {
   void getPersonalizedData() {
     String activeJson = controller.getPersonalizedActiveMetrics();
     String moreJson = controller.getPersonalizedMoreMetrics();
-
+    debugPrint('==>Active Data:$activeJson  ==>More Data:$moreJson');
     if (activeJson.trim().isNotEmpty) {
       activeMetrics = List<String>.from(json.decode(activeJson));
     }
@@ -82,7 +82,7 @@ class _PersonalizeBottomsheetState extends State<PersonalizeBottomsheet> {
   }
 
   void onItemChange(bool value, String title, bool isActive) {
-
+    debugPrint('===>Onchage : $value :=> $title  $isActive');
     if (isActive) {
       activeMetrics.remove(title);
       moreMetrics.add(title);
@@ -225,7 +225,7 @@ class _PersonalizeBottomsheetState extends State<PersonalizeBottomsheet> {
 
       final movedItem = oldListItems.removeAt(oldItemIndex);
       newListItems.insert(newItemIndex, movedItem);
-
+      debugPrint('===>list Index $oldListIndex Item Index $oldItemIndex');
       if (oldListIndex == 0) {
         //from active metrics
         onItemChange(true, activeMetrics[oldItemIndex], true);

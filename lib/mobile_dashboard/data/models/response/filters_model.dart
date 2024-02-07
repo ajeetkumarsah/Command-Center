@@ -14,6 +14,11 @@ class FiltersModel {
   final List<String> attr4;
   final List<String> attr5;
   final List<String> subChannel;
+  final List<String> indAttr1;
+  final List<String> indAttr2;
+  final List<String> indAttr3;
+  final List<String> indAttr4;
+  final List<String> indAttr5;
   final OtherAttrs? otherAttrs;
 
   FiltersModel({
@@ -32,6 +37,11 @@ class FiltersModel {
     required this.attr4,
     required this.attr5,
     required this.subChannel,
+    required this.indAttr1,
+    required this.indAttr2,
+    required this.indAttr3,
+    required this.indAttr4,
+    required this.indAttr5,
     this.otherAttrs,
   });
 
@@ -80,6 +90,21 @@ class FiltersModel {
             : [],
         subChannel: json["subChannel"] != null
             ? List<String>.from(json["subChannel"].map((x) => x))
+            : [],
+        indAttr1: json["ind_attr1"] != null
+            ? List<String>.from(json["ind_attr1"].map((x) => x))
+            : [],
+        indAttr2: json["ind_attr2"] != null
+            ? List<String>.from(json["ind_attr2"].map((x) => x))
+            : [],
+        indAttr3: json["ind_attr3"] != null
+            ? List<String>.from(json["ind_attr3"].map((x) => x))
+            : [],
+        indAttr4: json["ind_attr4"] != null
+            ? List<String>.from(json["ind_attr4"].map((x) => x))
+            : [],
+        indAttr5: json["ind_attr5"] != null
+            ? List<String>.from(json["ind_attr5"].map((x) => x))
             : [],
         otherAttrs: json["OtherAttrs"] == null
             ? null

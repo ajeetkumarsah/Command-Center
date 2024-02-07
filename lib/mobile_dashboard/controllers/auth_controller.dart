@@ -7,29 +7,21 @@ import 'package:command_centre/mobile_dashboard/data/models/response/response_mo
 
 class AuthController extends GetxController {
   final AuthRepo authRepo;
-
   AuthController({required this.authRepo});
 
   bool _isLoading = false, _isFilterLoading = false;
 
   bool get isLoading => _isLoading;
-
   bool get isFilterLoading => _isFilterLoading;
-
 //Models
   FiltersModel? _filtersModel;
-
   FiltersModel? get filtersModel => _filtersModel;
-
   //
   Map<String, dynamic>? _body;
-
   //String
   String _selectedGeo = 'All India';
-
   String get selectedGeo => _selectedGeo;
   String _selectedGeoValue = 'All India';
-
   String get selectedGeoValue => _selectedGeoValue;
 
   @override
@@ -37,6 +29,34 @@ class AuthController extends GetxController {
     super.onInit();
     getAllFilters();
   }
+
+//
+  // Future<ResponseModel> registration() async {
+  //   _isLoading = true;
+  //   update();
+  //   await getLocation();
+  //   _body.clear();
+  //   _body = {
+
+  //   };
+  //   Response response = await authRepo.getData (body: _body);
+  //   ResponseModel responseModel;
+  //   if (response.statusCode == 200) {
+  //     debugPrint('${response.bodyString}');
+  //     if (response.body["success"].toString().toLowerCase() == 'true') {
+  //       showCustomSnackBar(response.body["message"] ?? '', isError: false);
+  //       responseModel = ResponseModel(true, response.body["message"]);
+  //     } else {
+  //       showCustomSnackBar(response.body["message"] ?? '');
+  //       responseModel = ResponseModel(false, response.body["message"]);
+  //     }
+  //   } else {
+  //     responseModel = ResponseModel(false, response.statusText ?? "");
+  //   }
+  //   _isLoading = false;
+  //   update();
+  //   return responseModel;
+  // }
 
   Future<void> updateToken(String token) async {
     await authRepo.updateToken(token);
@@ -110,18 +130,15 @@ class AuthController extends GetxController {
           _filtersModel = FiltersModel.fromJson(data[0]);
           if (_filtersModel != null) {
             _filtersModel?.district.removeWhere(
-                (element) => element == 'Sri Lanka' || element == 'Nepal');
-            _filtersModel?.site.removeWhere((element) =>
-                element == 'Bhutan' ||
-                element == 'Test Faridabad' ||
-                element == 'TEST DEHRADUN' ||
-                element == 'Test Bhopal' ||
-                element == 'Sri Lanka' ||
-                element == 'Nepal');
+                    (element) => element == 'Sri Lanka' || element == 'Nepal');
+            _filtersModel?.site.removeWhere(
+                    (element) => element == 'Bhutan' || element == 'Test Faridabad' || element == 'TEST DEHRADUN' || element == 'Test Bhopal' || element == 'Sri Lanka' || element == 'Nepal');
           }
+          // List<String>.from(data[0]!.map((x) => x));
         }
         responseModel = ResponseModel(true, 'Success');
       } else {
+        // showCustomSnackBar(response.body["message"] ?? '');
         responseModel = ResponseModel(false, 'Something went wrong');
       }
     } else {

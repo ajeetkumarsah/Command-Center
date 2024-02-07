@@ -38,7 +38,7 @@ class _RetailingGraphWidgetState extends State<RetailingGraphWidget> {
   void initState() {
     // TODO: implement initState
     super.initState();
-
+    print('=====< ${widget.yAxisData.runtimeType}');
   }
 
   @override
@@ -210,7 +210,7 @@ class _RetailingGraphWidgetState extends State<RetailingGraphWidget> {
                           reservedSize: 45,
                           interval: widget.interval,
                           getTitlesWidget: (value, meta) =>
-                              getLeftLineTitles(value, meta, widget.trendsData),
+                              getLeftLineTitles(value, meta, widget.yAxisData),
                         ),
                       ),
                       topTitles:
@@ -258,15 +258,17 @@ class _RetailingGraphWidgetState extends State<RetailingGraphWidget> {
         },
       );
   Widget getLeftLineTitles(
-      double value, TitleMeta meta, List<Trend> yaxisData) {
+      double value, TitleMeta meta, List<YAxisData> yAxisData) {
     final style = GoogleFonts.ptSans(
       color: AppColors.black,
       fontWeight: FontWeight.w300,
       fontSize: 12,
     );
     String text = '';
-    for (var v in yaxisData) {
-      text = v.iya ?? '';
+    for (var v in yAxisData) {
+      if (value == v.yAbs) {
+        text = v.yRv ?? '';
+      }
     }
     return SideTitleWidget(
       axisSide: meta.axisSide,

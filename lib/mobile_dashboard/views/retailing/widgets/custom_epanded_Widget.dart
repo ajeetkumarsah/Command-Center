@@ -53,7 +53,8 @@ class _CustomExpandedWidgetState extends State<CustomExpandedWidget> {
       for (var i = 0; i <= divider; i++) {
         colorList.addAll(tableColors);
       }
-
+      debugPrint(
+          '===>DAtaList Lenght:${widget.dataList.length} ====>${colorList.length}');
     }
     setState(() {});
   }

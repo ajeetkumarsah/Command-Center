@@ -17,6 +17,6 @@ extension SummaryTypesExtension on SummaryTypes {
   }
 
   void talk() {
-
+    print('meow');
   }
 }

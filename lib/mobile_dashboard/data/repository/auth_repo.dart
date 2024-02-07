@@ -15,7 +15,7 @@ class AuthRepo {
   Future<String> saveDeviceToken() async {
     String _deviceToken = '';
 
-
+    debugPrint('--------Device Token---------- $_deviceToken');
     return _deviceToken;
   }
 
