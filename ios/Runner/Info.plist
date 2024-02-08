@@ -33,9 +33,9 @@
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>
-		<false/>
+		<true/>
 		<key>NSAllowsArbitraryLoadsInWebContent</key>
-		<false/>
+		<true/>
 	</dict>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>Your location is required for accurate data for you.</string>

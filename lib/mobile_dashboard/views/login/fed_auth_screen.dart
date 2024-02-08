@@ -43,6 +43,7 @@ class _FedAuthScreenState extends State<FedAuthScreen> {
   @override
   void initState() {
     super.initState();
+    _onClearCookies();
     // #docregion platform_features
     late final PlatformWebViewControllerCreationParams params;
     if (WebViewPlatform.instance is WebKitWebViewPlatform) {
