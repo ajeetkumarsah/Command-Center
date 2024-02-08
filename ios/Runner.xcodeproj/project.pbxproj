@@ -397,7 +397,7 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "arm64 i386";
 				FLUTTER_BUILD_NAME = 1.0.24;
-				FLUTTER_BUILD_NUMBER = 24;
+				FLUTTER_BUILD_NUMBER = 25;
 				FLUTTER_TARGET = lib/mobile_dashboard/main.dart;
 				INFOPLIST_FILE = Runner/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "P&G Command Center";
@@ -548,7 +548,7 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "arm64 i386";
 				FLUTTER_BUILD_NAME = 1.0.24;
-				FLUTTER_BUILD_NUMBER = 24;
+				FLUTTER_BUILD_NUMBER = 25;
 				FLUTTER_TARGET = lib/mobile_dashboard/main.dart;
 				INFOPLIST_FILE = Runner/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "P&G Command Center";
@@ -584,7 +584,7 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "arm64 i386";
 				FLUTTER_BUILD_NAME = 1.0.24;
-				FLUTTER_BUILD_NUMBER = 24;
+				FLUTTER_BUILD_NUMBER = 25;
 				FLUTTER_TARGET = lib/mobile_dashboard/main.dart;
 				INFOPLIST_FILE = Runner/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "P&G Command Center";
