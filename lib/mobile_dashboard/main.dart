@@ -5,7 +5,6 @@ import 'package:safe_device/safe_device.dart';
 import 'package:command_centre/mobile_dashboard/bindings/home_binding.dart';
 import 'package:command_centre/mobile_dashboard/utils/routes/app_pages.dart';
 
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await HomeBinding().dependencies();
@@ -30,15 +29,16 @@ void main() async {
 
     return true;
   }
+
   bool isSecure = await securityCheck();
 
-  if(isSecure){
-
+  if (isSecure) {
     // You can show an error message, log the event, or simply terminate the app.
     // For simplicity, this example terminates the app.
-    debugPrint("Rooted device or emulator detected. The app cannot be installed.");
+    debugPrint(
+        "Rooted device or emulator detected. The app cannot be installed.");
     return;
-  };
+  }
   runApp(
     GetMaterialApp(
       title: "Command Center",

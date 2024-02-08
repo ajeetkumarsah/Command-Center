@@ -24,8 +24,7 @@ class FedAuthScreen extends StatefulWidget {
 }
 
 class _FedAuthScreenState extends State<FedAuthScreen> {
-  final Completer<WebViewController> _controller =
-  Completer<WebViewController>();
+
   late final WebViewController _controller1;
   late final WebViewCookieManager cookieManager = WebViewCookieManager();
 
@@ -279,12 +278,12 @@ class _FedAuthScreenState extends State<FedAuthScreen> {
   // }
 
   void _onClearCookies() async {
-    final WebViewCookieManager cookieManager = WebViewCookieManager();
-    final bool hadCookies = await cookieManager.clearCookies();
-    String message = 'There were cookies. Now, they are gone!';
-    if (!hadCookies) {
-      message = 'There are no cookies.';
-    }
+    // final WebViewCookieManager cookieManager = WebViewCookieManager();
+    // final bool hadCookies = await cookieManager.clearCookies();
+    // String message = 'There were cookies. Now, they are gone!';
+    // if (!hadCookies) {
+    //   message = 'There are no cookies.';
+    // }
   }
 }
 

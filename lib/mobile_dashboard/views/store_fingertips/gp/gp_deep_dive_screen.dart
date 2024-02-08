@@ -466,16 +466,17 @@ class GPDeepDiveScreen extends StatelessWidget {
                                   border: const Border(
                                       bottom: BorderSide(width: .5),
                                       left: BorderSide(width: .5))),
-                              gridData: FlGridData(show: false),
+                              gridData: FlGridData(
+                                show: true,
+                                drawHorizontalLine: false,
+                              ),
                               titlesData: FlTitlesData(
                                 bottomTitles: AxisTitles(
                                   sideTitles: _bottomTitles,
-                                  
                                 ),
                                 leftTitles: AxisTitles(
                                   sideTitles: SideTitles(showTitles: false),
                                   // _leftTitles,
-                                  
                                 ),
                                 topTitles: AxisTitles(
                                     sideTitles: SideTitles(showTitles: false)),

@@ -364,7 +364,10 @@ class _CustomExpandedChartWidgetState extends State<FBTrendsChartWidget> {
                                               border: const Border(
                                                   bottom: BorderSide(width: .5),
                                                   left: BorderSide(width: .5))),
-                                          gridData: FlGridData(show: false),
+                                          gridData: FlGridData(
+                                            show: true,
+                                            drawHorizontalLine: false,
+                                          ),
                                           titlesData: FlTitlesData(
                                             bottomTitles: AxisTitles(
                                               sideTitles: _bottomTitles(

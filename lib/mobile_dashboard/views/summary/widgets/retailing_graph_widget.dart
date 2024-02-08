@@ -199,7 +199,10 @@ class _RetailingGraphWidgetState extends State<RetailingGraphWidget> {
                         border: const Border(
                             bottom: BorderSide(width: .5),
                             left: BorderSide(width: .5))),
-                    gridData: FlGridData(show: false),
+                    gridData: FlGridData(
+                      show: true,
+                      drawHorizontalLine: false,
+                    ),
                     titlesData: FlTitlesData(
                       bottomTitles: AxisTitles(
                         sideTitles: _bottomTitles(widget.trendsData),

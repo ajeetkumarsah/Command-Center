@@ -596,7 +596,10 @@ class SalesDeepDiveScreen extends StatelessWidget {
     );
   }
 
-  FlGridData get gridData => FlGridData(show: false);
+  FlGridData get gridData => FlGridData(
+        show: true,
+        drawHorizontalLine: false,
+      );
   LineTouchData get lineTouchData1 => LineTouchData(
         handleBuiltInTouches: true,
         touchTooltipData: LineTouchTooltipData(
