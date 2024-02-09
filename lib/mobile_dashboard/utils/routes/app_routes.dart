@@ -27,6 +27,8 @@ abstract class Routes {
   static const COVERAGE_DEEP_DIVE_SCREEN = _Paths.COVERAGE_DEEP_DIVE;
   static const SALES_DEEP_DIVE_SCREEN = _Paths.SALES_DEEP_DIVE;
   static const HELP_SUPPORT_SCREEN = _Paths.HELP_SUPPORT;
+  static const STORE_FINGERTIPS_LANDING = _Paths.STORE_FINGERTIPS_LANDING;
+  static const STORE_FINGERTIPS_ONBOARDING = _Paths.STORE_FINGERTIPS_ONBOARDING;
 }
 
 abstract class _Paths {
@@ -53,4 +55,8 @@ abstract class _Paths {
   static const COVERAGE_DEEP_DIVE = '/coverageDeepDiveScreen';
   static const SALES_DEEP_DIVE = '/salesDeepDiveScreen';
   static const HELP_SUPPORT = '/helpSupportScreen';
+
+  //store@fingertips
+  static const STORE_FINGERTIPS_LANDING = '/storeFingertipsLanding';
+  static const STORE_FINGERTIPS_ONBOARDING = '/storeFingertipsOnboarding';
 }

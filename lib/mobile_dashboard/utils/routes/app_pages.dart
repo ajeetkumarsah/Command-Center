@@ -18,13 +18,13 @@ import 'package:command_centre/mobile_dashboard/views/login/select_profile_scree
 import 'package:command_centre/mobile_dashboard/views/focus_brand/focus_brand_screen.dart';
 import 'package:command_centre/mobile_dashboard/views/store_fingertips/fb/fb_deep_dive.dart';
 import 'package:command_centre/mobile_dashboard/views/golden_point/golden_point_screen.dart';
+import 'package:command_centre/mobile_dashboard/views/store_fingertips/onboarding_screen.dart';
 import 'package:command_centre/mobile_dashboard/views/store_fingertips/gp/gp_deep_dive_screen.dart';
+import 'package:command_centre/mobile_dashboard/views/store_fingertips/deepdive_landing_screen.dart';
 import 'package:command_centre/mobile_dashboard/views/help_and_support/help_and_support_screen.dart';
 import 'package:command_centre/mobile_dashboard/views/store_fingertips/store_fingertips_screen.dart';
 import 'package:command_centre/mobile_dashboard/views/store_fingertips/coverage/coverage_deep_dive.dart';
 // ignore_for_file: constant_identifier_names
-
-
 
 part 'app_routes.dart';
 
@@ -54,6 +54,9 @@ class AppPages {
   static const COVERAGE_DEEP_DIVE = Routes.COVERAGE_DEEP_DIVE_SCREEN;
   static const SALES_DEEP_DIVE = Routes.SALES_DEEP_DIVE_SCREEN;
   static const HELP_SUPPORT = Routes.HELP_SUPPORT_SCREEN;
+  //Store@fingertips
+  static const sroreFingertipsLanding = Routes.STORE_FINGERTIPS_LANDING;
+  static const sroreFingertipsOnboarding = Routes.STORE_FINGERTIPS_ONBOARDING;
 
   static final routes = [
     GetPage(
@@ -164,6 +167,16 @@ class AppPages {
     GetPage(
       name: _Paths.HELP_SUPPORT,
       page: () => const SupportAndHelpScreen(),
+      binding: HomeBinding(),
+    ),
+    GetPage(
+      name: _Paths.STORE_FINGERTIPS_LANDING,
+      page: () => const DeepDiveLandingScreen(),
+      binding: HomeBinding(),
+    ),
+    GetPage(
+      name: _Paths.STORE_FINGERTIPS_ONBOARDING,
+      page: () => const OnboardingScreen(),
       binding: HomeBinding(),
     ),
   ];

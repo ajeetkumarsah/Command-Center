@@ -3,9 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
+import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
 import 'package:command_centre/mobile_dashboard/controllers/store_controller.dart';
-import 'package:command_centre/mobile_dashboard/views/store_fingertips/new_appbar.dart';
-import 'package:command_centre/mobile_dashboard/views/store_fingertips/widgets/tab_item_widget.dart';
 
 class CoverageDeepDiveScreen extends StatelessWidget {
   const CoverageDeepDiveScreen({super.key});
@@ -15,177 +14,192 @@ class CoverageDeepDiveScreen extends StatelessWidget {
     return GetBuilder<StoreController>(
       init: StoreController(storeRepo: Get.find()),
       builder: (ctlr) {
-        return DefaultTabController(
-          length: 5,
-          child: Scaffold(
-            backgroundColor: AppColors.bgLight,
-            body: Padding(
-              padding: const EdgeInsets.only(top: 38.0),
-              child: SingleChildScrollView(
+        return SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // const NewAppBar(),
+              // TabBar(
+              //   isScrollable: true,
+              //   unselectedLabelColor: const Color(0xff747474),
+              //   indicatorColor: Colors.black,
+              //   indicator: const BoxDecoration(),
+              //   labelStyle: GoogleFonts.inter(
+              //     color: Colors.grey,
+              //     fontSize: 14,
+              //     fontWeight: FontWeight.w600,
+              //   ),
+              //   labelColor: Colors.black,
+              //   tabs: const [
+              //     TabItemWidget(title: 'Dashboard'),
+              //     TabItemWidget(title: 'Sales Value'),
+              //     TabItemWidget(title: 'Coverage'),
+              //     TabItemWidget(title: 'GP'),
+              //     TabItemWidget(title: 'FB', isLast: true),
+              //   ],
+              // ),
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 300),
+                height: 308,
+                width: MediaQuery.of(context).size.width,
+                margin: const EdgeInsets.only(top: 12, left: 12, right: 12),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  color: AppColors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color(0xff000000).withOpacity(.1),
+                      blurRadius: 0,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
                 child: Column(
-                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    const NewAppBar(),
-                    TabBar(
-                      isScrollable: true,
-                      unselectedLabelColor: const Color(0xff747474),
-                      indicatorColor: Colors.black,
-                      indicator: const BoxDecoration(),
-                      labelStyle: GoogleFonts.inter(
-                        color: Colors.grey,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
+                    ListTile(
+                      title: Text(
+                        'Monthly Trend - Calls',
+                        style: GoogleFonts.inter(
+                          fontSize: 22,
+                          fontWeight: FontWeight.w400,
+                        ),
                       ),
-                      labelColor: Colors.black,
-                      tabs: const [
-                        TabItemWidget(title: 'Dashboard'),
-                        TabItemWidget(title: 'Sales Value'),
-                        TabItemWidget(title: 'Coverage'),
-                        TabItemWidget(title: 'GP'),
-                        TabItemWidget(title: 'FB', isLast: true),
-                      ],
                     ),
-                    AnimatedContainer(
-                      duration: const Duration(milliseconds: 300),
-                      height: 308,
-                      width: MediaQuery.of(context).size.width,
-                      margin:
-                          const EdgeInsets.only(top: 12, left: 12, right: 12),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: AppColors.white,
-                        boxShadow: [
-                          BoxShadow(
-                            color: const Color(0xff000000).withOpacity(.1),
-                            blurRadius: 0,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
-                      ),
-                      child: Column(
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          ListTile(
-                            title: Text(
-                              'Monthly Trend - Calls',
-                              style: GoogleFonts.inter(
-                                fontSize: 22,
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 12.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                chartItem(
-                                    color: Colors.grey, title: 'Targeted'),
-                                chartItem(color: Colors.red, title: 'Billed'),
-                                chartItem(color: Colors.blue, title: 'Placed'),
-                                chartItem(color: Colors.green, title: 'Prod.'),
-                                chartItem(
-                                    color: AppColors.contentColorPink,
-                                    title: 'CCR'),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(height: 12),
-                          Expanded(
-                            child: LineChart(
-                              sampleData1,
-                             duration:
-                                  const Duration(milliseconds: 500),
-                            ),
-                          ),
+                          chartItem(color: Colors.grey, title: 'Targeted'),
+                          chartItem(color: Colors.red, title: 'Billed'),
+                          chartItem(color: Colors.blue, title: 'Placed'),
+                          chartItem(color: Colors.green, title: 'Prod.'),
+                          chartItem(
+                              color: AppColors.contentColorPink, title: 'CCR'),
                         ],
                       ),
                     ),
-                    AnimatedContainer(
-                      duration: const Duration(milliseconds: 300),
-                      height: 318,
-                      width: MediaQuery.of(context).size.width,
-                      padding: const EdgeInsets.only(bottom: 8),
-                      margin:
-                          const EdgeInsets.only(top: 12, left: 12, right: 12),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: AppColors.white,
-                        boxShadow: [
-                          BoxShadow(
-                            color: const Color(0xff000000).withOpacity(.1),
-                            blurRadius: 0,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
+                    const SizedBox(height: 12),
+                    Expanded(
+                      child: LineChart(
+                        sampleData1,
+                        duration:
+                            const Duration(milliseconds: 500),
                       ),
-                      child: Column(
-                        children: [
-                          ListTile(
-                            title: Text(
-                              'Monthly Trend - Calls',
+                    ),
+                  ],
+                ),
+              ),
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 300),
+                height: 318,
+                width: MediaQuery.of(context).size.width,
+                padding: const EdgeInsets.only(bottom: 8),
+                margin: const EdgeInsets.only(top: 12, left: 12, right: 12),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  color: AppColors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color(0xff000000).withOpacity(.1),
+                      blurRadius: 0,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    ListTile(
+                      title: Text(
+                        'Monthly Trend - Calls',
+                        style: GoogleFonts.inter(
+                          fontSize: 22,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                      trailing: const Icon(
+                        Icons.arrow_forward_ios_rounded,
+                        size: 18,
+                      ),
+                    ),
+                    Container(
+                      height: .5,
+                      color: AppColors.tableBorder,
+                      width: MediaQuery.of(context).size.width,
+                    ),
+                    Row(
+                      children: [
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Text(
+                            'Seller Type',
+                            style: GoogleFonts.inter(
+                              color: AppColors.primaryDark,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                        Container(
+                          width: .5,
+                          color: AppColors.tableBorder,
+                          height: 60,
+                        ),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * .12,
+                          child: Center(
+                            child: Text(
+                              'On Route',
+                              textAlign: TextAlign.center,
                               style: GoogleFonts.inter(
-                                fontSize: 22,
-                                fontWeight: FontWeight.w400,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                                color: AppColors.primaryDark,
                               ),
                             ),
-                            trailing: const Icon(
-                              Icons.arrow_forward_ios_rounded,
-                              size: 18,
-                            ),
                           ),
-                          Container(
-                            height: .5,
-                            color: AppColors.tableBorder,
-                            width: MediaQuery.of(context).size.width,
-                          ),
-                          Row(
+                        ),
+                        Container(
+                          width: .5,
+                          color: AppColors.tableBorder,
+                          height: 60,
+                        ),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * .32,
+                          child: Column(
                             children: [
-                              const SizedBox(width: 12),
-                              Expanded(
-                                child: Text(
-                                  'Seller Type',
-                                  style: GoogleFonts.inter(
-                                    color: AppColors.primaryDark,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                width: .5,
-                                color: AppColors.tableBorder,
-                                height: 60,
-                              ),
-                              SizedBox(
-                                width: MediaQuery.of(context).size.width * .12,
-                                child: Center(
-                                  child: Text(
-                                    'On Route',
-                                    textAlign: TextAlign.center,
-                                    style: GoogleFonts.inter(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w500,
-                                      color: AppColors.primaryDark,
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Center(
+                                      child: Text(
+                                        'Calls',
+                                        style: GoogleFonts.inter(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500,
+                                          color: AppColors.primaryDark,
+                                        ),
+                                      ),
                                     ),
                                   ),
-                                ),
+                                  const SizedBox(height: 30),
+                                ],
                               ),
                               Container(
-                                width: .5,
+                                width: double.infinity,
                                 color: AppColors.tableBorder,
-                                height: 60,
+                                height: .5,
                               ),
-                              SizedBox(
-                                width: MediaQuery.of(context).size.width * .32,
-                                child: Column(
-                                  children: [
-                                    Row(
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Row(
                                       children: [
                                         Expanded(
                                           child: Center(
                                             child: Text(
-                                              'Calls',
+                                              'Placed',
+                                              textAlign: TextAlign.center,
                                               style: GoogleFonts.inter(
                                                 fontSize: 14,
                                                 fontWeight: FontWeight.w500,
@@ -194,137 +208,102 @@ class CoverageDeepDiveScreen extends StatelessWidget {
                                             ),
                                           ),
                                         ),
-                                        const SizedBox(height: 30),
-                                      ],
-                                    ),
-                                    Container(
-                                      width: double.infinity,
-                                      color: AppColors.tableBorder,
-                                      height: .5,
-                                    ),
-                                    Row(
-                                      children: [
+                                        Container(
+                                          width: .5,
+                                          color: AppColors.tableBorder,
+                                          height: 30,
+                                        ),
                                         Expanded(
-                                          child: Row(
-                                            children: [
-                                              Expanded(
-                                                child: Center(
-                                                  child: Text(
-                                                    'Placed',
-                                                    textAlign: TextAlign.center,
-                                                    style: GoogleFonts.inter(
-                                                      fontSize: 14,
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                      color:
-                                                          AppColors.primaryDark,
-                                                    ),
-                                                  ),
-                                                ),
+                                          child: Center(
+                                            child: Text(
+                                              'CCR',
+                                              textAlign: TextAlign.center,
+                                              style: GoogleFonts.inter(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w500,
+                                                color: AppColors.primaryDark,
                                               ),
-                                              Container(
-                                                width: .5,
-                                                color: AppColors.tableBorder,
-                                                height: 30,
+                                            ),
+                                          ),
+                                        ),
+                                        Container(
+                                          width: .5,
+                                          color: AppColors.tableBorder,
+                                          height: 30,
+                                        ),
+                                        Expanded(
+                                          child: Center(
+                                            child: Text(
+                                              'Prod',
+                                              textAlign: TextAlign.center,
+                                              style: GoogleFonts.inter(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w500,
+                                                color: AppColors.primaryDark,
                                               ),
-                                              Expanded(
-                                                child: Center(
-                                                  child: Text(
-                                                    'CCR',
-                                                    textAlign: TextAlign.center,
-                                                    style: GoogleFonts.inter(
-                                                      fontSize: 14,
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                      color:
-                                                          AppColors.primaryDark,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                              Container(
-                                                width: .5,
-                                                color: AppColors.tableBorder,
-                                                height: 30,
-                                              ),
-                                              Expanded(
-                                                child: Center(
-                                                  child: Text(
-                                                    'Prod',
-                                                    textAlign: TextAlign.center,
-                                                    style: GoogleFonts.inter(
-                                                      fontSize: 14,
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                      color:
-                                                          AppColors.primaryDark,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
+                                            ),
                                           ),
                                         ),
                                       ],
                                     ),
-                                  ],
-                                ),
-                              ),
-                              Container(
-                                width: .5,
-                                color: AppColors.tableBorder,
-                                height: 60,
-                              ),
-                              SizedBox(
-                                width: MediaQuery.of(context).size.width * .15,
-                                child: Center(
-                                  child: Text(
-                                    'In-Store Time (min)',
-                                    textAlign: TextAlign.center,
-                                    style: GoogleFonts.inter(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w500,
-                                      color: AppColors.primaryDark,
-                                    ),
                                   ),
-                                ),
+                                ],
                               ),
                             ],
                           ),
-                          Container(
-                            height: .5,
-                            color: AppColors.tableBorder,
-                            width: MediaQuery.of(context).size.width,
-                          ),
-                          Expanded(
-                            child: Theme(
-                              data: Theme.of(context).copyWith(
-                                  colorScheme: ColorScheme.fromSwatch()
-                                      .copyWith(secondary: Colors.white)),
-                              child: SingleChildScrollView(
-                                child: Column(
-                                  children: [
-                                    tableRow(context,
-                                        color: AppColors.storeTableRowColor),
-                                    tableRow(context),
-                                    tableRow(context,
-                                        color: AppColors.storeTableRowColor),
-                                    tableRow(context),
-                                    tableRow(context,
-                                        color: AppColors.storeTableRowColor),
-                                  ],
-                                ),
+                        ),
+                        Container(
+                          width: .5,
+                          color: AppColors.tableBorder,
+                          height: 60,
+                        ),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * .15,
+                          child: Center(
+                            child: Text(
+                              'In-Store Time (min)',
+                              textAlign: TextAlign.center,
+                              style: GoogleFonts.inter(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                                color: AppColors.primaryDark,
                               ),
                             ),
                           ),
-                        ],
+                        ),
+                      ],
+                    ),
+                    Container(
+                      height: .5,
+                      color: AppColors.tableBorder,
+                      width: MediaQuery.of(context).size.width,
+                    ),
+                    Expanded(
+                      child: Theme(
+                        data: Theme.of(context).copyWith(
+                            colorScheme: ColorScheme.fromSwatch()
+                                .copyWith(secondary: Colors.white)),
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              tableRow(context,
+                                  color: AppColors.storeTableRowColor),
+                              tableRow(context),
+                              tableRow(context,
+                                  color: AppColors.storeTableRowColor),
+                              tableRow(context),
+                              tableRow(context,
+                                  color: AppColors.storeTableRowColor),
+                            ],
+                          ),
+                        ),
                       ),
                     ),
-                    const SizedBox(height: 20),
                   ],
                 ),
               ),
-            ),
+              const SizedBox(height: 20),
+            ],
           ),
         );
       },

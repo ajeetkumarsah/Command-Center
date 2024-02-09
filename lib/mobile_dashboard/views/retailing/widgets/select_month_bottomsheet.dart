@@ -153,6 +153,7 @@ class SelectMonthBottomsheet extends StatelessWidget {
                             ctlr.onChangeDate(
                               isLoadRetailing: isLoadRetailing,
                               tabType: 'All',
+                              isSummary: isSummary,
                             );
                             Navigator.pop(context);
                           } else {

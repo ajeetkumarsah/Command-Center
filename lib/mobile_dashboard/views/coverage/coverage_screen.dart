@@ -143,7 +143,7 @@ class _CoverageScreenState extends State<CoverageScreen> {
                         //             isExpanded: ctlr.isExpandedCategory,
                         //           )
                         //         : const SizedBox(),
-                        const SizedBox(height: 16),
+                        // const SizedBox(height: 16),
                         ctlr.isCoverageChannelLoading
                             ? loadingWidget(context)
                             : CustomExpandedWidget(

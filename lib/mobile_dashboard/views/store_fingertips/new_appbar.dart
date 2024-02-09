@@ -1,7 +1,10 @@
+import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:command_centre/mobile_dashboard/utils/png_files.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
+import 'package:command_centre/mobile_dashboard/controllers/home_controller.dart';
+import 'package:command_centre/mobile_dashboard/views/summary/widgets/menu_bottomsheet.dart';
 
 class NewAppBar extends StatelessWidget {
   const NewAppBar({super.key});
@@ -26,6 +29,7 @@ class NewAppBar extends StatelessWidget {
         ),
       ),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           ListTile(
             title: Text(
@@ -36,12 +40,22 @@ class NewAppBar extends StatelessWidget {
                 color: AppColors.white,
               ),
             ),
-            trailing: IconButton(
-              onPressed: () {},
-              icon: const Icon(
-                Icons.menu_rounded,
-                color: AppColors.white,
-              ),
+            trailing: GetBuilder<HomeController>(
+              init: HomeController(homeRepo: Get.find()),
+              initState: (_) {},
+              builder: (ctlr) {
+                return IconButton(
+                  onPressed: () => Get.bottomSheet(
+                    MenuBottomsheet(
+                        version: ctlr.appVersion, isBusiness: false),
+                    isScrollControlled: true,
+                  ),
+                  icon: const Icon(
+                    Icons.menu_rounded,
+                    color: AppColors.white,
+                  ),
+                );
+              },
             ),
           ),
           Container(

@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:flutter/material.dart';
 import 'package:command_centre/mobile_dashboard/data/repository/store_repo.dart';
 import 'package:command_centre/mobile_dashboard/data/models/response/store_intro_model.dart';
 
@@ -11,6 +12,9 @@ class StoreController extends GetxController {
   bool get salesTableShowMore => _salesTableShowMore;
 
   //
+
+  int _selectedTab = 0;
+  int get selectedTab => _selectedTab;
   //
   StoreIntroModel? _storeIntroModel;
   StoreIntroModel? get storeIntroModel => _storeIntroModel;
@@ -18,7 +22,12 @@ class StoreController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    //
+  }
+
+  void onTabChange(int index) {
+    debugPrint('===>Selecte Index=>$index');
+    _selectedTab = index;
+    update();
   }
 
   void onSalesTableShowMore() {
