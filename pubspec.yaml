@@ -85,6 +85,9 @@ dependencies:
   inner_shadow_widget: ^0.0.3
   drag_and_drop_lists: ^0.3.3
   get: ^4.6.5
+  flutter_local_notifications: ^16.3.2
+  firebase_messaging: ^14.7.15
+  firebase_core: ^2.25.4
 
 dependency_overrides:
   intl: 0.18.0

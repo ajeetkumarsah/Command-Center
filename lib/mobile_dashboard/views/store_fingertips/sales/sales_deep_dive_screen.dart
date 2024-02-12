@@ -114,6 +114,7 @@ class SalesDeepDiveScreen extends StatelessWidget {
                 children: [
                   Container(
                     // padding: const EdgeInsets.symmetric(vertical: 4.0),
+
                     color: ctlr.salesTableShowMore
                         ? AppColors.white
                         : AppColors.storeTableRowColor,
@@ -244,44 +245,115 @@ class SalesDeepDiveScreen extends StatelessWidget {
                 ],
               ),
             ),
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 300),
-              height: 318,
-              width: MediaQuery.of(context).size.width,
-              padding: const EdgeInsets.only(bottom: 8),
-              margin: const EdgeInsets.only(top: 12, left: 12, right: 12),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                color: AppColors.white,
-                boxShadow: [
-                  BoxShadow(
-                    color: const Color(0xff000000).withOpacity(.1),
-                    blurRadius: 0,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
-              ),
-              child: Column(
-                children: [
-                  ListTile(
-                    title: Text(
-                      'Monthly Trend - Calls',
-                      style: GoogleFonts.inter(
-                        fontSize: 22,
-                        fontWeight: FontWeight.w400,
-                      ),
+            DefaultTabController(
+              length: 2,
+              initialIndex: 0,
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 300),
+                height: 418,
+                width: MediaQuery.of(context).size.width,
+                padding: const EdgeInsets.only(bottom: 8),
+                margin: const EdgeInsets.only(top: 12, left: 12, right: 12),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(5),
+                  color: AppColors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color(0xff000000).withOpacity(.1),
+                      blurRadius: 0,
+                      offset: const Offset(0, 4),
                     ),
-                    trailing: const Icon(
-                      Icons.arrow_forward_ios_rounded,
-                      size: 18,
+                  ],
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    TabBar(
+                      onTap: (v) {},
+                      indicatorWeight: 3,
+                      indicatorColor: AppColors.black,
+                      tabs: [
+                        Tab(
+                          icon: Text(
+                            'Retailing Trends',
+                            style: GoogleFonts.inter(
+                              fontSize: 14,
+                              color: AppColors.black,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                        Tab(
+                          icon: Text(
+                            'Product Level',
+                            style: GoogleFonts.inter(
+                              fontSize: 14,
+                              color: AppColors.black,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                  Container(
-                    height: .5,
-                    color: AppColors.tableBorder,
-                    width: MediaQuery.of(context).size.width,
-                  ),
-                ],
+                    // const TabBarView(
+                    //   physics: NeverScrollableScrollPhysics(),
+                    //   children: [
+                    //     Icon(Icons.flight, size: 50),
+                    //     Icon(Icons.directions_transit, size: 50),
+                    //   ],
+                    // ),
+                    ListTile(
+                        title: Text(
+                          'Sales Value Trends',
+                          style: GoogleFonts.inter(
+                            fontSize: 22,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                        trailing: Container(
+                          width: 120,
+                          decoration: BoxDecoration(
+                            // borderRadius: BorderRadius.circular(5),
+                            border: Border(
+                              top: BorderSide(
+                                width: .5,
+                                color: AppColors.lightGrey,
+                              ),
+                              bottom: BorderSide(
+                                width: .5,
+                                color: AppColors.lightGrey,
+                              ),
+                              left: BorderSide(
+                                width: .5,
+                                color: AppColors.lightGrey,
+                              ),
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(
+                                Icons.filter_alt_outlined,
+                                color: AppColors.primary,
+                              ),
+                              Text(
+                                'Category',
+                                style: GoogleFonts.inter(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w400,
+                                  color: AppColors.black,
+                                ),
+                              )
+                            ],
+                          ),
+                        )),
+                    Container(
+                      height: .5,
+                      color: AppColors.tableBorder,
+                      width: MediaQuery.of(context).size.width,
+                    ),
+                  ],
+                ),
               ),
             ),
             const SizedBox(height: 20),

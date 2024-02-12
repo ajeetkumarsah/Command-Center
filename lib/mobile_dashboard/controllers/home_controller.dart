@@ -738,6 +738,7 @@ class HomeController extends GetxController {
   }
 
   Function eq = const ListEquality().equals;
+
   void onChangeTrendsChannelValue(String value, String tabType,
       {bool isChannel = true}) {
     if (isChannel) {
@@ -828,11 +829,11 @@ class HomeController extends GetxController {
   }
 
   @override
-  void onInit() {
+  void onInit() async {
     super.onInit();
     // getAllFilters();
     getPersonalizedData();
-    getInitValues(getOnlyShared: true);
+    await getInitValues(getOnlyShared: true);
     getInitData();
     getAppVersion();
     getMonthFilters();
@@ -852,24 +853,6 @@ class HomeController extends GetxController {
         "category": [],
       }
     ];
-    getRetailingData();
-    getRetailingData(type: 'category', name: 'category');
-    getRetailingData(type: 'channel', name: 'geo');
-    getRetailingData(type: 'geo', name: 'trends');
-    //gp
-    getGPData();
-    getGPData(type: 'category', name: 'category');
-    getGPData(type: 'channel', name: 'geo');
-    getGPData(type: 'geo', name: 'trends');
-    //fb
-    getFocusBrandData();
-    getFocusBrandData(type: 'category', name: 'category');
-    getFocusBrandData(type: 'channel', name: 'geo');
-    getFocusBrandData(type: 'geo', name: 'trends');
-    //Coverage
-    getCoverageData();
-    getCoverageData(type: 'channel', name: 'geo');
-    getCoverageData(type: 'trends', name: 'trends');
   }
 
   @override
@@ -882,7 +865,7 @@ class HomeController extends GetxController {
     super.onClose();
   }
 
-  void getInitValues({bool getOnlyShared = false}) async {
+  Future<void> getInitValues({bool getOnlyShared = false}) async {
     // getPersonalizedData();
     if (getMonth().trim().isNotEmpty) {
       _selectedMonth = getMonth();
@@ -900,6 +883,14 @@ class HomeController extends GetxController {
       _selectedTrendsGeoValue = getGeoValue();
 
       onGeoChange(_selectedGeo);
+      if (_selectedGeo.toLowerCase() == 'All India'.toLowerCase()) {
+        debugPrint('==>Applied Filter is All India');
+        _isRetailingDeepDiveInd = false;
+      } else {
+        debugPrint('==>Applied Filter is not All India');
+        _isRetailingDeepDiveInd = true;
+        _isSummaryDirect = true;
+      }
     }
     if (getGeoValue().trim().isNotEmpty) {
       _selectedTempGeoValue = getGeoValue();
@@ -912,24 +903,45 @@ class HomeController extends GetxController {
     }
     if (!getOnlyShared) {
       var futures = await Future.wait([
-        getSummaryData(),
-        getAllFilters().then((v) {
-          categoryFilters = filtersModel?.category ?? [];
-          onChangeFiltersAll(
-              type: 'category', tabType: SummaryTypes.retailing.type);
-          onChangeFiltersAll(type: 'category', tabType: SummaryTypes.gp.type);
-          onChangeFiltersAll(type: 'category', tabType: SummaryTypes.fb.type);
-          selectedRetailingChannelFilter = filtersModel?.attr1 ?? [];
-          selectedCoverageChannelFilter = filtersModel?.otherAttrs?.attr1 ?? [];
-          selectedGPChannelFilter = filtersModel?.otherAttrs?.attr1 ?? [];
-          selectedFBChannelFilter = filtersModel?.otherAttrs?.attr1 ?? [];
-          selectedGPChannelFilter = filtersModel?.otherAttrs?.attr1 ?? [];
-          selectedFBChannelFilter = filtersModel?.otherAttrs?.attr1 ?? [];
-          selectedCoverageChannelFilter = filtersModel?.otherAttrs?.attr1 ?? [];
-          categoryTrendsFilters = filtersModel?.category ?? [];
-          channelFilter = filtersModel?.attr1 ?? [];
-          channelTrendsFilter = filtersModel?.attr1 ?? [];
-        }),
+        getSummaryData().then((value) {
+          getAllFilters().then((v) {
+            categoryFilters = filtersModel?.category ?? [];
+            onChangeFiltersAll(
+                type: 'category', tabType: SummaryTypes.retailing.type);
+            onChangeFiltersAll(type: 'category', tabType: SummaryTypes.gp.type);
+            onChangeFiltersAll(type: 'category', tabType: SummaryTypes.fb.type);
+            selectedRetailingChannelFilter = filtersModel?.attr1 ?? [];
+            selectedCoverageChannelFilter =
+                filtersModel?.otherAttrs?.attr1 ?? [];
+            selectedGPChannelFilter = filtersModel?.otherAttrs?.attr1 ?? [];
+            selectedFBChannelFilter = filtersModel?.otherAttrs?.attr1 ?? [];
+            selectedGPChannelFilter = filtersModel?.otherAttrs?.attr1 ?? [];
+            selectedFBChannelFilter = filtersModel?.otherAttrs?.attr1 ?? [];
+            selectedCoverageChannelFilter =
+                filtersModel?.otherAttrs?.attr1 ?? [];
+            categoryTrendsFilters = filtersModel?.category ?? [];
+            channelFilter = filtersModel?.attr1 ?? [];
+            channelTrendsFilter = filtersModel?.attr1 ?? [];
+            getRetailingData();
+            getRetailingData(type: 'category', name: 'category');
+            getRetailingData(type: 'channel', name: 'geo');
+            getRetailingData(type: 'geo', name: 'trends');
+            //gp
+            getGPData();
+            getGPData(type: 'category', name: 'category');
+            getGPData(type: 'channel', name: 'geo');
+            getGPData(type: 'geo', name: 'trends');
+            //fb
+            getFocusBrandData();
+            getFocusBrandData(type: 'category', name: 'category');
+            getFocusBrandData(type: 'channel', name: 'geo');
+            getFocusBrandData(type: 'geo', name: 'trends');
+            //Coverage
+            getCoverageData();
+            getCoverageData(type: 'channel', name: 'geo');
+            getCoverageData(type: 'trends', name: 'trends');
+          });
+        })
       ]);
     }
 
@@ -1141,9 +1153,11 @@ class HomeController extends GetxController {
         '===>selected Filter $selectedTempGeo  -- $selectedTempGeoValue');
     _selectedGeo = _selectedTempGeo;
     _selectedGeoValue = _selectedTempGeoValue;
-    if (_selectedGeo == 'All India') {
+    if (_selectedTempGeo.toLowerCase() == 'All India'.toLowerCase()) {
+      debugPrint('==>Applied Filter is All India');
       _isRetailingDeepDiveInd = false;
     } else {
+      debugPrint('==>Applied Filter is not All India');
       _isRetailingDeepDiveInd = true;
       _isSummaryDirect = true;
     }

@@ -133,7 +133,7 @@ class _GoldenPointScreenState extends State<GoldenPointScreen> {
                                   ),
                                   isScrollControlled: true,
                                 ),
-                                selectedFilterValue: ctlr.selectedGPChannel,
+                                selectedFilterValue: 'Channel',
                                 onTap: () => ctlr
                                     .onExpandChannel(!ctlr.isExpandedChannel),
                                 dataList: ctlr.channelGPList,

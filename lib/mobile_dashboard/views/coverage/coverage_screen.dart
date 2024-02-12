@@ -148,13 +148,13 @@ class _CoverageScreenState extends State<CoverageScreen> {
                             ? loadingWidget(context)
                             : CustomExpandedWidget(
                                 title: 'Coverage by Channel',
+                                secondColumnWidth: true,
                                 onFilterTap: () => Get.bottomSheet(
                                   ChannelFilterBottomsheet(
                                       tabType: SummaryTypes.coverage.type),
                                   isScrollControlled: true,
                                 ),
-                                selectedFilterValue:
-                                    ctlr.selectedCoverageChannel,
+                                selectedFilterValue: 'Channel',
                                 onTap: () => ctlr
                                     .onExpandChannel(!ctlr.isExpandedChannel),
                                 dataList: ctlr.channelCoverageList,

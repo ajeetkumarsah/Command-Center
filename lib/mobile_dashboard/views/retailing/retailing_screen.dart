@@ -88,7 +88,7 @@ class _RetailingScreenState extends State<RetailingScreen> {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 10, vertical: 4),
                         child: Text(
-                          'Ind',
+                          'Indirect',
                           style: GoogleFonts.ptSansCaption(
                             color: ctlr.isRetailingDeepDiveInd
                                 ? AppColors.primary
@@ -119,7 +119,7 @@ class _RetailingScreenState extends State<RetailingScreen> {
                           padding: const EdgeInsets.symmetric(
                               horizontal: 10, vertical: 4),
                           child: Text(
-                            'Ind+Dir',
+                            'Indirect + Direct',
                             style: GoogleFonts.ptSansCaption(
                               color: ctlr.isRetailingDeepDiveInd
                                   ? AppColors.white
@@ -214,8 +214,7 @@ class _RetailingScreenState extends State<RetailingScreen> {
                                           tabType: SummaryTypes.retailing.type),
                                       isScrollControlled: true,
                                     ),
-                                    selectedFilterValue:
-                                        ctlr.selectedRetailingChannel,
+                                    selectedFilterValue: 'Channel',
                                     onTap: () => ctlr.onExpandChannel(
                                         !ctlr.isExpandedChannel),
                                     dataList: ctlr.isRetailingDeepDiveInd

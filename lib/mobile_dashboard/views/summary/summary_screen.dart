@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
 import 'package:flutter/material.dart';
-import 'package:fl_chart/fl_chart.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../retailing/widgets/geography_bottomsheet.dart';
 import 'package:percent_indicator/percent_indicator.dart';
@@ -25,11 +25,11 @@ class SummaryScreen extends StatefulWidget {
 
 class _SummaryScreenState extends State<SummaryScreen> {
   bool isFirst = true;
-  void initCall(HomeController ctlr) {
+  void initCall(HomeController ctlr) async {
     if (isFirst) {
       isFirst = false;
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        ctlr.getInitValues();
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        await ctlr.getInitValues();
       });
     }
     //
@@ -37,13 +37,6 @@ class _SummaryScreenState extends State<SummaryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    List<List<String>>? dataList = [
-      ['Channel', 'Retailing', 'Apr-23 IYA'],
-      ['Core DO', '', ''],
-      ['MR', '', ''],
-      ['DCOM', '', ''],
-      ['EC', '', ''],
-    ];
     return GetBuilder<HomeController>(
       init: HomeController(homeRepo: Get.find()),
       initState: (_) {
@@ -1163,6 +1156,37 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                 ],
                               )
                             : const SizedBox(),
+                  if (ctlr.summaryData.isEmpty && !ctlr.isSummaryPageLoading)
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * .6,
+                      width: MediaQuery.of(context).size.width,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(100),
+                              color: AppColors.lightGrey.withOpacity(.3),
+                            ),
+                            padding: const EdgeInsets.all(20),
+                            child: Lottie.asset(
+                              'assets/json/nodata.json',
+                              // width: MediaQuery.of(context).size.width * .5,
+                              height: MediaQuery.of(context).size.height * .2,
+                              fit: BoxFit.fill,
+                            ),
+                          ),
+                          Text(
+                            'No data found!',
+                            style: GoogleFonts.ptSansCaption(
+                              fontSize: 16,
+                              color: AppColors.primary,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -1201,6 +1225,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
                       )
                     ],
                   ),
+
                   const SizedBox(height: 90),
                   // ...ctlr.summaryData
                   //     .map(

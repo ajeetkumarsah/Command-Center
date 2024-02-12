@@ -132,7 +132,7 @@ class _FocusBrandScreenState extends State<FocusBrandScreen> {
                                   ),
                                   isScrollControlled: true,
                                 ),
-                                selectedFilterValue: ctlr.selectedFBChannel,
+                                selectedFilterValue: 'Channel',
                                 onTap: () => ctlr
                                     .onExpandChannel(!ctlr.isExpandedChannel),
                                 dataList: ctlr.channelFBList,

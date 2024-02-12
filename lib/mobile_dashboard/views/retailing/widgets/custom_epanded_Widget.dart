@@ -11,6 +11,7 @@ class CustomExpandedWidget extends StatefulWidget {
   final String tabType;
   final void Function()? onAddGeoTap;
   final bool firstColumnWidth;
+  final bool secondColumnWidth;
   final String selectedFilterValue;
   final void Function()? onFilterTap;
   final List<List<String>> dataList;
@@ -26,6 +27,7 @@ class CustomExpandedWidget extends StatefulWidget {
       required this.dataList,
       this.isSummary = false,
       required this.selectedFilterValue,
+      this.secondColumnWidth = false,
       this.firstColumnWidth = false,
       required this.tabType});
 
@@ -254,11 +256,16 @@ class _CustomExpandedWidgetState extends State<CustomExpandedWidget> {
                                           ),
                                         )
                                       : Table(
-                                          columnWidths: widget.firstColumnWidth
+                                          columnWidths: widget.secondColumnWidth
                                               ? {
-                                                  0: FlexColumnWidth(2),
+                                                  0: const FlexColumnWidth(1.5),
                                                 }
-                                              : null,
+                                              : widget.firstColumnWidth
+                                                  ? {
+                                                      0: const FlexColumnWidth(
+                                                          2),
+                                                    }
+                                                  : null,
                                           border: TableBorder.all(
                                               color: Colors.transparent),
                                           children: [
