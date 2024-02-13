@@ -3,10 +3,10 @@ import 'package:get/get.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:percent_indicator/linear_percent_indicator.dart';
-import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
 import 'package:command_centre/mobile_dashboard/utils/routes/app_pages.dart';
+import 'package:percent_indicator/linear_percent_indicator.dart';
+import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:command_centre/mobile_dashboard/controllers/store_controller.dart';
 import 'package:command_centre/mobile_dashboard/views/store_fingertips/widgets/tab_item_widget.dart';
 
@@ -156,15 +156,9 @@ class StoreDashboardUI extends StatelessWidget {
                                   // leading: const Text("0.00K"),
                                   // trailing: const Text("73.48K"),
                                   percent: 0.7,
-                                  linearGradient: LinearGradient(
-                                    colors: [
-                                      const Color(0xff5B5B5B).withOpacity(.44),
-                                      const Color(0xff5B5B5B)
-                                    ],
-                                  ),
+                                  progressColor: AppColors.sfPrimary,
+                                  backgroundColor: AppColors.bgLight,
                                   linearStrokeCap: LinearStrokeCap.butt,
-
-                                  backgroundColor: AppColors.white,
                                 ),
                               ),
                               const SizedBox(height: 4),
@@ -177,12 +171,8 @@ class StoreDashboardUI extends StatelessWidget {
                                   animationDuration: 1000,
                                   lineHeight: 8.0,
                                   barRadius: const Radius.circular(10),
-                                  linearGradient: const LinearGradient(
-                                    colors: [
-                                      Color(0xff6ECCDA),
-                                      Color(0xff475DEF)
-                                    ],
-                                  ),
+                                  progressColor: AppColors.sfPrimary,
+                                  backgroundColor: AppColors.bgLight,
                                   percent: 0.9,
                                   linearStrokeCap: LinearStrokeCap.butt,
                                 ),
@@ -295,13 +285,8 @@ class StoreDashboardUI extends StatelessWidget {
                                       trailing: const Text("8"),
                                       percent: 0.8,
                                       linearStrokeCap: LinearStrokeCap.butt,
-                                      linearGradient: const LinearGradient(
-                                        colors: [
-                                          Color(0xff6ECCDA),
-                                          Color(0xff475DEF)
-                                        ],
-                                      ),
-                                      backgroundColor: AppColors.white,
+                                      progressColor: AppColors.sfPrimary,
+                                      backgroundColor: AppColors.bgLight,
                                     ),
                                   ),
                                   Padding(
@@ -316,13 +301,8 @@ class StoreDashboardUI extends StatelessWidget {
                                       trailing: const Text("9"),
                                       percent: 0.9,
                                       linearStrokeCap: LinearStrokeCap.butt,
-                                      linearGradient: const LinearGradient(
-                                        colors: [
-                                          Color(0xff6ECCDA),
-                                          Color(0xff475DEF)
-                                        ],
-                                      ),
-                                      backgroundColor: AppColors.white,
+                                      progressColor: AppColors.sfPrimary,
+                                      backgroundColor: AppColors.bgLight,
                                     ),
                                   ),
                                   Padding(
@@ -337,13 +317,8 @@ class StoreDashboardUI extends StatelessWidget {
                                       trailing: const Text("6"),
                                       percent: 0.7,
                                       linearStrokeCap: LinearStrokeCap.butt,
-                                      linearGradient: const LinearGradient(
-                                        colors: [
-                                          Color(0xff6ECCDA),
-                                          Color(0xff475DEF)
-                                        ],
-                                      ),
-                                      backgroundColor: AppColors.white,
+                                      progressColor: AppColors.sfPrimary,
+                                      backgroundColor: AppColors.bgLight,
                                     ),
                                   ),
                                   Padding(
@@ -358,13 +333,8 @@ class StoreDashboardUI extends StatelessWidget {
                                       trailing: const Text("8"),
                                       percent: 0.8,
                                       linearStrokeCap: LinearStrokeCap.butt,
-                                      linearGradient: const LinearGradient(
-                                        colors: [
-                                          Color(0xff6ECCDA),
-                                          Color(0xff475DEF)
-                                        ],
-                                      ),
-                                      backgroundColor: AppColors.white,
+                                      progressColor: AppColors.sfPrimary,
+                                      backgroundColor: AppColors.bgLight,
                                     ),
                                   ),
                                   Padding(
@@ -383,13 +353,8 @@ class StoreDashboardUI extends StatelessWidget {
                                       percent: 0.8,
                                       // ignore: deprecated_member_use
                                       linearStrokeCap: LinearStrokeCap.butt,
-                                      linearGradient: const LinearGradient(
-                                        colors: [
-                                          Color(0xff6ECCDA),
-                                          Color(0xff475DEF)
-                                        ],
-                                      ),
-                                      backgroundColor: AppColors.white,
+                                      progressColor: AppColors.sfPrimary,
+                                      backgroundColor: AppColors.bgLight,
                                     ),
                                   ),
                                 ],
@@ -404,16 +369,10 @@ class StoreDashboardUI extends StatelessWidget {
                                           topLeft: Radius.circular(100),
                                           bottomLeft: Radius.circular(100),
                                         ),
-                                        gradient: LinearGradient(
-                                          begin: Alignment.bottomLeft,
-                                          end: Alignment.topRight,
-                                          colors: [
-                                            Color(0xff475DEF),
-                                            Color(0xff6ECCDA),
-                                          ],
-                                        ),
                                       ),
                                       child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
                                         children: [
                                           const SizedBox(width: 12),
                                           Flexible(
@@ -424,36 +383,40 @@ class StoreDashboardUI extends StatelessWidget {
                                                     text: '33.07',
                                                     style: GoogleFonts.inter(
                                                       fontSize: 20,
-                                                      color: AppColors.white,
+                                                      color: AppColors.black,
                                                     ),
                                                   ),
                                                   TextSpan(
                                                     text: 'min',
                                                     style: GoogleFonts.inter(
                                                       fontSize: 12,
-                                                      color: AppColors.white,
+                                                      color: AppColors.black,
                                                     ),
                                                   ),
                                                 ],
                                               ),
                                             ),
                                           ),
+                                          const SizedBox(width: 6),
                                         ],
                                       ),
                                     ),
                                     Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
                                       children: [
                                         Flexible(
                                           child: Text(
                                             'Avg in-Store Time',
                                             overflow: TextOverflow.ellipsis,
                                             style: GoogleFonts.inter(
-                                              fontStyle: FontStyle.italic,
-                                              fontSize: 14,
+                                              // fontStyle: FontStyle.italic,
+                                              fontSize: 12,
                                               fontWeight: FontWeight.w400,
+                                              color: AppColors.greyTextColor,
                                             ),
                                           ),
                                         ),
+                                        const SizedBox(width: 6),
                                       ],
                                     ),
                                     const SizedBox(height: 8),
@@ -506,16 +469,11 @@ class StoreDashboardUI extends StatelessWidget {
                                     animationDuration: 1000,
                                     lineHeight: 8.0,
                                     barRadius: const Radius.circular(10),
-                                    backgroundColor: AppColors.white,
-                                    linearGradient: LinearGradient(
-                                      colors: [
-                                        const Color(0xff5B5B5B)
-                                            .withOpacity(.44),
-                                        const Color(0xff5B5B5B),
-                                      ],
-                                    ),
+                                    progressColor: AppColors.sfPrimary,
+                                    backgroundColor: AppColors.bgLight,
+
                                     trailing: const Text("8"),
-                                    percent: 1.0,
+                                    percent: 0.0,
                                     // ignore: deprecated_member_use
                                     linearStrokeCap: LinearStrokeCap.butt,
                                   ),
@@ -528,13 +486,8 @@ class StoreDashboardUI extends StatelessWidget {
                                     animationDuration: 1000,
                                     lineHeight: 8.0,
                                     barRadius: const Radius.circular(10),
-                                    linearGradient: const LinearGradient(
-                                      colors: [
-                                        Color(0xff6ECCDA),
-                                        Color(0xff475DEF)
-                                      ],
-                                    ),
-                                    backgroundColor: AppColors.white,
+                                    progressColor: AppColors.sfPrimary,
+                                    backgroundColor: AppColors.bgLight,
                                     trailing: const Text("8"),
                                     percent: 0.4,
                                     // ignore: deprecated_member_use
@@ -549,13 +502,8 @@ class StoreDashboardUI extends StatelessWidget {
                                     animationDuration: 1000,
                                     lineHeight: 8.0,
                                     barRadius: const Radius.circular(10),
-                                    linearGradient: const LinearGradient(
-                                      colors: [
-                                        Color(0xff6ECCDA),
-                                        Color(0xff475DEF)
-                                      ],
-                                    ),
-                                    backgroundColor: AppColors.white,
+                                    progressColor: AppColors.sfPrimary,
+                                    backgroundColor: AppColors.bgLight,
                                     trailing: const Text("8"),
                                     percent: 1.0,
                                     // ignore: deprecated_member_use
@@ -595,40 +543,33 @@ class StoreDashboardUI extends StatelessWidget {
                                       ),
                                     ),
                                   ),
-                                  const SizedBox(
-                                    height: 35,
-                                  ),
+                                  const SizedBox(height: 35),
                                   CircularPercentIndicator(
-                                    radius: 60.0,
+                                    radius: 52.0,
                                     lineWidth: 8.0,
                                     percent: 0.75,
-                                    linearGradient: const LinearGradient(
-                                      begin: Alignment.topRight,
-                                      end: Alignment.bottomLeft,
-                                      colors: [
-                                        Color(0xff475DEF),
-                                        Color(0xff6ECCDA),
-                                        Color(0xff6ECCDA),
-                                        Color(0xff475DEF),
-                                      ],
+                                    progressColor: AppColors.sfPrimary,
+                                    backgroundColor: AppColors.bgLight,
+                                    center: Text(
+                                      "6/5",
+                                      style: GoogleFonts.inter(fontSize: 20),
                                     ),
-                                    backgroundColor: AppColors.white,
-                                    center: CircularPercentIndicator(
-                                      radius: 50.0,
-                                      lineWidth: 8.0,
-                                      percent: 1.0,
-                                      center: const Text(
-                                        "6/5",
-                                        style: TextStyle(fontSize: 20),
-                                      ),
-                                      linearGradient: LinearGradient(
-                                        colors: [
-                                          const Color(0xff5B5B5B),
-                                          const Color(0xff5B5B5B)
-                                              .withOpacity(.44),
-                                        ],
-                                      ),
-                                    ),
+                                    // center: CircularPercentIndicator(
+                                    //   radius: 50.0,
+                                    //   lineWidth: 8.0,
+                                    //   percent: 1.0,
+                                    //   center: const Text(
+                                    //     "6/5",
+                                    //     style: TextStyle(fontSize: 20),
+                                    //   ),
+                                    //   linearGradient: LinearGradient(
+                                    //     colors: [
+                                    //       const Color(0xff5B5B5B),
+                                    //       const Color(0xff5B5B5B)
+                                    //           .withOpacity(.44),
+                                    //     ],
+                                    //   ),
+                                    // ),
                                     circularStrokeCap: CircularStrokeCap.round,
                                   ),
                                   const SizedBox(height: 20),

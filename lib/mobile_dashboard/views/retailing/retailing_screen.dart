@@ -183,68 +183,60 @@ class _RetailingScreenState extends State<RetailingScreen> {
                         const SizedBox(height: 16),
                         ctlr.isRetailingCategoryLoading
                             ? loadingWidget(context)
-                            : ctlr.categoryRetailingModel != null
-                                ? CustomExpandedWidget(
-                                    title: 'Retailing by Category',
-                                    firstColumnWidth: true,
-                                    onFilterTap: () => Get.bottomSheet(
-                                      CategoryFilterBottomsheet(
-                                          tabType: SummaryTypes.retailing.type),
-                                      isScrollControlled: true,
-                                    ),
-                                    selectedFilterValue: ctlr.selectedCategory,
-                                    dataList: ctlr.isRetailingDeepDiveInd
-                                        ? ctlr.categoryRetailingModel?.ind ?? []
-                                        : ctlr.categoryRetailingModel?.indDir ??
-                                            [],
-                                    onTap: () => ctlr.onExpandCategory(
-                                        !ctlr.isExpandedCategory),
-                                    isExpanded: ctlr.isExpandedCategory,
-                                    tabType: '',
-                                  )
-                                : const SizedBox(),
+                            : CustomExpandedWidget(
+                                title: 'Retailing by Category',
+                                firstColumnWidth: true,
+                                onFilterTap: () => Get.bottomSheet(
+                                  CategoryFilterBottomsheet(
+                                      tabType: SummaryTypes.retailing.type),
+                                  isScrollControlled: true,
+                                ),
+                                selectedFilterValue: ctlr.selectedCategory,
+                                dataList: ctlr.isRetailingDeepDiveInd
+                                    ? ctlr.categoryRetailingModel?.ind ?? []
+                                    : ctlr.categoryRetailingModel?.indDir ?? [],
+                                onTap: () => ctlr
+                                    .onExpandCategory(!ctlr.isExpandedCategory),
+                                isExpanded: ctlr.isExpandedCategory,
+                                tabType: '',
+                              ),
                         const SizedBox(height: 16),
                         ctlr.isRetailingChannelLoading
                             ? loadingWidget(context)
-                            : ctlr.channelRetailingModel != null
-                                ? CustomExpandedWidget(
-                                    title: 'Retailing by Channel',
-                                    onFilterTap: () => Get.bottomSheet(
-                                      ChannelFilterBottomsheet(
-                                          tabType: SummaryTypes.retailing.type),
-                                      isScrollControlled: true,
-                                    ),
-                                    selectedFilterValue: 'Channel',
-                                    onTap: () => ctlr.onExpandChannel(
-                                        !ctlr.isExpandedChannel),
-                                    dataList: ctlr.isRetailingDeepDiveInd
-                                        ? ctlr.channelRetailingModel?.ind ?? []
-                                        : ctlr.channelRetailingModel?.indDir ??
-                                            [],
-                                    isExpanded: ctlr.isExpandedChannel,
-                                    tabType: '',
-                                  )
-                                : const SizedBox(),
+                            : CustomExpandedWidget(
+                                title: 'Retailing by Channel',
+                                onFilterTap: () => Get.bottomSheet(
+                                  ChannelFilterBottomsheet(
+                                      tabType: SummaryTypes.retailing.type),
+                                  isScrollControlled: true,
+                                ),
+                                selectedFilterValue: 'Channel',
+                                onTap: () => ctlr
+                                    .onExpandChannel(!ctlr.isExpandedChannel),
+                                dataList: ctlr.isRetailingDeepDiveInd
+                                    ? ctlr.channelRetailingModel?.ind ?? []
+                                    : ctlr.channelRetailingModel?.indDir ?? [],
+                                isExpanded: ctlr.isExpandedChannel,
+                                tabType: '',
+                              ),
                         const SizedBox(height: 16),
                         ctlr.isRetailingTrendsLoading
                             ? loadingWidget(context)
-                            : ctlr.trendsRetailingModel != null
-                                ? CustomExpandedChartWidget(
-                                    summaryType: SummaryTypes.retailing.type,
-                                    title: 'Retailing Trends',
-                                    onTap: () => ctlr
-                                        .onExpandTrends(!ctlr.isExpandedTrends),
-                                    isExpanded: ctlr.isExpandedTrends,
-                                    trendsList: ctlr.isRetailingDeepDiveInd
-                                        ? ctlr.trendsRetailingModel!.ind
-                                        : ctlr.trendsRetailingModel!.indDir,
-                                    onFilterTap: () => Get.bottomSheet(
-                                      TrendsFilterBottomsheet(
-                                          tabType: SummaryTypes.retailing.type),
-                                      isScrollControlled: true,
-                                    ),
-                                  )
-                                : const SizedBox(),
+                            : CustomExpandedChartWidget(
+                                summaryType: SummaryTypes.retailing.type,
+                                title: 'Retailing Trends',
+                                onTap: () =>
+                                    ctlr.onExpandTrends(!ctlr.isExpandedTrends),
+                                isExpanded: ctlr.isExpandedTrends,
+                                trendsList: ctlr.isRetailingDeepDiveInd
+                                    ? ctlr.trendsRetailingModel!.ind
+                                    : ctlr.trendsRetailingModel!.indDir,
+                                onFilterTap: () => Get.bottomSheet(
+                                  TrendsFilterBottomsheet(
+                                      tabType: SummaryTypes.retailing.type),
+                                  isScrollControlled: true,
+                                ),
+                              ),
                         const SizedBox(height: 20),
                       ],
                     ),

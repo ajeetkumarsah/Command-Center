@@ -26,8 +26,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   void onChangePage() {
     if (activeIndex < 1) {
       _activeIndex++;
-    } else {
-      _activeIndex++;
+    } else if (activeIndex == 2) {
       Future.delayed(const Duration(seconds: 2))
           .then((value) => Get.toNamed(AppPages.STORE_FINGERTIPS_SCREEN));
     }
@@ -35,13 +34,17 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   void onChangePageIndex(int value) {
+    debugPrint('===> $value');
+    Future.delayed(const Duration(seconds: 2))
+        .then((value) => Get.toNamed(AppPages.STORE_FINGERTIPS_SCREEN));
     if (activeIndex < 1) {
-      _activeIndex = value;
-    } else {
-      _activeIndex++;
-      Future.delayed(const Duration(seconds: 2))
-          .then((value) => Get.offAndToNamed(AppPages.STORE_FINGERTIPS_SCREEN));
+      if (value < 1) {
+        _activeIndex = value;
+      } else {
+        _activeIndex++;
+      }
     }
+
     setState(() {});
   }
 
@@ -50,9 +53,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     List<StepperData> stepperData = [
       StepperData(
         title: StepperText(
-          "Get Started",
+          "Get Started ",
           textStyle: GoogleFonts.ptSans(
-            color: activeIndex > 0 ? AppColors.primary : AppColors.green,
+            color: _activeIndex > 0 ? AppColors.primary : AppColors.green,
             fontSize: 14,
             fontWeight: FontWeight.w600,
           ),
@@ -60,9 +63,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         iconWidget: GestureDetector(
           onTap: () => onChangePageIndex(0),
           child: Container(
-            padding: EdgeInsets.all(activeIndex == 0 ? 6 : 2),
+            padding: EdgeInsets.all(_activeIndex == 0 ? 6 : 2),
             decoration: BoxDecoration(
-              color: activeIndex > 0 ? AppColors.primary : AppColors.green,
+              color: _activeIndex > 0 ? AppColors.primary : AppColors.green,
               borderRadius: const BorderRadius.all(
                 Radius.circular(100),
               ),

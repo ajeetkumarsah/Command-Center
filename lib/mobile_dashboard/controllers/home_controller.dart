@@ -4,6 +4,7 @@ import 'package:logger/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:command_centre/mobile_dashboard/utils/date_converter.dart';
 import 'package:command_centre/mobile_dashboard/utils/summary_types.dart';
 import 'package:command_centre/mobile_dashboard/utils/routes/app_pages.dart';
 import 'package:command_centre/mobile_dashboard/data/repository/home_repo.dart';
@@ -167,11 +168,13 @@ class HomeController extends GetxController {
   String _selectedGeoValue = 'All India';
   String get selectedGeoValue => _selectedGeoValue;
 
-  String? _selectedMonth = 'Dec-2023';
+  String? _selectedMonth =
+      '${DateConverter().returnMonth(DateTime.now()).substring(0, 3)}-${DateTime.now().year}';
   String? get selectedMonth => _selectedMonth;
   String? _selectedYear = '2023';
   String? get selectedYear => _selectedYear;
-  String? _selectedTempMonth = 'Dec-2023';
+  String? _selectedTempMonth =
+      '${DateConverter().returnMonth(DateTime.now()).substring(0, 3)}-${DateTime.now().year}';
   String? get selectedTempMonth => _selectedTempMonth;
   String? _selectedTempYear = 'Date';
   String? get selectedTempYear => _selectedTempYear;

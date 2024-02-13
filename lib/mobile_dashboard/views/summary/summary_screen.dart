@@ -1,12 +1,14 @@
 import 'package:get/get.dart';
-import 'package:lottie/lottie.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lottie/lottie.dart';
+import 'package:command_centre/mobile_dashboard/utils/date_converter.dart';
+import 'package:command_centre/mobile_dashboard/utils/png_files.dart';
+import 'package:command_centre/mobile_dashboard/views/update/update_screen.dart';
 import '../retailing/widgets/geography_bottomsheet.dart';
+import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import '../retailing/widgets/select_month_bottomsheet.dart';
-import 'package:command_centre/mobile_dashboard/utils/png_files.dart';
-import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
 import 'package:command_centre/mobile_dashboard/utils/routes/app_pages.dart';
 import 'package:command_centre/mobile_dashboard/controllers/home_controller.dart';
 import 'package:command_centre/mobile_dashboard/views/widgets/custom_shimmer.dart';
@@ -111,6 +113,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
                             MenuBottomsheet(version: ctlr.appVersion),
                             isScrollControlled: true,
                           ),
+                          // () => Get.to(const UpdateScreen()),
                           icon: const Icon(
                             Icons.menu,
                             color: Colors.white,
@@ -249,7 +252,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
                           )
                         : ctlr.summaryData.isNotEmpty
                             ? PersonalizeCard(
-                                title: 'Retailing',
+                                title: 'Retailing ',
                                 isDataFound: ctlr.isSummaryDirect
                                     ? ctlr.summaryData.first.mtdRetailing?.ind
                                             ?.dataFound ??

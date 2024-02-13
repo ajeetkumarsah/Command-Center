@@ -31,7 +31,7 @@ class _SplashScreenState extends State<SplashScreen> {
       var geoValue = await controller.getGeoValue();
       var accessToken = await controller.getAccessToken();
       if (seen) {
-        if ( token.isNotEmpty && accessToken.isNotEmpty) {
+        if (token.isNotEmpty && accessToken.isNotEmpty) {
           if (geo.isNotEmpty && geoValue.isNotEmpty) {
             debugPrint('===>Splash Geo $geo Value $geoValue');
             Get.offAndToNamed(AppPages.INITIAL);

@@ -1,8 +1,8 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:command_centre/mobile_dashboard/utils/routes/app_pages.dart';
 import 'package:command_centre/mobile_dashboard/views/login/login_screen.dart';
 import 'package:command_centre/mobile_dashboard/controllers/auth_controller.dart';

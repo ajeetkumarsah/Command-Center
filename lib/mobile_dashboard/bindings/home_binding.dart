@@ -9,7 +9,6 @@ import 'package:command_centre/mobile_dashboard/controllers/auth_controller.dart
 import 'package:command_centre/mobile_dashboard/controllers/store_controller.dart';
 import 'package:command_centre/mobile_dashboard/controllers/store_selection_controller.dart';
 
-
 class HomeBinding extends Bindings {
   @override
   Future<void> dependencies() async {
@@ -29,8 +28,10 @@ class HomeBinding extends Bindings {
         HomeRepo(sharedPreferences: sharedPreferences, apiClient: Get.find()));
     Get.put<HomeRepo>(
         HomeRepo(sharedPreferences: sharedPreferences, apiClient: Get.find()));
-    Get.lazyPut<StoreRepo>(() =>
-        StoreRepo(sharedPreferences: sharedPreferences, apiClient: Get.find()));
+    Get.lazyPut<StoreRepo>(
+        () => StoreRepo(
+            sharedPreferences: sharedPreferences, apiClient: Get.find()),
+        fenix: true);
 //Controllers
     Get.lazyPut<HomeController>(() => HomeController(homeRepo: Get.find()));
     // Get.put<HomeController>(HomeController(homeRepo: Get.find()));

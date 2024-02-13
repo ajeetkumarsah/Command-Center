@@ -13,254 +13,99 @@ class SalesDeepDiveScreen extends StatelessWidget {
     return GetBuilder<StoreController>(
       init: StoreController(storeRepo: Get.find()),
       builder: (ctlr) {
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 300),
-              height: 78,
-              width: MediaQuery.of(context).size.width,
-              margin: const EdgeInsets.only(top: 12, left: 12, right: 12),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(3),
-                color: AppColors.white,
-                boxShadow: [
-                  BoxShadow(
-                    color: const Color(0xff000000).withOpacity(.08),
-                    blurRadius: 12,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
-              ),
-              child: Row(
-                children: [
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          '0.71%',
-                          style: GoogleFonts.inter(
-                            fontSize: 24,
-                            fontWeight: FontWeight.w400,
-                            color: AppColors.black,
-                          ),
-                        ),
-                        Text(
-                          'SRN%',
-                          style: GoogleFonts.inter(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w400,
-                            color: AppColors.greyTextColor,
-                          ),
-                        ),
-                      ],
+        return SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 300),
+                height: 78,
+                width: MediaQuery.of(context).size.width,
+                margin: const EdgeInsets.only(top: 12, left: 12, right: 12),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(3),
+                  color: AppColors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color(0xff000000).withOpacity(.08),
+                      blurRadius: 12,
+                      offset: const Offset(0, 4),
                     ),
-                  ),
-                  Container(
-                    width: 1,
-                    color: AppColors.tableBorder,
-                    height: 60,
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          '8.91%',
-                          style: GoogleFonts.inter(
-                            fontSize: 24,
-                            fontWeight: FontWeight.w400,
-                            color: AppColors.black,
-                          ),
-                        ),
-                        Text(
-                          'Scheme Earning',
-                          style: GoogleFonts.inter(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w400,
-                            color: AppColors.greyTextColor,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 300),
-              // height: 60,
-              width: MediaQuery.of(context).size.width,
-              padding: const EdgeInsets.only(bottom: 8),
-              margin: const EdgeInsets.only(top: 12, left: 12, right: 12),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(3),
-                color: AppColors.white,
-                boxShadow: [
-                  BoxShadow(
-                    color: const Color(0xff000000).withOpacity(.08),
-                    blurRadius: 12,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    // padding: const EdgeInsets.symmetric(vertical: 4.0),
-
-                    color: ctlr.salesTableShowMore
-                        ? AppColors.white
-                        : AppColors.storeTableRowColor,
-                    child: Row(
-                      children: [
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width * .27,
-                          child: Center(
-                            child: Text(
-                              'DSE Code',
-                              style: GoogleFonts.inter(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w400,
-                                color: AppColors.greyTextColor,
-                              ),
+                  ],
+                ),
+                child: Row(
+                  children: [
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            '0.71%',
+                            style: GoogleFonts.inter(
+                              fontSize: 24,
+                              fontWeight: FontWeight.w400,
+                              color: AppColors.black,
                             ),
                           ),
-                        ),
-                        Container(
-                          height: 30,
-                          width: .5,
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [
-                                const Color(0xffCCCCCC).withOpacity(0),
-                                const Color(0xffC8C8C8),
-                                const Color(0xffC8C8C8),
-                                const Color(0xffCCCCCC).withOpacity(0),
-                              ],
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width * .27,
-                          child: Center(
-                            child: Text(
-                              'P3M Retailing Avg',
-                              style: GoogleFonts.inter(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w400,
-                                color: AppColors.greyTextColor,
-                              ),
-                            ),
-                          ),
-                        ),
-                        Container(
-                          height: 30,
-                          width: .5,
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [
-                                const Color(0xffCCCCCC).withOpacity(0),
-                                const Color(0xffC8C8C8),
-                                const Color(0xffC8C8C8),
-                                const Color(0xffCCCCCC).withOpacity(0),
-                              ],
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width * .27,
-                          child: Center(
-                            child: Text(
-                              'Retailing AHC',
-                              style: GoogleFonts.inter(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w400,
-                                color: AppColors.greyTextColor,
-                              ),
-                            ),
-                          ),
-                        ),
-                        Container(
-                          height: 30,
-                          width: .5,
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [
-                                const Color(0xffCCCCCC).withOpacity(0),
-                                const Color(0xffC8C8C8),
-                                const Color(0xffC8C8C8),
-                                const Color(0xffCCCCCC).withOpacity(0),
-                              ],
-                            ),
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: () {},
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 6),
-                            child: const Icon(
-                              Icons.swap_vert_rounded,
+                          Text(
+                            'SRN%',
+                            style: GoogleFonts.inter(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w400,
                               color: AppColors.greyTextColor,
                             ),
                           ),
-                        )
-                      ],
-                    ),
-                  ),
-                  if (ctlr.salesTableShowMore)
-                    AnimatedContainer(
-                      duration: const Duration(milliseconds: 300),
-                      height: 70,
-                      width: MediaQuery.of(context).size.width,
-                      color: AppColors.storeTableRowColor,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          tableRow(context),
                         ],
                       ),
                     ),
-                  GestureDetector(
-                    onTap: () => ctlr.onSalesTableShowMore(),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          ctlr.salesTableShowMore
-                              ? Icons.arrow_drop_up_outlined
-                              : Icons.arrow_drop_down_outlined,
-                          color: AppColors.primary,
-                        ),
-                      ],
+                    Container(
+                      width: 1,
+                      color: AppColors.tableBorder,
+                      height: 60,
                     ),
-                  ),
-                ],
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            '8.91%',
+                            style: GoogleFonts.inter(
+                              fontSize: 24,
+                              fontWeight: FontWeight.w400,
+                              color: AppColors.black,
+                            ),
+                          ),
+                          Text(
+                            'Scheme Earning',
+                            style: GoogleFonts.inter(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w400,
+                              color: AppColors.greyTextColor,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            DefaultTabController(
-              length: 2,
-              initialIndex: 0,
-              child: AnimatedContainer(
+              AnimatedContainer(
                 duration: const Duration(milliseconds: 300),
-                height: 418,
+                // height: 60,
                 width: MediaQuery.of(context).size.width,
                 padding: const EdgeInsets.only(bottom: 8),
                 margin: const EdgeInsets.only(top: 12, left: 12, right: 12),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(5),
+                  borderRadius: BorderRadius.circular(3),
                   color: AppColors.white,
                   boxShadow: [
                     BoxShadow(
-                      color: const Color(0xff000000).withOpacity(.1),
-                      blurRadius: 0,
+                      color: const Color(0xff000000).withOpacity(.08),
+                      blurRadius: 12,
                       offset: const Offset(0, 4),
                     ),
                   ],
@@ -268,98 +113,290 @@ class SalesDeepDiveScreen extends StatelessWidget {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    TabBar(
-                      onTap: (v) {},
-                      indicatorWeight: 3,
-                      indicatorColor: AppColors.black,
-                      tabs: [
-                        Tab(
-                          icon: Text(
-                            'Retailing Trends',
-                            style: GoogleFonts.inter(
-                              fontSize: 14,
-                              color: AppColors.black,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                        Tab(
-                          icon: Text(
-                            'Product Level',
-                            style: GoogleFonts.inter(
-                              fontSize: 14,
-                              color: AppColors.black,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    // const TabBarView(
-                    //   physics: NeverScrollableScrollPhysics(),
-                    //   children: [
-                    //     Icon(Icons.flight, size: 50),
-                    //     Icon(Icons.directions_transit, size: 50),
-                    //   ],
-                    // ),
-                    ListTile(
-                        title: Text(
-                          'Sales Value Trends',
-                          style: GoogleFonts.inter(
-                            fontSize: 22,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                        trailing: Container(
-                          width: 120,
-                          decoration: BoxDecoration(
-                            // borderRadius: BorderRadius.circular(5),
-                            border: Border(
-                              top: BorderSide(
-                                width: .5,
-                                color: AppColors.lightGrey,
-                              ),
-                              bottom: BorderSide(
-                                width: .5,
-                                color: AppColors.lightGrey,
-                              ),
-                              left: BorderSide(
-                                width: .5,
-                                color: AppColors.lightGrey,
-                              ),
-                            ),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const Icon(
-                                Icons.filter_alt_outlined,
-                                color: AppColors.primary,
-                              ),
-                              Text(
-                                'Category',
-                                style: GoogleFonts.inter(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w400,
-                                  color: AppColors.black,
-                                ),
-                              )
-                            ],
-                          ),
-                        )),
                     Container(
-                      height: .5,
-                      color: AppColors.tableBorder,
-                      width: MediaQuery.of(context).size.width,
+                      // padding: const EdgeInsets.symmetric(vertical: 4.0),
+
+                      color: ctlr.salesTableShowMore
+                          ? AppColors.white
+                          : AppColors.storeTableRowColor,
+                      child: Row(
+                        children: [
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width * .27,
+                            child: Center(
+                              child: Text(
+                                'DSE Code',
+                                style: GoogleFonts.inter(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w400,
+                                  color: AppColors.greyTextColor,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Container(
+                            height: 30,
+                            width: .5,
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [
+                                  const Color(0xffCCCCCC).withOpacity(0),
+                                  const Color(0xffC8C8C8),
+                                  const Color(0xffC8C8C8),
+                                  const Color(0xffCCCCCC).withOpacity(0),
+                                ],
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width * .27,
+                            child: Center(
+                              child: Text(
+                                'P3M Retailing Avg',
+                                style: GoogleFonts.inter(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w400,
+                                  color: AppColors.greyTextColor,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Container(
+                            height: 30,
+                            width: .5,
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [
+                                  const Color(0xffCCCCCC).withOpacity(0),
+                                  const Color(0xffC8C8C8),
+                                  const Color(0xffC8C8C8),
+                                  const Color(0xffCCCCCC).withOpacity(0),
+                                ],
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width * .27,
+                            child: Center(
+                              child: Text(
+                                'Retailing AHC',
+                                style: GoogleFonts.inter(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w400,
+                                  color: AppColors.greyTextColor,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Container(
+                            height: 30,
+                            width: .5,
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [
+                                  const Color(0xffCCCCCC).withOpacity(0),
+                                  const Color(0xffC8C8C8),
+                                  const Color(0xffC8C8C8),
+                                  const Color(0xffCCCCCC).withOpacity(0),
+                                ],
+                              ),
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () {},
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 6),
+                              child: const Icon(
+                                Icons.swap_vert_rounded,
+                                color: AppColors.greyTextColor,
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                    if (ctlr.salesTableShowMore)
+                      AnimatedContainer(
+                        duration: const Duration(milliseconds: 300),
+                        height: 70,
+                        width: MediaQuery.of(context).size.width,
+                        color: AppColors.storeTableRowColor,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            tableRow(context),
+                          ],
+                        ),
+                      ),
+                    GestureDetector(
+                      onTap: () => ctlr.onSalesTableShowMore(),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            ctlr.salesTableShowMore
+                                ? Icons.arrow_drop_up_outlined
+                                : Icons.arrow_drop_down_outlined,
+                            color: AppColors.primary,
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
               ),
-            ),
-            const SizedBox(height: 20),
-          ],
+              DefaultTabController(
+                length: 2,
+                initialIndex: 0,
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 300),
+                  height: 418,
+                  width: MediaQuery.of(context).size.width,
+                  padding: const EdgeInsets.only(bottom: 8),
+                  margin: const EdgeInsets.only(top: 12, left: 12, right: 12),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(5),
+                    color: AppColors.white,
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color(0xff000000).withOpacity(.1),
+                        blurRadius: 0,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      TabBar(
+                        onTap: (v) {},
+                        indicatorWeight: 3,
+                        indicatorColor: AppColors.black,
+                        tabs: [
+                          Tab(
+                            icon: Text(
+                              'Retailing Trends',
+                              style: GoogleFonts.inter(
+                                fontSize: 14,
+                                color: AppColors.black,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                          Tab(
+                            icon: Text(
+                              'Product Level',
+                              style: GoogleFonts.inter(
+                                fontSize: 14,
+                                color: AppColors.black,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Container(
+                        height: .5,
+                        color: AppColors.tableBorder,
+                        width: MediaQuery.of(context).size.width,
+                      ),
+                      const SizedBox(height: 12),
+                      Expanded(
+                        child: TabBarView(
+                          // physics: NeverScrollableScrollPhysics(),
+                          children: [
+                            retailingTab(),
+                            retailingTab(),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+            ],
+          ),
         );
       },
+    );
+  }
+
+  Widget retailingTab() {
+    return Column(
+      children: [
+        Row(
+          children: [
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                'Sales Value Trends',
+                style: GoogleFonts.inter(
+                  fontSize: 22,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+            ),
+            Container(
+              decoration: const BoxDecoration(
+                color: AppColors.lightGrey,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(5),
+                  bottomLeft: Radius.circular(5),
+                ),
+              ),
+              padding: const EdgeInsets.only(left: 1, top: 1, bottom: 1),
+              child: ClipRRect(
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(5),
+                  bottomLeft: Radius.circular(5),
+                ),
+                child: Container(
+                  // width: 120,
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 3, horizontal: 6),
+                  decoration: const BoxDecoration(
+                    borderRadius:
+                        BorderRadius.only(topLeft: Radius.circular(5)),
+                    color: AppColors.white,
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(
+                        Icons.filter_alt_outlined,
+                        color: AppColors.primary,
+                        size: 18,
+                      ),
+                      Text(
+                        'Category',
+                        style: GoogleFonts.inter(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
+                          color: AppColors.black,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            )
+          ],
+        ),
+        Row(
+          children: [
+            const SizedBox(width: 12),
+            Text(
+              'in thousands',
+              style: GoogleFonts.inter(
+                fontSize: 12,
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 

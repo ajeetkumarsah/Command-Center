@@ -7,14 +7,13 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:google_fonts/google_fonts.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:webview_flutter_android/webview_flutter_android.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_constants.dart';
-import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 import 'package:command_centre/mobile_dashboard/utils/routes/app_pages.dart';
-import 'package:command_centre/mobile_dashboard/utils/global.dart' as globals;
+import 'package:webview_flutter_android/webview_flutter_android.dart';
 import 'package:command_centre/mobile_dashboard/views/login/access_denied_screen.dart';
+import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 
 class FedAuthScreen extends StatefulWidget {
   const FedAuthScreen({super.key});
@@ -25,7 +24,7 @@ class FedAuthScreen extends StatefulWidget {
 
 class _FedAuthScreenState extends State<FedAuthScreen> {
   final Completer<WebViewController> _controller =
-  Completer<WebViewController>();
+      Completer<WebViewController>();
   late final WebViewController _controller1;
   late final WebViewCookieManager cookieManager = WebViewCookieManager();
 
@@ -33,13 +32,13 @@ class _FedAuthScreenState extends State<FedAuthScreen> {
   bool isLoading = false;
   final logger = Logger(
       printer: PrettyPrinter(
-        methodCount: 0,
-        errorMethodCount: 5,
-        lineLength: 50,
-        colors: true,
-        printEmojis: true,
-        printTime: false,
-      ));
+    methodCount: 0,
+    errorMethodCount: 5,
+    lineLength: 50,
+    colors: true,
+    printEmojis: true,
+    printTime: false,
+  ));
 
   @override
   void initState() {
@@ -56,12 +55,12 @@ class _FedAuthScreenState extends State<FedAuthScreen> {
     }
 
     final WebViewController controller =
-    WebViewController.fromPlatformCreationParams(params);
+        WebViewController.fromPlatformCreationParams(params);
     // #enddocregion platform_features
 
     controller
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
-    // ..setBackgroundColor(const Color(0x00000000))
+      // ..setBackgroundColor(const Color(0x00000000))
       ..setNavigationDelegate(
         NavigationDelegate(
           onProgress: (int progress) {
@@ -154,7 +153,7 @@ class _FedAuthScreenState extends State<FedAuthScreen> {
     try {
       http.Response response;
       response =
-      await http.post(Uri.parse(AppConstants.FED_AUTH_TOKEN), headers: {
+          await http.post(Uri.parse(AppConstants.FED_AUTH_TOKEN), headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/x-www-form-urlencoded',
         'Cookie': 'PF=gAvY5cL83UUST7sxealWO2',
@@ -173,7 +172,7 @@ class _FedAuthScreenState extends State<FedAuthScreen> {
 
         await session.setString(
             AppConstants.ACCESS_TOKEN, mapResponse['access_token']);
-        globals.authorization = session.getString(AppConstants.ACCESS_TOKEN)!;
+
         employeeAuthentication(mapResponse['access_token']);
       } else {
         _onClearCookies();
@@ -221,9 +220,7 @@ class _FedAuthScreenState extends State<FedAuthScreen> {
             AppConstants.EMAIL, mapResponse['user']['email']);
         await session.setString(
             AppConstants.NAME, mapResponse['user']['first_name']);
-        globals.token = session.getString(AppConstants.TOKEN) ?? '';
-        globals.name = session.getString(AppConstants.NAME) ?? '';
-        globals.email = session.getString(AppConstants.EMAIL) ?? '';
+
         debugPrint('===>Before Token check');
         if (session.getString(AppConstants.DEFAULT_GEO) != null &&
             session.getString(AppConstants.DEFAULT_GEO)!.trim().isNotEmpty &&
@@ -287,4 +284,3 @@ class _FedAuthScreenState extends State<FedAuthScreen> {
     }
   }
 }
-
