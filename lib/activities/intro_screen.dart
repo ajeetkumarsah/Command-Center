@@ -160,7 +160,7 @@ class _IntroScreenState extends State<IntroScreen> {
                           _onIntroEnd(context);
                         });
                         Navigator.pushReplacementNamed(
-                            context, RoutesName.pglogin);
+                            context, RoutesName.loginTest);
                       },
                       child: Container(
                         width: _inArrow

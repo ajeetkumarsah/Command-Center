@@ -124,7 +124,7 @@ class _RetryAccessDeniedState extends State<RetryAccessDeniedScreen>
                     main();
                     // Get.toNamed(AppPages.FED_AUTH_LOGIN);
                   },
-                  child: Row(
+                  child: const Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Padding(
@@ -151,13 +151,6 @@ class _RetryAccessDeniedState extends State<RetryAccessDeniedScreen>
     await session.remove("name");
     await session.remove("email");
     Get.offAndToNamed(AppPages.FED_AUTH_LOGIN);
-    // Navigator.of(context).pushAndRemoveUntil(
-    //   // the new route
-    //   MaterialPageRoute(
-    //     builder: (BuildContext context) => FedAuthLoginPage(),
-    //   ),
-    //   (Route route) => false,
-    // );
   }
 
   void _onClearCookies(BuildContext context) async {
