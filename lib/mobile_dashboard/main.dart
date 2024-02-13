@@ -1,10 +1,10 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
+import 'package:safe_device/safe_device.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:command_centre/mobile_dashboard/firebase_options.dart';
 import 'package:command_centre/mobile_dashboard/services/firebase_api.dart';
-import 'package:safe_device/safe_device.dart';
 import 'package:command_centre/mobile_dashboard/bindings/home_binding.dart';
 import 'package:command_centre/mobile_dashboard/utils/routes/app_pages.dart';
 

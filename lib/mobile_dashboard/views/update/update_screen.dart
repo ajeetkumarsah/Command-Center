@@ -1,6 +1,6 @@
+import 'package:lottie/lottie.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:lottie/lottie.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
 
 class UpdateScreen extends StatelessWidget {

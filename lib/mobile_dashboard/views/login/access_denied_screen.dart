@@ -1,10 +1,10 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-import 'package:command_centre/mobile_dashboard/utils/png_files.dart';
-import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:command_centre/mobile_dashboard/utils/png_files.dart';
+import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
 import 'package:command_centre/mobile_dashboard/utils/routes/app_pages.dart';
 
 class AccessDeniedBody {

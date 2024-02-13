@@ -7,13 +7,13 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:google_fonts/google_fonts.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:command_centre/mobile_dashboard/utils/app_constants.dart';
-import 'package:command_centre/mobile_dashboard/utils/routes/app_pages.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
-import 'package:command_centre/mobile_dashboard/views/login/access_denied_screen.dart';
+import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
+import 'package:command_centre/mobile_dashboard/utils/app_constants.dart';
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
+import 'package:command_centre/mobile_dashboard/utils/routes/app_pages.dart';
+import 'package:command_centre/mobile_dashboard/views/login/access_denied_screen.dart';
 
 class FedAuthScreen extends StatefulWidget {
   const FedAuthScreen({super.key});
