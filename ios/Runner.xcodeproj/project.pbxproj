@@ -377,8 +377,8 @@
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "arm64 i386";
-				FLUTTER_BUILD_NAME = 1.0.25;
-				FLUTTER_BUILD_NUMBER = 25;
+				FLUTTER_BUILD_NAME = 1.0.26;
+				FLUTTER_BUILD_NUMBER = 26;
 				FLUTTER_TARGET = lib/mobile_dashboard/main.dart;
 				INFOPLIST_FILE = Runner/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "P&G Command Center";
@@ -388,7 +388,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0.15;
-				PRODUCT_BUNDLE_IDENTIFIER = tranzita.commandcentre;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.commandcentre.command-centre";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
@@ -529,8 +529,8 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "arm64 i386";
-				FLUTTER_BUILD_NAME = 1.0.25;
-				FLUTTER_BUILD_NUMBER = 25;
+				FLUTTER_BUILD_NAME = 1.0.26;
+				FLUTTER_BUILD_NUMBER = 26;
 				FLUTTER_TARGET = lib/mobile_dashboard/main.dart;
 				INFOPLIST_FILE = Runner/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "P&G Command Center";
@@ -540,7 +540,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0.15;
-				PRODUCT_BUNDLE_IDENTIFIER = tranzita.commandcentre;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.commandcentre.command-centre";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
@@ -566,8 +566,8 @@
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "arm64 i386";
-				FLUTTER_BUILD_NAME = 1.0.25;
-				FLUTTER_BUILD_NUMBER = 25;
+				FLUTTER_BUILD_NAME = 1.0.26;
+				FLUTTER_BUILD_NUMBER = 26;
 				FLUTTER_TARGET = lib/mobile_dashboard/main.dart;
 				INFOPLIST_FILE = Runner/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "P&G Command Center";
@@ -577,7 +577,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0.15;
-				PRODUCT_BUNDLE_IDENTIFIER = tranzita.commandcentre;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.commandcentre.command-centre";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";

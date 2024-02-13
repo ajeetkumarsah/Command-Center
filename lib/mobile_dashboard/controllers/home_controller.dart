@@ -1693,7 +1693,7 @@ class HomeController extends GetxController {
       responseModel = ResponseModel(true, 'Success');
     } else if (response.statusCode == 401) {
       responseModel = ResponseModel(false, response.statusText ?? "");
-      Get.offAndToNamed(AppPages.FED_AUTH_LOGIN);
+      Get.offAndToNamed(AppPages.FED_AUTH_LOGIN_TEST);
     } else {
       responseModel = ResponseModel(false, response.statusText ?? "");
     }
@@ -1731,7 +1731,7 @@ class HomeController extends GetxController {
       }
     } else if (response.statusCode == 401) {
       responseModel = ResponseModel(false, response.statusText ?? "");
-      Get.offAndToNamed(AppPages.FED_AUTH_LOGIN);
+      Get.offAndToNamed(AppPages.FED_AUTH_LOGIN_TEST);
     } else {
       responseModel = ResponseModel(false, response.statusText ?? "");
     }
@@ -2018,7 +2018,7 @@ class HomeController extends GetxController {
       }
     } else if (response.statusCode == 401) {
       responseModel = ResponseModel(false, response.statusText ?? "");
-      Get.offAndToNamed(AppPages.FED_AUTH_LOGIN);
+      Get.offAndToNamed(AppPages.FED_AUTH_LOGIN_TEST);
     } else {
       // showCustomSnackBar('${response.body}');
 
@@ -2082,7 +2082,7 @@ class HomeController extends GetxController {
       }
     } else if (response.statusCode == 401) {
       responseModel = ResponseModel(false, response.statusText ?? "");
-      Get.offAndToNamed(AppPages.FED_AUTH_LOGIN);
+      Get.offAndToNamed(AppPages.FED_AUTH_LOGIN_TEST);
     } else {
       responseModel = ResponseModel(false, response.statusText ?? "");
     }
@@ -2129,7 +2129,7 @@ class HomeController extends GetxController {
       }
     } else if (response.statusCode == 401) {
       responseModel = ResponseModel(false, response.statusText ?? "");
-      Get.offAndToNamed(AppPages.FED_AUTH_LOGIN);
+      Get.offAndToNamed(AppPages.FED_AUTH_LOGIN_TEST);
     } else {
       responseModel = ResponseModel(false, response.statusText ?? "");
     }
@@ -2407,7 +2407,7 @@ class HomeController extends GetxController {
       }
     } else if (response.statusCode == 401) {
       responseModel = ResponseModel(false, response.statusText ?? "");
-      Get.offAndToNamed(AppPages.FED_AUTH_LOGIN);
+      Get.offAndToNamed(AppPages.FED_AUTH_LOGIN_TEST);
     } else {
       // Logger().e(response.body);
       responseModel = ResponseModel(false, response.statusText ?? "");
@@ -2728,7 +2728,7 @@ class HomeController extends GetxController {
       }
     } else if (response.statusCode == 401) {
       responseModel = ResponseModel(false, response.statusText ?? "");
-      Get.offAndToNamed(AppPages.FED_AUTH_LOGIN);
+      Get.offAndToNamed(AppPages.FED_AUTH_LOGIN_TEST);
     } else {
       // Logger().e(
       //     "===>Status Code:${response.statusCode} Name:$name --Type:$type  :${response.body}");
@@ -3012,7 +3012,7 @@ class HomeController extends GetxController {
       }
     } else if (response.statusCode == 401) {
       responseModel = ResponseModel(false, response.statusText ?? "");
-      Get.offAndToNamed(AppPages.FED_AUTH_LOGIN);
+      Get.offAndToNamed(AppPages.FED_AUTH_LOGIN_TEST);
     } else {
       // Logger().e('==>Focus Brand $type $name ${response.body}');
       responseModel = ResponseModel(false, response.statusText ?? "");

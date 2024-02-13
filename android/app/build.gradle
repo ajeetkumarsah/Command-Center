@@ -44,14 +44,14 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-//        applicationId "com.commandcentre.command_centre"
-        applicationId "tranzita.command_centre"
+        applicationId "com.commandcentre.command_centre"
+//        applicationId "tranzita.command_centre"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
         minSdkVersion 26
         targetSdkVersion flutter.targetSdkVersion
-        versionCode 25
-        versionName '1.0.25'
+        versionCode 26
+        versionName '1.0.26'
     }
     signingConfigs {
         release {

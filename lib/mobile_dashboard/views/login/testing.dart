@@ -10,12 +10,15 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:command_centre/activities/home_screen.dart';
 import 'package:command_centre/activities/intro_screen.dart';
+import 'package:command_centre/mobile_dashboard/bindings/home_binding.dart';
+import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
 import 'package:command_centre/mobile_dashboard/utils/routes/app_pages.dart';
 import 'package:command_centre/mobile_dashboard/views/login/access_denied_screen.dart';
 import 'package:command_centre/mobile_dashboard/views/summary/summary_screen.dart';
 import 'package:get/get.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_constants.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 import 'package:path_provider/path_provider.dart';
@@ -24,9 +27,15 @@ import 'package:webview_flutter_platform_interface/webview_flutter_platform_inte
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 import 'package:command_centre/mobile_dashboard/utils/global.dart' as globals;
 
-void main() {
-  runApp(const MaterialApp(home: WebViewExample()));
-}
+// void main() async{
+//   WidgetsFlutterBinding.ensureInitialized();
+//   await HomeBinding().dependencies();
+//   runApp( GetMaterialApp(
+//       home: WebViewExample(),
+//     getPages: AppPages.routes,
+//     // debugShowCheckedModeBanner: false,
+//   ));
+// }
 
 const String kNavigationExamplePage = '''
 <!DOCTYPE html><html>
@@ -151,9 +160,10 @@ const String kAlertTestPage = '''
 ''';
 
 class WebViewExample extends StatefulWidget {
-  const WebViewExample({super.key, this.cookieManager});
+  const WebViewExample({super.key, this.cookieManager, this.webViewController});
 
   final PlatformWebViewCookieManager? cookieManager;
+  final PlatformWebViewController? webViewController;
 
   @override
   State<WebViewExample> createState() => _WebViewExampleState();
@@ -162,18 +172,21 @@ class WebViewExample extends StatefulWidget {
 class _WebViewExampleState extends State<WebViewExample> {
   late final PlatformWebViewController _controller;
 
-  late final PlatformWebViewController webViewController;
-  late final PlatformWebViewCookieManager cookieManager;
+  // late final PlatformWebViewController webViewController = PlatformWebViewController();
+  // late final PlatformWebViewCookieManager cookieManager;
 
   @override
   void initState() {
     super.initState();
+
+      _onClearCookies(context);
+      _onClearCache(context);
       // widget.cookieManager;
     _controller = PlatformWebViewController(
       WebKitWebViewControllerCreationParams(allowsInlineMediaPlayback: true),
     )
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..setBackgroundColor(const Color(0x80000000))
+      ..setBackgroundColor(const Color(0xFFFFFFFF))
       ..setPlatformNavigationDelegate(
         PlatformNavigationDelegate(
           const PlatformNavigationDelegateCreationParams(),
@@ -247,17 +260,20 @@ Page resource error:
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF4CAF50),
+      backgroundColor: const Color(0xFFFFFFFF),
       appBar: AppBar(
-        title: const Text('Flutter WebView example'),
+        title: Text(
+          'Command Center',
+          style: GoogleFonts.ptSans(color: AppColors.black),
+        ),
         // This drop down menu demonstrates that Flutter widgets can be shown over the web view.
-        actions: <Widget>[
-          NavigationControls(webViewController: _controller),
-          SampleMenu(
-            webViewController: _controller,
-            cookieManager: widget.cookieManager,
-          ),
-        ],
+        // actions: <Widget>[
+        //   NavigationControls(webViewController: _controller),
+        //   SampleMenu(
+        //     webViewController: _controller,
+        //     cookieManager: widget.cookieManager,
+        //   ),
+        // ],
       ),
       body: Builder(builder: (BuildContext context){
         return PlatformWebViewWidget(
@@ -371,12 +387,17 @@ Page resource error:
         globals.authorization = session.getString(AppConstants.ACCESS_TOKEN)!;
         employeeAuthentication(mapResponse['access_token']);
       } else {
-        // _onClearCookies(context);
-        // _onClearCache(context);
+        if (mounted){
+        _onClearCookies(context);
+        _onClearCache(context);}
       }
     } on SocketException {
       _showToast();
     } catch (e) {
+      if (mounted){
+        _onClearCookies(context);
+        _onClearCache(context);
+    }
       Get.offAndToNamed(AppPages.RETRY_ACCESS_DENIED);
       // Navigator.pushReplacement(
       //     context,
@@ -416,54 +437,45 @@ Page resource error:
         globals.name = session.getString(AppConstants.NAME) ?? '';
         globals.email = session.getString(AppConstants.EMAIL) ?? '';
         debugPrint('===>Before Token check');
-        // Logger().wtf("${session.getString(AppConstants.DEFAULT_GEO)} ${session.getString(AppConstants.DEFAULT_GEO)!.trim().isNotEmpty}");
-        // if (session.getString(AppConstants.DEFAULT_GEO) != null &&
-        //     session.getString(AppConstants.DEFAULT_GEO)!.trim().isNotEmpty &&
-        //     session.getString(AppConstants.DEFAULT_GEO_VALUE) != null &&
-        //     session
-        //         .getString(AppConstants.DEFAULT_GEO_VALUE)!
-        //         .trim()
-        //         .isNotEmpty) {
+        if (session.getString(AppConstants.DEFAULT_GEO) != null &&
+            session.getString(AppConstants.DEFAULT_GEO)!.trim().isNotEmpty &&
+            session.getString(AppConstants.DEFAULT_GEO_VALUE) != null &&
+            session
+                .getString(AppConstants.DEFAULT_GEO_VALUE)!
+                .trim()
+                .isNotEmpty) {
           debugPrint('===>After Token check');
-          // _onClearCookies(context);
-          // _onClearCache(context);
-          // Get.offAndToNamed(AppPages.INITIAL);
-          // Navigator.pushReplacement(
-          //     context,
-          //     MaterialPageRoute(
-          //       builder: (context) => SummaryScreen(),
-          //     ));
-          Get.offAndToNamed(AppPages.PERSONA_SCREEN);
-        // } else {
-          // _onClearCookies(context);
-          // _onClearCache(context);
-        // if (context.mounted) {
-        // Navigator.pushReplacement(
-        //     context,
-        //     MaterialPageRoute(
-        //       builder: (context) => SummaryScreen(),
-        //     ));}
+          Get.offAndToNamed(AppPages.INITIAL);
           // Get.offAndToNamed(AppPages.PERSONA_SCREEN);
-        // }
-      } else if (response.statusCode == 401) {
-        // _onClearCookies(context);
-        // _onClearCache(context);
-        Get.offAndToNamed(AppPages.FED_AUTH_LOGIN);
+        } else {
+          Get.offAndToNamed(AppPages.PERSONA_SCREEN);
+        }
+      }
+      else if (response.statusCode == 401) {
+        if(mounted){
+        _onClearCookies(context);
+        _onClearCache(context);}
+        Get.offAndToNamed(AppPages.FED_AUTH_LOGIN_TEST);
       } else if (response.statusCode == 403) {
-        // _onClearCookies(context);
-        // _onClearCache(context);
+        if(mounted){
+        _onClearCookies(context);
+        _onClearCache(context);}
         Get.offAndToNamed(AppPages.ACCESS_DENIED,
             arguments: AccessDeniedBody(
                 statusCode: response.statusCode,
                 reason: "ACCESS_DENIED_BY_BACKEND"));
       } else {
-        // _onClearCookies(context);
-        // _onClearCache(context);
+        if(mounted){
+        _onClearCookies(context);
+        _onClearCache(context);}
         Get.offAndToNamed(AppPages.RETRY_ACCESS_DENIED);
       }
     } catch (e) {
-      // _onClearCookies(context);
-      // _onClearCache(context);
+      if(mounted){
+
+
+      _onClearCookies(context);
+      _onClearCache(context);}
     }
   }
 
@@ -479,8 +491,8 @@ Page resource error:
   }
 
   Future<void> _onClearCache(BuildContext context) async {
-    await webViewController.clearCache();
-    await webViewController.clearLocalStorage();
+    await widget.webViewController?.clearCache();
+    await widget.webViewController?.clearLocalStorage();
     if (context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text('Cache cleared.'),
@@ -489,9 +501,10 @@ Page resource error:
   }
 
   Future<void> _onClearCookies(BuildContext context) async {
-    final bool hadCookies = await cookieManager.clearCookies();
+    // late final PlatformWebViewCookieManager cookieManager;
+    final bool? hadCookies = await widget.cookieManager?.clearCookies();
     String message = 'There were cookies. Now, they are gone!';
-    if (!hadCookies) {
+    if (!hadCookies!) {
       message = 'There are no cookies.';
     }
     if (context.mounted) {
