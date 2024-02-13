@@ -1,3 +1,4 @@
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
@@ -40,8 +41,16 @@ void main() async {
   if (isSecure) {
     // You can show an error message, log the event, or simply terminate the app.
     // For simplicity, this example terminates the app.
-    debugPrint(
-        "Rooted device or emulator detected. The app cannot be installed.");
+    debugPrint("Rooted device or emulator detected. The app cannot be installed.");
+    Fluttertoast.showToast(
+        msg: "Rooted device or emulator detected. The app cannot be installed.",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 10,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0
+    );
     return;
   }
   runApp(

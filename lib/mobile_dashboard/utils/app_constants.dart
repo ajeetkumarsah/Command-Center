@@ -5,7 +5,7 @@ class AppConstants {
   static const String BASE_URL =
       'https://API-NonProd.pgcloud.com/businessplanningandreporting/otherfinancialdata/v1/IndiaCommandCenter/';
   static const String FED_AUTH_URL =
-      'https://fedauthtst.pg.com/as/authorization.oauth2?client_id=IT%20Command%20Center&response_type=code&scope=openid%20pingid%20email%20profile&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fcallback';
+      'https://fedauthtst.pg.com/as/authorization.oauth2?client_id=IT%20Command%20Center&response_type=code&grant_type=refresh&scope=openid%20pingid%20email%20profile&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fcallback';
 
   static const String FED_AUTH_TOKEN =
       'https://fedauthtst.pg.com/as/token.oauth2';

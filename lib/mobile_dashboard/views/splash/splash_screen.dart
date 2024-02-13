@@ -40,7 +40,7 @@ class _SplashScreenState extends State<SplashScreen> {
             Get.offAndToNamed(AppPages.PERSONA_SCREEN);
           }
         } else {
-          Get.offAndToNamed(AppPages.FED_AUTH_LOGIN);
+          Get.offAndToNamed(AppPages.FED_AUTH_LOGIN_TEST);
         }
       } else {
         Get.offAndToNamed(AppPages.INTRO_SCREEN);
