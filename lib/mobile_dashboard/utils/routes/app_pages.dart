@@ -1,4 +1,3 @@
-import 'package:command_centre/mobile_dashboard/views/login/testing.dart';
 import 'package:get/get.dart';
 import '../../views/home_view.dart';
 import '../../bindings/home_binding.dart';
@@ -7,6 +6,7 @@ import '../../views/login/retry_access_denied_screen.dart';
 import '../../views/store_fingertips/sales/sales_deep_dive_screen.dart';
 import 'package:command_centre/mobile_dashboard/views/login/login_screen.dart';
 import 'package:command_centre/mobile_dashboard/views/splash/intro_screen.dart';
+import 'package:command_centre/mobile_dashboard/views/update/update_screen.dart';
 import 'package:command_centre/mobile_dashboard/views/login/purpose_screen.dart';
 import 'package:command_centre/mobile_dashboard/views/splash/splash_screen.dart';
 import 'package:command_centre/mobile_dashboard/views/login/fed_auth_screen.dart';
@@ -16,6 +16,7 @@ import 'package:command_centre/mobile_dashboard/views/coverage/coverage_screen.d
 import 'package:command_centre/mobile_dashboard/views/login/access_denied_screen.dart';
 import 'package:command_centre/mobile_dashboard/views/retailing/retailing_screen.dart';
 import 'package:command_centre/mobile_dashboard/views/login/select_profile_screen.dart';
+import 'package:command_centre/mobile_dashboard/views/maintenance/maintenance_screen.dart';
 import 'package:command_centre/mobile_dashboard/views/focus_brand/focus_brand_screen.dart';
 import 'package:command_centre/mobile_dashboard/views/store_fingertips/fb/fb_deep_dive.dart';
 import 'package:command_centre/mobile_dashboard/views/golden_point/golden_point_screen.dart';
@@ -34,7 +35,6 @@ class AppPages {
 
   static const LOGIN = Routes.LOGIN;
   static const FED_AUTH_LOGIN = Routes.FED_AUTH_LOGIN;
-  static const FED_AUTH_LOGIN_TEST = Routes.FED_AUTH_LOGIN_TEST;
   static const RETRY_ACCESS_DENIED = Routes.RETRY_ACCESS_DENIED;
   static const SELECT_PROFILE = Routes.SELECT_PROFILE;
   static const ACCESS_DENIED = Routes.ACCESS_DENIED;
@@ -56,6 +56,8 @@ class AppPages {
   static const COVERAGE_DEEP_DIVE = Routes.COVERAGE_DEEP_DIVE_SCREEN;
   static const SALES_DEEP_DIVE = Routes.SALES_DEEP_DIVE_SCREEN;
   static const HELP_SUPPORT = Routes.HELP_SUPPORT_SCREEN;
+  static const updateScreen = Routes.UPDATE_SCREEN;
+  static const maintenanceScreen = Routes.MAINTENANCE_SCREEN;
   //Store@fingertips
   static const sroreFingertipsLanding = Routes.STORE_FINGERTIPS_LANDING;
   static const sroreFingertipsOnboarding = Routes.STORE_FINGERTIPS_ONBOARDING;
@@ -69,11 +71,6 @@ class AppPages {
     GetPage(
       name: _Paths.FED_AUTH_LOGIN,
       page: () => const FedAuthScreen(),
-      binding: HomeBinding(),
-    ),
-    GetPage(
-      name: _Paths.FED_AUTH_LOGIN_TEST,
-      page: () => const WebViewExample(),
       binding: HomeBinding(),
     ),
     GetPage(
@@ -99,6 +96,16 @@ class AppPages {
     GetPage(
       name: _Paths.PURPOSE_SCREEN,
       page: () => const PurposeScreen(isBool: false),
+      binding: HomeBinding(),
+    ),
+    GetPage(
+      name: _Paths.UPDATE_SCREEN,
+      page: () => const UpdateScreen(),
+      binding: HomeBinding(),
+    ),
+    GetPage(
+      name: _Paths.MAINTENANCE_SCREEN,
+      page: () => const MaintenanceScreen(),
       binding: HomeBinding(),
     ),
     GetPage(

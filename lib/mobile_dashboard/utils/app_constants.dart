@@ -1,11 +1,11 @@
 class AppConstants {
-  static const int APP_VERSION = 1;
+  static const String APP_VERSION = '1.0.6';
   // static const BASE_URL =
   //     'https//cmndcntr-web-dev-web01.azurewebsites.net/'; //public/appData
   static const String BASE_URL =
       'https://API-NonProd.pgcloud.com/businessplanningandreporting/otherfinancialdata/v1/IndiaCommandCenter/';
   static const String FED_AUTH_URL =
-      'https://fedauthtst.pg.com/as/authorization.oauth2?client_id=IT%20Command%20Center&response_type=code&grant_type=refresh&scope=openid%20pingid%20email%20profile&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fcallback';
+      'https://fedauthtst.pg.com/as/authorization.oauth2?client_id=IT%20Command%20Center&response_type=code&scope=openid%20pingid%20email%20profile&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fcallback';
 
   static const String FED_AUTH_TOKEN =
       'https://fedauthtst.pg.com/as/token.oauth2';
@@ -21,6 +21,7 @@ class AppConstants {
   static const FOCUS_BRAND_DATA = 'appData/focusBrand';
   static const FILTERS = 'appData/branchlist';
   static const STORE_DATA = 'appData/focusBrandTable';
+  static const CONFIG = 'appData/inventory';
 
   //sharedPreferences
   static const String USER_ID = 'userId';

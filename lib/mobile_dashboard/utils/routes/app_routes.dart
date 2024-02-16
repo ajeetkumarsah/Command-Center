@@ -7,7 +7,6 @@ abstract class Routes {
   Routes._();
   static const LOGIN = _Paths.LOGIN;
   static const FED_AUTH_LOGIN = _Paths.FED_AUTH_LOGIN;
-  static const FED_AUTH_LOGIN_TEST = _Paths.FED_AUTH_LOGIN_TEST;
   static const SELECT_PROFILE = _Paths.SELECT_PROFILE;
   static const RETRY_ACCESS_DENIED = _Paths.RETRY_ACCESS_DENIED;
   static const ACCESS_DENIED = _Paths.ACCESS_DENIED;
@@ -28,6 +27,8 @@ abstract class Routes {
   static const COVERAGE_DEEP_DIVE_SCREEN = _Paths.COVERAGE_DEEP_DIVE;
   static const SALES_DEEP_DIVE_SCREEN = _Paths.SALES_DEEP_DIVE;
   static const HELP_SUPPORT_SCREEN = _Paths.HELP_SUPPORT;
+  static const UPDATE_SCREEN = _Paths.UPDATE_SCREEN;
+  static const MAINTENANCE_SCREEN = _Paths.MAINTENANCE_SCREEN;
   static const STORE_FINGERTIPS_LANDING = _Paths.STORE_FINGERTIPS_LANDING;
   static const STORE_FINGERTIPS_ONBOARDING = _Paths.STORE_FINGERTIPS_ONBOARDING;
 }
@@ -36,13 +37,14 @@ abstract class _Paths {
   _Paths._();
   static const LOGIN = '/login';
   static const FED_AUTH_LOGIN = '/fedAuthLogin';
-  static const FED_AUTH_LOGIN_TEST = '/fedAuthLoginTest';
   static const RETRY_ACCESS_DENIED = '/retryAccessDenied';
   static const SELECT_PROFILE = '/selectProfile';
   static const ACCESS_DENIED = '/accessDenied';
   static const PURPOSE_SCREEN = '/purposeScreen';
   static const PERSONA_SCREEN = '/personaScreen';
   static const INTRO_SCREEN = '/introScreen';
+  static const UPDATE_SCREEN = '/updateScreen';
+  static const MAINTENANCE_SCREEN = '/maintenanceScreen';
   static const HOME = '/home';
   static const SUMMARY = '/summary';
   static const RETAILING_SCREEN = '/retailingScreen';

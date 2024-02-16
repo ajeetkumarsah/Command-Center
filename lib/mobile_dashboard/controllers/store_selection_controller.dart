@@ -186,7 +186,7 @@ class StoreSelectionController extends GetxController {
         responseModel = ResponseModel(false, 'Something went wrong');
       }
     } else if (response.statusCode == 401) {
-      Get.offAndToNamed(AppPages.FED_AUTH_LOGIN_TEST);
+      Get.offAndToNamed(AppPages.FED_AUTH_LOGIN);
       responseModel = ResponseModel(false, response.statusText ?? "");
     } else {
       responseModel = ResponseModel(false, response.statusText ?? "");

@@ -43,7 +43,6 @@ class _FedAuthScreenState extends State<FedAuthScreen> {
   @override
   void initState() {
     super.initState();
-    // main();
     // #docregion platform_features
     late final PlatformWebViewControllerCreationParams params;
     if (WebViewPlatform.instance is WebKitWebViewPlatform) {
@@ -89,10 +88,12 @@ class _FedAuthScreenState extends State<FedAuthScreen> {
 
               getUserProfileFromCode(code);
               return NavigationDecision.prevent;
-            } else if (request.url.contains('error')) {
-              Get.offAndToNamed(AppPages.RETRY_ACCESS_DENIED);
             } else if (request.url.contains('access_denied')) {
               Get.offAndToNamed(AppPages.RETRY_ACCESS_DENIED);
+              // Navigator.pushReplacement(
+              //     context,
+              //     MaterialPageRoute(
+              //         builder: (context) => const RetryAccessDenied()));
             }
             return NavigationDecision.navigate;
           },
@@ -162,7 +163,7 @@ class _FedAuthScreenState extends State<FedAuthScreen> {
         'grant_type': 'authorization_code',
         'redirect_uri': AppConstants.REDIRECT_URI,
         'client_secret': AppConstants.CLIENT_SECRET,
-        'scope': 'openid profile'
+        'scope': 'openid profile',
       });
       // debugPrint('===>User Profile Response:${response.body}');
       logger.d('===>User Response:${response.body}');
@@ -174,9 +175,7 @@ class _FedAuthScreenState extends State<FedAuthScreen> {
 
         employeeAuthentication(mapResponse['access_token']);
       } else {
-        if(context.mounted){
-          _onClearCookies(context);
-        }
+        _onClearCookies();
       }
     } on SocketException {
       _showToast();
@@ -210,7 +209,6 @@ class _FedAuthScreenState extends State<FedAuthScreen> {
             'Authorization': 'Bearer $authorization',
             'Ocp-Apim-Trace': true.toString(),
             'Ocp-Apim-Subscription-Key': AppConstants.SUBSCRIPTION_KEY,
-            'grant_type':'refresh'
           });
       // debugPrint('==>Employee Response ${response.body}');
       logger.v('====>Employee Response:${response.body}');
@@ -232,41 +230,28 @@ class _FedAuthScreenState extends State<FedAuthScreen> {
                 .trim()
                 .isNotEmpty) {
           debugPrint('===>After Token check');
-          if(context.mounted){
-            _onClearCookies(context);
-          }
+          _onClearCookies();
           Get.offAndToNamed(AppPages.INITIAL);
           // Get.offAndToNamed(AppPages.PERSONA_SCREEN);
         } else {
-          if(context.mounted){
-            _onClearCookies(context);
-          }
+          _onClearCookies();
           Get.offAndToNamed(AppPages.PERSONA_SCREEN);
         }
-      }
-      else if (response.statusCode == 401) {
-        if(context.mounted){
-          _onClearCookies(context);
-        }
-        Get.offAndToNamed(AppPages.FED_AUTH_LOGIN_TEST);
+      } else if (response.statusCode == 401) {
+        _onClearCookies();
+        Get.offAndToNamed(AppPages.FED_AUTH_LOGIN);
       } else if (response.statusCode == 403) {
-        if(context.mounted){
-          _onClearCookies(context);
-        }
+        _onClearCookies();
         Get.offAndToNamed(AppPages.ACCESS_DENIED,
             arguments: AccessDeniedBody(
                 statusCode: response.statusCode,
                 reason: "ACCESS_DENIED_BY_BACKEND"));
       } else {
-        if(context.mounted){
-          _onClearCookies(context);
-        }
+        _onClearCookies();
         Get.offAndToNamed(AppPages.RETRY_ACCESS_DENIED);
       }
     } catch (e) {
-      if(context.mounted){
-        _onClearCookies(context);
-      }
+      _onClearCookies();
     }
   }
 
@@ -290,21 +275,12 @@ class _FedAuthScreenState extends State<FedAuthScreen> {
   //   }
   // }
 
-  void _onClearCookies(BuildContext context) async {
+  void _onClearCookies() async {
     final WebViewCookieManager cookieManager = WebViewCookieManager();
     final bool hadCookies = await cookieManager.clearCookies();
     String message = 'There were cookies. Now, they are gone!';
     if (!hadCookies) {
       message = 'There are no cookies.';
     }
-  }
-  Future<void> main() async {
-    SharedPreferences session = await SharedPreferences.getInstance();
-    await session.remove('token');
-    await session.remove("id");
-    await session.remove("token");
-    await session.remove("name");
-    await session.remove("email");
-    // Get.offAndToNamed(AppPages.FED_AUTH_LOGIN);
   }
 }

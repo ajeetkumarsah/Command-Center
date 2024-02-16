@@ -289,6 +289,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.11.4"
+  firebase_crashlytics:
+    dependency: "direct main"
+    description:
+      name: firebase_crashlytics
+      sha256: efd096e4c3d2c568e128505b6e4ce5f5d5a1629f700a4d6fee6bd25b85937dde
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.4.14"
+  firebase_crashlytics_platform_interface:
+    dependency: transitive
+    description:
+      name: firebase_crashlytics_platform_interface
+      sha256: "225a54d834a118be262c1f1096d407515e35b99d9b474c987abdcff7663f2b81"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.6.21"
   firebase_messaging:
     dependency: "direct main"
     description:
@@ -861,6 +877,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.0.5"
+  reviews_slider:
+    dependency: "direct main"
+    description:
+      name: reviews_slider
+      sha256: c458b78714841c6be9760a79282cf02e698cc47b785c757829a2098387d89ec9
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.0"
   rxdart:
     dependency: transitive
     description:

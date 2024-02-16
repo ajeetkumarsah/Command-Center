@@ -1,31 +1,27 @@
+import 'dart:io';
+import 'dart:async';
+import 'dart:convert';
+import 'dart:typed_data';
+import 'package:get/get.dart';
+import 'package:logger/logger.dart';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:google_fonts/google_fonts.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
+import 'package:command_centre/mobile_dashboard/utils/app_constants.dart';
+import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
+import 'package:command_centre/mobile_dashboard/utils/routes/app_pages.dart';
+import 'package:command_centre/mobile_dashboard/utils/global.dart' as globals;
+import 'package:command_centre/mobile_dashboard/views/login/access_denied_screen.dart';
+import 'package:webview_flutter_platform_interface/webview_flutter_platform_interface.dart';
 // Copyright 2013 The Flutter Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
 // ignore_for_file: public_member_api_docs
 
-import 'dart:async';
-import 'dart:convert';
-import 'dart:io';
-import 'dart:typed_data';
-import 'package:command_centre/activities/home_screen.dart';
-import 'package:command_centre/activities/intro_screen.dart';
-import 'package:command_centre/mobile_dashboard/bindings/home_binding.dart';
-import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
-import 'package:command_centre/mobile_dashboard/utils/routes/app_pages.dart';
-import 'package:command_centre/mobile_dashboard/views/login/access_denied_screen.dart';
-import 'package:command_centre/mobile_dashboard/views/summary/summary_screen.dart';
-import 'package:get/get.dart';
-import 'package:command_centre/mobile_dashboard/utils/app_constants.dart';
-import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:http/http.dart' as http;
-import 'package:logger/logger.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:webview_flutter_platform_interface/webview_flutter_platform_interface.dart';
-import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
-import 'package:command_centre/mobile_dashboard/utils/global.dart' as globals;
 
 // void main() async{
 //   WidgetsFlutterBinding.ensureInitialized();

@@ -7,9 +7,12 @@ class StoreController extends GetxController {
   final StoreRepo storeRepo;
   StoreController({required this.storeRepo});
   //
-  bool _isLoading = false, _salesTableShowMore = false;
+  bool _isLoading = false,
+      _salesTableShowMore = false,
+      _dashboeardShowmore = false;
   bool get isLoading => _isLoading;
   bool get salesTableShowMore => _salesTableShowMore;
+  bool get dashboeardShowmore => _dashboeardShowmore;
 
   //
 
@@ -32,6 +35,11 @@ class StoreController extends GetxController {
 
   void onSalesTableShowMore() {
     _salesTableShowMore = !_salesTableShowMore;
+    update();
+  }
+
+  void onDashboardTableShowMore() {
+    _dashboeardShowmore = !_dashboeardShowmore;
     update();
   }
 

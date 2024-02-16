@@ -87,6 +87,8 @@ dependencies:
   flutter_local_notifications: ^16.3.2
   firebase_messaging: ^14.7.15
   firebase_core: ^2.25.4
+  reviews_slider: ^2.0.0
+  firebase_crashlytics: ^3.4.14
 
 dependency_overrides:
   intl: 0.18.0

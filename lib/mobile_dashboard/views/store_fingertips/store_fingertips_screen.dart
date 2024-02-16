@@ -105,95 +105,286 @@ class StoreDashboardUI extends StatelessWidget {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 10, right: 10),
-                  child: GestureDetector(
-                    onTap: () {
-                      ctlr.onTabChange(0);
-                      Get.toNamed(AppPages.sroreFingertipsLanding);
-                    },
-                    child: Card(
-                      elevation: 10,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5.0),
-                      ),
-                      color: Colors.white,
-                      child: SizedBox(
-                        width: double.infinity,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                "Sales Values",
-                                style: TextStyle(
-                                    color: AppColors.primary, fontSize: 18),
+                  child: Card(
+                    elevation: 10,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                    ),
+                    color: Colors.white,
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: 8),
+                          GestureDetector(
+                            onTap: () {
+                              ctlr.onTabChange(0);
+                              Get.toNamed(AppPages.sroreFingertipsLanding);
+                            },
+                            child: SizedBox(
+                              child: Column(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 8.0),
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          child: Text(
+                                            "Sales Values",
+                                            style: GoogleFonts.inter(
+                                              color: AppColors.black,
+                                              fontSize: 22,
+                                              fontWeight: FontWeight.w400,
+                                            ),
+                                          ),
+                                        ),
+                                        const Icon(
+                                          Icons.arrow_forward_ios_rounded,
+                                          color: AppColors.greyTextColor,
+                                          size: 18,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  const SizedBox(height: 15),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 8.0),
+                                    child: SizedBox(
+                                      width:
+                                          (MediaQuery.of(context).size.width -
+                                                  60) *
+                                              .8,
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: const [
+                                          Text("0.00K"),
+                                          Text("87.71K"),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 6.0),
+                                    child: LinearPercentIndicator(
+                                      width: MediaQuery.of(context).size.width -
+                                          60,
+                                      animation: true,
+                                      animationDuration: 1000,
+                                      lineHeight: 8.0,
+                                      barRadius: const Radius.circular(10),
+                                      // leading: const Text("0.00K"),
+                                      // trailing: const Text("73.48K"),
+                                      percent: 0.7,
+                                      progressColor: AppColors.sfPrimary,
+                                      backgroundColor: AppColors.bgLight,
+                                      linearStrokeCap: LinearStrokeCap.butt,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 6.0),
+                                    child: LinearPercentIndicator(
+                                      width: MediaQuery.of(context).size.width -
+                                          60,
+                                      animation: true,
+                                      animationDuration: 1000,
+                                      lineHeight: 8.0,
+                                      barRadius: const Radius.circular(10),
+                                      progressColor: AppColors.sfPrimary,
+                                      backgroundColor: AppColors.bgLight,
+                                      percent: 0.9,
+                                      linearStrokeCap: LinearStrokeCap.butt,
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 8.0),
+                                    child: SizedBox(
+                                      width:
+                                          (MediaQuery.of(context).size.width -
+                                                  60) *
+                                              .9,
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: const [
+                                          Text("0.00K"),
+                                          Text("87.71K"),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 12),
+                                ],
                               ),
-                              const SizedBox(
-                                height: 15,
-                              ),
-                              SizedBox(
-                                width:
-                                    (MediaQuery.of(context).size.width - 60) *
-                                        .8,
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: const [
-                                    Text("0.00K"),
-                                    Text("87.71K"),
-                                  ],
-                                ),
-                              ),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 6.0),
-                                child: LinearPercentIndicator(
-                                  width: MediaQuery.of(context).size.width - 60,
-                                  animation: true,
-                                  animationDuration: 1000,
-                                  lineHeight: 8.0,
-                                  barRadius: const Radius.circular(10),
-                                  // leading: const Text("0.00K"),
-                                  // trailing: const Text("73.48K"),
-                                  percent: 0.7,
-                                  progressColor: AppColors.sfPrimary,
-                                  backgroundColor: AppColors.bgLight,
-                                  linearStrokeCap: LinearStrokeCap.butt,
-                                ),
-                              ),
-                              const SizedBox(height: 4),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 6.0),
-                                child: LinearPercentIndicator(
-                                  width: MediaQuery.of(context).size.width - 60,
-                                  animation: true,
-                                  animationDuration: 1000,
-                                  lineHeight: 8.0,
-                                  barRadius: const Radius.circular(10),
-                                  progressColor: AppColors.sfPrimary,
-                                  backgroundColor: AppColors.bgLight,
-                                  percent: 0.9,
-                                  linearStrokeCap: LinearStrokeCap.butt,
-                                ),
-                              ),
-                              SizedBox(
-                                width:
-                                    (MediaQuery.of(context).size.width - 60) *
-                                        .9,
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: const [
-                                    Text("0.00K"),
-                                    Text("87.71K"),
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(height: 12),
-                            ],
+                            ),
                           ),
-                        ),
+                          AnimatedContainer(
+                            duration: const Duration(milliseconds: 300),
+                            // height: 60,
+                            width: double.infinity,
+                            padding: const EdgeInsets.only(bottom: 8),
+                            // margin: const EdgeInsets.only(
+                            //     top: 12, left: 12, right: 12),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(3),
+                              color: AppColors.white,
+                              boxShadow: [
+                                BoxShadow(
+                                  color:
+                                      const Color(0xff000000).withOpacity(.08),
+                                  blurRadius: 12,
+                                  offset: const Offset(0, 4),
+                                ),
+                              ],
+                            ),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Container(
+                                  color: ctlr.dashboeardShowmore
+                                      ? AppColors.white
+                                      : AppColors.storeTableRowColor,
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child: Center(
+                                          child: Text(
+                                            'Channel Name',
+                                            style: GoogleFonts.inter(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w400,
+                                              color: AppColors.greyTextColor,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      Container(
+                                        height: 30,
+                                        width: .5,
+                                        decoration: BoxDecoration(
+                                          gradient: LinearGradient(
+                                            colors: [
+                                              const Color(0xffCCCCCC)
+                                                  .withOpacity(0),
+                                              const Color(0xffC8C8C8),
+                                              const Color(0xffC8C8C8),
+                                              const Color(0xffCCCCCC)
+                                                  .withOpacity(0),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: Center(
+                                          child: Text(
+                                            'Seller Type',
+                                            style: GoogleFonts.inter(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w400,
+                                              color: AppColors.greyTextColor,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      Container(
+                                        height: 30,
+                                        width: .5,
+                                        decoration: BoxDecoration(
+                                          gradient: LinearGradient(
+                                            colors: [
+                                              const Color(0xffCCCCCC)
+                                                  .withOpacity(0),
+                                              const Color(0xffC8C8C8),
+                                              const Color(0xffC8C8C8),
+                                              const Color(0xffCCCCCC)
+                                                  .withOpacity(0),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: Center(
+                                          child: Text(
+                                            'DSE Code',
+                                            style: GoogleFonts.inter(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w400,
+                                              color: AppColors.greyTextColor,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      Container(
+                                        height: 30,
+                                        width: .5,
+                                        decoration: BoxDecoration(
+                                          gradient: LinearGradient(
+                                            colors: [
+                                              const Color(0xffCCCCCC)
+                                                  .withOpacity(0),
+                                              const Color(0xffC8C8C8),
+                                              const Color(0xffC8C8C8),
+                                              const Color(0xffCCCCCC)
+                                                  .withOpacity(0),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: Center(
+                                          child: Text(
+                                            'Last visited',
+                                            style: GoogleFonts.inter(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w400,
+                                              color: AppColors.greyTextColor,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                if (ctlr.dashboeardShowmore)
+                                  AnimatedContainer(
+                                    duration: const Duration(milliseconds: 300),
+                                    height: 70,
+                                    width: MediaQuery.of(context).size.width,
+                                    color: AppColors.storeTableRowColor,
+                                    // padding: EdgeInsets.only(left: 6),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        tableRow(context),
+                                        tableRow(context),
+                                      ],
+                                    ),
+                                  ),
+                                GestureDetector(
+                                  onTap: () => ctlr.onDashboardTableShowMore(),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        ctlr.dashboeardShowmore
+                                            ? Icons.arrow_drop_up_outlined
+                                            : Icons.arrow_drop_down_outlined,
+                                        color: AppColors.primary,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
@@ -217,27 +408,27 @@ class StoreDashboardUI extends StatelessWidget {
                 //     ],
                 //   ),
                 // ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 10, right: 10),
-                  child: Card(
-                    elevation: 10,
-                    color: Colors.white,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: Colors.white,
-                      ),
-                      // padding: const EdgeInsets.all(10),
-                      child: Column(
-                        children: const [
-                          TableData(),
-                          TableData(),
-                          TableData(),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
+                // Padding(
+                //   padding: const EdgeInsets.only(left: 10, right: 10),
+                //   child: Card(
+                //     elevation: 10,
+                //     color: Colors.white,
+                //     child: Container(
+                //       decoration: BoxDecoration(
+                //         borderRadius: BorderRadius.circular(10),
+                //         color: Colors.white,
+                //       ),
+                //       // padding: const EdgeInsets.all(10),
+                //       child: Column(
+                //         children: const [
+                //           TableData(),
+                //           TableData(),
+                //           TableData(),
+                //         ],
+                //       ),
+                //     ),
+                //   ),
+                // ),
                 Padding(
                   padding: const EdgeInsets.only(left: 10, right: 10),
                   child: GestureDetector(
@@ -256,173 +447,213 @@ class StoreDashboardUI extends StatelessWidget {
                         child: Padding(
                           padding: const EdgeInsets.only(
                               left: 8.0, top: 12, bottom: 12),
-                          child: Row(
-                            // mainAxisAlignment: MainAxisAlignment.end,
-                            crossAxisAlignment: CrossAxisAlignment.end,
+                          child: Column(
                             children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.end,
+                              Row(
                                 children: [
-                                  Text(
-                                    "Coverage/Visit",
-                                    textAlign: TextAlign.start,
-                                    style: GoogleFonts.inter(
-                                      color: AppColors.primary,
-                                      fontSize: 18,
+                                  Expanded(
+                                    child: Text(
+                                      "Coverage/Visit",
+                                      textAlign: TextAlign.start,
+                                      style: GoogleFonts.inter(
+                                        color: AppColors.black,
+                                        fontSize: 22,
+                                        fontWeight: FontWeight.w400,
+                                      ),
                                     ),
                                   ),
-                                  const SizedBox(height: 15),
-                                  Padding(
-                                    padding: const EdgeInsets.all(6.0),
-                                    child: LinearPercentIndicator(
-                                      width: 170.0,
-                                      animation: true,
-                                      animationDuration: 1000,
-                                      lineHeight: 8.0,
-                                      barRadius: const Radius.circular(10),
-                                      leading: const Text("Target Calls"),
-                                      trailing: const Text("8"),
-                                      percent: 0.8,
-                                      linearStrokeCap: LinearStrokeCap.butt,
-                                      progressColor: AppColors.sfPrimary,
-                                      backgroundColor: AppColors.bgLight,
-                                    ),
+                                  const Icon(
+                                    Icons.arrow_forward_ios_rounded,
+                                    color: AppColors.greyTextColor,
+                                    size: 18,
                                   ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(6.0),
-                                    child: LinearPercentIndicator(
-                                      width: 170.0,
-                                      animation: true,
-                                      animationDuration: 1000,
-                                      lineHeight: 8.0,
-                                      barRadius: const Radius.circular(10),
-                                      leading: const Text("Call Made"),
-                                      trailing: const Text("9"),
-                                      percent: 0.9,
-                                      linearStrokeCap: LinearStrokeCap.butt,
-                                      progressColor: AppColors.sfPrimary,
-                                      backgroundColor: AppColors.bgLight,
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(6.0),
-                                    child: LinearPercentIndicator(
-                                      width: 170.0,
-                                      animation: true,
-                                      animationDuration: 1000,
-                                      lineHeight: 8.0,
-                                      barRadius: const Radius.circular(10),
-                                      leading: const Text("CCR Calls"),
-                                      trailing: const Text("6"),
-                                      percent: 0.7,
-                                      linearStrokeCap: LinearStrokeCap.butt,
-                                      progressColor: AppColors.sfPrimary,
-                                      backgroundColor: AppColors.bgLight,
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(6.0),
-                                    child: LinearPercentIndicator(
-                                      width: 170.0,
-                                      animation: true,
-                                      animationDuration: 1000,
-                                      lineHeight: 8.0,
-                                      barRadius: const Radius.circular(10),
-                                      leading: const Text("Billed Calls"),
-                                      trailing: const Text("8"),
-                                      percent: 0.8,
-                                      linearStrokeCap: LinearStrokeCap.butt,
-                                      progressColor: AppColors.sfPrimary,
-                                      backgroundColor: AppColors.bgLight,
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(6.0),
-                                    child: LinearPercentIndicator(
-                                      width: 170.0,
-                                      animation: true,
-
-                                      animationDuration: 1000,
-                                      lineHeight: 8.0,
-                                      barRadius: const Radius.circular(10),
-                                      // backgroundColor:
-                                      //     const Color.fromARGB(255, 2, 74, 133),
-                                      leading: const Text("Pro Calls"),
-                                      trailing: const Text("8"),
-                                      percent: 0.8,
-                                      // ignore: deprecated_member_use
-                                      linearStrokeCap: LinearStrokeCap.butt,
-                                      progressColor: AppColors.sfPrimary,
-                                      backgroundColor: AppColors.bgLight,
-                                    ),
-                                  ),
+                                  const SizedBox(width: 12),
                                 ],
                               ),
-                              Expanded(
-                                child: Column(
-                                  children: [
-                                    Container(
-                                      height: 30,
-                                      decoration: const BoxDecoration(
-                                        borderRadius: BorderRadius.only(
-                                          topLeft: Radius.circular(100),
-                                          bottomLeft: Radius.circular(100),
-                                        ),
-                                      ),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.end,
-                                        children: [
-                                          const SizedBox(width: 12),
-                                          Flexible(
-                                            child: Text.rich(
-                                              TextSpan(
-                                                children: [
-                                                  TextSpan(
-                                                    text: '33.07',
-                                                    style: GoogleFonts.inter(
-                                                      fontSize: 20,
-                                                      color: AppColors.black,
-                                                    ),
-                                                  ),
-                                                  TextSpan(
-                                                    text: 'min',
-                                                    style: GoogleFonts.inter(
-                                                      fontSize: 12,
-                                                      color: AppColors.black,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                          const SizedBox(width: 6),
-                                        ],
-                                      ),
-                                    ),
-                                    Row(
+                              const SizedBox(height: 15),
+                              Row(
+                                // mainAxisAlignment: MainAxisAlignment.end,
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Expanded(
+                                    flex: 5,
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       mainAxisAlignment: MainAxisAlignment.end,
                                       children: [
-                                        Flexible(
-                                          child: Text(
-                                            'Avg in-Store Time',
-                                            overflow: TextOverflow.ellipsis,
-                                            style: GoogleFonts.inter(
-                                              // fontStyle: FontStyle.italic,
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.w400,
-                                              color: AppColors.greyTextColor,
-                                            ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(6.0),
+                                          child: LinearPercentIndicator(
+                                            width: 140.0,
+                                            animation: true,
+                                            animationDuration: 1000,
+                                            lineHeight: 8.0,
+                                            barRadius:
+                                                const Radius.circular(10),
+                                            leading: const Text("Target Calls"),
+                                            trailing: const Text("8"),
+                                            percent: 0.8,
+                                            linearStrokeCap:
+                                                LinearStrokeCap.butt,
+                                            progressColor: AppColors.sfPrimary,
+                                            backgroundColor: AppColors.bgLight,
                                           ),
                                         ),
-                                        const SizedBox(width: 6),
+                                        Padding(
+                                          padding: const EdgeInsets.all(6.0),
+                                          child: LinearPercentIndicator(
+                                            width: 140.0,
+                                            animation: true,
+                                            animationDuration: 1000,
+                                            lineHeight: 8.0,
+                                            barRadius:
+                                                const Radius.circular(10),
+                                            leading: const Text("Call Made   "),
+                                            trailing: const Text("9"),
+                                            percent: 0.9,
+                                            linearStrokeCap:
+                                                LinearStrokeCap.butt,
+                                            progressColor: AppColors.sfPrimary,
+                                            backgroundColor: AppColors.bgLight,
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(6.0),
+                                          child: LinearPercentIndicator(
+                                            width: 140.0,
+                                            animation: true,
+                                            animationDuration: 1000,
+                                            lineHeight: 8.0,
+                                            barRadius:
+                                                const Radius.circular(10),
+                                            leading: const Text("CCR Calls   "),
+                                            trailing: const Text("6"),
+                                            percent: 0.7,
+                                            linearStrokeCap:
+                                                LinearStrokeCap.butt,
+                                            progressColor: AppColors.sfPrimary,
+                                            backgroundColor: AppColors.bgLight,
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(6.0),
+                                          child: LinearPercentIndicator(
+                                            width: 140.0,
+                                            animation: true,
+                                            animationDuration: 1000,
+                                            lineHeight: 8.0,
+                                            barRadius:
+                                                const Radius.circular(10),
+                                            leading:
+                                                const Text("Billed Calls "),
+                                            trailing: const Text("8"),
+                                            percent: 0.8,
+                                            linearStrokeCap:
+                                                LinearStrokeCap.butt,
+                                            progressColor: AppColors.sfPrimary,
+                                            backgroundColor: AppColors.bgLight,
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(6.0),
+                                          child: LinearPercentIndicator(
+                                            width: 140.0,
+                                            animation: true,
+
+                                            animationDuration: 1000,
+                                            lineHeight: 8.0,
+                                            barRadius:
+                                                const Radius.circular(10),
+                                            // backgroundColor:
+                                            //     const Color.fromARGB(255, 2, 74, 133),
+                                            leading:
+                                                const Text("Pro Calls    "),
+                                            trailing: const Text("8"),
+                                            percent: 0.8,
+                                            // ignore: deprecated_member_use
+                                            linearStrokeCap:
+                                                LinearStrokeCap.butt,
+                                            progressColor: AppColors.sfPrimary,
+                                            backgroundColor: AppColors.bgLight,
+                                          ),
+                                        ),
                                       ],
                                     ),
-                                    const SizedBox(height: 8),
-                                  ],
-                                ),
-                              )
+                                  ),
+                                  Expanded(
+                                    flex: 2,
+                                    child: Column(
+                                      children: [
+                                        Container(
+                                          height: 30,
+                                          decoration: const BoxDecoration(
+                                            borderRadius: BorderRadius.only(
+                                              topLeft: Radius.circular(100),
+                                              bottomLeft: Radius.circular(100),
+                                            ),
+                                          ),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.end,
+                                            children: [
+                                              const SizedBox(width: 12),
+                                              Flexible(
+                                                child: Text.rich(
+                                                  TextSpan(
+                                                    children: [
+                                                      TextSpan(
+                                                        text: '33.07',
+                                                        style:
+                                                            GoogleFonts.inter(
+                                                          fontSize: 20,
+                                                          color:
+                                                              AppColors.black,
+                                                        ),
+                                                      ),
+                                                      TextSpan(
+                                                        text: 'min',
+                                                        style:
+                                                            GoogleFonts.inter(
+                                                          fontSize: 12,
+                                                          color:
+                                                              AppColors.black,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                              const SizedBox(width: 6),
+                                            ],
+                                          ),
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.end,
+                                          children: [
+                                            Flexible(
+                                              child: Text(
+                                                'Avg in-Store Time',
+                                                overflow: TextOverflow.ellipsis,
+                                                style: GoogleFonts.inter(
+                                                  // fontStyle: FontStyle.italic,
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.w400,
+                                                  color:
+                                                      AppColors.greyTextColor,
+                                                ),
+                                              ),
+                                            ),
+                                            const SizedBox(width: 6),
+                                          ],
+                                        ),
+                                        const SizedBox(height: 8),
+                                      ],
+                                    ),
+                                  )
+                                ],
+                              ),
                             ],
                           ),
                         ),
@@ -453,18 +684,42 @@ class StoreDashboardUI extends StatelessWidget {
                                     MainAxisAlignment.spaceAround,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  const Padding(
-                                    padding: EdgeInsets.all(8.0),
-                                    child: Text(
-                                      "Golden Point",
-                                      style: TextStyle(
-                                        color: Color.fromARGB(255, 34, 2, 151),
-                                      ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          child: Text(
+                                            "Golden Point",
+                                            style: GoogleFonts.inter(
+                                              color: AppColors.black,
+                                              fontSize: 22,
+                                              fontWeight: FontWeight.w400,
+                                            ),
+                                          ),
+                                        ),
+                                        const Icon(
+                                          Icons.arrow_forward_ios_rounded,
+                                          color: AppColors.greyTextColor,
+                                          size: 18,
+                                        ),
+                                      ],
                                     ),
                                   ),
                                   const SizedBox(height: 20),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 8.0),
+                                    child: Text(
+                                      'Target',
+                                      style: GoogleFonts.inter(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                    ),
+                                  ),
                                   LinearPercentIndicator(
                                     width: 160,
+
                                     animation: true,
                                     animationDuration: 1000,
                                     lineHeight: 8.0,
@@ -476,9 +731,19 @@ class StoreDashboardUI extends StatelessWidget {
                                     percent: 0.0,
                                     // ignore: deprecated_member_use
                                     linearStrokeCap: LinearStrokeCap.butt,
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 6),
                                   ),
-                                  const SizedBox(
-                                    height: 5,
+                                  const SizedBox(height: 5),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 8.0),
+                                    child: Text(
+                                      'P3M',
+                                      style: GoogleFonts.inter(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                    ),
                                   ),
                                   LinearPercentIndicator(
                                     width: 160.0,
@@ -493,8 +758,16 @@ class StoreDashboardUI extends StatelessWidget {
                                     // ignore: deprecated_member_use
                                     linearStrokeCap: LinearStrokeCap.butt,
                                   ),
-                                  const SizedBox(
-                                    height: 5,
+                                  const SizedBox(height: 5),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 8.0),
+                                    child: Text(
+                                      'P1M',
+                                      style: GoogleFonts.inter(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                    ),
                                   ),
                                   LinearPercentIndicator(
                                     width: 160.0,
@@ -534,13 +807,26 @@ class StoreDashboardUI extends StatelessWidget {
                                   color: Colors.white),
                               child: Column(
                                 children: [
-                                  const Padding(
-                                    padding: EdgeInsets.all(8.0),
-                                    child: Text(
-                                      "Focus Brand",
-                                      style: TextStyle(
-                                        color: Color.fromARGB(255, 34, 2, 151),
-                                      ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          child: Text(
+                                            "Focus Brand",
+                                            style: GoogleFonts.inter(
+                                              color: AppColors.black,
+                                              fontSize: 22,
+                                              fontWeight: FontWeight.w400,
+                                            ),
+                                          ),
+                                        ),
+                                        const Icon(
+                                          Icons.arrow_forward_ios_rounded,
+                                          color: AppColors.greyTextColor,
+                                          size: 18,
+                                        ),
+                                      ],
                                     ),
                                   ),
                                   const SizedBox(height: 35),
@@ -579,17 +865,14 @@ class StoreDashboardUI extends StatelessWidget {
                                         TextSpan(
                                           text: "FB Target / ",
                                           style: GoogleFonts.ptSans(
-                                            color: Colors.black,
+                                            color: AppColors.greyTextColor,
                                             fontSize: 16,
                                           ),
                                         ),
                                         TextSpan(
-                                          // recognizer: TapGestureRecognizer()
-                                          //   ..onTap = () => Get.toNamed(
-                                          //       AppPages.FB_DEEP_DIVE_SCREEN),
                                           text: "FB Achieved",
                                           style: GoogleFonts.ptSans(
-                                            color: AppColors.primary,
+                                            color: AppColors.black,
                                             fontSize: 16,
                                           ),
                                         )
@@ -609,6 +892,117 @@ class StoreDashboardUI extends StatelessWidget {
             ),
           );
         },
+      ),
+    );
+  }
+
+  Widget tableRow(BuildContext context) {
+    return Container(
+      decoration: const BoxDecoration(
+        color: AppColors.storeTableRowColor,
+        border: Border(
+          bottom: BorderSide(
+            width: .5,
+            color: AppColors.lightGrey,
+          ),
+        ),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 6.0),
+                child: Text(
+                  'Large A Pharmacy',
+                  style: GoogleFonts.inter(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w400,
+                    color: AppColors.greyTextColor,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Container(
+            height: 30,
+            width: .5,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  const Color(0xffCCCCCC).withOpacity(0),
+                  const Color(0xffC8C8C8),
+                  const Color(0xffC8C8C8),
+                  const Color(0xffCCCCCC).withOpacity(0),
+                ],
+              ),
+            ),
+          ),
+          Expanded(
+            child: Center(
+              child: Text(
+                'Field Seller',
+                style: GoogleFonts.inter(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
+                  color: AppColors.greyTextColor,
+                ),
+              ),
+            ),
+          ),
+          Container(
+            height: 30,
+            width: .5,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  const Color(0xffCCCCCC).withOpacity(0),
+                  const Color(0xffC8C8C8),
+                  const Color(0xffC8C8C8),
+                  const Color(0xffCCCCCC).withOpacity(0),
+                ],
+              ),
+            ),
+          ),
+          Expanded(
+            child: Center(
+              child: Text(
+                'CGADH_MS104',
+                style: GoogleFonts.inter(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
+                  color: AppColors.greyTextColor,
+                ),
+              ),
+            ),
+          ),
+          Container(
+            height: 30,
+            width: .5,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  const Color(0xffCCCCCC).withOpacity(0),
+                  const Color(0xffC8C8C8),
+                  const Color(0xffC8C8C8),
+                  const Color(0xffCCCCCC).withOpacity(0),
+                ],
+              ),
+            ),
+          ),
+          Expanded(
+            child: Center(
+              child: Text(
+                '31-12-2023',
+                style: GoogleFonts.inter(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
+                  color: AppColors.greyTextColor,
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

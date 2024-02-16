@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'package:get/get.dart';
+import 'dart:io' show Platform;
 import 'package:lottie/lottie.dart';
 import 'package:flutter/material.dart';
 import 'package:command_centre/mobile_dashboard/utils/png_files.dart';
+import 'package:command_centre/mobile_dashboard/utils/app_constants.dart';
 import 'package:command_centre/mobile_dashboard/utils/routes/app_pages.dart';
 import 'package:command_centre/mobile_dashboard/controllers/auth_controller.dart';
 
@@ -20,6 +22,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
+    // controller.getConfig();
     startTimer();
   }
 
@@ -30,21 +33,37 @@ class _SplashScreenState extends State<SplashScreen> {
       var geo = await controller.getGeo();
       var geoValue = await controller.getGeoValue();
       var accessToken = await controller.getAccessToken();
+
       if (seen) {
         if (token.isNotEmpty && accessToken.isNotEmpty) {
-          if (geo.isNotEmpty && geoValue.isNotEmpty) {
-            debugPrint('===>Splash Geo $geo Value $geoValue');
-            Get.offAndToNamed(AppPages.INITIAL);
-            // Get.offAndToNamed(AppPages.PERSONA_SCREEN);
-          } else {
-            Get.offAndToNamed(AppPages.PERSONA_SCREEN);
+          if (controller.configModel != null) {
+            if (controller.configModel?.onMaintenance ?? false) {
+              Get.offAndToNamed(AppPages.maintenanceScreen);
+            } else {
+              if ((Platform.isAndroid
+                      ? controller.configModel?.apkVersion ?? ''
+                      : controller.configModel?.apkVersion ?? '') !=
+                  AppConstants.APP_VERSION) {
+                Get.offAndToNamed(AppPages.updateScreen);
+              } else {
+                if (geo.isNotEmpty && geoValue.isNotEmpty) {
+                  debugPrint('===>Splash Geo $geo Value $geoValue');
+                  Get.offAndToNamed(AppPages.INITIAL);
+                  // Get.offAndToNamed(AppPages.PERSONA_SCREEN);
+                } else {
+                  Get.offAndToNamed(AppPages.PERSONA_SCREEN);
+                }
+              }
+            }
           }
         } else {
-          Get.offAndToNamed(AppPages.FED_AUTH_LOGIN_TEST);
+          Get.offAndToNamed(AppPages.FED_AUTH_LOGIN);
         }
       } else {
         Get.offAndToNamed(AppPages.INTRO_SCREEN);
       }
+      //   }
+      // }
     });
   }
 

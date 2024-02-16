@@ -172,7 +172,7 @@ class _AccessDeniedState extends State<AccessDeniedScreen> {
     await session.remove("token");
     await session.remove("name");
     await session.remove("email");
-    Get.offAndToNamed(AppPages.FED_AUTH_LOGIN_TEST);
+    Get.offAndToNamed(AppPages.FED_AUTH_LOGIN);
     // Navigator.of(context).pushAndRemoveUntil(
     //   // the new route
     //   MaterialPageRoute(
