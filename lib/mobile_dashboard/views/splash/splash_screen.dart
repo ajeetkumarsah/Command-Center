@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'dart:io' show Platform;
 import 'package:lottie/lottie.dart';
@@ -90,11 +91,22 @@ class _SplashScreenState extends State<SplashScreen> {
             alignment: Alignment.center,
             child: Padding(
               padding: const EdgeInsets.only(bottom: 12.0),
-              child: Image.asset(
-                PngFiles.pgLogo,
-                height: 90,
-                width: 90,
-              ),
+              child:
+    ClipRRect(
+    borderRadius: BorderRadius.circular(24.0),
+    child:          SvgPicture.asset('assets/svg/img_cc.svg',height: 150,
+      width: 150,),
+    )
+
+
+              // Container(
+              //   decoration: BoxDecoration(color: Colors.white.withOpacity(0.7)),
+              //   child: Image.asset(
+              //     'assets/png/img_cc_transparent.png',
+              //     height: 150,
+              //     width: 150,
+              //   ),
+              // ),
             ),
           ),
         ],

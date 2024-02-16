@@ -1,10 +1,23 @@
 import 'dart:async';
 
+import 'package:command_centre/mobile_dashboard/bindings/home_binding.dart';
+import 'package:command_centre/mobile_dashboard/utils/routes/app_pages.dart';
 import 'package:command_centre/utils/colors/colors.dart';
 import 'package:command_centre/utils/comman/market_visit/getstartedIntro.dart';
 import 'package:command_centre/utils/style/text_style.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
+
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await HomeBinding().dependencies();
+  runApp( GetMaterialApp(
+      home: PromptToLocationScreen(),
+    getPages: AppPages.routes,
+    // debugShowCheckedModeBanner: false,
+  ));
+}
 class PromptToLocationScreen extends StatefulWidget {
   const PromptToLocationScreen({super.key});
 

@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.0.26+26
+version: 1.0.8+40
 
 environment:
   sdk: '>=2.19.3 <3.0.0'
@@ -87,6 +87,10 @@ dependencies:
   flutter_local_notifications: ^16.3.2
   firebase_messaging: ^14.7.15
   firebase_core: ^2.25.4
+  google_maps_flutter: ^2.5.3
+  flutter_osm_plugin: ^0.70.4
+  pointer_interceptor: ^0.10.1
+
   reviews_slider: ^2.0.0
   firebase_crashlytics: ^3.4.14
   flutter_faq: ^1.0.1+1
@@ -106,7 +110,6 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
-  flutter_launcher_icons: ^0.13.1
 
 
 # For information on the generic Dart part of this file, see the
@@ -163,9 +166,9 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
-flutter_icons:
-  image_path: "assets/icon/icon.png"
-  android: true
-  ios: true
-  remove_alpha_ios: true
+#flutter_icons:
+#  image_path: "assets/icon/img_cc.png"
+#  android: true
+#  ios: true
+#  remove_alpha_ios: true
   # optionally, as transparency is not allowed on app store

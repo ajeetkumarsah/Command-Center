@@ -1,3 +1,8 @@
+import 'package:command_centre/mobile_dashboard/bindings/home_binding.dart';
+import 'package:command_centre/utils/colors/colors.dart';
+import 'package:command_centre/utils/style/text_style.dart';
+import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -10,6 +15,16 @@ import 'package:command_centre/mobile_dashboard/views/widgets/custom_shimmer.dar
 import 'package:command_centre/mobile_dashboard/views/widgets/custom_snackbar.dart';
 import 'package:command_centre/mobile_dashboard/controllers/store_selection_controller.dart';
 
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await HomeBinding().dependencies();
+  runApp(GetMaterialApp(
+    home: const OnboardingScreen(),
+    getPages: AppPages.routes,
+    // debugShowCheckedModeBanner: false,
+  ));
+}
+
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
 
@@ -20,8 +35,33 @@ class OnboardingScreen extends StatefulWidget {
 class _OnboardingScreenState extends State<OnboardingScreen> {
   bool isMapVisible = false;
   bool isDropDownVisible = true;
+  bool visible = false;
   int _activeIndex = 0;
+
   int get activeIndex => _activeIndex;
+  bool isSelectedManually = false;
+  late final MapController controller = MapController(
+    initPosition: GeoPoint(
+      latitude: 47.4358055,
+      longitude: 8.4737324,
+    ),
+  );
+
+  List<GeoPoint> geoPoints = [
+    GeoPoint(
+        latitude: 47.4333594,
+        longitude: 8.4680184),
+    GeoPoint(
+        latitude: 47.4317782,
+        longitude: 8.4716146),
+  ];
+  final Key key = GlobalKey();
+
+  ValueNotifier<bool> activateCollectGetGeoPointsToDraw = ValueNotifier(false);
+  ValueNotifier<bool> activateDrawRoad = ValueNotifier(false);
+
+  ValueNotifier<List<GeoPoint>> roadPoints = ValueNotifier([]);
+  ValueNotifier<bool> isTracking = ValueNotifier(false);
 
   void onChangePage() {
     if (activeIndex < 1) {
@@ -50,6 +90,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     List<StepperData> stepperData = [
       StepperData(
         title: StepperText(
@@ -169,7 +210,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   padding: const EdgeInsets.only(left: 10, right: 10, top: 20),
                   margin: const EdgeInsets.only(bottom: 5),
                   width: double.infinity,
-                  height: 220, //activeIndex == 1 ? 280 :220,
+                  height: activeIndex == 0 ? 220 : 263,
+                  //activeIndex == 1 ? 280 :220,
                   decoration: const BoxDecoration(
                     borderRadius: BorderRadius.only(
                       bottomLeft: Radius.circular(30.0),
@@ -196,44 +238,111 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         barThickness: 5,
                       ),
                       const SizedBox(height: 20),
-                      // activeIndex == 1
-                      //     ? Container(
-                      //         height: 40,
-                      //         decoration: BoxDecoration(
-                      //             borderRadius: BorderRadius.circular(20),
-                      //             color: Colors.white),
-                      //         child: Row(
-                      //           children: [
-                      //             const Padding(padding: EdgeInsets.all(10)),
-                      //             Container(
-                      //               height: 35,
-                      //               decoration: BoxDecoration(
-                      //                   borderRadius: BorderRadius.circular(20),
-                      //                   color: Colors.blue),
-                      //               child: TextButton(
-                      //                 onPressed: () {},
-                      //                 child: const Text(
-                      //                   "Search Manually",
-                      //                   style: TextStyle(color: Colors.white),
-                      //                 ),
-                      //               ),
-                      //             ),
-                      //             const SizedBox(
-                      //               width: 50,
-                      //             ),
-                      //             Container(
-                      //               child: TextButton(
-                      //                 onPressed: () {},
-                      //                 child: const Text(
-                      //                   "Find On Map",
-                      //                   style: TextStyle(color: Colors.blue),
-                      //                 ),
-                      //               ),
-                      //             ),
-                      //           ],
-                      //         ),
-                      //       )
-                      //     : const SizedBox(),
+                      activeIndex == 1
+                          ? Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 20.0, right: 20, bottom: 20),
+                              child: Container(
+                                height: 40,
+                                width: size.width,
+                                decoration: BoxDecoration(
+                                  color: MyColors.whiteColor,
+                                  borderRadius: BorderRadius.circular(20),
+                                  boxShadow: const [
+                                    BoxShadow(
+                                      color: Color(0x66000000),
+                                      offset: Offset(0.0, 1.0), //(x,y)
+                                      blurRadius: 6.0,
+                                    ),
+                                  ],
+                                ),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(4.0),
+                                        child: InkWell(
+                                          onTap: () {
+                                            isSelectedManually = false;
+                                            print("1");
+                                            setState(() {});
+                                          },
+                                          child: Container(
+                                              height: 40,
+                                              width: size.width,
+                                              decoration: BoxDecoration(
+                                                color:
+                                                    isSelectedManually == false
+                                                        ? MyColors.primary
+                                                        : MyColors.whiteColor,
+                                                borderRadius:
+                                                    BorderRadius.circular(20),
+                                              ),
+                                              child: Center(
+                                                child: Text(
+                                                  "Search Manually",
+                                                  maxLines: 2,
+                                                  style: TextStyle(
+                                                      color:
+                                                          isSelectedManually ==
+                                                                  false
+                                                              ? MyColors
+                                                                  .whiteColor
+                                                              : MyColors
+                                                                  .primary,
+                                                      fontFamily: fontFamily,
+                                                      fontWeight:
+                                                          FontWeight.w500),
+                                                ),
+                                              )),
+                                        ),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(4.0),
+                                        child: InkWell(
+                                          onTap: () {
+                                            isSelectedManually = true;
+                                            setState(() {});
+                                            print("2");
+                                          },
+                                          child: Container(
+                                              height: 40,
+                                              width: size.width,
+                                              decoration: BoxDecoration(
+                                                color:
+                                                    isSelectedManually == true
+                                                        ? MyColors.primary
+                                                        : MyColors.whiteColor,
+                                                borderRadius:
+                                                    BorderRadius.circular(20),
+                                              ),
+                                              child: Center(
+                                                child: Text(
+                                                  "Find on Map",
+                                                  maxLines: 2,
+                                                  style: TextStyle(
+                                                      color:
+                                                          isSelectedManually ==
+                                                                  true
+                                                              ? MyColors
+                                                                  .whiteColor
+                                                              : MyColors
+                                                                  .primary,
+                                                      fontFamily: fontFamily,
+                                                      fontWeight:
+                                                          FontWeight.w500),
+                                                ),
+                                              )),
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            )
+                          : const SizedBox()
                     ],
                   ),
                 ),
@@ -246,17 +355,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     fit: BoxFit.contain,
                   ),
                 ),
-                // activeIndex != 2
-                //     ? Text(
-                //         "* Grant location access and tap below",
-                //         style: GoogleFonts.ptSans(
-                //           color: Colors.white,
-                //           fontStyle: FontStyle.italic,
-                //           fontSize: 18,
-                //           fontWeight: FontWeight.w400,
-                //         ),
-                //       )
-                //     : const SizedBox(),
+
                 Visibility(
                   visible: activeIndex == 1,
                   child: Column(
@@ -510,108 +609,180 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     ],
                   ),
                 ),
-                // ctlr.channels.isEmpty && ctlr.isChannelLoading
-                //     ? const SizedBox(
-                //         height: 150,
-                //         child: CustomLoader(color: AppColors.white),
-                //       )
-                //     : Visibility(
-                //         visible: ctlr.channels.isNotEmpty,
-                //         child: Container(
-                //           color: AppColors.primaryDark,
-                //           margin: const EdgeInsets.symmetric(horizontal: 30),
-                //           height: 180,
-                //           child: ctlr.isChannelLoading
-                //               ? const CustomLoader(color: AppColors.white)
-                //               : SingleChildScrollView(
-                //                   child: Column(
-                //                     children: [
-                //                       ...ctlr.channels
-                //                           .map(
-                //                             (e) => ListTile(
-                //                               onTap: () =>
-                //                                   ctlr.onChannelChange(e),
-                //                               visualDensity:
-                //                                   const VisualDensity(
-                //                                       horizontal: 1,
-                //                                       vertical: -3),
-                //                               contentPadding:
-                //                                   const EdgeInsets.symmetric(
-                //                                       horizontal: 30),
-                //                               title: Text(
-                //                                 e,
-                //                                 style: GoogleFonts.ptSans(
-                //                                   color: AppColors.white,
-                //                                   fontSize: 18,
-                //                                   fontWeight: FontWeight.w400,
-                //                                 ),
-                //                               ),
-                //                             ),
-                //                           )
-                //                           .toList(),
-                //                     ],
-                //                   ),
-                //                 ),
-                //         ),
-                //       ),
 
                 const SizedBox(height: 20),
-                activeIndex != 2
-                    ? GestureDetector(
-                        onTap: () {
-                          if (activeIndex >= 1) {
-                            if (ctlr.selectedDistributor != null &&
-                                ctlr.selectedBranch != null &&
-                                ctlr.selectedChannel != null) {
-                              ctlr.postStoreData().then((v) {
-                                if (ctlr.storeIntroModel != null) {
-                                  onChangePage();
+
+
+                isSelectedManually == false
+                    ? activeIndex != 2
+                        ? GestureDetector(
+                            onTap: () {
+                              if (activeIndex >= 1) {
+                                if (ctlr.selectedDistributor != null &&
+                                    ctlr.selectedBranch != null &&
+                                    ctlr.selectedChannel != null) {
+                                  ctlr.postStoreData().then((v) {
+                                    if (ctlr.storeIntroModel != null) {
+                                      onChangePage();
+                                    } else {
+                                      showCustomSnackBar(
+                                          'Something went wrong!');
+                                    }
+                                  });
                                 } else {
-                                  showCustomSnackBar('Something went wrong!');
+                                  showCustomSnackBar(
+                                      'Please Select the required fields.');
                                 }
-                              });
-                            } else {
-                              showCustomSnackBar(
-                                  'Please Select the required fields.');
-                            }
-                          } else {
-                            onChangePage();
-                          }
-                        },
-                        //{
-                        // Get.to(const StoreFingertipsScreen());
-                        //},
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(100),
-                            color: Colors.white,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(.3),
-                                offset: const Offset(4, 4),
-                                blurRadius: 5.0,
-                              ),
-                            ],
-                          ),
-                          padding: const EdgeInsets.all(6),
-                          child: ctlr.isLoading
-                              ? const SizedBox(
-                                  height: 38,
-                                  width: 38,
-                                  child: Padding(
-                                    padding: EdgeInsets.all(4),
-                                    child: CustomLoader(),
+                              } else {
+                                onChangePage();
+                              }
+                            },
+                            //{
+                            // Get.to(const StoreFingertipsScreen());
+                            //},
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(100),
+                                color: Colors.white,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(.3),
+                                    offset: const Offset(4, 4),
+                                    blurRadius: 5.0,
                                   ),
-                                )
-                              : Image.asset(
-                                  "assets/png/Icon Artwork.png",
-                                  fit: BoxFit.cover,
-                                  height: 38,
-                                  width: 38,
-                                ),
-                        ),
-                      )
-                    : const SizedBox(),
+                                ],
+                              ),
+                              padding: const EdgeInsets.all(6),
+                              child: ctlr.isLoading
+                                  ? const SizedBox(
+                                      height: 38,
+                                      width: 38,
+                                      child: Padding(
+                                        padding: EdgeInsets.all(4),
+                                        child: CustomLoader(),
+                                      ),
+                                    )
+                                  : Image.asset(
+                                      "assets/png/Icon Artwork.png",
+                                      fit: BoxFit.cover,
+                                      height: 38,
+                                      width: 38,
+                                    ),
+                            ),
+                          )
+                        : const SizedBox()
+                    : Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              height: 40,
+                              width: size.width,
+                              decoration:
+                                  const BoxDecoration(color: Colors.white),
+                              child: const Column(children: [Row(children: [
+
+                              ],)],),
+                            ),
+                          ),
+                          Stack(children: [
+                            Builder(
+                              builder: (ctx) {
+                                return Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: SizedBox(
+                                    height: 290,
+                                    child: OSMFlutter(
+                                      key: key,
+                                      controller: controller,
+                                      osmOption: OSMOption(
+                                        zoomOption: const ZoomOption(
+                                          initZoom: 5,
+                                        ),
+                                        markerOption: MarkerOption(
+                                          // defaultMarker: const MarkerIcon(
+                                          //   icon: Icon(
+                                          //     Icons.add_location,
+                                          //     color: Colors.amber,
+                                          //   ),
+                                          // ),
+                                          advancedPickerMarker: const MarkerIcon(
+                                            icon: Icon(
+                                              Icons.add_location,
+                                              color: Colors.amber,
+                                            ),
+                                          ),
+                                        ),
+                                        staticPoints: [
+                                          StaticPositionGeoPoint(
+                                            "line 1",
+                                            const MarkerIcon(
+                                              icon: Icon(
+                                                Icons.location_on_outlined,
+                                                color: Colors.red,
+                                                size: 48,
+                                              ),
+                                            ),
+                                            geoPoints,
+                                          ),
+                                        ],
+                                        showContributorBadgeForOSM: true,
+                                      ),
+                                      onGeoPointClicked: (geoPoint) async {
+                                        setState(() {
+                                          visible = !visible;
+                                        });
+
+                                        // if (geoPoint ==
+                                        //     GeoPoint(
+                                        //         latitude: 47.442475,
+                                        //         longitude: 8.4680389)) {
+                                        //   await controller.setMarkerIcon(
+                                        //     geoPoint,
+                                        //     const MarkerIcon(
+                                        //       icon: Icon(
+                                        //         Icons.location_on_outlined,
+                                        //         color: Colors.blue,
+                                        //         size: 24,
+                                        //       ),
+                                        //     ),
+                                        //   );
+                                        // }
+
+                                        // ScaffoldMessenger.of(ctx)
+                                        //     .showSnackBar(SnackBar(
+                                        //   content: Text(
+                                        //     geoPoint.toString(),
+                                        //   ),
+                                        //   action: SnackBarAction(
+                                        //     label: "hide",
+                                        //     onPressed: () {
+                                        //       ScaffoldMessenger.of(ctx)
+                                        //           .hideCurrentSnackBar();
+                                        //     },
+                                        //   ),
+                                        // ));
+                                      },
+                                      onMapIsReady: (isReady) async{
+                                        if(isReady){
+                                        await Future.delayed(const Duration(seconds: 1), () async {
+                                          await controller.currentLocation();
+                                        });
+                                        }
+                                      },
+                                      mapIsLoading: const Center(
+                                        child: Text("map is Loading"),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+        Visibility(visible: visible, child: Container(height: 10,width: 200,color: Colors.grey,))
+                          ],)
+
+                        ],
+                      ),
               ],
             ),
           ),

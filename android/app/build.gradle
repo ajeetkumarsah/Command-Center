@@ -22,11 +22,14 @@ if (flutterVersionName == null) {
 }
 
 apply plugin: 'com.android.application'
+// START: FlutterFire Configuration
+apply plugin: 'com.google.gms.google-services'
+// END: FlutterFire Configuration
 apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
-    compileSdkVersion flutter.compileSdkVersion
+    compileSdkVersion 34
     ndkVersion flutter.ndkVersion
 
     compileOptions {
@@ -49,16 +52,22 @@ android {
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
         minSdkVersion 26
-        targetSdkVersion flutter.targetSdkVersion
-        versionCode 26
-        versionName '1.0.26'
+        targetSdkVersion 33
+        versionCode 40
+        versionName '1.0.8'
     }
     signingConfigs {
+//        release {
+//            keyAlias 'commandcentre'
+//            keyPassword 'pg1234'
+//            storeFile file('keys/release.jks')
+//            storePassword 'pg1234'
+//        }
         release {
-            keyAlias 'commandcentre'
-            keyPassword 'pg1234'
-            storeFile file('keys/release.jks')
-            storePassword 'pg1234'
+            keyAlias 'upload'
+            keyPassword 'PG!111111'
+            storeFile file('keys/upload-keystore.jks')
+            storePassword 'PG!111111'
         }
     }
 

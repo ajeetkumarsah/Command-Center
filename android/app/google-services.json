@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "589025977698",
+    "project_id": "command-center-6b1dc",
+    "storage_bucket": "command-center-6b1dc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:589025977698:android:fb51835de8a7760f37383b",
+        "android_client_info": {
+          "package_name": "com.commandcentre.command_centre"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBnaufQD9LJn1vl2i63mwL41jy15_FUEqw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
