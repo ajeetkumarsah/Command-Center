@@ -89,6 +89,8 @@ dependencies:
   firebase_core: ^2.25.4
   reviews_slider: ^2.0.0
   firebase_crashlytics: ^3.4.14
+  flutter_faq: ^1.0.1+1
+  file_picker: ^6.1.1
 
 dependency_overrides:
   intl: 0.18.0

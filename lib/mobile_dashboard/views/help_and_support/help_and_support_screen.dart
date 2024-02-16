@@ -1,11 +1,10 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:command_centre/mobile_dashboard/utils/png_files.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
-import 'package:command_centre/mobile_dashboard/utils/routes/app_pages.dart';
-import 'package:command_centre/mobile_dashboard/views/help_and_support/widgets/support_button.dart';
+import 'package:command_centre/mobile_dashboard/views/help_and_support/widgets/faqs_screen.dart';
 import 'package:command_centre/mobile_dashboard/views/help_and_support/widgets/feedback_screen.dart';
+import 'package:command_centre/mobile_dashboard/views/help_and_support/widgets/report_bug_screen.dart';
 
 class SupportAndHelpScreen extends StatelessWidget {
   const SupportAndHelpScreen({super.key});
@@ -53,67 +52,77 @@ class SupportAndHelpScreen extends StatelessWidget {
               childAspectRatio: 1.2,
             ),
             itemBuilder: (_, i) {
-              return Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.sfPrimary.withOpacity(.3),
-                      blurRadius: 3,
-                      offset: const Offset(0, 3),
-                    ),
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(.05),
-                      blurRadius: .5,
-                      offset: const Offset(0, -3),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(100),
-                            color: AppColors.primary.withOpacity(.12),
+              return GestureDetector(
+                onTap: () {
+                  if (i == 0) {
+                    Get.to(const FAQsScreen());
+                  }
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.sfPrimary.withOpacity(.3),
+                        blurRadius: 3,
+                        offset: const Offset(0, 3),
+                      ),
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(.05),
+                        blurRadius: .5,
+                        offset: const Offset(0, -3),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(100),
+                              color: AppColors.primary.withOpacity(.12),
+                            ),
+                            child: Center(
+                                child: Icon(
+                                    i == 1
+                                        ? Icons.mail_rounded
+                                        : Icons.question_answer_rounded,
+                                    color: AppColors.primary)),
                           ),
-                          child: Center(
-                              child: Icon(
-                                  i == 1 ? Icons.mail_rounded : Icons.call,
-                                  color: AppColors.primary)),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        i == 1 ? 'Contact Us' : 'FAQs',
+                        style: GoogleFonts.ptSansCaption(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
                         ),
-                      ],
-                    ),
-                    const SizedBox(height: 12),
-                    Text(
-                      i == 1 ? 'Mail Us' : 'Call Us',
-                      style: GoogleFonts.ptSansCaption(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
                       ),
-                    ),
-                    const SizedBox(height: 12),
-                    Text(
-                      'Talk to our executive',
-                      style: GoogleFonts.ptSansCaption(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.greyTextColor,
-                      ),
-                    )
-                  ],
+                      const SizedBox(height: 12),
+                      Text(
+                        i == 1 ? 'dv.nb@pg.com' : '',
+                        style: GoogleFonts.ptSansCaption(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.greyTextColor,
+                        ),
+                      )
+                    ],
+                  ),
                 ),
               );
             },
           ),
           cardWidget(onTap: () => Get.to(const FeedbackScreen())),
           cardWidget(
+            onTap: () => Get.to(const ReportBugScreen()),
             icon: Icons.bug_report_rounded,
             title: 'Report a bug',
             subtitle: 'Tell us what is the issue      ',

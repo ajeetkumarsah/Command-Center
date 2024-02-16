@@ -9,10 +9,12 @@ import 'package:command_centre/mobile_dashboard/views/splash/intro_screen.dart';
 import 'package:command_centre/mobile_dashboard/views/update/update_screen.dart';
 import 'package:command_centre/mobile_dashboard/views/login/purpose_screen.dart';
 import 'package:command_centre/mobile_dashboard/views/splash/splash_screen.dart';
+import 'package:command_centre/mobile_dashboard/views/widgets/image_preview.dart';
 import 'package:command_centre/mobile_dashboard/views/login/fed_auth_screen.dart';
 import 'package:command_centre/mobile_dashboard/views/summary/summary_screen.dart';
 import 'package:command_centre/mobile_dashboard/views/login/select_geo_screen.dart';
 import 'package:command_centre/mobile_dashboard/views/coverage/coverage_screen.dart';
+import 'package:command_centre/mobile_dashboard/views/widgets/image_list_preview.dart';
 import 'package:command_centre/mobile_dashboard/views/login/access_denied_screen.dart';
 import 'package:command_centre/mobile_dashboard/views/retailing/retailing_screen.dart';
 import 'package:command_centre/mobile_dashboard/views/login/select_profile_screen.dart';
@@ -56,6 +58,8 @@ class AppPages {
   static const COVERAGE_DEEP_DIVE = Routes.COVERAGE_DEEP_DIVE_SCREEN;
   static const SALES_DEEP_DIVE = Routes.SALES_DEEP_DIVE_SCREEN;
   static const HELP_SUPPORT = Routes.HELP_SUPPORT_SCREEN;
+  static const IMAGE_PREVIEW_WIDGET = _Paths.IMAGE_PREVIEW_WIDGET;
+  static const IMAGE_PREVIEW_LIST = _Paths.IMAGE_PREVIEW_LIST;
   static const updateScreen = Routes.UPDATE_SCREEN;
   static const maintenanceScreen = Routes.MAINTENANCE_SCREEN;
   //Store@fingertips
@@ -117,6 +121,14 @@ class AppPages {
       name: _Paths.HOME,
       page: () => const HomeView(),
       binding: HomeBinding(),
+    ),
+    GetPage(
+      name: _Paths.IMAGE_PREVIEW_WIDGET,
+      page: () => const ImagePreviewWidget(),
+    ),
+    GetPage(
+      name: _Paths.IMAGE_PREVIEW_LIST,
+      page: () => const ImagePreviewList(),
     ),
     GetPage(
       name: _Paths.SUMMARY,

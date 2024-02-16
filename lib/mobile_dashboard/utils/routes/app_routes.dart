@@ -31,6 +31,8 @@ abstract class Routes {
   static const MAINTENANCE_SCREEN = _Paths.MAINTENANCE_SCREEN;
   static const STORE_FINGERTIPS_LANDING = _Paths.STORE_FINGERTIPS_LANDING;
   static const STORE_FINGERTIPS_ONBOARDING = _Paths.STORE_FINGERTIPS_ONBOARDING;
+  static const IMAGE_PREVIEW_WIDGET = _Paths.IMAGE_PREVIEW_WIDGET;
+  static const IMAGE_PREVIEW_LIST = _Paths.IMAGE_PREVIEW_LIST;
 }
 
 abstract class _Paths {
@@ -59,6 +61,8 @@ abstract class _Paths {
   static const COVERAGE_DEEP_DIVE = '/coverageDeepDiveScreen';
   static const SALES_DEEP_DIVE = '/salesDeepDiveScreen';
   static const HELP_SUPPORT = '/helpSupportScreen';
+  static const IMAGE_PREVIEW_WIDGET = '/imagePreview';
+  static const IMAGE_PREVIEW_LIST = '/imagePreviewList';
 
   //store@fingertips
   static const STORE_FINGERTIPS_LANDING = '/storeFingertipsLanding';
