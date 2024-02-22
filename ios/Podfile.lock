@@ -111,18 +111,10 @@ PODS:
   - FMDB (2.7.5):
     - FMDB/standard (= 2.7.5)
   - FMDB/standard (2.7.5)
-  - google_maps_flutter_ios (0.0.1):
-    - Flutter
-    - GoogleMaps (< 9.0)
   - GoogleDataTransport (9.3.0):
     - GoogleUtilities/Environment (~> 7.7)
     - nanopb (< 2.30910.0, >= 2.30908.0)
     - PromisesObjC (< 3.0, >= 1.2)
-  - GoogleMaps (8.4.0):
-    - GoogleMaps/Maps (= 8.4.0)
-  - GoogleMaps/Base (8.4.0)
-  - GoogleMaps/Maps (8.4.0):
-    - GoogleMaps/Base
   - GoogleUtilities/AppDelegateSwizzler (7.12.0):
     - GoogleUtilities/Environment
     - GoogleUtilities/Logger
@@ -192,7 +184,6 @@ DEPENDENCIES:
   - flutter_osm_plugin (from `.symlinks/plugins/flutter_osm_plugin/ios`)
   - flutter_secure_storage (from `.symlinks/plugins/flutter_secure_storage/ios`)
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
-  - google_maps_flutter_ios (from `.symlinks/plugins/google_maps_flutter_ios/ios`)
   - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
   - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
@@ -220,7 +211,6 @@ SPEC REPOS:
     - FirebaseSessions
     - FMDB
     - GoogleDataTransport
-    - GoogleMaps
     - GoogleUtilities
     - nanopb
     - Polyline
@@ -253,8 +243,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_secure_storage/ios"
   fluttertoast:
     :path: ".symlinks/plugins/fluttertoast/ios"
-  google_maps_flutter_ios:
-    :path: ".symlinks/plugins/google_maps_flutter_ios/ios"
   image_picker_ios:
     :path: ".symlinks/plugins/image_picker_ios/ios"
   package_info_plus:
@@ -300,9 +288,7 @@ SPEC CHECKSUMS:
   flutter_secure_storage: 23fc622d89d073675f2eaa109381aefbcf5a49be
   fluttertoast: 31b00dabfa7fb7bacd9e7dbee580d7a2ff4bf265
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
-  google_maps_flutter_ios: f135b968a67c05679e0a53538e900b5c174b0d99
   GoogleDataTransport: 57c22343ab29bc686febbf7cbb13bad167c2d8fe
-  GoogleMaps: 8939898920281c649150e0af74aa291c60f2e77d
   GoogleUtilities: 0759d1a57ebb953965c2dfe0ba4c82e95ccc2e34
   image_picker_ios: 4a8aadfbb6dc30ad5141a2ce3832af9214a705b5
   nanopb: d4d75c12cd1316f4a64e3c6963f879ecd4b5e0d5

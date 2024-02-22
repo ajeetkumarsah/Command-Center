@@ -28,6 +28,7 @@ void main() async {
   PushNotifications.init();
   FirebaseMessaging.onBackgroundMessage(_firebaseBackgroundMessage);
   FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
+  FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
   Future<bool> securityCheck() async {
     bool isJailBroken = await SafeDevice.isJailBroken;
     bool isCanMockLocation = await SafeDevice.canMockLocation;

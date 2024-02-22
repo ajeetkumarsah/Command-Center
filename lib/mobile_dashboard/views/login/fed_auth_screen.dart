@@ -239,7 +239,7 @@ class _FedAuthScreenState extends State<FedAuthScreen> {
         }
       } else if (response.statusCode == 401) {
         _onClearCookies();
-        Get.offAndToNamed(AppPages.FED_AUTH_LOGIN);
+        Get.offAndToNamed(AppPages.FED_AUTH_LOGIN_TEST);
       } else if (response.statusCode == 403) {
         _onClearCookies();
         Get.offAndToNamed(AppPages.ACCESS_DENIED,

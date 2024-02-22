@@ -150,7 +150,7 @@ class _RetryAccessDeniedState extends State<RetryAccessDeniedScreen>
     await session.remove("token");
     await session.remove("name");
     await session.remove("email");
-    Get.offAndToNamed(AppPages.FED_AUTH_LOGIN);
+    Get.offAndToNamed(AppPages.FED_AUTH_LOGIN_TEST);
     // Navigator.of(context).pushAndRemoveUntil(
     //   // the new route
     //   MaterialPageRoute(

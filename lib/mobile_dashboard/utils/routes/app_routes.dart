@@ -6,7 +6,7 @@ part of 'app_pages.dart';
 abstract class Routes {
   Routes._();
   static const LOGIN = _Paths.LOGIN;
-  static const FED_AUTH_LOGIN = _Paths.FED_AUTH_LOGIN;
+  // static const FED_AUTH_LOGIN = _Paths.FED_AUTH_LOGIN;
   static const FED_AUTH_LOGIN_TEST = _Paths.FED_AUTH_LOGIN_TEST;
   static const SELECT_PROFILE = _Paths.SELECT_PROFILE;
   static const RETRY_ACCESS_DENIED = _Paths.RETRY_ACCESS_DENIED;
@@ -39,7 +39,7 @@ abstract class Routes {
 abstract class _Paths {
   _Paths._();
   static const LOGIN = '/login';
-  static const FED_AUTH_LOGIN = '/fedAuthLogin';
+  // static const FED_AUTH_LOGIN = '/fedAuthLogin';
   static const FED_AUTH_LOGIN_TEST = '/fedAuthLoginTest';
   static const RETRY_ACCESS_DENIED = '/retryAccessDenied';
   static const SELECT_PROFILE = '/selectProfile';

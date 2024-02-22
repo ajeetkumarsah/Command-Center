@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
 import 'package:command_centre/mobile_dashboard/utils/routes/app_pages.dart';
+import 'package:command_centre/mobile_dashboard/utils/global.dart' as globals;
 import 'package:command_centre/mobile_dashboard/views/store_fingertips/onboarding_screen.dart';
 
 class MenuBottomsheet extends StatelessWidget {
@@ -51,21 +52,21 @@ class MenuBottomsheet extends StatelessWidget {
             //   color: AppColors.borderColor,
             // ),
             const SizedBox(height: 10),
-            // Row(
-            //   mainAxisAlignment: MainAxisAlignment.start,
-            //   children: [
-            //     const SizedBox(width: 16),
-            //     // Flexible(
-            //     //   child: Text(
-            //     //     'Switch Mode',
-            //     //     style: GoogleFonts.ptSans(
-            //     //       fontSize: 16,
-            //     //       fontWeight: FontWeight.w700,
-            //     //     ),
-            //     //   ),
-            //     // ),
-            //   ],
-            // ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                const SizedBox(width: 16),
+                // Flexible(
+                //   child: Text(
+                //     'Switch Mode',
+                //     style: GoogleFonts.ptSans(
+                //       fontSize: 16,
+                //       fontWeight: FontWeight.w700,
+                //     ),
+                //   ),
+                // ),
+              ],
+            ),
             // Row(
             //   mainAxisAlignment: MainAxisAlignment.start,
             //   children: [
@@ -180,7 +181,7 @@ class MenuBottomsheet extends StatelessWidget {
             //     ),
             //   ),
             // ),
-
+            // SelectableText("${globals.FCMToken}"),
             ListTile(
               onTap: () {
                 Get.back();

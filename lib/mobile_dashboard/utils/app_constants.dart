@@ -20,6 +20,7 @@ class AppConstants {
   static const GP_DATA = 'appData/dgpComplianceTable';
   static const FOCUS_BRAND_DATA = 'appData/focusBrand';
   static const FILTERS = 'appData/branchlist';
+  static const PERSONASELECT = 'appData/storeList';
   static const STORE_DATA = 'appData/focusBrandTable';
   static const CONFIG = 'appData/inventory';
 
@@ -32,6 +33,7 @@ class AppConstants {
   static const String TOKEN = 'token';
   static const String EMAIL = 'email';
   static const String NAME = 'name';
+  static const String UID = 'uid';
   static const String PING_CODE = 'pingCode';
   static const String SEEN = 'seen';
   static const String ACCESS_TOKEN = 'accessToken';
@@ -45,6 +47,7 @@ class AppConstants {
   static const String PERSONLIZED_ACTIVE = 'prsonalizedAvcitve';
   static const String PERSONLIZED_MORE = 'prsonalizedMore';
   static const String PERSONA = 'persona';
+  static const String FCMToken = 'FCMToken';
 
   //
   static const String STORE = 'store';

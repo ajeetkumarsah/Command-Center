@@ -9,7 +9,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>tranzita.commandcentre</string>
+	<string>com.commandcentre.command-centre</string>
 	<key>PROJECT_ID</key>
 	<string>comandc-99a4a</string>
 	<key>STORAGE_BUCKET</key>
@@ -25,6 +25,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:966656788419:ios:eec3a33363e99cae1c5f76</string>
+	<string>1:966656788419:ios:4399c6a779fb3bd31c5f76</string>
 </dict>
 </plist>

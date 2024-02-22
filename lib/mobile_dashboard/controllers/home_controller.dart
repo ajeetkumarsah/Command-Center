@@ -18,6 +18,10 @@ import 'package:command_centre/mobile_dashboard/data/models/response/gp_trends_m
 import 'package:command_centre/mobile_dashboard/data/models/response/retailing_geo_model.dart';
 import 'package:command_centre/mobile_dashboard/data/models/response/coverage_trends_model.dart';
 import 'package:command_centre/mobile_dashboard/data/models/response/retailing_trends_model.dart';
+import 'package:command_centre/mobile_dashboard/utils/global.dart' as globals;
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../utils/app_constants.dart';
 
 class HomeController extends GetxController {
   //
@@ -395,7 +399,6 @@ class HomeController extends GetxController {
 
   void onChangeTrendsCategoryValue(String value) {
     _selectedTrendsCategory = value;
-
     update();
   }
 
@@ -834,7 +837,7 @@ class HomeController extends GetxController {
   @override
   void onInit() async {
     super.onInit();
-    // getAllFilters();
+    getAllFilters();
     getPersonalizedData();
     await getInitValues(getOnlyShared: true);
     getInitData();
@@ -856,6 +859,7 @@ class HomeController extends GetxController {
         "category": [],
       }
     ];
+    // await getPersonaSelected();
   }
 
   @override
@@ -1696,7 +1700,7 @@ class HomeController extends GetxController {
       responseModel = ResponseModel(true, 'Success');
     } else if (response.statusCode == 401) {
       responseModel = ResponseModel(false, response.statusText ?? "");
-      Get.offAndToNamed(AppPages.FED_AUTH_LOGIN);
+      Get.offAndToNamed(AppPages.FED_AUTH_LOGIN_TEST);
     } else {
       responseModel = ResponseModel(false, response.statusText ?? "");
     }
@@ -1734,7 +1738,7 @@ class HomeController extends GetxController {
       }
     } else if (response.statusCode == 401) {
       responseModel = ResponseModel(false, response.statusText ?? "");
-      Get.offAndToNamed(AppPages.FED_AUTH_LOGIN);
+      Get.offAndToNamed(AppPages.FED_AUTH_LOGIN_TEST);
     } else {
       responseModel = ResponseModel(false, response.statusText ?? "");
     }
@@ -2021,7 +2025,7 @@ class HomeController extends GetxController {
       }
     } else if (response.statusCode == 401) {
       responseModel = ResponseModel(false, response.statusText ?? "");
-      Get.offAndToNamed(AppPages.FED_AUTH_LOGIN);
+      Get.offAndToNamed(AppPages.FED_AUTH_LOGIN_TEST);
     } else {
       // showCustomSnackBar('${response.body}');
 
@@ -2085,7 +2089,7 @@ class HomeController extends GetxController {
       }
     } else if (response.statusCode == 401) {
       responseModel = ResponseModel(false, response.statusText ?? "");
-      Get.offAndToNamed(AppPages.FED_AUTH_LOGIN);
+      Get.offAndToNamed(AppPages.FED_AUTH_LOGIN_TEST);
     } else {
       responseModel = ResponseModel(false, response.statusText ?? "");
     }
@@ -2132,7 +2136,7 @@ class HomeController extends GetxController {
       }
     } else if (response.statusCode == 401) {
       responseModel = ResponseModel(false, response.statusText ?? "");
-      Get.offAndToNamed(AppPages.FED_AUTH_LOGIN);
+      Get.offAndToNamed(AppPages.FED_AUTH_LOGIN_TEST);
     } else {
       responseModel = ResponseModel(false, response.statusText ?? "");
     }
@@ -2410,7 +2414,7 @@ class HomeController extends GetxController {
       }
     } else if (response.statusCode == 401) {
       responseModel = ResponseModel(false, response.statusText ?? "");
-      Get.offAndToNamed(AppPages.FED_AUTH_LOGIN);
+      Get.offAndToNamed(AppPages.FED_AUTH_LOGIN_TEST);
     } else {
       // Logger().e(response.body);
       responseModel = ResponseModel(false, response.statusText ?? "");
@@ -2731,7 +2735,7 @@ class HomeController extends GetxController {
       }
     } else if (response.statusCode == 401) {
       responseModel = ResponseModel(false, response.statusText ?? "");
-      Get.offAndToNamed(AppPages.FED_AUTH_LOGIN);
+      Get.offAndToNamed(AppPages.FED_AUTH_LOGIN_TEST);
     } else {
       // Logger().e(
       //     "===>Status Code:${response.statusCode} Name:$name --Type:$type  :${response.body}");
@@ -3015,7 +3019,7 @@ class HomeController extends GetxController {
       }
     } else if (response.statusCode == 401) {
       responseModel = ResponseModel(false, response.statusText ?? "");
-      Get.offAndToNamed(AppPages.FED_AUTH_LOGIN);
+      Get.offAndToNamed(AppPages.FED_AUTH_LOGIN_TEST);
     } else {
       // Logger().e('==>Focus Brand $type $name ${response.body}');
       responseModel = ResponseModel(false, response.statusText ?? "");
@@ -3041,6 +3045,60 @@ class HomeController extends GetxController {
     }
     stopWatch.stop();
     stopWatch.reset();
+    update();
+    return responseModel;
+  }
+
+  Future<ResponseModel> getPersonaSelected() async {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _isFilterLoading = true;
+      update();
+    });
+    var stopWatch = Stopwatch();
+    stopWatch.reset();
+    stopWatch.start();
+    Logger().log(
+        Level.debug, '===> Persona Start: ${stopWatch.elapsed.toString()}');
+    SharedPreferences session = await SharedPreferences.getInstance();
+    Response response = await homeRepo.getPersonaSelect({
+      "endPoint": "appPersona",
+      "query": {
+        "uid": session.getString(AppConstants.UID),
+        "token": globals.FCMToken,
+        "persona": "Sales Team",
+        "geo": "allIndia",
+        "module": "Business Overview"
+      }
+    });
+    ResponseModel responseModel;
+    if (response.statusCode == 200) {
+      if (response.body["successful"].toString().toLowerCase() == 'true') {
+        // final data = response.body["data"];
+        // if (data != null) {
+        //   monthFilters = List<String>.from(data!.map((x) => x));
+        // }
+        print('Persona ================= Success');
+        responseModel = ResponseModel(true, 'Success');
+      } else {
+        // showCustomSnackBar(response.body["message"] ?? '');
+        print('Persona ================= Something went wrong');
+        responseModel = ResponseModel(false, 'Something went wrong');
+      }
+    }
+    else if (response.statusCode == 401) {
+      responseModel = ResponseModel(false, response.statusText ?? "");
+      Get.offAndToNamed(AppPages.FED_AUTH_LOGIN_TEST);
+    }
+    else {
+      responseModel = ResponseModel(false, response.statusText ?? "");
+    }
+    //Api Calling Response time
+    Logger().log(
+        Level.debug, '===> Persona End : ${stopWatch.elapsed.toString()}');
+    stopWatch.stop();
+    stopWatch.reset();
+    //
+    _isFilterLoading = false;
     update();
     return responseModel;
   }

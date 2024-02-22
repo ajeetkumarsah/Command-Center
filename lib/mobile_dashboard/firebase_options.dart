@@ -29,12 +29,12 @@ class DefaultFirebaseOptions {
       case TargetPlatform.windows:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for windows - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
+              'you can reconfigure this by running the FlutterFire CLI again.',
         );
       case TargetPlatform.linux:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for linux - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
+              'you can reconfigure this by running the FlutterFire CLI again.',
         );
       default:
         throw UnsupportedError(
@@ -44,38 +44,38 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyBDtUkt2Jtl8UCl0C-JT1lbQJSHUYhk1hE',
-    appId: '1:589025977698:web:d7d9e64bf1eddad237383b',
-    messagingSenderId: '589025977698',
-    projectId: 'command-center-6b1dc',
-    authDomain: 'command-center-6b1dc.firebaseapp.com',
-    storageBucket: 'command-center-6b1dc.appspot.com',
-    measurementId: 'G-7TJKGZZLFH',
+    apiKey: 'AIzaSyAVDU1EisvfVd3LB8vFBI7dOyEsipayaXQ',
+    appId: '1:966656788419:web:875cb09c977378a51c5f76',
+    messagingSenderId: '966656788419',
+    projectId: 'comandc-99a4a',
+    authDomain: 'comandc-99a4a.firebaseapp.com',
+    storageBucket: 'comandc-99a4a.appspot.com',
+    measurementId: 'G-F3G4J9C5L2',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyBnaufQD9LJn1vl2i63mwL41jy15_FUEqw',
-    appId: '1:589025977698:android:fb51835de8a7760f37383b',
-    messagingSenderId: '589025977698',
-    projectId: 'command-center-6b1dc',
-    storageBucket: 'command-center-6b1dc.appspot.com',
+    apiKey: 'AIzaSyC27DopIenlyV-E_BD7g1Lgk8mEJQaoUgE',
+    appId: '1:966656788419:android:045e731bcc7b42961c5f76',
+    messagingSenderId: '966656788419',
+    projectId: 'comandc-99a4a',
+    storageBucket: 'comandc-99a4a.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyDZ2VbnloYNFeAluSc2GN3kN8O7h9933xU',
-    appId: '1:589025977698:ios:0383887986812c0b37383b',
-    messagingSenderId: '589025977698',
-    projectId: 'command-center-6b1dc',
-    storageBucket: 'command-center-6b1dc.appspot.com',
-    iosBundleId: 'com.example.pgCommandCenter',
+    apiKey: 'AIzaSyAP4CdUd7FnrgcspZqGRXsqkogzngFaSnk',
+    appId: '1:966656788419:ios:4399c6a779fb3bd31c5f76',
+    messagingSenderId: '966656788419',
+    projectId: 'comandc-99a4a',
+    storageBucket: 'comandc-99a4a.appspot.com',
+    iosBundleId: 'com.commandcentre.command-centre',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyDZ2VbnloYNFeAluSc2GN3kN8O7h9933xU',
-    appId: '1:589025977698:ios:0383887986812c0b37383b',
-    messagingSenderId: '589025977698',
-    projectId: 'command-center-6b1dc',
-    storageBucket: 'command-center-6b1dc.appspot.com',
-    iosBundleId: 'com.example.pgCommandCenter',
+    apiKey: 'AIzaSyAP4CdUd7FnrgcspZqGRXsqkogzngFaSnk',
+    appId: '1:966656788419:ios:c1eee802c9ed66f11c5f76',
+    messagingSenderId: '966656788419',
+    projectId: 'comandc-99a4a',
+    storageBucket: 'comandc-99a4a.appspot.com',
+    iosBundleId: 'tranzita.pgMumbaiCommandCentreMobile.RunnerTests',
   );
 }

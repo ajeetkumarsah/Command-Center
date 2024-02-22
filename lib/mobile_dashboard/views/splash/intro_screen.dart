@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -21,7 +22,7 @@ class _IntroScreenState extends State<IntroScreen> {
   final controller = Get.put(HomeController(homeRepo: Get.find()));
   Future<void> _onIntroEnd(context) async {
     // SharedPreferencesUtils.setBool('seen', true);
-    Get.offAndToNamed(AppPages.FED_AUTH_LOGIN);
+    Get.offAndToNamed(AppPages.FED_AUTH_LOGIN_TEST);
     // Navigator.pushReplacement(
     //     context,
     //     MaterialPageRoute(
@@ -31,7 +32,7 @@ class _IntroScreenState extends State<IntroScreen> {
   @override
   void initState() {
     super.initState();
-
+    FirebaseCrashlytics.instance.log("Intro Started");
     Timer(const Duration(seconds: 2), () {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         setState(() {
@@ -39,6 +40,7 @@ class _IntroScreenState extends State<IntroScreen> {
         });
       });
     });
+    FirebaseCrashlytics.instance.log("Intro Seen Check");
     controller.setSeen(true);
   }
 
@@ -168,7 +170,7 @@ class _IntroScreenState extends State<IntroScreen> {
                           _flag = !_flag;
                           _onIntroEnd(context);
                         });
-                        Get.offAndToNamed(AppPages.FED_AUTH_LOGIN);
+                        Get.offAndToNamed(AppPages.FED_AUTH_LOGIN_TEST);
                         // Navigator.pushReplacementNamed(
                         //     context, RoutesName.pgl.ogin);
                       },

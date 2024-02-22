@@ -1,3 +1,4 @@
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -60,7 +61,7 @@ class _SelectGeoScreenState extends State<SelectGeoScreen>
   @override
   void initState() {
     super.initState();
-
+    FirebaseCrashlytics.instance.log("Select Geo Started");
     _animationController =
         AnimationController(duration: const Duration(seconds: 1), vsync: this);
 
@@ -420,6 +421,7 @@ class _SelectGeoScreenState extends State<SelectGeoScreen>
                     width: size.width,
                     child: ElevatedButton(
                       onPressed: () async {
+                        FirebaseCrashlytics.instance.log("Select Geo Selected");
                         ctlr.savePurpose('business');
                         if (selectedContainerIndex == 1) {
                           ctlr.onChangeGeo('All India', 'All India');

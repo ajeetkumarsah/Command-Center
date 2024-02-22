@@ -37,7 +37,7 @@ class AppPages {
   AppPages._();
 
   static const LOGIN = Routes.LOGIN;
-  static const FED_AUTH_LOGIN = Routes.FED_AUTH_LOGIN;
+  // static const FED_AUTH_LOGIN = Routes.FED_AUTH_LOGIN;
   static const FED_AUTH_LOGIN_TEST = Routes.FED_AUTH_LOGIN_TEST;
   static const RETRY_ACCESS_DENIED = Routes.RETRY_ACCESS_DENIED;
   static const SELECT_PROFILE = Routes.SELECT_PROFILE;
@@ -74,11 +74,11 @@ class AppPages {
       page: () => const LoginScreen(),
       binding: HomeBinding(),
     ),
-    GetPage(
-      name: _Paths.FED_AUTH_LOGIN,
-      page: () => const FedAuthScreen(),
-      binding: HomeBinding(),
-    ),
+    // GetPage(
+    //   name: _Paths.FED_AUTH_LOGIN,
+    //   page: () => const FedAuthScreen(),
+    //   binding: HomeBinding(),
+    // ),
     GetPage(
       name: _Paths.FED_AUTH_LOGIN_TEST,
       page: () => const WebViewExample(),

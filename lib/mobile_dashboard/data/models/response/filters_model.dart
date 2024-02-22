@@ -65,7 +65,7 @@ class FiltersModel {
             ? List<String>.from(json["brand"].map((x) => x))
             : [],
         brandForm: json["brandForm"] != null
-            ? List<String>.from(json["brandForm"].map((x) => x))
+            ? List<String>.from(json["brandForm"].map((x) => x ?? ''))
             : [],
         subBrandForm: json["subBrandForm"] != null
             ? List<String>.from(json["subBrandForm"].map((x) => x))

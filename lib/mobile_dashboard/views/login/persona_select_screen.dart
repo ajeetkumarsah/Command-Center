@@ -1,3 +1,5 @@
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+
 import 'login_screen.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
@@ -36,6 +38,7 @@ class _PersonaScreenState extends State<PersonaScreen>
   @override
   void initState() {
     super.initState();
+    FirebaseCrashlytics.instance.log("Persona Started");
     _animationController = AnimationController(
         duration: const Duration(milliseconds: 700), vsync: this);
 
@@ -172,6 +175,7 @@ class _PersonaScreenState extends State<PersonaScreen>
                 width: size.width,
                 child: ElevatedButton(
                   onPressed: () async {
+                    FirebaseCrashlytics.instance.log("Persona Selected");
                     //// Obtain shared preferences.
                     final SharedPreferences prefs =
                         await SharedPreferences.getInstance();

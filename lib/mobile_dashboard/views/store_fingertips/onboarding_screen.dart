@@ -1,4 +1,7 @@
 import 'package:command_centre/mobile_dashboard/bindings/home_binding.dart';
+import 'package:command_centre/mobile_dashboard/controllers/home_controller.dart';
+import 'package:command_centre/mobile_dashboard/views/store_fingertips/new_appbar.dart';
+import 'package:command_centre/mobile_dashboard/views/summary/widgets/menu_bottomsheet.dart';
 import 'package:command_centre/utils/colors/colors.dart';
 import 'package:command_centre/utils/style/text_style.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
@@ -210,7 +213,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   padding: const EdgeInsets.only(left: 10, right: 10, top: 20),
                   margin: const EdgeInsets.only(bottom: 5),
                   width: double.infinity,
-                  height: activeIndex == 0 ? 220 : 263,
+                  height: activeIndex == 0 ? 220 : 280,
                   //activeIndex == 1 ? 280 :220,
                   decoration: const BoxDecoration(
                     borderRadius: BorderRadius.only(
@@ -223,7 +226,33 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       const SizedBox(height: 15),
-                      Image.asset("assets/png/Group 35.png", height: 31),
+                      Row(
+                        children: <Widget>[
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 32.0),
+                              child: Image.asset("assets/png/Group 35.png", height: 31),
+                            ),
+                          ),
+                          GetBuilder<HomeController>(
+                            init: HomeController(homeRepo: Get.find()),
+                            initState: (_) {},
+                            builder: (ctlr) {
+                              return IconButton(
+                                onPressed: () => Get.bottomSheet(
+                                  MenuBottomsheet(
+                                      version: ctlr.appVersion, isBusiness: false),
+                                  isScrollControlled: true,
+                                ),
+                                icon: const Icon(
+                                  Icons.menu_rounded,
+                                  color: AppColors.black,
+                                ),
+                              );
+                            },
+                          ),
+                        ],
+                      ),
                       const SizedBox(height: 10),
                       Image.asset("assets/png/Rectangle 426.png"),
                       const SizedBox(height: 30),

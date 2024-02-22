@@ -7,35 +7,20 @@ import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_constants.dart';
 import 'package:command_centre/mobile_dashboard/utils/routes/app_pages.dart';
 import 'package:command_centre/mobile_dashboard/views/login/access_denied_screen.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
-import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
-import 'package:google_fonts/google_fonts.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
-import 'package:command_centre/mobile_dashboard/utils/app_constants.dart';
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
-import 'package:command_centre/mobile_dashboard/utils/routes/app_pages.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:command_centre/mobile_dashboard/utils/global.dart' as globals;
-import 'package:command_centre/mobile_dashboard/views/login/access_denied_screen.dart';
 import 'package:webview_flutter_platform_interface/webview_flutter_platform_interface.dart';
-// Copyright 2013 The Flutter Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
 
-// ignore_for_file: public_member_api_docs
-
-// #docregion platform_imports
-// Import for Android features.
 import 'package:webview_flutter_android/webview_flutter_android.dart';
-// Import for iOS features.
-import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
-// #enddocregion platform_imports
 
 void main() => runApp(const MaterialApp(home: WebViewExample()));
 
@@ -137,14 +122,16 @@ class WebViewExample extends StatefulWidget {
 
 class _WebViewExampleState extends State<WebViewExample> {
   late final WebViewController _controller;
+
   // var cookieParams = const PlatformWebViewCookieManagerCreationParams();
   // late final PlatformWebViewController webViewController = PlatformWebViewController();
   late final WebViewCookieManager cookieManager = WebViewCookieManager();
-  final WebViewController webViewController =  WebViewController();
+  final WebViewController webViewController = WebViewController();
 
   @override
   void initState() {
     super.initState();
+    FirebaseCrashlytics.instance.log("Login Started");
     main();
     // #docregion platform_features
     late final PlatformWebViewControllerCreationParams params;
@@ -158,7 +145,7 @@ class _WebViewExampleState extends State<WebViewExample> {
     }
 
     final WebViewController controller =
-    WebViewController.fromPlatformCreationParams(params);
+        WebViewController.fromPlatformCreationParams(params);
     // #enddocregion platform_features
 
     controller
@@ -174,6 +161,7 @@ class _WebViewExampleState extends State<WebViewExample> {
           },
           onPageFinished: (String url) {
             debugPrint('Page finished loading: $url');
+            FirebaseCrashlytics.instance.log("Login : URL Loaded");
           },
           onWebResourceError: (WebResourceError error) {
             debugPrint('''
@@ -185,14 +173,17 @@ Page resource error:
           ''');
           },
           onNavigationRequest: (NavigationRequest request) {
-            if (request.url.startsWith('http://localhost:3000/callback?code=')) {
+            if (request.url
+                .startsWith('http://localhost:3000/callback?code=')) {
+              FirebaseCrashlytics.instance.log("Login : Code Generated");
               debugPrint('blocking navigation to ${request.url}');
               var uri = Uri.dataFromString(request.url);
               var code = uri.queryParameters['code'];
               Logger().wtf('Code $code');
               getUserProfileFromCode(code);
               return NavigationDecision.prevent;
-            }else if (request.url.contains('access_denied')) {
+            } else if (request.url.contains('access_denied')) {
+              FirebaseCrashlytics.instance.log("Login : Access Denied");
               Get.offAndToNamed(AppPages.RETRY_ACCESS_DENIED);
             }
             debugPrint('allowing navigation to ${request.url}');
@@ -214,7 +205,8 @@ Page resource error:
           );
         },
       )
-      ..loadRequest(Uri.parse('https://fedauthtst.pg.com/as/authorization.oauth2?client_id=IT%20Command%20Center&response_type=code&scope=openid%20pingid%20email%20profile&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fcallback&pfidpadapterid=ad..OAuth&rememberChoice=true&response_mode=query'));
+      ..loadRequest(Uri.parse(
+          'https://fedauthtst.pg.com/as/authorization.oauth2?client_id=IT%20Command%20Center&response_type=code&scope=openid%20pingid%20email%20profile&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fcallback&pfidpadapterid=ad..OAuth&rememberChoice=true&response_mode=query'));
 
     // #docregion platform_features
     if (controller.platform is AndroidWebViewController) {
@@ -230,9 +222,20 @@ Page resource error:
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.green,
+      // backgroundColor: Colors.green,
       appBar: AppBar(
-        title: Text('Command Center', style: GoogleFonts.ptSans(color: AppColors.black),),
+        title: Text(
+          'Command Center',
+          style: GoogleFonts.ptSans(color: AppColors.black),
+        ),
+        // actions: [
+        //   ElevatedButton(
+        //     onPressed: () {
+        //       FirebaseCrashlytics.instance.crash();
+        //     },
+        //     child: Text("Make Me Crash",style:  TextStyle(color: Colors.black)),
+        //   ),
+        // ],
         // This drop down menu demonstrates that Flutter widgets can be shown over the web view.
         // actions: <Widget>[
         //   NavigationControls(webViewController: _controller),
@@ -264,7 +267,7 @@ Page resource error:
     try {
       http.Response response;
       response =
-      await http.post(Uri.parse(AppConstants.FED_AUTH_TOKEN), headers: {
+          await http.post(Uri.parse(AppConstants.FED_AUTH_TOKEN), headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/x-www-form-urlencoded',
         'Cookie': 'PF=gAvY5cL83UUST7sxealWO2',
@@ -279,6 +282,7 @@ Page resource error:
       // debugPrint('===>User Profile Response:${response.body}');
       Logger().d('===>User Response:${response.body}');
       if (response.statusCode == 200) {
+        FirebaseCrashlytics.instance.log("Login : Token Verified");
         var mapResponse = json.decode(response.body);
 
         await session.setString(
@@ -286,14 +290,17 @@ Page resource error:
         globals.authorization = session.getString(AppConstants.ACCESS_TOKEN)!;
         employeeAuthentication(mapResponse['access_token']);
       } else {
-        if (mounted){
+        FirebaseCrashlytics.instance.log("Login : Token Not Verified");
+        if (mounted) {
           _onClearCookies(context);
-          _onClearCache(context);}
+          _onClearCache(context);
+        }
       }
     } on SocketException {
       _showToast();
     } catch (e) {
-      if (mounted){
+      FirebaseCrashlytics.instance.log("Login : Token Not Verified");
+      if (mounted) {
         _onClearCookies(context);
         _onClearCache(context);
       }
@@ -320,11 +327,12 @@ Page resource error:
             'Authorization': 'Bearer $authorization',
             'Ocp-Apim-Trace': true.toString(),
             'Ocp-Apim-Subscription-Key': AppConstants.SUBSCRIPTION_KEY,
-            'grant_type':'refresh_token'
+            'grant_type': 'refresh_token'
           });
       // debugPrint('==>Employee Response ${response.body}');
       Logger().v('====>Employee Response:${response.body}');
       if (response.statusCode == 200) {
+        FirebaseCrashlytics.instance.log("Login : User Verified");
         var mapResponse = json.decode(response.body);
         SharedPreferences session = await SharedPreferences.getInstance();
         await session.setString(AppConstants.TOKEN, mapResponse['token']);
@@ -332,9 +340,11 @@ Page resource error:
             AppConstants.EMAIL, mapResponse['user']['email']);
         await session.setString(
             AppConstants.NAME, mapResponse['user']['first_name']);
+        await session.setString(AppConstants.UID, mapResponse['user']['id']);
         globals.token = session.getString(AppConstants.TOKEN) ?? '';
         globals.name = session.getString(AppConstants.NAME) ?? '';
         globals.email = session.getString(AppConstants.EMAIL) ?? '';
+        globals.uId = session.getString(AppConstants.UID) ?? '';
         debugPrint('===>Before Token check');
         if (session.getString(AppConstants.DEFAULT_GEO) != null &&
             session.getString(AppConstants.DEFAULT_GEO)!.trim().isNotEmpty &&
@@ -349,32 +359,37 @@ Page resource error:
         } else {
           Get.offAndToNamed(AppPages.PERSONA_SCREEN);
         }
-      }
-      else if (response.statusCode == 401) {
-        if(mounted){
+      } else if (response.statusCode == 401) {
+        FirebaseCrashlytics.instance.log("Login : User Not Verified");
+        if (mounted) {
           _onClearCookies(context);
-          _onClearCache(context);}
+          _onClearCache(context);
+        }
         Get.offAndToNamed(AppPages.FED_AUTH_LOGIN_TEST);
       } else if (response.statusCode == 403) {
-        if(mounted){
+        FirebaseCrashlytics.instance.log("Login : User Not Verified");
+        if (mounted) {
           _onClearCookies(context);
-          _onClearCache(context);}
+          _onClearCache(context);
+        }
         Get.offAndToNamed(AppPages.ACCESS_DENIED,
             arguments: AccessDeniedBody(
                 statusCode: response.statusCode,
                 reason: "ACCESS_DENIED_BY_BACKEND"));
       } else {
-        if(mounted){
+        FirebaseCrashlytics.instance.log("Login : User Not Verified");
+        if (mounted) {
           _onClearCookies(context);
-          _onClearCache(context);}
+          _onClearCache(context);
+        }
         Get.offAndToNamed(AppPages.RETRY_ACCESS_DENIED);
       }
     } catch (e) {
-      if(mounted){
-
-
+      FirebaseCrashlytics.instance.log("Login : User Not Verified");
+      if (mounted) {
         _onClearCookies(context);
-        _onClearCache(context);}
+        _onClearCache(context);
+      }
     }
   }
 
@@ -388,11 +403,12 @@ Page resource error:
       ),
     );
   }
+
   Future<void> openDialog(HttpAuthRequest httpRequest) async {
     final TextEditingController usernameTextController =
-    TextEditingController();
+        TextEditingController();
     final TextEditingController passwordTextController =
-    TextEditingController();
+        TextEditingController();
 
     return showDialog(
       context: context,
@@ -448,9 +464,9 @@ Page resource error:
     await webViewController.clearCache();
     await webViewController.clearLocalStorage();
     // if (context.mounted) {
-      // ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-      //   content: Text('Cache cleared.'),
-      // ));
+    // ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+    //   content: Text('Cache cleared.'),
+    // ));
     // }
   }
 
@@ -460,12 +476,11 @@ Page resource error:
     String message = 'There were cookies. Now, they are gone!';
     if (!hadCookies) {
       message = 'There are no cookies.';
-
     }
     // if (context.mounted) {
-      // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      //   content: Text(message),
-      // ));
+    // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+    //   content: Text(message),
+    // ));
     // }
   }
 
@@ -476,6 +491,7 @@ Page resource error:
     await session.remove("token");
     await session.remove("name");
     await session.remove("email");
+    await session.remove("FCMToken");
   }
 }
 
@@ -519,31 +535,44 @@ class SampleMenu extends StatelessWidget {
             _onListCookies(context);
             break;
           case MenuOptions.clearCookies:
-            _onClearCookies(context);break;
+            _onClearCookies(context);
+            break;
           case MenuOptions.addToCache:
-            _onAddToCache(context);break;
+            _onAddToCache(context);
+            break;
           case MenuOptions.listCache:
-            _onListCache();break;
+            _onListCache();
+            break;
           case MenuOptions.clearCache:
-            _onClearCache(context);break;
+            _onClearCache(context);
+            break;
           case MenuOptions.navigationDelegate:
-            _onNavigationDelegateExample();break;
+            _onNavigationDelegateExample();
+            break;
           case MenuOptions.doPostRequest:
-            _onDoPostRequest();break;
+            _onDoPostRequest();
+            break;
           case MenuOptions.loadLocalFile:
-            _onLoadLocalFileExample();break;
+            _onLoadLocalFileExample();
+            break;
           case MenuOptions.loadFlutterAsset:
-            _onLoadFlutterAssetExample();break;
+            _onLoadFlutterAssetExample();
+            break;
           case MenuOptions.loadHtmlString:
-            _onLoadHtmlStringExample();break;
+            _onLoadHtmlStringExample();
+            break;
           case MenuOptions.transparentBackground:
-            _onTransparentBackground();break;
+            _onTransparentBackground();
+            break;
           case MenuOptions.setCookie:
-            _onSetCookie();break;
+            _onSetCookie();
+            break;
           case MenuOptions.logExample:
-            _onLogExample();break;
+            _onLogExample();
+            break;
           case MenuOptions.basicAuthentication:
-            _promptForUrl(context);break;
+            _promptForUrl(context);
+            break;
         }
       },
       itemBuilder: (BuildContext context) => <PopupMenuItem<MenuOptions>>[
@@ -650,7 +679,7 @@ class SampleMenu extends StatelessWidget {
 
   Future<void> _onListCache() {
     return webViewController.runJavaScript('caches.keys()'
-    // ignore: missing_whitespace_between_adjacent_strings
+        // ignore: missing_whitespace_between_adjacent_strings
         '.then((cacheKeys) => JSON.stringify({"cacheKeys" : cacheKeys, "localStorage" : localStorage}))'
         '.then((caches) => Toaster.postMessage(caches))');
   }
@@ -733,7 +762,7 @@ class SampleMenu extends StatelessWidget {
     }
     final List<String> cookieList = cookies.split(';');
     final Iterable<Text> cookieWidgets =
-    cookieList.map((String cookie) => Text(cookie));
+        cookieList.map((String cookie) => Text(cookie));
     return Column(
       mainAxisAlignment: MainAxisAlignment.end,
       mainAxisSize: MainAxisSize.min,

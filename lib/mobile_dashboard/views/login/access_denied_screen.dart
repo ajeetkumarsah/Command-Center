@@ -100,8 +100,7 @@ class _AccessDeniedState extends State<AccessDeniedScreen> {
                     // ),
                     textStyle: const TextStyle(
                         // color: kPrimaryColor
-                        ),
-                    primary: Colors.white,
+                        ), backgroundColor: Colors.white,
                     // color: kPrimaryColor,
                     // textColor: Colors.white,
                   ),
@@ -172,7 +171,8 @@ class _AccessDeniedState extends State<AccessDeniedScreen> {
     await session.remove("token");
     await session.remove("name");
     await session.remove("email");
-    Get.offAndToNamed(AppPages.FED_AUTH_LOGIN);
+    await session.remove("FCMToken");
+    Get.offAndToNamed(AppPages.FED_AUTH_LOGIN_TEST);
     // Navigator.of(context).pushAndRemoveUntil(
     //   // the new route
     //   MaterialPageRoute(

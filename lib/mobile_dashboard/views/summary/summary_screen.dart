@@ -1,3 +1,4 @@
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:flutter/material.dart';
@@ -28,6 +29,7 @@ class SummaryScreen extends StatefulWidget {
 class _SummaryScreenState extends State<SummaryScreen> {
   bool isFirst = true;
   void initCall(HomeController ctlr) async {
+    FirebaseCrashlytics.instance.log("Summary Started");
     if (isFirst) {
       isFirst = false;
       WidgetsBinding.instance.addPostFrameCallback((_) async {

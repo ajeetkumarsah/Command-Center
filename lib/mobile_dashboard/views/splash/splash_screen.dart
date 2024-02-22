@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'dart:io' show Platform;
@@ -28,7 +29,8 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void startTimer() {
-    Timer(const Duration(seconds: 5), () async {
+    FirebaseCrashlytics.instance.log("Splash Started");
+    Timer(const Duration(seconds: 3), () async {
       bool seen = await controller.getSeen();
       var token = await controller.getUserToken();
       var geo = await controller.getGeo();
@@ -37,28 +39,32 @@ class _SplashScreenState extends State<SplashScreen> {
 
       if (seen) {
         if (token.isNotEmpty && accessToken.isNotEmpty) {
-          if (controller.configModel != null) {
-            if (controller.configModel?.onMaintenance ?? false) {
-              Get.offAndToNamed(AppPages.maintenanceScreen);
-            } else {
-              if ((Platform.isAndroid
-                      ? controller.configModel?.apkVersion ?? ''
-                      : controller.configModel?.apkVersion ?? '') !=
-                  AppConstants.APP_VERSION) {
-                Get.offAndToNamed(AppPages.updateScreen);
-              } else {
+          FirebaseCrashlytics.instance.log("Splash Token Check");
+          // if (controller.configModel != null) {
+            // if (controller.configModel?.onMaintenance ?? false) {
+            //   Get.offAndToNamed(AppPages.maintenanceScreen);
+            // } else {
+            //   if ((Platform.isAndroid
+            //           ? controller.configModel?.apkVersion ?? ''
+            //           : controller.configModel?.apkVersion ?? '') !=
+            //       AppConstants.APP_VERSION) {
+            //     Get.offAndToNamed(AppPages.updateScreen);
+            //   } else {
                 if (geo.isNotEmpty && geoValue.isNotEmpty) {
+                  FirebaseCrashlytics.instance.log("Splash Geo Check");
                   debugPrint('===>Splash Geo $geo Value $geoValue');
                   Get.offAndToNamed(AppPages.INITIAL);
                   // Get.offAndToNamed(AppPages.PERSONA_SCREEN);
-                } else {
+                }
+                else {
                   Get.offAndToNamed(AppPages.PERSONA_SCREEN);
                 }
-              }
-            }
-          }
+            //   }
+            // }
+          // }
         } else {
-          Get.offAndToNamed(AppPages.FED_AUTH_LOGIN);
+          FirebaseCrashlytics.instance.log("Splash Token False");
+          Get.offAndToNamed(AppPages.FED_AUTH_LOGIN_TEST);
         }
       } else {
         Get.offAndToNamed(AppPages.INTRO_SCREEN);
@@ -107,8 +113,11 @@ class _SplashScreenState extends State<SplashScreen> {
               //     width: 150,
               //   ),
               // ),
+
+
             ),
           ),
+
         ],
       ),
     );

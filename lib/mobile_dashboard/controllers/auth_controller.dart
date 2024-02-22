@@ -31,7 +31,7 @@ class AuthController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    getConfig();
+    // getConfig();
     getAllFilters();
   }
 
@@ -135,9 +135,9 @@ class AuthController extends GetxController {
           _filtersModel = FiltersModel.fromJson(data[0]);
           if (_filtersModel != null) {
             _filtersModel?.district.removeWhere(
-                (element) => element == 'Sri Lanka' || element == 'Nepal');
+                    (element) => element == 'Sri Lanka' || element == 'Nepal');
             _filtersModel?.site.removeWhere((element) =>
-                element == 'Bhutan' ||
+            element == 'Bhutan' ||
                 element == 'Test Faridabad' ||
                 element == 'TEST DEHRADUN' ||
                 element == 'Test Bhopal' ||
@@ -153,7 +153,7 @@ class AuthController extends GetxController {
       }
     } else if (response.statusCode == 401) {
       responseModel = ResponseModel(false, response.statusText ?? "");
-      Get.offAndToNamed(AppPages.FED_AUTH_LOGIN);
+      Get.offAndToNamed(AppPages.FED_AUTH_LOGIN_TEST);
     } else {
       responseModel = ResponseModel(false, response.statusText ?? "");
     }
@@ -168,7 +168,7 @@ class AuthController extends GetxController {
       update();
     });
     Response response =
-        await authRepo.getConfig({"appVersion": true, "inventory": false});
+    await authRepo.getConfig({"appVersion": true, "inventory": false});
     ResponseModel responseModel;
     if (response.statusCode == 200) {
       if (response.body["successful"].toString().toLowerCase() == 'true') {
@@ -184,7 +184,7 @@ class AuthController extends GetxController {
       }
     } else if (response.statusCode == 401) {
       responseModel = ResponseModel(false, response.statusText ?? "");
-      Get.offAndToNamed(AppPages.FED_AUTH_LOGIN);
+      Get.offAndToNamed(AppPages.FED_AUTH_LOGIN_TEST);
     } else {
       responseModel = ResponseModel(false, response.statusText ?? "");
     }
