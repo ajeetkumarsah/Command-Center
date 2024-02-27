@@ -1,5 +1,8 @@
+import 'package:command_centre/activities/google_map.dart';
 import 'package:command_centre/mobile_dashboard/push_notification.dart';
+import 'package:command_centre/mobile_dashboard/views/store_fingertips/onboarding_screen.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
@@ -29,6 +32,8 @@ void main() async {
   FirebaseMessaging.onBackgroundMessage(_firebaseBackgroundMessage);
   FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
   FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
+  var initializationSettingsAndroid =
+  const AndroidInitializationSettings('@mipmap/ic_launcher');
   Future<bool> securityCheck() async {
     bool isJailBroken = await SafeDevice.isJailBroken;
     bool isCanMockLocation = await SafeDevice.canMockLocation;
@@ -72,6 +77,7 @@ void main() async {
     GetMaterialApp(
       title: "Command Center",
       initialRoute: AppPages.SPLASH_SCREEN,
+      // home: const ClusteringPage(),
       getPages: AppPages.routes,
       debugShowCheckedModeBanner: false,
     ),

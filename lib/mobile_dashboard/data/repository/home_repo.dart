@@ -187,12 +187,11 @@ class HomeRepo {
     return await apiClient.postData(AppConstants.FILTERS, body, headers: {});
   }
 
-  Future<Response> getPersonaSelect(Map<String, dynamic> body) async {
-    return await apiClient.postData(AppConstants.PERSONASELECT, body, headers: {});
-  }
-
-
   Future<Response> getMonthFilter(Map<String, dynamic> body) async {
     return await apiClient.postData(AppConstants.FILTERS, body, headers: {});
+  }
+
+  Future<Response> getFeedback(Map<String, dynamic> body) async {
+    return await apiClient.postData(AppConstants.CHANNELLIST, body, headers: {});
   }
 }

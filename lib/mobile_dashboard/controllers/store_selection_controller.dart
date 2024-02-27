@@ -1,3 +1,4 @@
+import 'package:command_centre/mobile_dashboard/data/models/response/map_data_model.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:command_centre/mobile_dashboard/utils/routes/app_pages.dart';
@@ -13,10 +14,13 @@ class StoreSelectionController extends GetxController {
       _isDistributorLoading = false,
       _isBranchLoading = false,
       _isChannelLoading = false;
+     // _isSelectedManually = false;
+
   bool get isLoading => _isLoading;
   bool get isDistributorLoading => _isDistributorLoading;
   bool get isBranchLoading => _isBranchLoading;
   bool get isChannelLoading => _isChannelLoading;
+  // bool get isSelectedManually => _isSelectedManually;
   //
 
   String? _selectedBranch;
@@ -32,10 +36,14 @@ class StoreSelectionController extends GetxController {
   String? get selectedYear => _selectedYear;
 
   List<String> distributors = [], branches = [], channels = [];
+  List<MapDataModel> locations = [];
 
   //
   StoreIntroModel? _storeIntroModel;
   StoreIntroModel? get storeIntroModel => _storeIntroModel;
+
+  MapDataModel? _mapDataModel;
+  MapDataModel? get mapDataModel => _mapDataModel;
 
   @override
   void onInit() {
@@ -82,35 +90,52 @@ class StoreSelectionController extends GetxController {
         _isDistributorLoading = true;
       } else if (type.contains('branch')) {
         _isBranchLoading = true;
-      } else if (type.contains('store')) {
+      } else if (type.contains('channel')) {
         _isChannelLoading = true;
       }
       update();
     });
     Response response = await storeRepo.getFilters({
-      "storeFilter": {
-        "name": query,
-        "type": type,
-        if (selectedDistributor != null &&
-            selectedDistributor!.isNotEmpty &&
-            type.contains('branch'))
-          'distributor': selectedDistributor,
-        if (selectedBranch != null && type.contains('store'))
-          'branch': selectedBranch
-      }
+        "endPoint": type,
+      if (selectedDistributor != null &&
+          selectedDistributor!.isNotEmpty &&
+          type.contains('branch'))
+        "query": {
+          "distributor": selectedDistributor
+        },
+
+      if (selectedBranch != null && type.contains('channel'))
+        "query": {
+          "distributor": selectedDistributor,
+          "branch": selectedBranch
+        }
+
+
+      // "storeFilter": {
+      //   "name": query,
+      //   "type": type,
+      //   if (selectedDistributor != null &&
+      //       selectedDistributor!.isNotEmpty &&
+      //       type.contains('branch'))
+      //     'distributor': selectedDistributor,
+      //   if (selectedBranch != null && type.contains('store'))
+      //     'branch': selectedBranch
+      // }
     });
 
     ResponseModel responseModel;
+    debugPrint('====> Channel List ');
     if (response.statusCode == 200) {
-      if (response.body["status"].toString().toLowerCase() == 'true') {
+
+      if (response.body["successful"].toString().toLowerCase() == 'true') {
         final data = response.body["data"];
         if (data != null && data.isNotEmpty) {
           if (type.contains('distributor')) {
             distributors = List<String>.from(data!.map((x) => x));
           } else if (type.contains('branch')) {
             branches = List<String>.from(data!.map((x) => x));
-          } else if (type.contains('store')) {
-            channels = List<String>.from(data!.map((x) => x));
+          } else if (type.contains('channel')) {
+            channels = List<String>.from(data!.map((x) => x.toString()));
           }
         }
         responseModel = ResponseModel(true, 'Success');
@@ -125,7 +150,7 @@ class StoreSelectionController extends GetxController {
       _isDistributorLoading = false;
     } else if (type.contains('branch')) {
       _isBranchLoading = false;
-    } else if (type.contains('store')) {
+    } else if (type.contains('channel')) {
       _isChannelLoading = false;
     }
     update();
@@ -134,7 +159,7 @@ class StoreSelectionController extends GetxController {
 
   void onChangeBranch(String value) {
     _selectedBranch = value;
-    getAllFilters('', type: 'store');
+    getAllFilters('', type: 'channel');
     update();
   }
 
@@ -164,7 +189,7 @@ class StoreSelectionController extends GetxController {
       "date": "Aug-$selectedYear",
       "distributor": selectedDistributor ?? '',
       "branch": selectedBranch ?? '',
-      "store": selectedChannel ?? '',
+      "channel": selectedChannel ?? '',
     });
     ResponseModel responseModel;
     if (response.statusCode == 200) {
@@ -179,6 +204,49 @@ class StoreSelectionController extends GetxController {
             saveFBTarget(_storeIntroModel?.fbTarget ?? '');
             saveFBAchieved(_storeIntroModel?.fbAchieved ?? '');
           }
+        }
+        responseModel = ResponseModel(true, 'Success');
+      } else {
+        // showCustomSnackBar(response.body["message"] ?? '');
+        responseModel = ResponseModel(false, 'Something went wrong');
+      }
+    } else if (response.statusCode == 401) {
+      Get.offAndToNamed(AppPages.FED_AUTH_LOGIN_TEST);
+      responseModel = ResponseModel(false, response.statusText ?? "");
+    } else {
+      responseModel = ResponseModel(false, response.statusText ?? "");
+    }
+    _isLoading = false;
+    update();
+    return responseModel;
+  }
+
+
+  Future<ResponseModel> mapStoreData() async {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _isLoading = true;
+      update();
+    });
+    Response response = await storeRepo.getFilters(
+        {
+          "endPoint": "store",
+          "query": {
+            "lat": "26.850000",
+            "long": "80.949997"
+          }
+    });
+    ResponseModel responseModel;
+    if (response.statusCode == 200) {
+      if (response.body["successful"].toString().toLowerCase() == 'true') {
+        final data = response.body["data"];
+        if (data != null && data.isNotEmpty) {
+          // _isSelectedManually = true;
+          locations.clear();
+          // Iterate through the data list and populate the locations list
+          for (var item in data) {
+            locations.add(MapDataModel.fromJson(item));
+          }
+          debugPrint('=====> locations $locations');
         }
         responseModel = ResponseModel(true, 'Success');
       } else {
