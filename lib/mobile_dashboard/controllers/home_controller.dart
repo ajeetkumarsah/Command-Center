@@ -3154,4 +3154,60 @@ class HomeController extends GetxController {
     return responseModel;
   }
 
+  Future<ResponseModel> postBugReport({required String file, required String userName, required String title, required String comment}) async {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _isFilterLoading = true;
+      update();
+    });
+    var stopWatch = Stopwatch();
+    stopWatch.reset();
+    stopWatch.start();
+    Logger().log(
+        Level.debug, '===> Bug Start: ${stopWatch.elapsed.toString()}');
+    SharedPreferences session = await SharedPreferences.getInstance();
+    Response response = await homeRepo.getFeedback({
+      "file": file,
+      "endPoint": "feedbackMail",
+      "userName": userName,
+      "title": title,
+      "comment": comment,
+    });
+
+    ResponseModel responseModel;
+    if (response.statusCode == 200) {
+      if (response.body["successful"].toString().toLowerCase() == 'true') {
+        print('Bug ================= Success');
+        responseModel = ResponseModel(true, 'Success');
+        Fluttertoast.showToast(
+            msg: "Thank you for your feedback.",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 10,
+            backgroundColor: Colors.blue,
+            textColor: Colors.white,
+            fontSize: 16.0
+        );
+      } else {
+        print('Bug ================= Something went wrong');
+        responseModel = ResponseModel(false, 'Something went wrong');
+      }
+    }
+    else if (response.statusCode == 401) {
+      responseModel = ResponseModel(false, response.statusText ?? "");
+      Get.offAndToNamed(AppPages.FED_AUTH_LOGIN_TEST);
+    }
+    else {
+      responseModel = ResponseModel(false, response.statusText ?? "");
+    }
+    //Api Calling Response time
+    Logger().log(
+        Level.debug, '===> Bug End : ${stopWatch.elapsed.toString()}');
+    stopWatch.stop();
+    stopWatch.reset();
+    //
+    _isFilterLoading = false;
+    update();
+    return responseModel;
+  }
+
 }
