@@ -4,6 +4,9 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../utils/app_constants.dart';
 
 Future<void> handleBackgroundMessage(RemoteMessage message) async {
   //
@@ -107,8 +110,10 @@ class FirebaseApi {
   }
 
   Future<void> initNotifications() async {
+    SharedPreferences session = await SharedPreferences.getInstance();
     await _firebaseMessaging.requestPermission();
     final fcmToken = await _firebaseMessaging.getToken();
+    await session.setString(AppConstants.FCMToken, fcmToken!);
     debugPrint('FCMToken  ==> $fcmToken');
     initPushNotifications();
     initLocalNotifications();

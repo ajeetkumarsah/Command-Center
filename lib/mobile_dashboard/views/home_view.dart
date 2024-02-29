@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import '../controllers/home_controller.dart';
@@ -8,6 +9,7 @@ import 'package:command_centre/mobile_dashboard/views/all_metrics/all_metrics_sc
 
 class HomeView extends GetView<HomeController> {
   const HomeView({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return GetBuilder<HomeController>(
@@ -31,6 +33,29 @@ class HomeView extends GetView<HomeController> {
               Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              // Container(
+              //     height: 40,
+              //     width: double.infinity,
+              //     color: AppColors.white,
+              //     child: StreamBuilder(
+              //         stream: FirebaseFirestore.instance
+              //             .collection("data_refresh")
+              //             .snapshots(),
+              //         builder: (context, snapshot) {
+              //           debugPrint("Print D $snapshot");
+              //           if (!snapshot.hasData) {
+              //             return const Center(
+              //               child: Text(
+              //                 'No Data...',
+              //               ),
+              //             );
+              //           } else {
+              //             // <DocumentSnapshot> items = snapshot.data.documents;
+              //
+              //             return  Text(snapshot.data.toString()) ;
+              //           }
+              //         })),
+              // const LinearProgressIndicator(color: AppColors.primary,),
               Container(
                 margin:
                     const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
