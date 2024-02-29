@@ -28,6 +28,7 @@ void main() async {
       options: DefaultFirebaseOptions.currentPlatform);
   await FirebaseApi().initNotifications();
   await HomeBinding().dependencies();
+  await Future.delayed(const Duration(seconds: 1));
   PushNotifications.init();
   FirebaseMessaging.onBackgroundMessage(_firebaseBackgroundMessage);
   FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;

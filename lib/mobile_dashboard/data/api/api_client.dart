@@ -253,12 +253,20 @@ class ApiClient extends GetxService {
         debugPrint('====> API Body: $body');
       }
       if (headers != null) {
-        headers['Authorization'] =
-            'Bearer ${sharedPreferences.getString(AppConstants.TOKEN)}';
         debugPrint(
-            '===>TOKEN:${sharedPreferences.getString(AppConstants.TOKEN)}');
+            '===>TOKEN:${sharedPreferences.getString(AppConstants.ACCESS_TOKEN)}');
+        headers['Authorization'] =
+        'Bearer ${sharedPreferences.getString(AppConstants.ACCESS_TOKEN)}';
         headers['Content-Type'] = 'application/json';
+        headers['Accept'] = '*/*';
+        headers['X_AUTH_TOKEN'] =
+            sharedPreferences.getString(AppConstants.ACCESS_TOKEN) ?? '';
+        headers['x-access-token'] =
+            sharedPreferences.getString(AppConstants.TOKEN) ?? '';
+        headers['Ocp-Apim-Trace'] = true.toString();
+        headers['Ocp-Apim-Subscription-Key'] = AppConstants.SUBSCRIPTION_KEY;
       }
+
       _mainHeaders = {'Content-Type': 'application/json'};
       Http.MultipartRequest _request =
           Http.MultipartRequest('POST', Uri.parse(appBaseUrl + uri));

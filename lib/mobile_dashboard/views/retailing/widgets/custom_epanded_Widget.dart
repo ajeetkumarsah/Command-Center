@@ -367,20 +367,20 @@ class _CustomExpandedWidgetState extends State<CustomExpandedWidget> {
                                 right: 25,
                                 child: widget.tabType ==
                                         'Retailing by Geography'
-                                    ? const Text('Switch \'Ind\' to Add Geo',
+                                    ? const Text('Switch \'Indirect\' to Add Geo',
                                         style: TextStyle(
                                             fontSize: 12,
                                             fontWeight: FontWeight.w400))
                                     : widget.tabType == 'Coverage by Geography'
                                         ? const Text(
-                                            'Switch \'Ind\' to Add Geo',
+                                            'Switch \'Indirect\' to Add Geo',
                                             style: TextStyle(
                                                 fontSize: 12,
                                                 fontWeight: FontWeight.w400))
                                         : widget.tabType ==
                                                 'Focus Brand by Geography'
                                             ? const Text(
-                                                'Switch \'Ind\' to Add Geo',
+                                                'Switch \'Indirect\' to Add Geo',
                                                 style: TextStyle(
                                                     fontSize: 12,
                                                     fontWeight:
@@ -388,7 +388,7 @@ class _CustomExpandedWidgetState extends State<CustomExpandedWidget> {
                                             : widget.tabType ==
                                                     'Golden Points by Geography'
                                                 ? const Text(
-                                                    'Switch \'Ind\' to Add Geo',
+                                                    'Switch \'Indirect\' to Add Geo',
                                                     style: TextStyle(
                                                         fontSize: 12,
                                                         fontWeight:

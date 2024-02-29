@@ -194,4 +194,8 @@ class HomeRepo {
   Future<Response> getFeedback(Map<String, dynamic> body) async {
     return await apiClient.postData(AppConstants.CHANNELLIST, body, headers: {});
   }
+
+  Future<Response> postBug(Map<String, String> body, List<MultipartBody> multipartBody) async {
+    return await apiClient.postMultipartData(AppConstants.CHANNELLIST,  body, multipartBody,  headers: {});
+  }
 }
