@@ -88,7 +88,7 @@ class StoreRepo {
   // }
 
   Future<Response> getFilters(Map<String, dynamic> body) async {
-    return await apiClient.postData(AppConstants.FILTERS, body, headers: {});
+    return await apiClient.postData(AppConstants.CHANNELLIST, body, headers: {});
   }
 
   Future<Response> postStoreData(Map<String, dynamic> body) async {

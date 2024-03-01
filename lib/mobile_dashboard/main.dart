@@ -29,6 +29,8 @@ void main() async {
   FirebaseMessaging.onBackgroundMessage(_firebaseBackgroundMessage);
   FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
   FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
+  // var initializationSettingsAndroid =
+  // const AndroidInitializationSettings('@mipmap/ic_launcher');
   Future<bool> securityCheck() async {
     bool isJailBroken = await SafeDevice.isJailBroken;
     bool isCanMockLocation = await SafeDevice.canMockLocation;
@@ -72,6 +74,7 @@ void main() async {
     GetMaterialApp(
       title: "Command Center",
       initialRoute: AppPages.SPLASH_SCREEN,
+      // home: const ClusteringPage(),
       getPages: AppPages.routes,
       debugShowCheckedModeBanner: false,
     ),

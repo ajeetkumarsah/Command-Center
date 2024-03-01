@@ -277,6 +277,7 @@ class _SalesDeepDiveScreenState extends State<SalesDeepDiveScreen> {
                         onTap: (v) {},
                         indicatorWeight: 3,
                         indicatorColor: AppColors.black,
+                        indicatorSize: TabBarIndicatorSize.tab,
                         tabs: [
                           Tab(
                             icon: Text(
@@ -645,9 +646,9 @@ class _SalesDeepDiveScreenState extends State<SalesDeepDiveScreen> {
                       fontWeight: FontWeight.w400,
                     ),
                     tabs: const [
-                      Tab(text: 'Category'),
-                      Tab(text: 'Brand'),
-                      Tab(text: 'SBF'),
+                      Tab(text: ' Category '),
+                      Tab(text: ' Brand '),
+                      Tab(text: ' SBF '),
                     ],
                   ),
                 ),

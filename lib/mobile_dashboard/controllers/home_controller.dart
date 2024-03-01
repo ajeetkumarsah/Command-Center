@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 import 'package:flutter/material.dart';
@@ -3049,7 +3050,7 @@ class HomeController extends GetxController {
     return responseModel;
   }
 
-  Future<ResponseModel> getPersonaSelected() async {
+  Future<ResponseModel> postPersonaSelected() async {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _isFilterLoading = true;
       update();
@@ -3058,9 +3059,9 @@ class HomeController extends GetxController {
     stopWatch.reset();
     stopWatch.start();
     Logger().log(
-        Level.debug, '===> Persona Start: ${stopWatch.elapsed.toString()}');
+        Level.debug, '===> FeedBack Start: ${stopWatch.elapsed.toString()}');
     SharedPreferences session = await SharedPreferences.getInstance();
-    Response response = await homeRepo.getPersonaSelect({
+    Response response = await homeRepo.getFeedback({
       "endPoint": "appPersona",
       "query": {
         "uid": session.getString(AppConstants.UID),
@@ -3073,15 +3074,10 @@ class HomeController extends GetxController {
     ResponseModel responseModel;
     if (response.statusCode == 200) {
       if (response.body["successful"].toString().toLowerCase() == 'true') {
-        // final data = response.body["data"];
-        // if (data != null) {
-        //   monthFilters = List<String>.from(data!.map((x) => x));
-        // }
-        print('Persona ================= Success');
+        print('FeedBack ================= Success');
         responseModel = ResponseModel(true, 'Success');
       } else {
-        // showCustomSnackBar(response.body["message"] ?? '');
-        print('Persona ================= Something went wrong');
+        print('FeedBack ================= Something went wrong');
         responseModel = ResponseModel(false, 'Something went wrong');
       }
     }
@@ -3094,7 +3090,7 @@ class HomeController extends GetxController {
     }
     //Api Calling Response time
     Logger().log(
-        Level.debug, '===> Persona End : ${stopWatch.elapsed.toString()}');
+        Level.debug, '===> FeedBack End : ${stopWatch.elapsed.toString()}');
     stopWatch.stop();
     stopWatch.reset();
     //
@@ -3102,4 +3098,116 @@ class HomeController extends GetxController {
     update();
     return responseModel;
   }
+
+  Future<ResponseModel> postFeedbackReport({required String userName, required String rating, required String feedback}) async {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _isFilterLoading = true;
+      update();
+    });
+    var stopWatch = Stopwatch();
+    stopWatch.reset();
+    stopWatch.start();
+    Logger().log(
+        Level.debug, '===> Feedback Start: ${stopWatch.elapsed.toString()}');
+    SharedPreferences session = await SharedPreferences.getInstance();
+    Response response = await homeRepo.getFeedback({
+      "endPoint": "feedbackMail",
+      "userName": userName,
+      "rating": rating,
+      "feedback": feedback,
+    });
+
+    ResponseModel responseModel;
+    if (response.statusCode == 200) {
+      if (response.body["successful"].toString().toLowerCase() == 'true') {
+        print('Feedback ================= Success');
+        responseModel = ResponseModel(true, 'Success');
+        Fluttertoast.showToast(
+            msg: "Thank you for your feedback.",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 10,
+            backgroundColor: Colors.blue,
+            textColor: Colors.white,
+            fontSize: 16.0
+        );
+      } else {
+        print('Feedback ================= Something went wrong');
+        responseModel = ResponseModel(false, 'Something went wrong');
+      }
+    }
+    else if (response.statusCode == 401) {
+      responseModel = ResponseModel(false, response.statusText ?? "");
+      Get.offAndToNamed(AppPages.FED_AUTH_LOGIN_TEST);
+    }
+    else {
+      responseModel = ResponseModel(false, response.statusText ?? "");
+    }
+    //Api Calling Response time
+    Logger().log(
+        Level.debug, '===> Feedback End : ${stopWatch.elapsed.toString()}');
+    stopWatch.stop();
+    stopWatch.reset();
+    //
+    _isFilterLoading = false;
+    update();
+    return responseModel;
+  }
+
+  Future<ResponseModel> postBugReport({required String file, required String userName, required String title, required String comment}) async {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _isFilterLoading = true;
+      update();
+    });
+    var stopWatch = Stopwatch();
+    stopWatch.reset();
+    stopWatch.start();
+    Logger().log(
+        Level.debug, '===> Bug Start: ${stopWatch.elapsed.toString()}');
+    SharedPreferences session = await SharedPreferences.getInstance();
+    Response response = await homeRepo.getFeedback({
+      "file": file,
+      "endPoint": "feedbackMail",
+      "userName": userName,
+      "title": title,
+      "comment": comment,
+    });
+
+    ResponseModel responseModel;
+    if (response.statusCode == 200) {
+      if (response.body["successful"].toString().toLowerCase() == 'true') {
+        print('Bug ================= Success');
+        responseModel = ResponseModel(true, 'Success');
+        Fluttertoast.showToast(
+            msg: "Thank you for your feedback.",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 10,
+            backgroundColor: Colors.blue,
+            textColor: Colors.white,
+            fontSize: 16.0
+        );
+      } else {
+        print('Bug ================= Something went wrong');
+        responseModel = ResponseModel(false, 'Something went wrong');
+      }
+    }
+    else if (response.statusCode == 401) {
+      responseModel = ResponseModel(false, response.statusText ?? "");
+      Get.offAndToNamed(AppPages.FED_AUTH_LOGIN_TEST);
+    }
+    else {
+      responseModel = ResponseModel(false, response.statusText ?? "");
+    }
+    //Api Calling Response time
+    Logger().log(
+        Level.debug, '===> Bug End : ${stopWatch.elapsed.toString()}');
+    stopWatch.stop();
+    stopWatch.reset();
+    //
+    _isFilterLoading = false;
+    update();
+    return responseModel;
+  }
+
 }

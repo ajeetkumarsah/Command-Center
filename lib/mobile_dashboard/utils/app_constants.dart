@@ -1,5 +1,5 @@
 class AppConstants {
-  static const String APP_VERSION = '1.0.6';
+  static const String APP_VERSION = '1.0.5';
   // static const BASE_URL =
   //     'https//cmndcntr-web-dev-web01.azurewebsites.net/'; //public/appData
   static const String BASE_URL =
@@ -20,6 +20,7 @@ class AppConstants {
   static const GP_DATA = 'appData/dgpComplianceTable';
   static const FOCUS_BRAND_DATA = 'appData/focusBrand';
   static const FILTERS = 'appData/branchlist';
+  static const CHANNELLIST = 'appData/channellist';
   static const PERSONASELECT = 'appData/storeList';
   static const STORE_DATA = 'appData/focusBrandTable';
   static const CONFIG = 'appData/inventory';

@@ -1,4 +1,4 @@
-import 'new_appbar.dart';
+import 'widgets/new_appbar.dart';
 import 'package:get/get.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -157,10 +157,10 @@ class StoreDashboardUI extends StatelessWidget {
                                           (MediaQuery.of(context).size.width -
                                                   60) *
                                               .8,
-                                      child: Row(
+                                      child:const Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
-                                        children: const [
+                                        children:  [
                                           Text("0.00K"),
                                           Text("87.71K"),
                                         ],

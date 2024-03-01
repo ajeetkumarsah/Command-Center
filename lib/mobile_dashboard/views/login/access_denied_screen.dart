@@ -64,7 +64,7 @@ class _AccessDeniedState extends State<AccessDeniedScreen> {
               Padding(
                 padding: const EdgeInsets.fromLTRB(30, 20, 30, 10),
                 child: Text(
-                  "You do not have access to this service. Reason Code ${args.reason} \n Please contact your Administrator.",
+                  "You do not have access to this service. Reason Code ${args.reason} \n Please contact the below.",
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                       fontSize: 16,
@@ -75,7 +75,7 @@ class _AccessDeniedState extends State<AccessDeniedScreen> {
               const Padding(
                 padding: EdgeInsets.only(top: 8.0),
                 child: Text(
-                  "DV, Nithin Balaa Ji (dv.nb@pg.com)\nTranzita Systems (support@tranzita.com)",
+                  "Nithin Balaaji (dv.nb@pg.com)\nTranzita Systems (support@tranzita.com)",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       fontSize: 16,
@@ -100,7 +100,8 @@ class _AccessDeniedState extends State<AccessDeniedScreen> {
                     // ),
                     textStyle: const TextStyle(
                         // color: kPrimaryColor
-                        ), backgroundColor: Colors.white,
+                        ),
+                    backgroundColor: Colors.white,
                     // color: kPrimaryColor,
                     // textColor: Colors.white,
                   ),

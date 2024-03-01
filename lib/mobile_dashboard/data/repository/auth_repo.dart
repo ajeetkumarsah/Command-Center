@@ -121,4 +121,8 @@ class AuthRepo {
   Future<Response> getConfig(Map<String, dynamic> body) async {
     return await apiClient.postData(AppConstants.CONFIG, body, headers: {});
   }
+
+  Future<Response> getPersonaSelect(Map<String, dynamic> body) async {
+    return await apiClient.postData(AppConstants.PERSONASELECT, body, headers: {});
+  }
 }

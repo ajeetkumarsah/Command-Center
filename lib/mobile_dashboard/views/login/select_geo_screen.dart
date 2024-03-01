@@ -421,6 +421,7 @@ class _SelectGeoScreenState extends State<SelectGeoScreen>
                     width: size.width,
                     child: ElevatedButton(
                       onPressed: () async {
+                        await ctlr.postPersonaSelected();
                         FirebaseCrashlytics.instance.log("Select Geo Selected");
                         ctlr.savePurpose('business');
                         if (selectedContainerIndex == 1) {
