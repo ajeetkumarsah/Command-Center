@@ -1,4 +1,3 @@
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../retailing/widgets/geography_bottomsheet.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import '../retailing/widgets/select_month_bottomsheet.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:command_centre/mobile_dashboard/utils/png_files.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
 import 'package:command_centre/mobile_dashboard/utils/date_converter.dart';
@@ -591,7 +591,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                                               100),
                                                     ),
                                                     padding: const EdgeInsets
-                                                            .symmetric(
+                                                        .symmetric(
                                                         horizontal: 10,
                                                         vertical: 4),
                                                     child: Text(
@@ -630,7 +630,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                                               100),
                                                     ),
                                                     padding: const EdgeInsets
-                                                            .symmetric(
+                                                        .symmetric(
                                                         horizontal: 10,
                                                         vertical: 4),
                                                     child: Text(
@@ -1231,7 +1231,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
                     ],
                   ),
 
-                  const SizedBox(height: 90),
+                  const SizedBox(height: 110),
                   // ...ctlr.summaryData
                   //     .map(
                   //       (e) => const ListTile(

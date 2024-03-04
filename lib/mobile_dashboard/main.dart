@@ -23,9 +23,11 @@ void main() async {
   await Firebase.initializeApp(
       name: 'comandc-99a4a',
       options: DefaultFirebaseOptions.currentPlatform);
-  await FirebaseApi().initNotifications();
+  await Future.delayed(const Duration(seconds: 2));
+  // await FirebaseApi().initNotifications();
   await HomeBinding().dependencies();
-  PushNotifications.init();
+
+  await PushNotifications.init();
   FirebaseMessaging.onBackgroundMessage(_firebaseBackgroundMessage);
   FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
   FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);

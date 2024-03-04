@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:command_centre/mobile_dashboard/controllers/home_controller.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
@@ -7,6 +8,10 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
 import 'package:command_centre/mobile_dashboard/utils/routes/app_pages.dart';
 import 'package:command_centre/mobile_dashboard/views/widgets/photo_gride.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../../utils/app_constants.dart';
 
 
 class ReportBugScreen extends StatefulWidget {
@@ -18,6 +23,7 @@ class ReportBugScreen extends StatefulWidget {
 
 class _ReportBugScreenState extends State<ReportBugScreen> {
   List<File> files = [];
+  bool isLoading = false;
   TextEditingController titleController = TextEditingController();
   TextEditingController commentController = TextEditingController();
   void pickMultiImages() async {
@@ -61,139 +67,157 @@ class _ReportBugScreenState extends State<ReportBugScreen> {
               ),
             ),
           ),
-          body: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 12),
-                child: TextFormField(
-                  controller: titleController,
-                  // maxLines: 5,
-                  decoration: InputDecoration(
-                    hintText: 'Title',
-                    labelText: 'Title',
-                    enabledBorder: OutlineInputBorder(
-                      borderSide:
-                      const BorderSide(width: .5, color: AppColors.primary),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide:
-                      const BorderSide(width: .5, color: AppColors.primary),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    border: OutlineInputBorder(
-                      borderSide:
-                      const BorderSide(width: .5, color: AppColors.primary),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                child: TextFormField(
-                  controller: commentController,
-                  maxLines: 5,
-                  decoration: InputDecoration(
-                    hintText: 'Comments',
-                    // labelText: 'Comments',
-                    enabledBorder: OutlineInputBorder(
-                      borderSide:
-                      const BorderSide(width: .5, color: AppColors.primary),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide:
-                      const BorderSide(width: .5, color: AppColors.primary),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    border: OutlineInputBorder(
-                      borderSide:
-                      const BorderSide(width: .5, color: AppColors.primary),
-                      borderRadius: BorderRadius.circular(12),
+          body: SingleChildScrollView(
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 12),
+                  child: TextFormField(
+                    controller: titleController,
+                    // maxLines: 5,
+                    decoration: InputDecoration(
+                      hintText: 'Title',
+                      labelText: 'Title',
+                      enabledBorder: OutlineInputBorder(
+                        borderSide:
+                        const BorderSide(width: .5, color: AppColors.primary),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide:
+                        const BorderSide(width: .5, color: AppColors.primary),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      border: OutlineInputBorder(
+                        borderSide:
+                        const BorderSide(width: .5, color: AppColors.primary),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                     ),
                   ),
                 ),
-              ),
-              if (files.isNotEmpty)
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
-                  child: PhotoGrid(
-                    imageUrls: files,
-                    onLongPress: () => pickMultiImages(),
-                    onImageClicked: (i) => Get.toNamed(
-                      AppPages.IMAGE_PREVIEW_WIDGET,
-                      arguments: files[i],
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  child: TextFormField(
+                    controller: commentController,
+                    maxLines: 5,
+                    decoration: InputDecoration(
+                      hintText: 'Comments',
+                      // labelText: 'Comments',
+                      enabledBorder: OutlineInputBorder(
+                        borderSide:
+                        const BorderSide(width: .5, color: AppColors.primary),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide:
+                        const BorderSide(width: .5, color: AppColors.primary),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      border: OutlineInputBorder(
+                        borderSide:
+                        const BorderSide(width: .5, color: AppColors.primary),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                     ),
-                    onExpandClicked: () =>
-                        Get.toNamed(AppPages.IMAGE_PREVIEW_LIST, arguments: files),
-                    maxImages: 4,
                   ),
                 ),
-              if (files.isEmpty)
-                GestureDetector(
-                  onTap: pickMultiImages,
+                if (files.isNotEmpty)
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: PhotoGrid(
+                      imageUrls: files,
+                      onLongPress: () => pickMultiImages(),
+                      onImageClicked: (i) => Get.toNamed(
+                        AppPages.IMAGE_PREVIEW_WIDGET,
+                        arguments: files[i],
+                      ),
+                      onExpandClicked: () =>
+                          Get.toNamed(AppPages.IMAGE_PREVIEW_LIST, arguments: files),
+                      maxImages: 4,
+                    ),
+                  ),
+                if (files.isEmpty)
+                  GestureDetector(
+                    onTap: pickMultiImages,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                          width: .5,
+                          color: AppColors.primary,
+                        ),
+                        color: AppColors.white,
+                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      margin:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Flexible(
+                            child: Text(
+                              'Attach file  ',
+                              style: GoogleFonts.ptSans(
+                                color: AppColors.black,
+                                fontWeight: FontWeight.w400,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ),
+                          const Icon(
+                            Icons.attach_file_outlined,
+                            color: AppColors.primary,
+                            size: 20,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                InkWell(
+                  onTap: () async{
+                    if(titleController.text.isNotEmpty && files != [] && commentController.text.isNotEmpty){
+                      isLoading = true;
+                      await ctlr.postBugReport(title: titleController.text, comment: commentController.text, file: PickedFile(files.first.path));
+                      isLoading = false;
+                      Get.back();
+                    }else{
+                      isLoading = true;
+                      Fluttertoast.showToast(
+                          msg: "Something went wrong",
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.BOTTOM,
+                          timeInSecForIosWeb: 10,
+                          backgroundColor: Colors.blue,
+                          textColor: Colors.white,
+                          fontSize: 16.0
+                      );
+                      isLoading = false;
+                    }
+                  },
                   child: Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8),
-                      border: Border.all(
-                        width: .5,
-                        color: AppColors.primary,
-                      ),
-                      color: AppColors.white,
+                      color: AppColors.primary,
                     ),
                     padding: const EdgeInsets.symmetric(vertical: 16),
-                    margin:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Flexible(
-                          child: Text(
-                            'Attach file  ',
-                            style: GoogleFonts.ptSans(
-                              color: AppColors.black,
-                              fontWeight: FontWeight.w400,
-                              fontSize: 16,
-                            ),
-                          ),
+                    margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                    child: isLoading ?
+                    const Center(child: CircularProgressIndicator(color: Colors.white,))
+                        :  Center(
+                      child: Text(
+                        'Submit',
+                        style: GoogleFonts.ptSansCaption(
+                          color: AppColors.white,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 18,
                         ),
-                        const Icon(
-                          Icons.attach_file_outlined,
-                          color: AppColors.primary,
-                          size: 20,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              InkWell(
-                onTap: (){
-                  // ctlr.postBugReport(file: '', userName: '', title: '', comment: '');
-                  print(files);
-                  print(titleController.text);
-                  print(commentController.text);
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    color: AppColors.primary,
-                  ),
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                  child: Center(
-                    child: Text(
-                      'Submit',
-                      style: GoogleFonts.ptSansCaption(
-                        color: AppColors.white,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 18,
                       ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         );
       },

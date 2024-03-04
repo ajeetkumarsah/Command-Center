@@ -352,7 +352,7 @@ class AllMetricsScreen extends StatelessWidget {
                                                             ),
                                                             padding:
                                                                 const EdgeInsets
-                                                                        .symmetric(
+                                                                    .symmetric(
                                                                     horizontal:
                                                                         10,
                                                                     vertical:
@@ -401,7 +401,7 @@ class AllMetricsScreen extends StatelessWidget {
                                                             ),
                                                             padding:
                                                                 const EdgeInsets
-                                                                        .symmetric(
+                                                                    .symmetric(
                                                                     horizontal:
                                                                         10,
                                                                     vertical:

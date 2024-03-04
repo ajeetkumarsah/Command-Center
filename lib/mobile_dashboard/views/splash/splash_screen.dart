@@ -40,6 +40,7 @@ class _SplashScreenState extends State<SplashScreen> {
       if (seen) {
         if (token.isNotEmpty && accessToken.isNotEmpty) {
           FirebaseCrashlytics.instance.log("Splash Token Check");
+          debugPrint('===>Firebase Carsh Analytics');
           if (controller.configModel != null) {
             if (controller.configModel?.onMaintenance ?? false) {
               Get.offAndToNamed(AppPages.maintenanceScreen);
@@ -55,8 +56,7 @@ class _SplashScreenState extends State<SplashScreen> {
                   debugPrint('===>Splash Geo $geo Value $geoValue');
                   Get.offAndToNamed(AppPages.INITIAL);
                   // Get.offAndToNamed(AppPages.PERSONA_SCREEN);
-                }
-                else {
+                } else {
                   Get.offAndToNamed(AppPages.PERSONA_SCREEN);
                 }
               }
@@ -96,28 +96,27 @@ class _SplashScreenState extends State<SplashScreen> {
           Align(
             alignment: Alignment.center,
             child: Padding(
-              padding: const EdgeInsets.only(bottom: 12.0),
-              child:
-    ClipRRect(
-    borderRadius: BorderRadius.circular(24.0),
-    child:          SvgPicture.asset('assets/svg/img_cc.svg',height: 150,
-      width: 150,),
-    )
+                padding: const EdgeInsets.only(bottom: 12.0),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(24.0),
+                  child: SvgPicture.asset(
+                    'assets/svg/img_cc.svg',
+                    height: 150,
+                    width: 150,
+                  ),
+                )
 
+                // Container(
+                //   decoration: BoxDecoration(color: Colors.white.withOpacity(0.7)),
+                //   child: Image.asset(
+                //     'assets/png/img_cc_transparent.png',
+                //     height: 150,
+                //     width: 150,
+                //   ),
+                // ),
 
-              // Container(
-              //   decoration: BoxDecoration(color: Colors.white.withOpacity(0.7)),
-              //   child: Image.asset(
-              //     'assets/png/img_cc_transparent.png',
-              //     height: 150,
-              //     width: 150,
-              //   ),
-              // ),
-
-
-            ),
+                ),
           ),
-
         ],
       ),
     );

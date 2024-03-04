@@ -2,12 +2,15 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import '../controllers/home_controller.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:command_centre/mobile_dashboard/views/summary/summary_screen.dart';
 import 'package:command_centre/mobile_dashboard/views/all_metrics/all_metrics_screen.dart';
 
 class HomeView extends GetView<HomeController> {
   const HomeView({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return GetBuilder<HomeController>(
@@ -31,9 +34,60 @@ class HomeView extends GetView<HomeController> {
               Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              StreamBuilder(
+                stream: FirebaseFirestore.instance
+                    .collection("data_refresh")
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  debugPrint("===>Print D ${snapshot.data?.docs.first.data()}");
+
+                  return AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 300),
+                    child: snapshot.data?.docs.first.data() != null &&
+                            snapshot.data?.docs.first.data()['isRefreshing'] !=
+                                null &&
+                            snapshot.data?.docs.first.data()['isRefreshing']
+                        ? AnimatedContainer(
+                            duration: const Duration(milliseconds: 500),
+                            height: 24,
+                            margin: const EdgeInsets.symmetric(horizontal: 42),
+                            decoration: const BoxDecoration(
+                              color: AppColors.white,
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(100),
+                                topRight: Radius.circular(100),
+                              ),
+                            ),
+                            width: double.infinity,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                LoadingAnimationWidget.fallingDot(
+                                  color: AppColors.primary,
+                                  size: 20,
+                                ),
+                                const SizedBox(width: 12),
+                                Flexible(
+                                  child: Text(
+                                    'Data is refreshing...',
+                                    style: GoogleFonts.ptSansCaption(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w300,
+                                      color: AppColors.primary,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
+                        : const SizedBox(),
+                  );
+
+                  ;
+                },
+              ),
               Container(
-                margin:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                margin: const EdgeInsets.only(left: 12, right: 12, bottom: 12),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(36),

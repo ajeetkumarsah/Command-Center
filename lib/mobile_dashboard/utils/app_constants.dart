@@ -1,5 +1,5 @@
 class AppConstants {
-  static const String APP_VERSION = '1.0.5';
+  static const String APP_VERSION = '1.0.6';
   // static const BASE_URL =
   //     'https//cmndcntr-web-dev-web01.azurewebsites.net/'; //public/appData
   static const String BASE_URL =

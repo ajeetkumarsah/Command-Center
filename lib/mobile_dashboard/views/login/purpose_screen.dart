@@ -1,3 +1,5 @@
+import 'package:command_centre/mobile_dashboard/push_notification.dart';
+
 import 'login_screen.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
@@ -199,7 +201,8 @@ class _PurposeScreenState extends State<PurposeScreen>
                 height: 56,
                 width: size.width,
                 child: ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async{
+                    // await PushNotifications.init();
                     Get.toNamed(AppPages.SELECT_GEO_SCREEN);
                     if (selectedContainerIndex == 1) {
                       //business visit

@@ -1,6 +1,9 @@
 import 'dart:convert';
+import 'dart:io';
+import 'package:command_centre/mobile_dashboard/data/api/api_client.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:logger/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
@@ -3154,7 +3157,7 @@ class HomeController extends GetxController {
     return responseModel;
   }
 
-  Future<ResponseModel> postBugReport({required String file, required String userName, required String title, required String comment}) async {
+  Future<ResponseModel> postBugReport({required PickedFile file, required String title, required String comment}) async {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _isFilterLoading = true;
       update();
@@ -3164,14 +3167,15 @@ class HomeController extends GetxController {
     stopWatch.start();
     Logger().log(
         Level.debug, '===> Bug Start: ${stopWatch.elapsed.toString()}');
-    SharedPreferences session = await SharedPreferences.getInstance();
-    Response response = await homeRepo.getFeedback({
-      "file": file,
+    Response response = await homeRepo.postBug(
+        {
       "endPoint": "feedbackMail",
-      "userName": userName,
+      "userName": getUserName(),
       "title": title,
       "comment": comment,
-    });
+    },
+    [MultipartBody('file', file)]
+    );
 
     ResponseModel responseModel;
     if (response.statusCode == 200) {
