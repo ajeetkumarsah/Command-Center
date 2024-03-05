@@ -1,10 +1,13 @@
 import 'package:command_centre/mobile_dashboard/data/models/response/map_data_model.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:command_centre/mobile_dashboard/utils/routes/app_pages.dart';
 import 'package:command_centre/mobile_dashboard/data/repository/store_repo.dart';
 import 'package:command_centre/mobile_dashboard/data/models/response/response_model.dart';
 import 'package:command_centre/mobile_dashboard/data/models/response/store_intro_model.dart';
+import 'package:latlong2/latlong.dart';
 
 class StoreSelectionController extends GetxController {
   final StoreRepo storeRepo;
@@ -13,13 +16,17 @@ class StoreSelectionController extends GetxController {
   bool _isLoading = false,
       _isDistributorLoading = false,
       _isBranchLoading = false,
-      _isChannelLoading = false;
+      _isChannelLoading = false,
+      _isMapLoading = false,
+      _isStoreLoading = false;
      // _isSelectedManually = false;
 
   bool get isLoading => _isLoading;
   bool get isDistributorLoading => _isDistributorLoading;
   bool get isBranchLoading => _isBranchLoading;
   bool get isChannelLoading => _isChannelLoading;
+  bool get isStoreLoading => _isStoreLoading;
+  bool get isMapLoading => _isMapLoading;
   // bool get isSelectedManually => _isSelectedManually;
   //
 
@@ -29,27 +36,35 @@ class StoreSelectionController extends GetxController {
   String? get selectedDistributor => _selectedDistributor;
   String? _selectedChannel;
   String? get selectedChannel => _selectedChannel;
+  String? _selectedStore;
+  String? get selectedStore => _selectedStore;
 
   String? _selectedMonth = 'Dec';
   String? get selectedMonth => _selectedMonth;
   String? _selectedYear = '2023';
   String? get selectedYear => _selectedYear;
 
-  List<String> distributors = [], branches = [], channels = [];
+  List<String> distributors = [], branches = [], channels = [], store = [];
   List<MapDataModel> locations = [];
 
   //
-  StoreIntroModel? _storeIntroModel;
-  StoreIntroModel? get storeIntroModel => _storeIntroModel;
+  List<StoreIntroModel> _storeIntroModel = [];
+  List<StoreIntroModel> get storeIntroModel => _storeIntroModel;
 
   MapDataModel? _mapDataModel;
   MapDataModel? get mapDataModel => _mapDataModel;
+
+  List<Marker> markers = [];
+  late LatLng _center;
+  late Position currentLocation;
 
   @override
   void onInit() {
     super.onInit();
     initData();
     getAllFilters('');
+    getUserLocation();
+    // mapStoreData();
     // getAllFilters('', type: 'branch');
   }
 
@@ -92,6 +107,8 @@ class StoreSelectionController extends GetxController {
         _isBranchLoading = true;
       } else if (type.contains('channel')) {
         _isChannelLoading = true;
+      }else if (type.contains('storeWithFilter')) {
+        _isStoreLoading = true;
       }
       update();
     });
@@ -108,6 +125,13 @@ class StoreSelectionController extends GetxController {
         "query": {
           "distributor": selectedDistributor,
           "branch": selectedBranch
+        },
+
+      if (selectedChannel != null && type.contains('storeWithFilter'))
+        "query": {
+          "distributor": selectedDistributor,
+          "branch": selectedBranch,
+          "channel": selectedChannel,
         }
 
 
@@ -118,7 +142,7 @@ class StoreSelectionController extends GetxController {
       //       selectedDistributor!.isNotEmpty &&
       //       type.contains('branch'))
       //     'distributor': selectedDistributor,
-      //   if (selectedBranch != null && type.contains('store'))
+      //   if (selectedBranch != null && type.contains('storeWithFilter'))
       //     'branch': selectedBranch
       // }
     });
@@ -136,6 +160,8 @@ class StoreSelectionController extends GetxController {
             branches = List<String>.from(data!.map((x) => x));
           } else if (type.contains('channel')) {
             channels = List<String>.from(data!.map((x) => x.toString()));
+          }else if (type.contains('storeWithFilter')) {
+            store = List<String>.from(data!.map((x) => x['storeName'].toString()).toList());
           }
         }
         responseModel = ResponseModel(true, 'Success');
@@ -152,6 +178,8 @@ class StoreSelectionController extends GetxController {
       _isBranchLoading = false;
     } else if (type.contains('channel')) {
       _isChannelLoading = false;
+    }else if (type.contains('storeWithFilter')) {
+      _isStoreLoading = false;
     }
     update();
     return responseModel;
@@ -171,7 +199,12 @@ class StoreSelectionController extends GetxController {
 
   void onChannelChange(String? value) {
     _selectedChannel = value;
+    getAllFilters('', type: 'storeWithFilter');
+    update();
+  }
 
+  void onStoreChange(String? value) {
+    _selectedStore = value;
     update();
   }
 
@@ -185,25 +218,35 @@ class StoreSelectionController extends GetxController {
       _isLoading = true;
       update();
     });
-    Response response = await storeRepo.postStoreData({
-      "date": "Aug-$selectedYear",
-      "distributor": selectedDistributor ?? '',
-      "branch": selectedBranch ?? '',
-      "channel": selectedChannel ?? '',
-    });
+    Response response = await storeRepo.postStoreData(
+        {
+          "endPoint": "storeWithFilter",
+          "query": {
+            "distributor": selectedDistributor ?? '',
+            "branch": selectedBranch ?? '',
+            "channel": selectedChannel ?? ''
+          }
+        }
+    //     {
+    //   "date": "Aug-$selectedYear",
+    //   "distributor": selectedDistributor ?? '',
+    //   "branch": selectedBranch ?? '',
+    //   "channel": selectedChannel ?? '',
+    // }
+    );
     ResponseModel responseModel;
     if (response.statusCode == 200) {
-      if (response.body["status"].toString().toLowerCase() == 'true') {
+      if (response.body["successful"].toString().toLowerCase() == 'true') {
         final data = response.body["data"];
         if (data != null && data.isNotEmpty) {
           //
-          _storeIntroModel = StoreIntroModel.fromJson(data);
-          if (_storeIntroModel != null) {
-            //
-            saveStore(selectedChannel ?? '');
-            saveFBTarget(_storeIntroModel?.fbTarget ?? '');
-            saveFBAchieved(_storeIntroModel?.fbAchieved ?? '');
-          }
+          _storeIntroModel = List<StoreIntroModel>.from(data!.map((x) => StoreIntroModel.fromJson(x)));
+          // if (_storeIntroModel.isNotEmpty) {
+          //   //
+          //   // saveStore(selectedChannel ?? '');
+          //   // saveFBTarget(_storeIntroModel?.Lat ?? '');
+          //   // saveFBAchieved(_storeIntroModel?.Long ?? '');
+          // }
         }
         responseModel = ResponseModel(true, 'Success');
       } else {
@@ -224,7 +267,7 @@ class StoreSelectionController extends GetxController {
 
   Future<ResponseModel> mapStoreData() async {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _isLoading = true;
+      _isMapLoading = true;
       update();
     });
     Response response = await storeRepo.getFilters(
@@ -240,12 +283,14 @@ class StoreSelectionController extends GetxController {
       if (response.body["successful"].toString().toLowerCase() == 'true') {
         final data = response.body["data"];
         if (data != null && data.isNotEmpty) {
+          fetchStoreData();
           // _isSelectedManually = true;
           locations.clear();
           // Iterate through the data list and populate the locations list
           for (var item in data) {
             locations.add(MapDataModel.fromJson(item));
           }
+
           debugPrint('=====> locations $locations');
         }
         responseModel = ResponseModel(true, 'Success');
@@ -259,8 +304,50 @@ class StoreSelectionController extends GetxController {
     } else {
       responseModel = ResponseModel(false, response.statusText ?? "");
     }
-    _isLoading = false;
+    _isMapLoading = false;
     update();
     return responseModel;
+  }
+
+  Future<void> fetchStoreData() async {
+    ResponseModel responseModel = await mapStoreData();
+    if (responseModel.isSuccess) {
+      markers = locations.map((location) {
+        return Marker(
+          point: LatLng(double.parse(location.lat!), double.parse(location.long!)),
+          width: 40,
+          height: 40,
+          alignment: Alignment.topCenter,
+          child: const Icon(Icons.location_on, size: 40),
+        );
+      }).toList();
+      // setState(() {});
+    } else {
+      // Handle error
+    }
+  }
+
+  String findStoreName(LatLng position) {
+    // Iterate through the store data to find the store name corresponding to the position
+    for (var store in locations) {
+      if (store.lat == position.latitude.toString() &&
+          store.long == position.longitude.toString()) {
+        return store.storeName!;
+      }
+    }
+    return 'Store Name Not Found';
+  }
+
+  Future<Position> locateUser() async {
+    return Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+  }
+
+  getUserLocation() async {
+    currentLocation = await locateUser();
+
+      _center = LatLng(currentLocation.latitude, currentLocation.longitude);
+    print('center $_center');
+
   }
 }

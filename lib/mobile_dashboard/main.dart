@@ -1,4 +1,5 @@
 import 'package:command_centre/mobile_dashboard/push_notification.dart';
+import 'package:command_centre/mobile_dashboard/views/store_fingertips/onboarding_screen.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
@@ -27,7 +28,7 @@ void main() async {
   // await FirebaseApi().initNotifications();
   await HomeBinding().dependencies();
 
-  await PushNotifications.init();
+  // await PushNotifications.init();
   FirebaseMessaging.onBackgroundMessage(_firebaseBackgroundMessage);
   FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
   FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
@@ -75,8 +76,8 @@ void main() async {
   runApp(
     GetMaterialApp(
       title: "Command Center",
-      initialRoute: AppPages.SPLASH_SCREEN,
-      // home: const ClusteringPage(),
+      // initialRoute: AppPages.SPLASH_SCREEN,
+      home: const OnboardingScreen(),
       getPages: AppPages.routes,
       debugShowCheckedModeBanner: false,
     ),

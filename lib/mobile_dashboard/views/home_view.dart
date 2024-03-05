@@ -83,7 +83,7 @@ class HomeView extends GetView<HomeController> {
                         : const SizedBox(),
                   );
 
-                  ;
+
                 },
               ),
               Container(

@@ -210,10 +210,10 @@ class StoreDashboardUI extends StatelessWidget {
                                           (MediaQuery.of(context).size.width -
                                                   60) *
                                               .9,
-                                      child: Row(
+                                      child: const Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
-                                        children: const [
+                                        children: [
                                           Text("0.00K"),
                                           Text("87.71K"),
                                         ],

@@ -2,9 +2,14 @@ import 'dart:convert';
 
 import 'package:command_centre/mobile_dashboard/bindings/home_binding.dart';
 import 'package:command_centre/mobile_dashboard/controllers/home_controller.dart';
+import 'package:command_centre/mobile_dashboard/data/models/response/response_model.dart';
+import 'package:command_centre/mobile_dashboard/views/store_fingertips/widgets/pop_up_window.dart';
 import 'package:command_centre/mobile_dashboard/views/summary/widgets/menu_bottomsheet.dart';
 import 'package:command_centre/utils/colors/colors.dart';
 import 'package:command_centre/utils/style/text_style.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
+import 'package:flutter_map_marker_popup/flutter_map_marker_popup.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +23,8 @@ import 'package:command_centre/mobile_dashboard/views/widgets/custom_shimmer.dar
 import 'package:command_centre/mobile_dashboard/views/widgets/custom_snackbar.dart';
 import 'package:command_centre/mobile_dashboard/controllers/store_selection_controller.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
+import 'package:latlong2/latlong.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await HomeBinding().dependencies();
@@ -35,7 +42,7 @@ class OnboardingScreen extends StatefulWidget {
   State<OnboardingScreen> createState() => _OnboardingScreenState();
 }
 
-class _OnboardingScreenState extends State<OnboardingScreen> {
+class _OnboardingScreenState extends State<OnboardingScreen> with TickerProviderStateMixin {
   bool isMapVisible = false;
   bool isDropDownVisible = true;
   bool visible = false;
@@ -43,12 +50,16 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   int get activeIndex => _activeIndex;
   bool isSelectedManually = false;
-  late final MapController controller = MapController(
-    initPosition: GeoPoint(
-      latitude: 26.850000,
-      longitude: 80.949997,
-    ),
-  );
+  // late final MapController controller = MapController(
+  //   initPosition: GeoPoint(
+  //     latitude: 26.8495355,
+  //     longitude: 80.9503142,
+  //   ),
+  // );
+  // late final List<Marker> _markers;
+
+  /// Used to trigger showing/hiding of popups.
+  final PopupController _popupLayerController = PopupController();
 
   final Key key = GlobalKey();
 
@@ -61,28 +72,41 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   ValueNotifier<List<GeoPoint>> roadPoints = ValueNotifier([]);
   ValueNotifier<bool> isTracking = ValueNotifier(false);
   List<MapDataModel> locations = [];
-
-  Future<void> mapStoreData() async {
-    final response = await http.get(Uri.parse('YOUR_API_ENDPOINT_HERE'));
-    if (response.statusCode == 200) {
-      final List<dynamic> data = json.decode(response.body)['data'];
-      locations.clear();
-      for (var item in data) {
-        locations.add(MapDataModel.fromJson(item));
-      }
-      print('Locations: $locations');
-    } else {
-      throw Exception('Failed to load data');
-    }
-  }
+  // late MapController controller;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+
+    // _markers = [
+    //   const LatLng(26.8495355, 80.9503142),
+    //   const LatLng(26.8491201, 80.9503638),
+    //   const LatLng(26.8490297, 80.9500805),
+    //   const LatLng(26.849085, 80.9503967),
+    //   const LatLng(26.8489831, 80.9500105),
+    //   const LatLng(26.8489202, 80.949958),
+    //   const LatLng(26.8488634, 80.9498171),
+    //   const LatLng(26.8488256, 80.9498532),
+    //   const LatLng(26.8488092, 80.9498438),
+    //   const LatLng(26.8488166, 80.9494567),
+    // ]
+    //     .map(
+    //       (markerPosition) => Marker(
+    //     point: markerPosition,
+    //     width: 40,
+    //     height: 40,
+    //     alignment: Alignment.topCenter,
+    //     child: const Icon(Icons.location_on, size: 40),
+    //   ),
+    // )
+    //     .toList();
   }
 
+
+
   void onChangePage() {
+    debugPrint("Active Index ===> $activeIndex");
     if (activeIndex < 1) {
       _activeIndex++;
     } else if (activeIndex == 2) {
@@ -93,7 +117,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   void onChangePageIndex(int value) {
-    debugPrint('===> $value');
     Future.delayed(const Duration(seconds: 2))
         .then((value) => Get.toNamed(AppPages.STORE_FINGERTIPS_SCREEN));
     if (activeIndex < 1) {
@@ -220,7 +243,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     return GetBuilder<StoreSelectionController>(
       init: StoreSelectionController(storeRepo: Get.find()),
       builder: (ctlr) {
-        debugPrint('Length ====> ${ctlr.locations.length}');
+        debugPrint('========>> ${ctlr.locations}');
         return Scaffold(
           backgroundColor: Colors.blue,
           body: SingleChildScrollView(
@@ -597,6 +620,65 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                 onChanged: (v) => ctlr.onChannelChange(v!),
                               ),
                       ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 30, vertical: 6),
+                        child: ctlr.isStoreLoading
+                            ? CustomShimmer(
+                          height: 50,
+                          width: MediaQuery.of(context).size.width,
+                          borderRadius: BorderRadius.circular(12),
+                        )
+                            : DropdownButtonFormField<String>(
+                          value: ctlr.selectedStore,
+                          menuMaxHeight: 300,
+                          dropdownColor: AppColors.primaryDark,
+                          hint: Text(
+                            'Store',
+                            style: GoogleFonts.ptSans(
+                              color: AppColors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                          isExpanded: true,
+                          decoration: const InputDecoration(
+                            border: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: AppColors.white,
+                              ),
+                            ),
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: AppColors.white,
+                              ),
+                            ),
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: AppColors.white,
+                              ),
+                            ),
+                          ),
+                          icon: const Icon(
+                            Icons.keyboard_arrow_down_rounded,
+                            color: AppColors.white,
+                          ),
+                          items: ctlr.store.map((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(
+                                value,
+                                style: GoogleFonts.ptSans(
+                                  color: AppColors.white,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                            );
+                          }).toList(),
+                          onChanged: (v) => ctlr.onStoreChange(v!),
+                        ),
+                      ),
                       // Padding(
                       //   padding: const EdgeInsets.symmetric(
                       //       horizontal: 30, vertical: 6),
@@ -678,14 +760,18 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                 if (ctlr.selectedDistributor != null &&
                                     ctlr.selectedBranch != null &&
                                     ctlr.selectedChannel != null) {
-                                  ctlr.postStoreData().then((v) {
-                                    if (ctlr.storeIntroModel != null) {
-                                      onChangePage();
-                                    } else {
-                                      showCustomSnackBar(
-                                          'Something went wrong!');
-                                    }
-                                  });
+                                  // ctlr.postStoreData().then((v) {
+                                  //   if (ctlr.storeIntroModel.isNotEmpty) {
+                                      // onChangePage();
+                                      // Future.delayed(const Duration(seconds: 2))
+                                      //     .then((value) =>
+                                          Get.offAndToNamed(AppPages.STORE_FINGERTIPS_SCREEN);
+                                      // );
+                                    // } else {
+                                    //   showCustomSnackBar(
+                                    //       'Something went wrong!');
+                                    // }
+                                  // });
                                 } else {
                                   showCustomSnackBar(
                                       'Please Select the required fields.');
@@ -694,9 +780,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                 onChangePage();
                               }
                             },
-                            //{
-                            // Get.to(const StoreFingertipsScreen());
-                            //},
                             child: Container(
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(100),
@@ -737,104 +820,54 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                 child: SizedBox(
                                   height: MediaQuery.of(context).size.height / 1.66,
                                   width: double.infinity,
-                                  child: OSMFlutter(
+                                  child:ctlr.markers.isEmpty?const
+                                  Center(child: CircularProgressIndicator()):
+                                  FlutterMap(
+                                    // mapController: ,
+                                    options: MapOptions(
+                                      initialZoom: 10.0,
+                                      initialCenter: const LatLng(26.8495355, 80.9503142),
 
-                                    controller: controller,
-
-                                    osmOption: OSMOption(
-                                      // userTrackingOption: const UserTrackingOption(
-                                      //   enableTracking: true,
-                                      //   unFollowUser: false,
+                                      onTap: (_, __) => _popupLayerController.hideAllPopups(),
+                                    ),
+                                    children: [
+                                      TileLayer(
+                                        urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                                      ),
+                                      // CurrentLocationLayer(
+                                      //   followOnLocationUpdate: FollowOnLocationUpdate.always,
+                                      //   turnOnHeadingUpdate: TurnOnHeadingUpdate.never,
+                                      //   style: const LocationMarkerStyle(
+                                      //     marker: DefaultLocationMarker(
+                                      //       child: Icon(
+                                      //         Icons.navigation,
+                                      //         color: Colors.white,
+                                      //         size: 10,
+                                      //       ),
+                                      //     ),
+                                      //     markerSize: Size(20, 20),
+                                      //     markerDirection: MarkerDirection.heading,
+                                      //   ),
                                       // ),
-                                      showZoomController: true,
-                                      userLocationMarker: UserLocationMaker(
-                                      personMarker: const MarkerIcon(
-                                        icon: Icon(
-                                          Icons.location_history_rounded,
-                                          color: Colors.red,
-                                          size: 48,
-                                        ),
-                                      ), directionArrowMarker: const MarkerIcon(
-                                      icon: Icon(
-                                        Icons.double_arrow,
-                                        size: 48,
-                                      ),
-                                    ),),
-                                      enableRotationByGesture: true,
-                                      zoomOption: const ZoomOption(
-                                        initZoom: 20,
-                                        minZoomLevel: 2,
-                                        maxZoomLevel: 19,
-                                        stepZoom: 1.0,
-                                      ),
-                                      staticPoints: [
-                                        if(ctlr.locations.isNotEmpty)
-                                        for (var location in ctlr.locations)
-                                          StaticPositionGeoPoint(
-                                            location.storeName!, // Provide a unique identifier for each marker
-                                            const MarkerIcon(
-                                              icon: Icon(
-                                                Icons.location_pin,
-                                                color: Colors.blue,
-                                                size: 42,
-                                              ),
-                                            ),
-                                            [
-                                              GeoPoint(
-                                                latitude: double.parse(location.lat!),
-                                                longitude: double.parse(location.long!),
-                                              ),
-                                            ],
-                                          ),
-                                      ],
-                                      roadConfiguration: const RoadOption(
-                                        roadColor: Colors.blueAccent,
-                                      ),
-                                      markerOption: MarkerOption(
-                                        defaultMarker: const MarkerIcon(
-                                          icon: Icon(
-                                            Icons.home,
-                                            color: Colors.orange,
-                                            size: 32,
-                                          ),
-                                        ),
-                                        advancedPickerMarker: const MarkerIcon(
-                                          icon: Icon(
-                                            Icons.location_searching,
-                                            color: Colors.green,
-                                            size: 56,
-                                          ),
-                                        ),
-                                      ),
-                                      showContributorBadgeForOSM: true,
-                                      showDefaultInfoWindow: true,
-                                    ),
+                                      PopupMarkerLayer(
+                                        options: PopupMarkerLayerOptions(
+                                          popupController: _popupLayerController,
+                                          markers: ctlr.markers,
+                                          popupDisplayOptions: PopupDisplayOptions(
+                                            builder: (BuildContext context, Marker marker)
+                                            {
+                                              String storeName = ctlr.findStoreName(marker.point);
+                                              return ExamplePopup(marker: marker, storeName: storeName,); }
 
-                                    mapIsLoading: const Center(
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        children: [
-                                          CircularProgressIndicator(),
-                                          Text("Map is Loading.."),
-                                        ],
+                                          ),
+                                          selectedMarkerBuilder: (context, marker) => const Icon(
+                                            Icons.location_on,
+                                            size: 40,
+                                            color: Colors.red,
+                                          ),
+                                        ),
                                       ),
-                                    ),
-                                    onMapIsReady: (isReady) {
-                                      if (isReady) {
-                                        print("map is ready");
-                                      }
-                                    },
-                                    onLocationChanged: (myLocation) {
-                                      print('user location :$myLocation');
-                                    },
-                                    onGeoPointClicked: (geoPoint) async {
-                                        setState(() {
-                                          visible = !visible;
-                                        });
-                                      // Handle click on a GeoPoint
-                                    },
+                                    ],
                                   ),
                                 ),
                               ),
@@ -846,51 +879,51 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                     color: Colors.grey,
                                   )),
 
-                              Positioned(
-                                bottom: 10,
-                                left: 10,
-                                child: ValueListenableBuilder<bool>(
-                                  valueListenable: visibilityZoomNotifierActivation,
-                                  builder: (ctx, visibility, child) {
-                                    return Visibility(
-                                      visible: visibility,
-                                      child: child!,
-                                    );
-                                  },
-                                  child: ValueListenableBuilder<bool>(
-                                    valueListenable: zoomNotifierActivation,
-                                    builder: (ctx, isVisible, child) {
-                                      return AnimatedOpacity(
-                                        opacity: isVisible ? 1.0 : 0.0,
-                                        onEnd: () {
-                                          visibilityZoomNotifierActivation.value = isVisible;
-                                        },
-                                        duration: Duration(milliseconds: 500),
-                                        child: child,
-                                      );
-                                    },
-                                    child: Column(
-                                      children: [
-                                        ElevatedButton(
-                                          child: Icon(Icons.add),
-                                          onPressed: () async {
-                                            controller.zoomIn();
-                                          },
-                                        ),
-                                        // SizedBox(
-                                        //   height: 5,
-                                        // ),
-                                        ElevatedButton(
-                                          child: Icon(Icons.remove),
-                                          onPressed: () async {
-                                            controller.zoomOut();
-                                          },
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
+                              // Positioned(
+                              //   bottom: 10,
+                              //   left: 10,
+                              //   child: ValueListenableBuilder<bool>(
+                              //     valueListenable: visibilityZoomNotifierActivation,
+                              //     builder: (ctx, visibility, child) {
+                              //       return Visibility(
+                              //         visible: visibility,
+                              //         child: child!,
+                              //       );
+                              //     },
+                              //     child: ValueListenableBuilder<bool>(
+                              //       valueListenable: zoomNotifierActivation,
+                              //       builder: (ctx, isVisible, child) {
+                              //         return AnimatedOpacity(
+                              //           opacity: isVisible ? 1.0 : 0.0,
+                              //           onEnd: () {
+                              //             visibilityZoomNotifierActivation.value = isVisible;
+                              //           },
+                              //           duration: const Duration(milliseconds: 500),
+                              //           child: child,
+                              //         );
+                              //       },
+                              //       child: Column(
+                              //         children: [
+                              //           ElevatedButton(
+                              //             child: const Icon(Icons.add),
+                              //             onPressed: () async {
+                              //               // controller.zoomIn();
+                              //             },
+                              //           ),
+                              //           // SizedBox(
+                              //           //   height: 5,
+                              //           // ),
+                              //           ElevatedButton(
+                              //             child: const Icon(Icons.remove),
+                              //             onPressed: () async {
+                              //               // controller.zoomOut();
+                              //             },
+                              //           ),
+                              //         ],
+                              //       ),
+                              //     ),
+                              //   ),
+                              // ),
                             ],
                           )
                         ],
