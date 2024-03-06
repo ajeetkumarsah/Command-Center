@@ -1,24 +1,24 @@
 class StoreIntroModel {
-  final String? fbAchieved;
-  final String? fbTarget;
-  final String? fb;
+  final String? storeName;
+  final String? Lat;
+  final String? Long;
 
   StoreIntroModel({
-    this.fbAchieved,
-    this.fbTarget,
-    this.fb,
+    this.storeName,
+    this.Lat,
+    this.Long,
   });
 
   factory StoreIntroModel.fromJson(Map<String, dynamic> json) =>
       StoreIntroModel(
-        fbAchieved: json["fbAchieved"],
-        fbTarget: json["fbTarget"],
-        fb: json["FB %"],
+        storeName: json["storeName"],
+        Lat: json["Lat"],
+        Long: json["Long"],
       );
 
   Map<String, dynamic> toJson() => {
-        "fbAchieved": fbAchieved,
-        "fbTarget": fbTarget,
-        "FB %": fb,
+        "storeName": storeName,
+        "Lat": Lat,
+        "Long": Long,
       };
 }
