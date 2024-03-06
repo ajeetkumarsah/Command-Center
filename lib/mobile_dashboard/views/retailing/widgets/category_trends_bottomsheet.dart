@@ -38,6 +38,9 @@ class _CategoryTrendsFilterBottomsheetState
       isFirst = false;
 
       WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (widget.tabType == SummaryTypes.retailing.type) {
+          //
+        }
         onFilterChange(ctlr.selectedTrendsCategory);
         onFilterChangeValue(ctlr.selectedTrendsCategoryValue);
         setState(() {});
@@ -194,6 +197,7 @@ class _CategoryTrendsFilterBottomsheetState
                               ? 'trends'
                               : 'geo',
                           tabType: widget.tabType,
+                          subType: 'trends',
                         );
 
                         Navigator.pop(context);

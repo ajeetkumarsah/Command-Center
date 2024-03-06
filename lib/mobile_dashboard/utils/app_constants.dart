@@ -54,4 +54,25 @@ class AppConstants {
   static const String STORE = 'store';
   static const String FB_TARGET = 'fbTarget';
   static const String FB_ACHIEVED = 'fbAchieved';
+
+  // local storage keys :)
+  static const String RETAILING_GEO = 'retailing-geo';
+  static const String RETAILING_CATEGORY = 'retailing-category';
+  static const String RETAILING_CHANNEL = 'retailing-channel';
+  static const String RETAILING_TRENDS = 'retailing-trends';
+  //coverage
+  static const String COVERAGE_GEO = 'coverage-geo';
+  static const String COVERAGE_CATEGORY = 'coverage-category';
+  static const String COVERAGE_CHANNEL = 'coverage-channel';
+  static const String COVERAGE_TRENDS = 'coverage-trends';
+  //gp
+  static const String GP_GEO = 'gp-geo';
+  static const String GP_CATEGORY = 'gp-category';
+  static const String GP_CHANNEL = 'gp-channel';
+  static const String GP_TRENDS = 'gp-trends';
+  //fb
+  static const String FB_GEO = 'fb-geo';
+  static const String FB_CATEGORY = 'fb-category';
+  static const String FB_CHANNEL = 'fb-channel';
+  static const String FB_TRENDS = 'fb-trends';
 }

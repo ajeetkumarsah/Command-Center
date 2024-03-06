@@ -1,13 +1,16 @@
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
+import 'package:marquee/marquee.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../retailing/widgets/geography_bottomsheet.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import '../retailing/widgets/select_month_bottomsheet.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:command_centre/mobile_dashboard/utils/png_files.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:command_centre/mobile_dashboard/utils/date_converter.dart';
 import 'package:command_centre/mobile_dashboard/utils/routes/app_pages.dart';
 import 'package:command_centre/mobile_dashboard/views/update/update_screen.dart';
@@ -124,6 +127,84 @@ class _SummaryScreenState extends State<SummaryScreen> {
                       ],
                     ),
                   ),
+                  StreamBuilder(
+                    stream: FirebaseFirestore.instance
+                        .collection("data_refresh")
+                        .snapshots(),
+                    builder: (context, snapshot) {
+                      debugPrint(
+                          "===>Print D ${snapshot.data?.docs.first.data()}");
+
+                      return AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 300),
+                        child: snapshot.data?.docs.first.data() != null &&
+                                snapshot.data?.docs.first
+                                        .data()['isRefreshing'] !=
+                                    null &&
+                                snapshot.data?.docs.first.data()['isRefreshing']
+                            ? AnimatedContainer(
+                                duration: const Duration(milliseconds: 500),
+                                height: 24,
+                                decoration: const BoxDecoration(
+                                  color: Colors.white,
+                                ),
+                                width: double.infinity,
+                                alignment: Alignment.center,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    const SizedBox(width: 12),
+                                    LoadingAnimationWidget.fallingDot(
+                                      color: AppColors.primary,
+                                      size: 20,
+                                    ),
+                                    const SizedBox(width: 12),
+                                    Flexible(
+                                      child: Marquee(
+                                        text: snapshot.data?.docs.first
+                                                .data()['title'] ??
+                                            'D-1 Data Undergoing Refresh...',
+                                        style: GoogleFonts.ptSansCaption(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w300,
+                                          color: AppColors.primary,
+                                        ),
+                                        scrollAxis: Axis.horizontal,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        blankSpace: 100,
+                                        velocity: 100.0,
+                                        pauseAfterRound: Duration(seconds: 1),
+                                        startPadding: 100.0,
+                                        accelerationDuration:
+                                            Duration(seconds: 1),
+                                        accelerationCurve: Curves.linear,
+                                        decelerationDuration:
+                                            Duration(milliseconds: 500),
+                                        decelerationCurve: Curves.easeOut,
+                                      ),
+                                      // Text(
+                                      // snapshot.data?.docs.first.data()['title'] ??
+                                      //     'D-1 Data Undergoing Refresh...',
+                                      //   maxLines: 2,
+                                      //   overflow: TextOverflow.ellipsis,
+                                      //   style: GoogleFonts.ptSansCaption(
+                                      //     fontSize: 12,
+                                      //     fontWeight: FontWeight.w300,
+                                      //     color: AppColors.primary,
+                                      //   ),
+                                      // ),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            : const SizedBox(),
+                      );
+
+                      ;
+                    },
+                  ),
                   const SizedBox(height: 20),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 12.0),
@@ -135,7 +216,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
                             height: 50,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(25),
-                              color: AppColors.filterColor,
+                              color: AppColors.white,
                             ),
                             child: Row(
                               children: [
@@ -159,11 +240,16 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                             child: Text(
                                               ctlr.selectedGeo,
                                               style: GoogleFonts.ptSans(
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.w400),
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w500,
+                                                color: AppColors.black,
+                                              ),
                                             ),
                                           ),
-                                          const Icon(Icons.arrow_drop_down),
+                                          const Icon(
+                                            Icons.arrow_drop_down,
+                                            color: AppColors.black,
+                                          ),
                                         ],
                                       ),
                                     ),
@@ -186,8 +272,10 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                             maxLines: 1,
                                             overflow: TextOverflow.ellipsis,
                                             style: GoogleFonts.ptSans(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w400),
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w500,
+                                              color: AppColors.black,
+                                            ),
                                           ),
                                         ),
                                       ],
@@ -215,7 +303,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
                               alignment: Alignment.center,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(25),
-                                color: AppColors.filterColor,
+                                color: AppColors.white,
                               ),
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 8),
@@ -230,11 +318,16 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                       maxLines: 1,
                                       overflow: TextOverflow.fade,
                                       style: GoogleFonts.ptSans(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w400),
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w500,
+                                        color: AppColors.black,
+                                      ),
                                     ),
                                   ),
-                                  const Icon(Icons.arrow_drop_down),
+                                  const Icon(
+                                    Icons.arrow_drop_down,
+                                    color: AppColors.black,
+                                  ),
                                 ],
                               ),
                             ),
@@ -270,8 +363,9 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                       child: Text(
                                         'Retailing',
                                         style: GoogleFonts.ptSans(
-                                          fontSize: 16,
+                                          fontSize: 18,
                                           fontWeight: FontWeight.w700,
+                                          color: AppColors.white,
                                         ),
                                       ),
                                     ),
@@ -279,6 +373,15 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                       margin: const EdgeInsets.only(
                                           bottom: 0, left: 12, right: 4),
                                       decoration: BoxDecoration(
+                                          // color: AppColors.white,
+                                          gradient: const LinearGradient(
+                                            begin: Alignment.topCenter,
+                                            end: Alignment.bottomCenter,
+                                            colors: [
+                                              AppColors.contentColorCyan,
+                                              AppColors.contentColorBlue,
+                                            ],
+                                          ),
                                           border: Border.all(
                                             width: 1,
                                             color: AppColors.lightGrey,
@@ -293,13 +396,47 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                             child: Container(
                                               decoration: BoxDecoration(
                                                 color: ctlr.isSummaryDirect
-                                                    ? AppColors.primary
-                                                    : AppColors.white,
+                                                    ? AppColors.white
+                                                    : Colors.transparent,
+                                                gradient: !ctlr.isSummaryDirect
+                                                    ? const LinearGradient(
+                                                        begin:
+                                                            Alignment.topCenter,
+                                                        end: Alignment
+                                                            .bottomCenter,
+                                                        colors: [
+                                                          AppColors
+                                                              .contentColorCyan,
+                                                          AppColors
+                                                              .contentColorBlue,
+                                                        ],
+                                                      )
+                                                    : null,
+                                                boxShadow: ctlr.isSummaryDirect
+                                                    ? [
+                                                        BoxShadow(
+                                                          color: Colors.black
+                                                              .withOpacity(.5),
+                                                          blurRadius: 2.0,
+                                                          spreadRadius: 0.0,
+                                                          offset: const Offset(
+                                                              2.0, 2.0),
+                                                        ),
+                                                        BoxShadow(
+                                                          color: Colors.black
+                                                              .withOpacity(.2),
+                                                          blurRadius: 2.0,
+                                                          spreadRadius: 0.0,
+                                                          offset: const Offset(
+                                                              -2.0, -2.0),
+                                                        ),
+                                                      ]
+                                                    : null,
                                                 border: Border.all(
                                                   width: 1,
                                                   color: ctlr.isSummaryDirect
-                                                      ? AppColors.primary
-                                                      : AppColors.white,
+                                                      ? AppColors.white
+                                                      : Colors.transparent,
                                                 ),
                                                 borderRadius:
                                                     BorderRadius.circular(100),
@@ -313,8 +450,8 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                                 style:
                                                     GoogleFonts.ptSansCaption(
                                                   color: ctlr.isSummaryDirect
-                                                      ? Colors.white
-                                                      : Colors.grey,
+                                                      ? AppColors.primary
+                                                      : Colors.white,
                                                   fontSize: 12,
                                                 ),
                                               ),
@@ -327,17 +464,56 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                               child: Container(
                                                 decoration: BoxDecoration(
                                                   color: ctlr.isSummaryDirect
-                                                      ? AppColors.white
-                                                      : AppColors.primary,
+                                                      ? Colors.transparent
+                                                      : AppColors.white,
+                                                  gradient: ctlr.isSummaryDirect
+                                                      ? const LinearGradient(
+                                                          begin: Alignment
+                                                              .topCenter,
+                                                          end: Alignment
+                                                              .bottomCenter,
+                                                          colors: [
+                                                            AppColors
+                                                                .contentColorCyan,
+                                                            AppColors
+                                                                .contentColorBlue,
+                                                          ],
+                                                        )
+                                                      : null,
+                                                  boxShadow: !ctlr
+                                                          .isSummaryDirect
+                                                      ? [
+                                                          BoxShadow(
+                                                            color: Colors.black
+                                                                .withOpacity(
+                                                                    .5),
+                                                            blurRadius: 2.0,
+                                                            spreadRadius: 0.0,
+                                                            offset:
+                                                                const Offset(
+                                                                    2.0, 2.0),
+                                                          ),
+                                                          BoxShadow(
+                                                            color: Colors.black
+                                                                .withOpacity(
+                                                                    .2),
+                                                            blurRadius: 2.0,
+                                                            spreadRadius: 0.0,
+                                                            offset:
+                                                                const Offset(
+                                                                    -2.0, -2.0),
+                                                          ),
+                                                        ]
+                                                      : null,
                                                   border: ctlr.isSummaryDirect
                                                       ? null
                                                       : Border.all(
                                                           width: 1,
                                                           color: !ctlr
                                                                   .isSummaryDirect
-                                                              ? AppColors
-                                                                  .primary
-                                                              : AppColors.white,
+                                                              ? AppColors.white
+                                                              : Colors
+                                                                  .transparent,
                                                         ),
                                                   borderRadius:
                                                       BorderRadius.circular(
@@ -352,8 +528,8 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                                   style:
                                                       GoogleFonts.ptSansCaption(
                                                     color: !ctlr.isSummaryDirect
-                                                        ? Colors.white
-                                                        : Colors.grey,
+                                                        ? AppColors.primary
+                                                        : Colors.white,
                                                     fontSize: 12,
                                                   ),
                                                 ),
@@ -578,14 +754,62 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                                   child: Container(
                                                     decoration: BoxDecoration(
                                                       color: ctlr.channelSales
-                                                          ? AppColors.primary
+                                                          ? AppColors.white
                                                           : AppColors.white,
-                                                      border: Border.all(
-                                                        width: 1,
-                                                        color: ctlr.channelSales
-                                                            ? AppColors.primary
-                                                            : AppColors.white,
-                                                      ),
+                                                      gradient: ctlr
+                                                              .channelSales
+                                                          ? const LinearGradient(
+                                                              begin: Alignment
+                                                                  .topCenter,
+                                                              end: Alignment
+                                                                  .bottomCenter,
+                                                              colors: [
+                                                                AppColors
+                                                                    .contentColorCyan,
+                                                                AppColors
+                                                                    .contentColorBlue,
+                                                                // AppColors.contentColorCyan.withOpacity(.6),
+                                                              ],
+                                                            )
+                                                          : null,
+                                                      // border: Border.all(
+                                                      //   width: 1,
+                                                      //   color: ctlr.channelSales
+                                                      //       ? AppColors
+                                                      //           .contentColorBlue
+                                                      //       : AppColors.white,
+                                                      // ),
+                                                      boxShadow: ctlr
+                                                              .channelSales
+                                                          ? [
+                                                              BoxShadow(
+                                                                color: Colors
+                                                                    .black
+                                                                    .withOpacity(
+                                                                        .5),
+                                                                blurRadius: 2.0,
+                                                                spreadRadius:
+                                                                    0.0,
+                                                                offset:
+                                                                    const Offset(
+                                                                        2.0,
+                                                                        2.0),
+                                                              ),
+                                                              BoxShadow(
+                                                                color: Colors
+                                                                    .black
+                                                                    .withOpacity(
+                                                                        .2),
+                                                                blurRadius: 2.0,
+                                                                spreadRadius:
+                                                                    0.0,
+                                                                offset:
+                                                                    const Offset(
+                                                                        -2.0,
+                                                                        -2.0),
+                                                              ),
+                                                            ]
+                                                          : null,
                                                       borderRadius:
                                                           BorderRadius.circular(
                                                               100),
@@ -614,17 +838,64 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                                       color: ctlr.channelSales
                                                           ? AppColors.white
                                                           : AppColors.primary,
-                                                      border: ctlr.channelSales
-                                                          ? null
-                                                          : Border.all(
-                                                              width: 1,
-                                                              color: !ctlr
-                                                                      .channelSales
-                                                                  ? AppColors
-                                                                      .primary
-                                                                  : AppColors
-                                                                      .white,
-                                                            ),
+                                                      // border: ctlr.channelSales
+                                                      //     ? null
+                                                      //     : Border.all(
+                                                      //         width: 1,
+                                                      //         color: !ctlr
+                                                      //                 .channelSales
+                                                      //             ? AppColors
+                                                      //                 .primary
+                                                      //             : AppColors
+                                                      //                 .white,
+                                                      //       ),
+                                                      gradient: !ctlr
+                                                              .channelSales
+                                                          ? const LinearGradient(
+                                                              begin: Alignment
+                                                                  .topCenter,
+                                                              end: Alignment
+                                                                  .bottomCenter,
+                                                              colors: [
+                                                                AppColors
+                                                                    .contentColorCyan,
+                                                                AppColors
+                                                                    .contentColorBlue,
+                                                                // AppColors.contentColorCyan.withOpacity(.6),
+                                                              ],
+                                                            )
+                                                          : null,
+                                                      boxShadow: !ctlr
+                                                              .channelSales
+                                                          ? [
+                                                              BoxShadow(
+                                                                color: Colors
+                                                                    .black
+                                                                    .withOpacity(
+                                                                        .5),
+                                                                blurRadius: 2.0,
+                                                                spreadRadius:
+                                                                    0.0,
+                                                                offset:
+                                                                    const Offset(
+                                                                        2.0,
+                                                                        2.0),
+                                                              ),
+                                                              BoxShadow(
+                                                                color: Colors
+                                                                    .black
+                                                                    .withOpacity(
+                                                                        .2),
+                                                                blurRadius: 2.0,
+                                                                spreadRadius:
+                                                                    0.0,
+                                                                offset:
+                                                                    const Offset(
+                                                                        -2.0,
+                                                                        -2.0),
+                                                              ),
+                                                            ]
+                                                          : null,
                                                       borderRadius:
                                                           BorderRadius.circular(
                                                               100),
@@ -1063,8 +1334,8 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                             begin: Alignment.topRight,
                                             end: Alignment.bottomLeft,
                                             colors: [
-                                              Color(0xff2CBBCE),
-                                              Color(0xff83d1c8),
+                                              AppColors.contentColorCyan,
+                                              AppColors.contentColorBlue,
                                             ],
                                           ),
                                         ),
@@ -1137,7 +1408,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                                       ?.progressBarFbAchievement ??
                                                   '0.0') ??
                                               0.0,
-                                          header: const Text('FB Achiev.'),
+                                          header: const Text('FB Ach %'),
                                           center: Text(
                                               "${ctlr.summaryData.first.focusBrand?.fbAchievement}%"),
                                           backgroundColor:
@@ -1150,8 +1421,8 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                             begin: Alignment.topRight,
                                             end: Alignment.bottomLeft,
                                             colors: [
-                                              Color(0xff2CBBCE),
-                                              Color(0xff83d1c8),
+                                              AppColors.contentColorCyan,
+                                              AppColors.contentColorBlue,
                                             ],
                                           ),
                                         ),

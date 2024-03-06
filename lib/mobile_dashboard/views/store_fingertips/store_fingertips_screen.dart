@@ -1,5 +1,5 @@
-import 'widgets/new_appbar.dart';
 import 'package:get/get.dart';
+import 'widgets/new_appbar.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -105,9 +105,8 @@ class StoreDashboardUI extends StatelessWidget {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 10, right: 10),
-                  child: Card(
-                    elevation: 10,
-                    shape: RoundedRectangleBorder(
+                  child: Container(
+                    decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(5.0),
                     ),
                     color: Colors.white,
@@ -157,10 +156,10 @@ class StoreDashboardUI extends StatelessWidget {
                                           (MediaQuery.of(context).size.width -
                                                   60) *
                                               .8,
-                                      child:const Row(
+                                      child: const Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
-                                        children:  [
+                                        children: [
                                           Text("0.00K"),
                                           Text("87.71K"),
                                         ],

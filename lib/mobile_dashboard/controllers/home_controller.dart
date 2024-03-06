@@ -1,16 +1,20 @@
-import 'dart:convert';
 import 'dart:io';
-import 'package:command_centre/mobile_dashboard/data/api/api_client.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'dart:convert';
 import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:logger/logger.dart';
+import '../utils/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:command_centre/mobile_dashboard/data/api/api_client.dart';
 import 'package:command_centre/mobile_dashboard/utils/summary_types.dart';
 import 'package:command_centre/mobile_dashboard/utils/date_converter.dart';
 import 'package:command_centre/mobile_dashboard/utils/routes/app_pages.dart';
+import 'package:command_centre/mobile_dashboard/utils/global.dart' as globals;
 import 'package:command_centre/mobile_dashboard/data/repository/home_repo.dart';
 import 'package:command_centre/mobile_dashboard/views/widgets/custom_snackbar.dart';
 import 'package:command_centre/mobile_dashboard/data/models/response/trends_model.dart';
@@ -22,10 +26,6 @@ import 'package:command_centre/mobile_dashboard/data/models/response/gp_trends_m
 import 'package:command_centre/mobile_dashboard/data/models/response/retailing_geo_model.dart';
 import 'package:command_centre/mobile_dashboard/data/models/response/coverage_trends_model.dart';
 import 'package:command_centre/mobile_dashboard/data/models/response/retailing_trends_model.dart';
-import 'package:command_centre/mobile_dashboard/utils/global.dart' as globals;
-import 'package:shared_preferences/shared_preferences.dart';
-
-import '../utils/app_constants.dart';
 
 class HomeController extends GetxController {
   //
@@ -37,6 +37,9 @@ class HomeController extends GetxController {
 
   final ScrollController sScrollController = ScrollController();
   final ScrollController mScrollController = ScrollController();
+
+  //
+  final storage = new FlutterSecureStorage();
   //
   bool _isLoading = false,
       _isSummaryExpanded = false,
@@ -915,21 +918,390 @@ class HomeController extends GetxController {
     if (!getOnlyShared) {
       var futures = await Future.wait([
         getSummaryData().then((value) {
-          getAllFilters().then((v) {
+          getAllFilters().then((v) async {
             categoryFilters = filtersModel?.category ?? [];
             onChangeFiltersAll(
                 type: 'category', tabType: SummaryTypes.retailing.type);
             onChangeFiltersAll(type: 'category', tabType: SummaryTypes.gp.type);
             onChangeFiltersAll(type: 'category', tabType: SummaryTypes.fb.type);
-            selectedRetailingChannelFilter = filtersModel?.attr1 ?? [];
-            selectedCoverageChannelFilter =
-                filtersModel?.otherAttrs?.attr1 ?? [];
-            selectedGPChannelFilter = filtersModel?.otherAttrs?.attr1 ?? [];
-            selectedFBChannelFilter = filtersModel?.otherAttrs?.attr1 ?? [];
-            selectedGPChannelFilter = filtersModel?.otherAttrs?.attr1 ?? [];
-            selectedFBChannelFilter = filtersModel?.otherAttrs?.attr1 ?? [];
-            selectedCoverageChannelFilter =
-                filtersModel?.otherAttrs?.attr1 ?? [];
+            //getting retailing saved filters and
+
+            final mapDecoded = jsonDecode(
+                await storage.read(key: AppConstants.RETAILING_GEO) ?? '{}');
+
+            if (mapDecoded.isNotEmpty) {
+              Map<String, dynamic> _savedFilters = mapDecoded;
+              if (_savedFilters.containsKey('allIndia')) {
+                selectedRetailingMultiAllIndia =
+                    List<String>.from(_savedFilters['allIndia'].map((v) => v));
+              }
+              if (_savedFilters.containsKey('division')) {
+                selectedRetailingMultiDivisions =
+                    List<String>.from(_savedFilters['division'].map((v) => v));
+              }
+              if (_savedFilters.containsKey('branches')) {
+                selectedRetailingMultiBranches =
+                    List<String>.from(_savedFilters['branches'].map((v) => v));
+              }
+              if (_savedFilters.containsKey('cluster')) {
+                selectedRetailingMultiClusters =
+                    List<String>.from(_savedFilters['cluster'].map((v) => v));
+              }
+              if (_savedFilters.containsKey('sites')) {
+                selectedRetailingMultiSites =
+                    List<String>.from(_savedFilters['sites'].map((v) => v));
+              }
+            }
+
+            //for retailing category
+            final categoryMapDecoded = jsonDecode(
+                await storage.read(key: AppConstants.RETAILING_CATEGORY) ??
+                    '{}');
+            if (categoryMapDecoded.isNotEmpty) {
+              Map<String, dynamic> _savedFilters = categoryMapDecoded;
+              debugPrint('====>Category saved $_savedFilters');
+              if (_savedFilters.containsKey('category')) {
+                selectedRetailingCategoryFilters =
+                    List<String>.from(_savedFilters['category'].map((v) => v));
+              }
+              if (_savedFilters.containsKey('selected')) {
+                _selectedCategory = _savedFilters['selected'];
+              }
+            }
+            final channelMapDecoded = jsonDecode(
+                await storage.read(key: AppConstants.RETAILING_CHANNEL) ??
+                    '{}');
+            if (channelMapDecoded.isNotEmpty) {
+              Map<String, dynamic> _savedFilters = channelMapDecoded;
+              if (_savedFilters.containsKey('channel')) {
+                debugPrint('====>Channel saved $_savedFilters');
+                selectedRetailingChannelFilter =
+                    List<String>.from(_savedFilters['channel'].map((v) => v));
+              }
+              if (_savedFilters.containsKey('selected')) {
+                _selectedRetailingChannel = _savedFilters['selected'];
+              }
+            } else {
+              selectedRetailingChannelFilter = filtersModel?.attr1 ?? [];
+            }
+            final trendMapDecoded = jsonDecode(
+                await storage.read(key: AppConstants.RETAILING_TRENDS) ?? '{}');
+            if (trendMapDecoded.isNotEmpty) {
+              Map<String, dynamic> _savedFilters = trendMapDecoded;
+              if (_savedFilters.containsKey('trends')) {
+                if (_savedFilters.containsKey('category') &&
+                    _savedFilters
+                        .containsKey('category')
+                        .toString()
+                        .isNotEmpty) {
+                  _selectedTrendsCategoryValue = _savedFilters['trends'];
+                  _selectedTrendsCategory = _savedFilters['category'];
+                  _selectedTrends = _selectedTrendsCategory;
+                  _retailingTrendsValue = _selectedTrendsCategoryValue;
+                } else if (_savedFilters.containsKey('channel') &&
+                    _savedFilters
+                        .containsKey('channel')
+                        .toString()
+                        .isNotEmpty) {
+                  _selectedTrendsChannelValue = _savedFilters['trends'];
+                  _selectedChannel = _savedFilters['channel'];
+                  _selectedTrends = _selectedChannel;
+                  _retailingTrendsValue = _selectedTrendsChannelValue;
+                } else if (_savedFilters.containsKey('geo') &&
+                    _savedFilters.containsKey('geo').toString().isNotEmpty) {
+                  _selectedTrendsGeoValue = _savedFilters['trends'];
+                  _selectedTrendsGeo = _savedFilters['geo'];
+                  _selectedTrends = _selectedTrendsGeo;
+                  _retailingTrendsValue = _selectedTrendsGeoValue;
+                }
+              }
+            }
+
+            //coverage
+            //getting coverage saved filters and setting it's values to the variables
+
+            final coveragemapDecoded = jsonDecode(
+                await storage.read(key: AppConstants.COVERAGE_GEO) ?? '{}');
+
+            if (coveragemapDecoded.isNotEmpty) {
+              Map<String, dynamic> _savedFilters = coveragemapDecoded;
+              if (_savedFilters.containsKey('allIndia')) {
+                selectedCoverageMultiAllIndia =
+                    List<String>.from(_savedFilters['allIndia'].map((v) => v));
+              }
+              if (_savedFilters.containsKey('division')) {
+                selectedCoverageMultiDivisions =
+                    List<String>.from(_savedFilters['division'].map((v) => v));
+              }
+              if (_savedFilters.containsKey('branches')) {
+                selectedCoverageMultiBranches =
+                    List<String>.from(_savedFilters['branches'].map((v) => v));
+              }
+              if (_savedFilters.containsKey('cluster')) {
+                selectedCoverageMultiClusters =
+                    List<String>.from(_savedFilters['cluster'].map((v) => v));
+              }
+              if (_savedFilters.containsKey('sites')) {
+                selectedCoverageMultiSites =
+                    List<String>.from(_savedFilters['sites'].map((v) => v));
+              }
+            }
+
+            //for coverage category
+
+            ///"category": selectedCoverageCategoryFilters,
+            // "selected": selectedCategory
+            //  "channel": selectedCoverageChannelFilter,
+            // "selected": selectedCoverageChannel
+
+            // final coverageCategoryMapDecoded = jsonDecode(
+            //     await storage.read(key: AppConstants.COVERAGE_CATEGORY) ??
+            //         '{}');
+            // if (coverageCategoryMapDecoded.isNotEmpty) {
+            //   Map<String, dynamic> _savedFilters = coverageCategoryMapDecoded;
+            //   debugPrint('====>Category saved $_savedFilters');
+            //   if (_savedFilters.containsKey('category')) {
+            //     selectedCoverageCategoryFilters =
+            //         List<String>.from(_savedFilters['category'].map((v) => v));
+            //   }
+            //   if (_savedFilters.containsKey('selected')) {
+            //     _selectedCategory = _savedFilters['selected'];
+            //   }
+            // }
+            final coverageChannelMapDecoded = jsonDecode(
+                await storage.read(key: AppConstants.COVERAGE_CHANNEL) ?? '{}');
+            if (coverageChannelMapDecoded.isNotEmpty) {
+              Map<String, dynamic> _savedFilters = coverageChannelMapDecoded;
+              if (_savedFilters.containsKey('channel')) {
+                debugPrint('====>Channel saved $_savedFilters');
+                selectedCoverageChannelFilter =
+                    List<String>.from(_savedFilters['channel'].map((v) => v));
+              }
+              if (_savedFilters.containsKey('selected')) {
+                _selectedCoverageChannel = _savedFilters['selected'];
+              }
+            } else {
+              selectedCoverageChannelFilter =
+                  filtersModel?.otherAttrs?.attr1 ?? [];
+            }
+            final coverageTrendMapDecoded = jsonDecode(
+                await storage.read(key: AppConstants.RETAILING_TRENDS) ?? '{}');
+
+            if (coverageTrendMapDecoded.isNotEmpty) {
+              Map<String, dynamic> _savedFilters = coverageTrendMapDecoded;
+              if (_savedFilters.containsKey('trends')) {
+                if (_savedFilters.containsKey('category') &&
+                    _savedFilters
+                        .containsKey('category')
+                        .toString()
+                        .isNotEmpty) {
+                  _selectedTrendsCategoryValue = _savedFilters['trends'];
+                  _selectedTrendsCategory = _savedFilters['category'];
+                  _selectedCoverageTrends = _selectedTrendsCategory;
+                  _coverageTrendsValue = _selectedTrendsCategoryValue;
+                } else if (_savedFilters.containsKey('channel') &&
+                    _savedFilters
+                        .containsKey('channel')
+                        .toString()
+                        .isNotEmpty) {
+                  _selectedTrendsChannelValue = _savedFilters['trends'];
+                  _selectedChannel = _savedFilters['channel'];
+                  _selectedCoverageTrends = _selectedChannel;
+                  _coverageTrendsValue = _selectedTrendsChannelValue;
+                } else if (_savedFilters.containsKey('geo') &&
+                    _savedFilters.containsKey('geo').toString().isNotEmpty) {
+                  _selectedTrendsGeoValue = _savedFilters['trends'];
+                  _selectedTrendsGeo = _savedFilters['geo'];
+                  _selectedCoverageTrends = _selectedTrendsGeo;
+                  _coverageTrendsValue = _selectedTrendsGeoValue;
+                }
+              }
+            }
+
+            ////////////////////
+            /// //getting gp saved filters and
+
+            final gpMapDecoded = jsonDecode(
+                await storage.read(key: AppConstants.GP_GEO) ?? '{}');
+
+            if (gpMapDecoded.isNotEmpty) {
+              Map<String, dynamic> _savedFilters = gpMapDecoded;
+              if (_savedFilters.containsKey('allIndia')) {
+                selectedGPMultiAllIndia =
+                    List<String>.from(_savedFilters['allIndia'].map((v) => v));
+              }
+              if (_savedFilters.containsKey('division')) {
+                selectedGPMultiDivisions =
+                    List<String>.from(_savedFilters['division'].map((v) => v));
+              }
+              if (_savedFilters.containsKey('branches')) {
+                selectedGPMultiBranches =
+                    List<String>.from(_savedFilters['branches'].map((v) => v));
+              }
+              if (_savedFilters.containsKey('cluster')) {
+                selectedGPMultiClusters =
+                    List<String>.from(_savedFilters['cluster'].map((v) => v));
+              }
+              if (_savedFilters.containsKey('sites')) {
+                selectedGPMultiSites =
+                    List<String>.from(_savedFilters['sites'].map((v) => v));
+              }
+            }
+
+            //for gp category
+            final gpCategoryMapDecoded = jsonDecode(
+                await storage.read(key: AppConstants.GP_CATEGORY) ?? '{}');
+            if (gpCategoryMapDecoded.isNotEmpty) {
+              Map<String, dynamic> _savedFilters = gpCategoryMapDecoded;
+              debugPrint('====>Category saved $_savedFilters');
+              if (_savedFilters.containsKey('category')) {
+                selectedGPCategoryFilters =
+                    List<String>.from(_savedFilters['category'].map((v) => v));
+              }
+              if (_savedFilters.containsKey('selected')) {
+                _selectedGPCategory = _savedFilters['selected'];
+              }
+            }
+            final gpChannelMapDecoded = jsonDecode(
+                await storage.read(key: AppConstants.GP_CHANNEL) ?? '{}');
+            if (gpChannelMapDecoded.isNotEmpty) {
+              Map<String, dynamic> _savedFilters = gpChannelMapDecoded;
+              if (_savedFilters.containsKey('channel')) {
+                debugPrint('====>Channel saved $_savedFilters');
+                selectedGPChannelFilter =
+                    List<String>.from(_savedFilters['channel'].map((v) => v));
+              }
+              if (_savedFilters.containsKey('selected')) {
+                _selectedGPChannel = _savedFilters['selected'];
+              }
+            } else {
+              selectedGPChannelFilter = filtersModel?.attr1 ?? [];
+            }
+            final gpTrendMapDecoded = jsonDecode(
+                await storage.read(key: AppConstants.GP_TRENDS) ?? '{}');
+            if (gpTrendMapDecoded.isNotEmpty) {
+              Map<String, dynamic> _savedFilters = gpTrendMapDecoded;
+              if (_savedFilters.containsKey('trends')) {
+                if (_savedFilters.containsKey('category') &&
+                    _savedFilters
+                        .containsKey('category')
+                        .toString()
+                        .isNotEmpty) {
+                  _selectedTrendsCategoryValue = _savedFilters['trends'];
+                  _selectedTrendsCategory = _savedFilters['category'];
+                  _selectedTrends = _selectedTrendsCategory;
+                  _retailingTrendsValue = _selectedTrendsCategoryValue;
+                } else if (_savedFilters.containsKey('channel') &&
+                    _savedFilters
+                        .containsKey('channel')
+                        .toString()
+                        .isNotEmpty) {
+                  _selectedTrendsChannelValue = _savedFilters['trends'];
+                  _selectedChannel = _savedFilters['channel'];
+                  _selectedTrends = _selectedChannel;
+                  _retailingTrendsValue = _selectedTrendsChannelValue;
+                } else if (_savedFilters.containsKey('geo') &&
+                    _savedFilters.containsKey('geo').toString().isNotEmpty) {
+                  _selectedTrendsGeoValue = _savedFilters['trends'];
+                  _selectedTrendsGeo = _savedFilters['geo'];
+                  _selectedTrends = _selectedTrendsGeo;
+                  _retailingTrendsValue = _selectedTrendsGeoValue;
+                }
+              }
+            }
+
+            ////////////////////
+            /// //getting fb saved filters and
+
+            final fbMapDecoded = jsonDecode(
+                await storage.read(key: AppConstants.FB_GEO) ?? '{}');
+
+            if (fbMapDecoded.isNotEmpty) {
+              Map<String, dynamic> _savedFilters = fbMapDecoded;
+              if (_savedFilters.containsKey('allIndia')) {
+                selectedFBMultiAllIndia =
+                    List<String>.from(_savedFilters['allIndia'].map((v) => v));
+              }
+              if (_savedFilters.containsKey('division')) {
+                selectedFBMultiDivisions =
+                    List<String>.from(_savedFilters['division'].map((v) => v));
+              }
+              if (_savedFilters.containsKey('branches')) {
+                selectedFBMultiBranches =
+                    List<String>.from(_savedFilters['branches'].map((v) => v));
+              }
+              if (_savedFilters.containsKey('cluster')) {
+                selectedFBMultiClusters =
+                    List<String>.from(_savedFilters['cluster'].map((v) => v));
+              }
+              if (_savedFilters.containsKey('sites')) {
+                selectedFBMultiSites =
+                    List<String>.from(_savedFilters['sites'].map((v) => v));
+              }
+            }
+
+            //for fb category
+            final fbCategoryMapDecoded = jsonDecode(
+                await storage.read(key: AppConstants.FB_CATEGORY) ?? '{}');
+            if (fbCategoryMapDecoded.isNotEmpty) {
+              Map<String, dynamic> _savedFilters = fbCategoryMapDecoded;
+              debugPrint('====>Category saved $_savedFilters');
+              if (_savedFilters.containsKey('category')) {
+                selectedFBCategoryFilters =
+                    List<String>.from(_savedFilters['category'].map((v) => v));
+              }
+              if (_savedFilters.containsKey('selected')) {
+                _selectedFBCategory = _savedFilters['selected'];
+              }
+            }
+            final fbChannelMapDecoded = jsonDecode(
+                await storage.read(key: AppConstants.FB_CHANNEL) ?? '{}');
+            if (fbChannelMapDecoded.isNotEmpty) {
+              Map<String, dynamic> _savedFilters = fbChannelMapDecoded;
+              if (_savedFilters.containsKey('channel')) {
+                debugPrint('====>Channel saved $_savedFilters');
+                selectedFBChannelFilter =
+                    List<String>.from(_savedFilters['channel'].map((v) => v));
+              }
+              if (_savedFilters.containsKey('selected')) {
+                _selectedFBChannel = _savedFilters['selected'];
+              }
+            } else {
+              selectedFBChannelFilter = filtersModel?.attr1 ?? [];
+            }
+            final fbTrendMapDecoded = jsonDecode(
+                await storage.read(key: AppConstants.GP_TRENDS) ?? '{}');
+            if (fbTrendMapDecoded.isNotEmpty) {
+              Map<String, dynamic> _savedFilters = fbTrendMapDecoded;
+              if (_savedFilters.containsKey('trends')) {
+                if (_savedFilters.containsKey('category') &&
+                    _savedFilters
+                        .containsKey('category')
+                        .toString()
+                        .isNotEmpty) {
+                  _selectedTrendsCategoryValue = _savedFilters['trends'];
+                  _selectedTrendsCategory = _savedFilters['category'];
+                  _selectedTrends = _selectedTrendsCategory;
+                  _retailingTrendsValue = _selectedTrendsCategoryValue;
+                } else if (_savedFilters.containsKey('channel') &&
+                    _savedFilters
+                        .containsKey('channel')
+                        .toString()
+                        .isNotEmpty) {
+                  _selectedTrendsChannelValue = _savedFilters['trends'];
+                  _selectedChannel = _savedFilters['channel'];
+                  _selectedTrends = _selectedChannel;
+                  _retailingTrendsValue = _selectedTrendsChannelValue;
+                } else if (_savedFilters.containsKey('geo') &&
+                    _savedFilters.containsKey('geo').toString().isNotEmpty) {
+                  _selectedTrendsGeoValue = _savedFilters['trends'];
+                  _selectedTrendsGeo = _savedFilters['geo'];
+                  _selectedTrends = _selectedTrendsGeo;
+                  _retailingTrendsValue = _selectedTrendsGeoValue;
+                }
+              }
+            }
+
             categoryTrendsFilters = filtersModel?.category ?? [];
             channelFilter = filtersModel?.attr1 ?? [];
             channelTrendsFilter = filtersModel?.attr1 ?? [];
@@ -1300,17 +1672,238 @@ class HomeController extends GetxController {
     String type, {
     String tabType = 'Retailing',
     bool isTrendsFilter = false,
-  }) {
+    required String subType,
+  }) async {
     if (SummaryTypes.retailing.type == tabType) {
       //retailing screen data
+      if (subType == 'geo') {
+        Map<String, dynamic> retailingGeoFilters = {
+          "allIndia": selectedRetailingMultiAllIndia,
+          "division": selectedRetailingMultiDivisions,
+          "branches": selectedRetailingMultiBranches,
+          "cluster": selectedRetailingMultiClusters,
+          "sites": selectedRetailingMultiSites,
+        };
+        final mapEncoded = jsonEncode(retailingGeoFilters);
+        await storage.write(
+          key: AppConstants.RETAILING_GEO,
+          value: mapEncoded,
+        );
+      } else if (subType == 'category') {
+        //selectedRetailingCategoryFilters
+        Map<String, dynamic> retailingCategoryFilters = {
+          "category": selectedRetailingCategoryFilters,
+          "selected": selectedCategory
+        };
+        final mapEncoded = jsonEncode(retailingCategoryFilters);
+        await storage.write(
+          key: AppConstants.RETAILING_CATEGORY,
+          value: mapEncoded,
+        );
+      } else if (subType == 'channel') {
+        //
+        Map<String, dynamic> retailingChannelFilters = {
+          "channel": selectedRetailingChannelFilter,
+          "selected": selectedRetailingChannel
+        };
+        final mapEncoded = jsonEncode(retailingChannelFilters);
+        await storage.write(
+          key: AppConstants.RETAILING_CHANNEL,
+          value: mapEncoded,
+        );
+      } else if (subType == 'trends') {
+        Map<String, dynamic> retailingChannelFilters = {
+          "trends": _selectedTrendsChannelValue.isNotEmpty
+              ? _selectedTrendsChannelValue
+              : _selectedTrendsCategoryValue.isNotEmpty
+                  ? selectedTrendsCategoryValue
+                  : _selectedTrendsGeoValue.isNotEmpty
+                      ? _selectedTrendsGeoValue
+                      : "All India",
+          "category": selectedTrendsCategory,
+          "channel": selectedChannel,
+          "geo": selectedTrendsGeo,
+        };
+        final mapEncoded = jsonEncode(retailingChannelFilters);
+        await storage.write(
+          key: AppConstants.RETAILING_TRENDS,
+          value: mapEncoded,
+        );
+      } else {
+        // clear all the saved data from local storage
+        await storage.delete(key: AppConstants.RETAILING_GEO);
+      }
       getRetailingData(type: type, name: name, isTrendsFilter: isTrendsFilter);
     } else if (SummaryTypes.coverage.type == tabType) {
+      if (subType == 'geo') {
+        Map<String, dynamic> coverageGeoFilters = {
+          "allIndia": selectedCoverageMultiAllIndia,
+          "division": selectedCoverageMultiDivisions,
+          "branches": selectedCoverageMultiBranches,
+          "cluster": selectedCoverageMultiClusters,
+          "sites": selectedCoverageMultiSites,
+        };
+        final mapEncoded = jsonEncode(coverageGeoFilters);
+        await storage.write(
+          key: AppConstants.COVERAGE_GEO,
+          value: mapEncoded,
+        );
+      } else if (subType == 'category') {
+        //selectedRetailingCategoryFilters
+        Map<String, dynamic> coverageCategoryFilters = {
+          "category": selectedCoverageCategoryFilters,
+          "selected": selectedCategory
+        };
+
+        final mapEncoded = jsonEncode(coverageCategoryFilters);
+        await storage.write(
+          key: AppConstants.COVERAGE_CATEGORY,
+          value: mapEncoded,
+        );
+      } else if (subType == 'channel') {
+        //
+        Map<String, dynamic> coverageChannelFilters = {
+          "channel": selectedCoverageChannelFilter,
+          "selected": selectedCoverageChannel
+        };
+        final mapEncoded = jsonEncode(coverageChannelFilters);
+        await storage.write(
+          key: AppConstants.COVERAGE_CHANNEL,
+          value: mapEncoded,
+        );
+      } else if (subType == 'trends') {
+        Map<String, dynamic> coverageChannelFilters = {
+          "trends": _selectedTrendsChannelValue.isNotEmpty
+              ? _selectedTrendsChannelValue
+              : _selectedTrendsCategoryValue.isNotEmpty
+                  ? selectedTrendsCategoryValue
+                  : _selectedTrendsGeoValue.isNotEmpty
+                      ? _selectedTrendsGeoValue
+                      : "All India",
+          "category": selectedTrendsCategory,
+          "channel": selectedChannel,
+          "geo": selectedTrendsGeo,
+        };
+        final mapEncoded = jsonEncode(coverageChannelFilters);
+        await storage.write(
+          key: AppConstants.COVERAGE_TRENDS,
+          value: mapEncoded,
+        );
+      }
       //Coverage screen data
       getCoverageData(type: type, name: name, isTrendsFilter: isTrendsFilter);
     } else if (SummaryTypes.gp.type == tabType) {
+      if (subType == 'geo') {
+        Map<String, dynamic> gpGeoFilters = {
+          "allIndia": selectedGPMultiAllIndia,
+          "division": selectedGPMultiDivisions,
+          "branches": selectedGPMultiBranches,
+          "cluster": selectedGPMultiClusters,
+          "sites": selectedGPMultiSites,
+        };
+        final mapEncoded = jsonEncode(gpGeoFilters);
+        await storage.write(
+          key: AppConstants.GP_GEO,
+          value: mapEncoded,
+        );
+      } else if (subType == 'category') {
+        //selectedRetailingCategoryFilters
+        Map<String, dynamic> gpCategoryFilters = {
+          "category": selectedGPCategoryFilters,
+          "selected": selectedGPCategory
+        };
+        final mapEncoded = jsonEncode(gpCategoryFilters);
+        await storage.write(
+          key: AppConstants.GP_CATEGORY,
+          value: mapEncoded,
+        );
+      } else if (subType == 'channel') {
+        //
+        Map<String, dynamic> gpChannelFilters = {
+          "channel": selectedGPChannelFilter,
+          "selected": selectedGPChannel
+        };
+        final mapEncoded = jsonEncode(gpChannelFilters);
+        await storage.write(
+          key: AppConstants.GP_CHANNEL,
+          value: mapEncoded,
+        );
+      } else if (subType == 'trends') {
+        Map<String, dynamic> gpChannelFilters = {
+          "trends": _selectedTrendsChannelValue.isNotEmpty
+              ? _selectedTrendsChannelValue
+              : _selectedTrendsCategoryValue.isNotEmpty
+                  ? selectedTrendsCategoryValue
+                  : _selectedTrendsGeoValue.isNotEmpty
+                      ? _selectedTrendsGeoValue
+                      : "All India",
+          "category": selectedTrendsCategory,
+          "channel": selectedChannel,
+          "geo": selectedTrendsGeo,
+        };
+        final mapEncoded = jsonEncode(gpChannelFilters);
+        await storage.write(
+          key: AppConstants.GP_TRENDS,
+          value: mapEncoded,
+        );
+      }
       //retailing screen data
       getGPData(type: type, name: name, isTrendsFilter: isTrendsFilter);
     } else if (SummaryTypes.fb.type == tabType) {
+      if (subType == 'geo') {
+        Map<String, dynamic> fbGeoFilters = {
+          "allIndia": selectedFBMultiAllIndia,
+          "division": selectedFBMultiDivisions,
+          "branches": selectedFBMultiBranches,
+          "cluster": selectedFBMultiClusters,
+          "sites": selectedFBMultiSites,
+        };
+        final mapEncoded = jsonEncode(fbGeoFilters);
+        await storage.write(
+          key: AppConstants.FB_GEO,
+          value: mapEncoded,
+        );
+      } else if (subType == 'category') {
+        //selectedRetailingCategoryFilters
+        Map<String, dynamic> fbCategoryFilters = {
+          "category": selectedFBCategoryFilters,
+          "selected": selectedFBCategory
+        };
+        final mapEncoded = jsonEncode(fbCategoryFilters);
+        await storage.write(
+          key: AppConstants.FB_CATEGORY,
+          value: mapEncoded,
+        );
+      } else if (subType == 'channel') {
+        //
+        Map<String, dynamic> fbChannelFilters = {
+          "channel": selectedFBChannelFilter,
+          "selected": selectedFBChannel
+        };
+        final mapEncoded = jsonEncode(fbChannelFilters);
+        await storage.write(
+          key: AppConstants.FB_CHANNEL,
+          value: mapEncoded,
+        );
+      } else if (subType == 'trends') {
+        Map<String, dynamic> fbChannelFilters = {
+          "trends": _selectedTrendsChannelValue.isNotEmpty
+              ? _selectedTrendsChannelValue
+              : _selectedTrendsCategoryValue.isNotEmpty
+                  ? selectedTrendsCategoryValue
+                  : _selectedTrendsGeoValue.isNotEmpty
+                      ? _selectedTrendsGeoValue
+                      : "All India",
+          "category": selectedTrendsCategory,
+          "channel": selectedChannel,
+          "geo": selectedTrendsGeo,
+        };
+        final mapEncoded = jsonEncode(fbChannelFilters);
+        await storage.write(
+          key: AppConstants.FB_TRENDS,
+          value: mapEncoded,
+        );
+      }
       //retailing screen data
       getFocusBrandData(type: type, name: name, isTrendsFilter: isTrendsFilter);
     }
@@ -1360,7 +1953,7 @@ class HomeController extends GetxController {
     selectedGPMultiBranches.clear();
     selectedFBMultiBranches.clear();
     selectedMultiFilters.clear();
-    onApplyMultiFilter(name, type, tabType: tabType);
+    onApplyMultiFilter(name, type, tabType: tabType, subType: '');
   }
 
   void onChangeMultiFilters(String value,
@@ -3083,12 +3676,10 @@ class HomeController extends GetxController {
         print('FeedBack ================= Something went wrong');
         responseModel = ResponseModel(false, 'Something went wrong');
       }
-    }
-    else if (response.statusCode == 401) {
+    } else if (response.statusCode == 401) {
       responseModel = ResponseModel(false, response.statusText ?? "");
       Get.offAndToNamed(AppPages.FED_AUTH_LOGIN_TEST);
-    }
-    else {
+    } else {
       responseModel = ResponseModel(false, response.statusText ?? "");
     }
     //Api Calling Response time
@@ -3102,7 +3693,10 @@ class HomeController extends GetxController {
     return responseModel;
   }
 
-  Future<ResponseModel> postFeedbackReport({required String userName, required String rating, required String feedback}) async {
+  Future<ResponseModel> postFeedbackReport(
+      {required String userName,
+      required String rating,
+      required String feedback}) async {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _isFilterLoading = true;
       update();
@@ -3132,18 +3726,15 @@ class HomeController extends GetxController {
             timeInSecForIosWeb: 10,
             backgroundColor: Colors.blue,
             textColor: Colors.white,
-            fontSize: 16.0
-        );
+            fontSize: 16.0);
       } else {
         print('Feedback ================= Something went wrong');
         responseModel = ResponseModel(false, 'Something went wrong');
       }
-    }
-    else if (response.statusCode == 401) {
+    } else if (response.statusCode == 401) {
       responseModel = ResponseModel(false, response.statusText ?? "");
       Get.offAndToNamed(AppPages.FED_AUTH_LOGIN_TEST);
-    }
-    else {
+    } else {
       responseModel = ResponseModel(false, response.statusText ?? "");
     }
     //Api Calling Response time
@@ -3157,7 +3748,10 @@ class HomeController extends GetxController {
     return responseModel;
   }
 
-  Future<ResponseModel> postBugReport({required PickedFile file, required String title, required String comment}) async {
+  Future<ResponseModel> postBugReport(
+      {required PickedFile file,
+      required String title,
+      required String comment}) async {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _isFilterLoading = true;
       update();
@@ -3165,17 +3759,16 @@ class HomeController extends GetxController {
     var stopWatch = Stopwatch();
     stopWatch.reset();
     stopWatch.start();
-    Logger().log(
-        Level.debug, '===> Bug Start: ${stopWatch.elapsed.toString()}');
-    Response response = await homeRepo.postBug(
-        {
+    Logger()
+        .log(Level.debug, '===> Bug Start: ${stopWatch.elapsed.toString()}');
+    Response response = await homeRepo.postBug({
       "endPoint": "feedbackMail",
       "userName": getUserName(),
       "title": title,
       "comment": comment,
-    },
-    [MultipartBody('file', file)]
-    );
+    }, [
+      MultipartBody('file', file)
+    ]);
 
     ResponseModel responseModel;
     if (response.statusCode == 200) {
@@ -3189,23 +3782,19 @@ class HomeController extends GetxController {
             timeInSecForIosWeb: 10,
             backgroundColor: Colors.blue,
             textColor: Colors.white,
-            fontSize: 16.0
-        );
+            fontSize: 16.0);
       } else {
         print('Bug ================= Something went wrong');
         responseModel = ResponseModel(false, 'Something went wrong');
       }
-    }
-    else if (response.statusCode == 401) {
+    } else if (response.statusCode == 401) {
       responseModel = ResponseModel(false, response.statusText ?? "");
       Get.offAndToNamed(AppPages.FED_AUTH_LOGIN_TEST);
-    }
-    else {
+    } else {
       responseModel = ResponseModel(false, response.statusText ?? "");
     }
     //Api Calling Response time
-    Logger().log(
-        Level.debug, '===> Bug End : ${stopWatch.elapsed.toString()}');
+    Logger().log(Level.debug, '===> Bug End : ${stopWatch.elapsed.toString()}');
     stopWatch.stop();
     stopWatch.reset();
     //
@@ -3213,5 +3802,4 @@ class HomeController extends GetxController {
     update();
     return responseModel;
   }
-
 }

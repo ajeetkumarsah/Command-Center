@@ -317,9 +317,9 @@ class _ChannelFilterBottomsheetState extends State<ChannelFilterBottomsheet> {
     // ctlr.onChangeChannelValue(
     //     _selectedChannelValue, widget.tabType);
     if (widget.isTrends) {
-      ctlr.onApplyMultiFilter('trends', 'geo', tabType: widget.tabType);
+      ctlr.onApplyMultiFilter('trends', 'geo', tabType: widget.tabType,subType: 'channel');
     } else {
-      ctlr.onApplyMultiFilter('geo', 'channel', tabType: widget.tabType);
+      ctlr.onApplyMultiFilter('geo', 'channel', tabType: widget.tabType,subType: 'channel');
     }
     Navigator.pop(context);
   }

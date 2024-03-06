@@ -38,17 +38,38 @@ class PersonalizeCard extends StatelessWidget {
       margin: EdgeInsets.only(top: top, bottom: 12, left: 12, right: 12),
       child: Column(
         children: [
-          ListTile(
-            title: secondWidget ??
-                Text(
-                  '$title ',
-                  style: GoogleFonts.ptSans(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w700,
+          Container(
+            decoration: BoxDecoration(
+              gradient: isDataFound ?? true
+                  ? const LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        AppColors.contentColorCyan,
+                        AppColors.contentColorBlue,
+                        // AppColors.contentColorCyan.withOpacity(.6),
+                      ],
+                    )
+                  : null,
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(20),
+                topRight: Radius.circular(20),
+              ),
+            ),
+            child: ListTile(
+              visualDensity: const VisualDensity(horizontal: 0, vertical: -3),
+              title: secondWidget ??
+                  Text(
+                    '$title ',
+                    style: GoogleFonts.ptSans(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.white,
+                    ),
                   ),
-                ),
-            subtitle: isDataFound ?? true ? null : const DataNotFoundWidget(),
-            trailing: trailing,
+              subtitle: isDataFound ?? true ? null : const DataNotFoundWidget(),
+              trailing: trailing,
+            ),
           ),
           Container(
             height: 1,
@@ -57,21 +78,41 @@ class PersonalizeCard extends StatelessWidget {
           ),
           ...children.map((v) => v).toList(),
           SizedBox(height: bottomInside),
-          if (showMore)
-            Container(
-              height: .5,
-              width: double.infinity,
-              color: AppColors.borderColor,
-            ),
+          // if (showMore)
+          //   Container(
+          //     height: .5,
+          //     width: double.infinity,
+          //     color: AppColors.borderColor,
+          //   ),
           if (showMore)
             GestureDetector(
               onTap: isDataFound ?? true ? onPressedShowMore : null,
               child: Container(
                 // height: 1,
                 width: double.infinity,
-                color: AppColors.white,
-                margin:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                decoration: BoxDecoration(
+                  color: AppColors.white,
+                  // gradient: isDataFound ?? true
+                  //     ? const LinearGradient(
+                  //         begin: Alignment.topCenter,
+                  //         end: Alignment.bottomCenter,
+                  //         colors: [
+                  //           AppColors.contentColorCyan,
+                  //           AppColors.contentColorBlue,
+                  //         ],
+                  //       )
+                  //     : null,
+                  border: Border.all(
+                    width: .5,
+                    color: AppColors.primary,
+                  ),
+                  borderRadius: const BorderRadius.only(
+                    bottomLeft: Radius.circular(20),
+                    bottomRight: Radius.circular(20),
+                  ),
+                ),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -81,8 +122,8 @@ class PersonalizeCard extends StatelessWidget {
                         color: isDataFound ?? true
                             ? AppColors.primary
                             : Colors.grey,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w400,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                     Icon(

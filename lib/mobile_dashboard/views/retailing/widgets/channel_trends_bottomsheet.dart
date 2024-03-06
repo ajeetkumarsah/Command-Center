@@ -202,6 +202,7 @@ class _ChannelTrendsFilterBottomsheetState
                               ? 'trends'
                               : 'geo',
                           tabType: widget.tabType,
+                          subType: 'trends',
                         );
 
                         Navigator.pop(context);

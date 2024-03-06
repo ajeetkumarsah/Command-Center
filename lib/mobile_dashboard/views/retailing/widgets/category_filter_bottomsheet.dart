@@ -344,9 +344,11 @@ class _CategoryFilterBottomsheetState extends State<CategoryFilterBottomsheet> {
   void onApplyFilter(HomeController ctlr) {
     ctlr.onChangeCategory1(_selectedCategory, tabType: widget.tabType);
     if (widget.isTrends) {
-      ctlr.onApplyMultiFilter('trends', 'geo', tabType: widget.tabType);
+      ctlr.onApplyMultiFilter('trends', 'geo',
+          tabType: widget.tabType, subType: 'category');
     } else {
-      ctlr.onApplyMultiFilter('category', 'category', tabType: widget.tabType);
+      ctlr.onApplyMultiFilter('category', 'category',
+          tabType: widget.tabType, subType: 'category');
     }
 
     Navigator.pop(context);

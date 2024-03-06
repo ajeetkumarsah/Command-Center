@@ -5,7 +5,6 @@ import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
 import 'package:command_centre/mobile_dashboard/utils/summary_types.dart';
 import 'package:command_centre/mobile_dashboard/controllers/home_controller.dart';
 import 'package:command_centre/mobile_dashboard/views/widgets/custom_loader.dart';
-import 'package:command_centre/mobile_dashboard/views/widgets/custom_snackbar.dart';
 
 class GeographyMultiSelectBottomsheet extends StatefulWidget {
   final bool isTrends;
@@ -503,9 +502,10 @@ class _GeographyMultiSelectBottomsheetState
 
     if (widget.isTrends) {
       ctlr.onApplyMultiFilter('trends', 'geo',
-          tabType: widget.tabType, isTrendsFilter: true);
+          tabType: widget.tabType, isTrendsFilter: true, subType: 'geo');
     } else {
-      ctlr.onApplyMultiFilter('geo', 'geo', tabType: widget.tabType);
+      ctlr.onApplyMultiFilter('geo', 'geo',
+          tabType: widget.tabType, subType: 'geo');
     }
     Navigator.pop(context);
   }

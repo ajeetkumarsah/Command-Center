@@ -306,6 +306,7 @@ class _GeographyTrendsBottomsheetState
                               : 'geo',
                           tabType: widget.tabType,
                           isTrendsFilter: true,
+                          subType: 'trends',
                         );
                         Navigator.pop(context);
                       },

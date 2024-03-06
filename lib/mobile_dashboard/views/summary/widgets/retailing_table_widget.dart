@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
 
 class RetailingTableWidget extends StatefulWidget {
@@ -54,8 +55,8 @@ class _RetailingTableWidgetState extends State<RetailingTableWidget> {
                           color: index == 0
                               ? AppColors.white
                               : index % 2 == 0
-                                  ? AppColors.blueLight.withOpacity(.17)
-                                  : AppColors.blueLight.withOpacity(.25),
+                                  ? AppColors.contentColorCyan.withOpacity(.03)
+                                  : AppColors.contentColorCyan.withOpacity(.1),
                           borderRadius: index == 0
                               ? const BorderRadius.only(
                                   topLeft: Radius.circular(20),
@@ -105,7 +106,14 @@ class _RetailingTableWidgetState extends State<RetailingTableWidget> {
                                       ),
                                     ),
                                     padding: const EdgeInsets.all(8.0),
-                                    child: Text(value),
+                                    child: Text(
+                                      value,
+                                      style: GoogleFonts.ptSansCaption(
+                                        fontSize: 12,
+                                        fontWeight:
+                                            index == 0 ? FontWeight.w600 : null,
+                                      ),
+                                    ),
                                   ),
                                 ),
                               )

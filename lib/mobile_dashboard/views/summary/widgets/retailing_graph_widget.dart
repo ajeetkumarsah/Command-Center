@@ -263,7 +263,7 @@ class _RetailingGraphWidgetState extends State<RetailingGraphWidget> {
   Widget getLeftLineTitles(
       double value, TitleMeta meta, List<YAxisData> yAxisData) {
     final style = GoogleFonts.ptSans(
-      color: AppColors.black,
+      color: AppColors.primary,
       fontWeight: FontWeight.w300,
       fontSize: 12,
     );
