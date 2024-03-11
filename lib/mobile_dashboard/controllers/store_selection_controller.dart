@@ -18,7 +18,8 @@ class StoreSelectionController extends GetxController {
       _isBranchLoading = false,
       _isChannelLoading = false,
       _isMapLoading = false,
-      _isStoreLoading = false;
+      _isStoreLoading = false,
+      setisSelectedManually = false;
      // _isSelectedManually = false;
 
   bool get isLoading => _isLoading;
@@ -27,6 +28,7 @@ class StoreSelectionController extends GetxController {
   bool get isChannelLoading => _isChannelLoading;
   bool get isStoreLoading => _isStoreLoading;
   bool get isMapLoading => _isMapLoading;
+  bool get isSelectedManually => setisSelectedManually;
   // bool get isSelectedManually => _isSelectedManually;
   //
 
@@ -43,6 +45,12 @@ class StoreSelectionController extends GetxController {
   String? get selectedMonth => _selectedMonth;
   String? _selectedYear = '2023';
   String? get selectedYear => _selectedYear;
+  String title = '';
+
+  double? _lat;
+  double? get lat => _lat;
+  double? _lang;
+  double? get lang => _lang;
 
   List<String> distributors = [], branches = [], channels = [], store = [];
   List<MapDataModel> locations = [];
@@ -62,10 +70,9 @@ class StoreSelectionController extends GetxController {
   void onInit() {
     super.onInit();
     initData();
+
     getAllFilters('');
-    getUserLocation();
-    // mapStoreData();
-    // getAllFilters('', type: 'branch');
+    mapStoreData();
   }
 
   void initData() {
@@ -187,18 +194,24 @@ class StoreSelectionController extends GetxController {
 
   void onChangeBranch(String value) {
     _selectedBranch = value;
+    _selectedChannel = null;
+    _selectedStore = null;
     getAllFilters('', type: 'channel');
     update();
   }
 
   void onChangeDistributor(String? value) {
     _selectedDistributor = value;
+    _selectedBranch = null;
+    _selectedChannel = null;
+    _selectedStore = null;
     getAllFilters('', type: 'branch');
     update();
   }
 
   void onChannelChange(String? value) {
     _selectedChannel = value;
+    _selectedStore = null;
     getAllFilters('', type: 'storeWithFilter');
     update();
   }
@@ -264,38 +277,40 @@ class StoreSelectionController extends GetxController {
     return responseModel;
   }
 
-
   Future<ResponseModel> mapStoreData() async {
+    LocationPermission permission;
+    permission = await Geolocator.requestPermission();
+    Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.low);
+    print(position.latitude.runtimeType);
+    print(position.longitude.runtimeType);
+    _lat = position.latitude;
+    _lang = position.longitude;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _isMapLoading = true;
       update();
     });
-    Response response = await storeRepo.getFilters(
-        {
-          "endPoint": "store",
-          "query": {
-            "lat": "26.850000",
-            "long": "80.949997"
-          }
+
+    Response response = await storeRepo.getFilters({
+      "endPoint": "store",
+      "query": {"lat": "${position.latitude}", "long": "${position.longitude}"}
     });
+
     ResponseModel responseModel;
     if (response.statusCode == 200) {
       if (response.body["successful"].toString().toLowerCase() == 'true') {
         final data = response.body["data"];
         if (data != null && data.isNotEmpty) {
-          fetchStoreData();
-          // _isSelectedManually = true;
           locations.clear();
-          // Iterate through the data list and populate the locations list
           for (var item in data) {
             locations.add(MapDataModel.fromJson(item));
           }
-
           debugPrint('=====> locations $locations');
+          responseModel = ResponseModel(true, 'Success');
+          await fetchStoreData(); // Call fetchStoreData here
+        } else {
+          responseModel = ResponseModel(false, 'No data found');
         }
-        responseModel = ResponseModel(true, 'Success');
       } else {
-        // showCustomSnackBar(response.body["message"] ?? '');
         responseModel = ResponseModel(false, 'Something went wrong');
       }
     } else if (response.statusCode == 401) {
@@ -304,27 +319,23 @@ class StoreSelectionController extends GetxController {
     } else {
       responseModel = ResponseModel(false, response.statusText ?? "");
     }
+
     _isMapLoading = false;
     update();
     return responseModel;
   }
 
   Future<void> fetchStoreData() async {
-    ResponseModel responseModel = await mapStoreData();
-    if (responseModel.isSuccess) {
-      markers = locations.map((location) {
-        return Marker(
-          point: LatLng(double.parse(location.lat!), double.parse(location.long!)),
-          width: 40,
-          height: 40,
-          alignment: Alignment.topCenter,
-          child: const Icon(Icons.location_on, size: 40),
-        );
-      }).toList();
-      // setState(() {});
-    } else {
-      // Handle error
-    }
+    markers = locations.map((location) {
+      return Marker(
+        point: LatLng(double.parse(location.lat!), double.parse(location.long!)),
+        width: 40,
+        height: 40,
+        alignment: Alignment.topCenter,
+        child: const Icon(Icons.location_on, size: 40),
+      );
+    }).toList();
+    // Update the UI using setState or similar method if needed
   }
 
   String findStoreName(LatLng position) {
@@ -338,16 +349,4 @@ class StoreSelectionController extends GetxController {
     return 'Store Name Not Found';
   }
 
-  Future<Position> locateUser() async {
-    return Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
-  }
-
-  getUserLocation() async {
-    currentLocation = await locateUser();
-
-      _center = LatLng(currentLocation.latitude, currentLocation.longitude);
-    print('center $_center');
-
-  }
 }

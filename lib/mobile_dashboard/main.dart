@@ -1,3 +1,5 @@
+import 'package:command_centre/mobile_dashboard/views/login/access_denied_screen.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
@@ -31,6 +33,9 @@ void main() async {
   FirebaseMessaging.onBackgroundMessage(_firebaseBackgroundMessage);
   FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
   FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
+  FirebaseAnalytics analytics = FirebaseAnalytics.instance;
+  FirebaseAnalyticsObserver observer =
+  FirebaseAnalyticsObserver(analytics: analytics);
   // var initializationSettingsAndroid =
   // const AndroidInitializationSettings('@mipmap/ic_launcher');
   Future<bool> securityCheck() async {
@@ -75,8 +80,9 @@ void main() async {
   runApp(
     GetMaterialApp(
       title: "Command Center",
-      initialRoute: AppPages.SPLASH_SCREEN,
-      // home: const OnboardingScreen(),
+      // initialRoute: AppPages.SPLASH_SCREEN,
+      navigatorObservers: <NavigatorObserver>[observer],
+      home: AccessDeniedScreen(),
       getPages: AppPages.routes,
       debugShowCheckedModeBanner: false,
     ),

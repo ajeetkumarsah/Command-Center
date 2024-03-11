@@ -1,3 +1,4 @@
+import 'package:command_centre/mobile_dashboard/services/analytics_utils.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
@@ -342,6 +343,8 @@ class _CategoryFilterBottomsheetState extends State<CategoryFilterBottomsheet> {
   }
 
   void onApplyFilter(HomeController ctlr) {
+    LoggerUtils.firebaseAnalytics(
+        AnalyticsEvent.deep_dive_selected_channel, "Added Selected Category ${ctlr.getUserName()}");
     ctlr.onChangeCategory1(_selectedCategory, tabType: widget.tabType);
     if (widget.isTrends) {
       ctlr.onApplyMultiFilter('trends', 'geo',

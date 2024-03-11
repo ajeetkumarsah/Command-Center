@@ -1,3 +1,4 @@
+import 'package:command_centre/mobile_dashboard/services/analytics_utils.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -263,6 +264,8 @@ class GeographyBottomsheet extends StatelessWidget {
                     ),
                     TextButton(
                       onPressed: () {
+                        LoggerUtils.firebaseAnalytics(
+                            AnalyticsEvent.deep_dive_selected_geo, "Added Selected Geo ${ctlr.getUserName()}");
                         if (ctlr.selectedTempGeoValue.isNotEmpty) {
                           ctlr.onApplyFilter(
                             isLoadRetailing: isLoadRetailing,

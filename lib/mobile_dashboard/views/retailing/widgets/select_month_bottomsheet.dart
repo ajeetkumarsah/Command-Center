@@ -1,3 +1,4 @@
+import 'package:command_centre/mobile_dashboard/services/analytics_utils.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -149,6 +150,8 @@ class SelectMonthBottomsheet extends StatelessWidget {
                       ),
                       TextButton(
                         onPressed: () {
+                          LoggerUtils.firebaseAnalytics(
+                              AnalyticsEvent.selected_month, "Selected Month ${ctlr.getUserName()}");
                           if (ctlr.selectedTempMonth != null) {
                             ctlr.onChangeDate(
                               isLoadRetailing: isLoadRetailing,

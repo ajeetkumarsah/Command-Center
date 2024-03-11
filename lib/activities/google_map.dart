@@ -54,7 +54,7 @@ class _ClusteringPageState extends State<ClusteringPage> {
     pointIndex = 0;
 
     super.initState();
-    mapStoreData();
+    // mapStoreData();
   }
 
   @override

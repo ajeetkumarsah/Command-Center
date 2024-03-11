@@ -1,3 +1,4 @@
+import 'package:command_centre/mobile_dashboard/services/analytics_utils.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -190,6 +191,8 @@ class _ChannelTrendsFilterBottomsheetState
                     ),
                     TextButton(
                       onPressed: () {
+                        LoggerUtils.firebaseAnalytics(
+                            AnalyticsEvent.deep_dive_selected_channel, "Added Selected Channel ${ctlr.getUserName()}");
                         ctlr.onChangeChannel(
                             _selectedTrendsChannel, widget.tabType);
                         ctlr.onTrendsFilterSelect(widget.type, widget.tabType);

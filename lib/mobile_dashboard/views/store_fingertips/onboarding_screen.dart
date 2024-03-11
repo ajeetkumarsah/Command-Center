@@ -1,8 +1,7 @@
-import 'dart:convert';
+import 'dart:async';
 
 import 'package:command_centre/mobile_dashboard/bindings/home_binding.dart';
 import 'package:command_centre/mobile_dashboard/controllers/home_controller.dart';
-import 'package:command_centre/mobile_dashboard/data/models/response/response_model.dart';
 import 'package:command_centre/mobile_dashboard/views/store_fingertips/widgets/pop_up_window.dart';
 import 'package:command_centre/mobile_dashboard/views/summary/widgets/menu_bottomsheet.dart';
 import 'package:command_centre/utils/colors/colors.dart';
@@ -22,9 +21,8 @@ import 'package:command_centre/mobile_dashboard/views/widgets/custom_loader.dart
 import 'package:command_centre/mobile_dashboard/views/widgets/custom_shimmer.dart';
 import 'package:command_centre/mobile_dashboard/views/widgets/custom_snackbar.dart';
 import 'package:command_centre/mobile_dashboard/controllers/store_selection_controller.dart';
-import 'package:http/http.dart' as http;
-import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:latlong2/latlong.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await HomeBinding().dependencies();
@@ -42,21 +40,15 @@ class OnboardingScreen extends StatefulWidget {
   State<OnboardingScreen> createState() => _OnboardingScreenState();
 }
 
-class _OnboardingScreenState extends State<OnboardingScreen> with TickerProviderStateMixin {
+class _OnboardingScreenState extends State<OnboardingScreen>
+    with TickerProviderStateMixin {
   bool isMapVisible = false;
   bool isDropDownVisible = true;
   bool visible = false;
   int _activeIndex = 0;
 
   int get activeIndex => _activeIndex;
-  bool isSelectedManually = false;
-  // late final MapController controller = MapController(
-  //   initPosition: GeoPoint(
-  //     latitude: 26.8495355,
-  //     longitude: 80.9503142,
-  //   ),
-  // );
-  // late final List<Marker> _markers;
+
 
   /// Used to trigger showing/hiding of popups.
   final PopupController _popupLayerController = PopupController();
@@ -72,38 +64,21 @@ class _OnboardingScreenState extends State<OnboardingScreen> with TickerProvider
   ValueNotifier<List<GeoPoint>> roadPoints = ValueNotifier([]);
   ValueNotifier<bool> isTracking = ValueNotifier(false);
   List<MapDataModel> locations = [];
-  // late MapController controller;
+  late AlignOnUpdate _alignPositionOnUpdate;
+  late final StreamController<double?> _alignPositionStreamController;
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-
-    // _markers = [
-    //   const LatLng(26.8495355, 80.9503142),
-    //   const LatLng(26.8491201, 80.9503638),
-    //   const LatLng(26.8490297, 80.9500805),
-    //   const LatLng(26.849085, 80.9503967),
-    //   const LatLng(26.8489831, 80.9500105),
-    //   const LatLng(26.8489202, 80.949958),
-    //   const LatLng(26.8488634, 80.9498171),
-    //   const LatLng(26.8488256, 80.9498532),
-    //   const LatLng(26.8488092, 80.9498438),
-    //   const LatLng(26.8488166, 80.9494567),
-    // ]
-    //     .map(
-    //       (markerPosition) => Marker(
-    //     point: markerPosition,
-    //     width: 40,
-    //     height: 40,
-    //     alignment: Alignment.topCenter,
-    //     child: const Icon(Icons.location_on, size: 40),
-    //   ),
-    // )
-    //     .toList();
+    _alignPositionOnUpdate = AlignOnUpdate.always;
+    _alignPositionStreamController = StreamController<double?>();
   }
 
-
+  @override
+  void dispose() {
+    _alignPositionStreamController.close();
+    super.dispose();
+  }
 
   void onChangePage() {
     debugPrint("Active Index ===> $activeIndex");
@@ -243,7 +218,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> with TickerProvider
     return GetBuilder<StoreSelectionController>(
       init: StoreSelectionController(storeRepo: Get.find()),
       builder: (ctlr) {
-        debugPrint('========>> ${ctlr.locations}');
         return Scaffold(
           backgroundColor: Colors.blue,
           body: SingleChildScrollView(
@@ -334,7 +308,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> with TickerProvider
                                         padding: const EdgeInsets.all(4.0),
                                         child: InkWell(
                                           onTap: () {
-                                            isSelectedManually = false;
+                                            ctlr.setisSelectedManually = false;
                                             setState(() {});
                                           },
                                           child: Container(
@@ -342,7 +316,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> with TickerProvider
                                               width: size.width,
                                               decoration: BoxDecoration(
                                                 color:
-                                                    isSelectedManually == false
+                                                ctlr.isSelectedManually == false
                                                         ? MyColors.primary
                                                         : MyColors.whiteColor,
                                                 borderRadius:
@@ -354,7 +328,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> with TickerProvider
                                                   maxLines: 2,
                                                   style: TextStyle(
                                                       color:
-                                                          isSelectedManually ==
+                                                      ctlr.isSelectedManually ==
                                                                   false
                                                               ? MyColors
                                                                   .whiteColor
@@ -372,22 +346,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> with TickerProvider
                                       child: Padding(
                                         padding: const EdgeInsets.all(4.0),
                                         child: InkWell(
-                                          onTap: () async{
+                                          onTap: () async {
+                                            ctlr.setisSelectedManually = true;
 
-                                           await ctlr.mapStoreData();
-                                           isSelectedManually = true;
-                                            // FirebaseCrashlytics.instance.crash();
-
-                                            //     .then((v) {
-                                            //   if (ctlr.mapDataModel != null) {
-                                            //     // locations;
-                                            //     // geoPoints
-                                            //     onChangePage();
-                                            //   } else {
-                                            //     showCustomSnackBar(
-                                            //         'Something went wrong!');
-                                            //   }
-                                            // });
+                                            // _alignPositionOnUpdate = AlignOnUpdate.always;
+                                            // _alignPositionStreamController = StreamController<double?>();
                                             setState(() {});
                                           },
                                           child: Container(
@@ -395,7 +358,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> with TickerProvider
                                               width: size.width,
                                               decoration: BoxDecoration(
                                                 color:
-                                                    isSelectedManually == true
+                                                ctlr.isSelectedManually == true
                                                         ? MyColors.primary
                                                         : MyColors.whiteColor,
                                                 borderRadius:
@@ -407,7 +370,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> with TickerProvider
                                                   maxLines: 2,
                                                   style: TextStyle(
                                                       color:
-                                                          isSelectedManually ==
+                                                      ctlr.isSelectedManually ==
                                                                   true
                                                               ? MyColors
                                                                   .whiteColor
@@ -439,7 +402,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> with TickerProvider
                   ),
                 ),
                 Visibility(
-                  visible: activeIndex == 1 && !isSelectedManually,
+                  visible: activeIndex == 1 && !ctlr.isSelectedManually,
                   child: Column(
                     children: [
                       Padding(
@@ -625,134 +588,65 @@ class _OnboardingScreenState extends State<OnboardingScreen> with TickerProvider
                             horizontal: 30, vertical: 6),
                         child: ctlr.isStoreLoading
                             ? CustomShimmer(
-                          height: 50,
-                          width: MediaQuery.of(context).size.width,
-                          borderRadius: BorderRadius.circular(12),
-                        )
+                                height: 50,
+                                width: MediaQuery.of(context).size.width,
+                                borderRadius: BorderRadius.circular(12),
+                              )
                             : DropdownButtonFormField<String>(
-                          value: ctlr.selectedStore,
-                          menuMaxHeight: 300,
-                          dropdownColor: AppColors.primaryDark,
-                          hint: Text(
-                            'Store',
-                            style: GoogleFonts.ptSans(
-                              color: AppColors.white,
-                              fontSize: 18,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                          isExpanded: true,
-                          decoration: const InputDecoration(
-                            border: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                color: AppColors.white,
-                              ),
-                            ),
-                            enabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                color: AppColors.white,
-                              ),
-                            ),
-                            focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                color: AppColors.white,
-                              ),
-                            ),
-                          ),
-                          icon: const Icon(
-                            Icons.keyboard_arrow_down_rounded,
-                            color: AppColors.white,
-                          ),
-                          items: ctlr.store.map((String value) {
-                            return DropdownMenuItem<String>(
-                              value: value,
-                              child: Text(
-                                value,
-                                style: GoogleFonts.ptSans(
-                                  color: AppColors.white,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w400,
+                                value: ctlr.selectedStore,
+                                menuMaxHeight: 300,
+                                dropdownColor: AppColors.primaryDark,
+                                hint: Text(
+                                  'Store',
+                                  style: GoogleFonts.ptSans(
+                                    color: AppColors.white,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w400,
+                                  ),
                                 ),
+                                isExpanded: true,
+                                decoration: const InputDecoration(
+                                  border: UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: AppColors.white,
+                                    ),
+                                  ),
+                                  enabledBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: AppColors.white,
+                                    ),
+                                  ),
+                                  focusedBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: AppColors.white,
+                                    ),
+                                  ),
+                                ),
+                                icon: const Icon(
+                                  Icons.keyboard_arrow_down_rounded,
+                                  color: AppColors.white,
+                                ),
+                                items: ctlr.store.map((String value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(
+                                      value,
+                                      style: GoogleFonts.ptSans(
+                                        color: AppColors.white,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                    ),
+                                  );
+                                }).toList(),
+                                onChanged: (v) => ctlr.onStoreChange(v!),
                               ),
-                            );
-                          }).toList(),
-                          onChanged: (v) => ctlr.onStoreChange(v!),
-                        ),
                       ),
-                      // Padding(
-                      //   padding: const EdgeInsets.symmetric(
-                      //       horizontal: 30, vertical: 6),
-                      //   child: ctlr.selectedChannel != null
-                      //       ? Container(
-                      //           decoration: const BoxDecoration(
-                      //             border: Border(
-                      //               bottom: BorderSide(
-                      //                 width: 1,
-                      //                 color: AppColors.white,
-                      //               ),
-                      //             ),
-                      //           ),
-                      //           child: ListTile(
-                      //             visualDensity: const VisualDensity(
-                      //                 horizontal: 1, vertical: -3),
-                      //             contentPadding:
-                      //                 const EdgeInsets.symmetric(horizontal: 0),
-                      //             title: Text(
-                      //               ctlr.selectedChannel ?? '',
-                      //               style: GoogleFonts.ptSans(
-                      //                 color: AppColors.white,
-                      //                 fontSize: 18,
-                      //                 fontWeight: FontWeight.w400,
-                      //               ),
-                      //             ),
-                      //             trailing: IconButton(
-                      //               onPressed: () => ctlr.clearChannel(),
-                      //               icon: const Icon(
-                      //                 Icons.close_rounded,
-                      //                 color: AppColors.white,
-                      //               ),
-                      //             ),
-                      //           ),
-                      //         )
-                      //       : TextFormField(
-                      //           style: GoogleFonts.ptSans(
-                      //             color: AppColors.white,
-                      //             fontSize: 18,
-                      //             fontWeight: FontWeight.w400,
-                      //           ),
-                      //           decoration: InputDecoration(
-                      //             hintText: ' Store',
-                      //             hintStyle: GoogleFonts.ptSans(
-                      //               color: AppColors.white,
-                      //               fontSize: 18,
-                      //               fontWeight: FontWeight.w400,
-                      //             ),
-                      //             border: const UnderlineInputBorder(
-                      //               borderSide: BorderSide(
-                      //                 color: AppColors.white,
-                      //               ),
-                      //             ),
-                      //             enabledBorder: const UnderlineInputBorder(
-                      //               borderSide: BorderSide(
-                      //                 color: AppColors.white,
-                      //               ),
-                      //             ),
-                      //             focusedBorder: const UnderlineInputBorder(
-                      //               borderSide: BorderSide(
-                      //                 color: AppColors.white,
-                      //               ),
-                      //             ),
-                      //           ),
-                      //           onChanged: (v) =>
-                      //               ctlr.getAllFilters(v, type: 'channel'),
-                      //         ),
-                      // ),
                     ],
                   ),
                 ),
                 const SizedBox(height: 10),
-
-                isSelectedManually == false
+                ctlr.isSelectedManually == false
                     ? activeIndex != 2
                         ? GestureDetector(
                             onTap: () {
@@ -760,18 +654,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> with TickerProvider
                                 if (ctlr.selectedDistributor != null &&
                                     ctlr.selectedBranch != null &&
                                     ctlr.selectedChannel != null) {
-                                  // ctlr.postStoreData().then((v) {
-                                  //   if (ctlr.storeIntroModel.isNotEmpty) {
-                                      // onChangePage();
-                                      // Future.delayed(const Duration(seconds: 2))
-                                      //     .then((value) =>
-                                          Get.offAndToNamed(AppPages.STORE_FINGERTIPS_SCREEN);
-                                      // );
-                                    // } else {
-                                    //   showCustomSnackBar(
-                                    //       'Something went wrong!');
-                                    // }
-                                  // });
+                                  Get.offAndToNamed(
+                                      AppPages.STORE_FINGERTIPS_SCREEN);
                                 } else {
                                   showCustomSnackBar(
                                       'Please Select the required fields.');
@@ -816,59 +700,121 @@ class _OnboardingScreenState extends State<OnboardingScreen> with TickerProvider
                           Stack(
                             children: [
                               Padding(
-                                padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                                padding: const EdgeInsets.only(
+                                    left: 8.0, right: 8.0),
                                 child: SizedBox(
-                                  height: MediaQuery.of(context).size.height / 1.66,
+                                  height:
+                                      MediaQuery.of(context).size.height / 1.66,
                                   width: double.infinity,
-                                  child:ctlr.markers.isEmpty?const
-                                  Center(child: CircularProgressIndicator()):
-                                  FlutterMap(
-                                    // mapController: ,
-                                    options: MapOptions(
-                                      initialZoom: 10.0,
-                                      initialCenter: const LatLng(26.8495355, 80.9503142),
-
-                                      onTap: (_, __) => _popupLayerController.hideAllPopups(),
-                                    ),
-                                    children: [
-                                      TileLayer(
-                                        urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                                      ),
-                                      // CurrentLocationLayer(
-                                      //   followOnLocationUpdate: FollowOnLocationUpdate.always,
-                                      //   turnOnHeadingUpdate: TurnOnHeadingUpdate.never,
-                                      //   style: const LocationMarkerStyle(
-                                      //     marker: DefaultLocationMarker(
-                                      //       child: Icon(
-                                      //         Icons.navigation,
-                                      //         color: Colors.white,
-                                      //         size: 10,
-                                      //       ),
-                                      //     ),
-                                      //     markerSize: Size(20, 20),
-                                      //     markerDirection: MarkerDirection.heading,
-                                      //   ),
-                                      // ),
-                                      PopupMarkerLayer(
-                                        options: PopupMarkerLayerOptions(
-                                          popupController: _popupLayerController,
-                                          markers: ctlr.markers,
-                                          popupDisplayOptions: PopupDisplayOptions(
-                                            builder: (BuildContext context, Marker marker)
-                                            {
-                                              String storeName = ctlr.findStoreName(marker.point);
-                                              return ExamplePopup(marker: marker, storeName: storeName,); }
+                                  child: ctlr.markers.isEmpty
+                                      ? const Center(
+                                          child: CircularProgressIndicator(
+                                          color: Colors.white,
+                                        ))
+                                      : FlutterMap(
+                                          // mapController: ,
+                                          options: MapOptions(
+                                            initialZoom: 15.0,
+                                            initialCenter: LatLng(
+                                                ctlr.lat ?? 26.8678668, ctlr.lang ??81.0073842),
+                                            onTap: (_, __) =>
+                                                _popupLayerController
+                                                    .hideAllPopups(),
+                                            onPositionChanged:
+                                                (MapPosition position,
+                                                    bool hasGesture) {
+                                              if (hasGesture &&
+                                                  _alignPositionOnUpdate !=
+                                                      AlignOnUpdate.never) {
+                                                setState(
+                                                  () => _alignPositionOnUpdate =
+                                                      AlignOnUpdate.never,
+                                                );
+                                              }
+                                            },
 
                                           ),
-                                          selectedMarkerBuilder: (context, marker) => const Icon(
-                                            Icons.location_on,
-                                            size: 40,
-                                            color: Colors.red,
-                                          ),
+                                          children: [
+                                            TileLayer(
+                                              urlTemplate:
+                                                  'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                                            ),
+                                            CurrentLocationLayer(
+                                              alignPositionStream:
+                                                  _alignPositionStreamController
+                                                      .stream,
+                                              alignPositionOnUpdate:
+                                                  _alignPositionOnUpdate,
+                                              style: const LocationMarkerStyle(
+                                                marker: DefaultLocationMarker(
+                                                  child: Icon(
+                                                    Icons.navigation,
+                                                    color: Colors.white,
+                                                    size: 10,
+                                                  ),
+                                                ),
+                                                markerSize: Size(20, 20),
+                                                // markerDirection: MarkerDirection.heading,
+                                              ),
+                                            ),
+                                            Align(
+                                              alignment: Alignment.bottomRight,
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(10.0),
+                                                child: SizedBox(
+                                                  height: 40,
+                                                  width: 40,
+                                                  child: FloatingActionButton(
+                                                    backgroundColor:
+                                                        Colors.black,
+                                                    onPressed: () {
+                                                      setState(
+                                                        () =>
+                                                            _alignPositionOnUpdate =
+                                                                AlignOnUpdate
+                                                                    .always,
+                                                      );
+                                                      _alignPositionStreamController
+                                                          .add(18);
+                                                    },
+                                                    child: const Icon(
+                                                      Icons.my_location,
+                                                      color: Colors.white,
+                                                      size: 16,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            PopupMarkerLayer(
+                                              options: PopupMarkerLayerOptions(
+                                                popupController:
+                                                    _popupLayerController,
+                                                markers: ctlr.markers,
+                                                popupDisplayOptions:
+                                                    PopupDisplayOptions(builder:
+                                                        (BuildContext context,
+                                                            Marker marker) {
+                                                  String storeName =
+                                                      ctlr.findStoreName(
+                                                          marker.point);
+                                                  return ExamplePopup(
+                                                    marker: marker,
+                                                    storeName: storeName,
+                                                  );
+                                                }),
+                                                selectedMarkerBuilder:
+                                                    (context, marker) =>
+                                                        const Icon(
+                                                  Icons.location_on,
+                                                  size: 40,
+                                                  color: Colors.red,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                      ),
-                                    ],
-                                  ),
                                 ),
                               ),
                               Visibility(

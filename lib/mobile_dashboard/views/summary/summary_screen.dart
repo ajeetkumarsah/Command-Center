@@ -132,6 +132,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
                         .collection("data_refresh")
                         .snapshots(),
                     builder: (context, snapshot) {
+                      FirebaseCrashlytics.instance.log("Data Refreshing");
                       debugPrint(
                           "===>Print D ${snapshot.data?.docs.first.data()}");
 

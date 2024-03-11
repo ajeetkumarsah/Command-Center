@@ -23,12 +23,16 @@ class AccessDeniedScreen extends StatefulWidget {
 }
 
 class _AccessDeniedState extends State<AccessDeniedScreen> {
-  AccessDeniedBody args = Get.arguments;
+  // AccessDeniedBody args = Get.arguments;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        color: const Color(0xff6F81E6),
+        // color: const Color(0xff6F81E6),
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(begin: Alignment.topLeft,end: Alignment.bottomRight,
+              colors: [AppColors.primary, AppColors.blueLighter])
+        ),
         child: Padding(
           padding: const EdgeInsets.all(10),
           child: Column(
@@ -40,11 +44,11 @@ class _AccessDeniedState extends State<AccessDeniedScreen> {
                   mainAxisSize: MainAxisSize.max,
                   children: <Widget>[
                     ClipRRect(
-                      borderRadius: BorderRadius.circular(8.0),
+                      borderRadius: BorderRadius.circular(20.0),
                       child: Image.asset(
-                        PngFiles.pgLogo,
-                        width: 200,
-                        height: 200,
+                        'assets/icon/img_cc.png',
+                        width: 150,
+                        height: 150,
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -54,28 +58,43 @@ class _AccessDeniedState extends State<AccessDeniedScreen> {
               const SizedBox(
                 height: 30,
               ),
-              const Text(
-                "Access Denied!",
-                style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white),
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(30, 20, 30, 10),
+              const Padding(
+                padding: EdgeInsets.all(8.0),
                 child: Text(
-                  "You do not have access to this service. Reason Code ${args.reason} \n Please contact the below.",
+                  "Hi User, \nYou don't seem to have access to the Command Center.",
+                  // "Access Denied!",
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
+                  style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                       color: Colors.white),
                 ),
               ),
               const Padding(
+                padding: EdgeInsets.fromLTRB(30, 20, 30, 10),
+                child: Text(
+                  "Please find the SOP below \n",
+                  // "You do not have access to this service. Reason Code {args.reason} \n Please contact the below.",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white),
+                ),
+              ),
+              const Text(
+                "For queries contact below",
+                // "You do not have access to this service. Reason Code {args.reason} \n Please contact the below.",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white),
+              ),
+              const Padding(
                 padding: EdgeInsets.only(top: 8.0),
                 child: Text(
-                  "Nithin Balaaji (dv.nb@pg.com)\nTranzita Systems (support@tranzita.com)",
+                  "Nithin Balaaji (dv.nb@pg.com)",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       fontSize: 16,

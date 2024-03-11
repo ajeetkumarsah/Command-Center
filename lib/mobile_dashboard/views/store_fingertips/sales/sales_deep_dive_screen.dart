@@ -466,7 +466,7 @@ class _SalesDeepDiveScreenState extends State<SalesDeepDiveScreen> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(right: 12.0),
+                padding: const EdgeInsets.only(right: 1.0),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
