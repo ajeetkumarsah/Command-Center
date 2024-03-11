@@ -1,10 +1,9 @@
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-
 import 'login_screen.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_constants.dart';
 import 'package:command_centre/mobile_dashboard/utils/routes/app_pages.dart';
@@ -33,7 +32,6 @@ class _PersonaScreenState extends State<PersonaScreen>
   }
 
   late AnimationController _animationController;
-  late Animation<Offset> _animation;
 
   @override
   void initState() {
@@ -41,16 +39,6 @@ class _PersonaScreenState extends State<PersonaScreen>
     FirebaseCrashlytics.instance.log("Persona Started");
     _animationController = AnimationController(
         duration: const Duration(milliseconds: 700), vsync: this);
-
-    final curvedAnimation = CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeInOut,
-    );
-
-    _animation = Tween<Offset>(
-      begin: Offset.zero, // Starting position off the screen
-      end: const Offset(0, -0.15), // Ending position at the original position
-    ).animate(curvedAnimation);
   }
 
   @override

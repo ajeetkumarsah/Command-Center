@@ -68,7 +68,7 @@ class _CustomExpandedChartWidgetState extends State<CustomExpandedChartWidget> {
                             Hero(
                               tag: widget.title,
                               child: const Icon(
-                                Icons.keyboard_double_arrow_down_rounded,
+                                Icons.keyboard_double_arrow_up_rounded,
                                 color: AppColors.primary,
                               ),
                             ),
@@ -205,7 +205,7 @@ class _CustomExpandedChartWidgetState extends State<CustomExpandedChartWidget> {
                                                             100),
                                                   ),
                                                   padding: const EdgeInsets
-                                                          .symmetric(
+                                                      .symmetric(
                                                       horizontal: 10,
                                                       vertical: 4),
                                                   child: Text(
@@ -256,7 +256,7 @@ class _CustomExpandedChartWidgetState extends State<CustomExpandedChartWidget> {
                                                             100),
                                                   ),
                                                   padding: const EdgeInsets
-                                                          .symmetric(
+                                                      .symmetric(
                                                       horizontal: 10,
                                                       vertical: 4),
                                                   child: Text(
@@ -375,8 +375,7 @@ class _CustomExpandedChartWidgetState extends State<CustomExpandedChartWidget> {
                                                 fitInsideVertically: true,
                                                 tooltipMargin: 40,
                                                 tooltipHorizontalAlignment:
-                                                    FLHorizontalAlignment
-                                                        .center,
+                                                    FLHorizontalAlignment.right,
                                                 getTooltipItems:
                                                     (touchedSpots) {
                                                   return touchedSpots.map(

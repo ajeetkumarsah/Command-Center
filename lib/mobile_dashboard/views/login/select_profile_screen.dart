@@ -14,7 +14,7 @@ class SelectProfile extends StatefulWidget {
 
 class _SelectProfileState extends State<SelectProfile> {
   var itemList = ['Sales', 'Finance', 'Supply Chain'];
-  int _selected = -1;
+  // int _selected = -1;
   int selectedContainerIndex = 0;
   void selectContainer(int index) {
     setState(() {

@@ -107,6 +107,8 @@ dependencies:
   flutter_map_location_marker: ^8.0.8
   firebase_analytics: ^10.8.8
   flutter_map_marker_popup:
+  text_3d: ^0.0.4
+  tutorial_coach_mark: ^1.2.11
 
 dependency_overrides:
   intl: 0.18.0

@@ -81,7 +81,7 @@ class CustomDeepDiveAppBar extends StatelessWidget
                       height: 50,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(25),
-                        color: AppColors.filterColor,
+                        color: AppColors.white,
                       ),
                       child: Row(
                         children: [
@@ -145,7 +145,7 @@ class CustomDeepDiveAppBar extends StatelessWidget
                         padding: const EdgeInsets.symmetric(horizontal: 4),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(25),
-                          color: AppColors.filterColor,
+                          color: AppColors.white,
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,

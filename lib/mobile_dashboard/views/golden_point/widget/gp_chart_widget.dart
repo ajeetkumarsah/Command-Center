@@ -65,7 +65,7 @@ class _CustomExpandedChartWidgetState extends State<GPTrendsChartWidget> {
                             Hero(
                               tag: widget.title,
                               child: const Icon(
-                                Icons.keyboard_double_arrow_down_rounded,
+                                Icons.keyboard_double_arrow_up_rounded,
                                 color: AppColors.primary,
                               ),
                             ),
@@ -201,7 +201,7 @@ class _CustomExpandedChartWidgetState extends State<GPTrendsChartWidget> {
                                                             100),
                                                   ),
                                                   padding: const EdgeInsets
-                                                          .symmetric(
+                                                      .symmetric(
                                                       horizontal: 10,
                                                       vertical: 4),
                                                   child: Text(
@@ -240,7 +240,7 @@ class _CustomExpandedChartWidgetState extends State<GPTrendsChartWidget> {
                                                             100),
                                                   ),
                                                   padding: const EdgeInsets
-                                                          .symmetric(
+                                                      .symmetric(
                                                       horizontal: 10,
                                                       vertical: 4),
                                                   child: Text(
@@ -332,8 +332,7 @@ class _CustomExpandedChartWidgetState extends State<GPTrendsChartWidget> {
                                                 fitInsideVertically: true,
                                                 tooltipMargin: 40,
                                                 tooltipHorizontalAlignment:
-                                                    FLHorizontalAlignment
-                                                        .center,
+                                                    FLHorizontalAlignment.right,
                                                 getTooltipItems:
                                                     (touchedSpots) {
                                                   return touchedSpots.map(
@@ -391,7 +390,8 @@ class _CustomExpandedChartWidgetState extends State<GPTrendsChartWidget> {
                                                   bottom: BorderSide(width: .5),
                                                   left: BorderSide(width: .5))),
                                           gridData: FlGridData(
-                                            show: true,drawHorizontalLine: false,
+                                            show: true,
+                                            drawHorizontalLine: false,
                                           ),
                                           titlesData: FlTitlesData(
                                             bottomTitles: AxisTitles(

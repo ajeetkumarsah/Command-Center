@@ -1,19 +1,22 @@
+import 'dart:ui';
+import 'dart:math';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:marquee/marquee.dart';
+import 'package:text_3d/text_3d.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../retailing/widgets/geography_bottomsheet.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import '../retailing/widgets/select_month_bottomsheet.dart';
+import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:command_centre/mobile_dashboard/utils/png_files.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:command_centre/mobile_dashboard/utils/date_converter.dart';
 import 'package:command_centre/mobile_dashboard/utils/routes/app_pages.dart';
-import 'package:command_centre/mobile_dashboard/views/update/update_screen.dart';
 import 'package:command_centre/mobile_dashboard/controllers/home_controller.dart';
 import 'package:command_centre/mobile_dashboard/views/widgets/custom_shimmer.dart';
 import 'package:command_centre/mobile_dashboard/views/summary/widgets/menu_bottomsheet.dart';
@@ -39,7 +42,58 @@ class _SummaryScreenState extends State<SummaryScreen> {
         await ctlr.getInitValues();
       });
     }
-    //
+  }
+
+  final ScrollController sScrollController = ScrollController();
+
+  late TutorialCoachMark tutorialCoachMark;
+  final HomeController homeCtlr = Get.put(HomeController(homeRepo: Get.find()));
+  GlobalKey keyButton = GlobalKey();
+  GlobalKey keyButton1 = GlobalKey();
+  GlobalKey keyButton2 = GlobalKey();
+  GlobalKey keyButton3 = GlobalKey();
+  GlobalKey keyButton4 = GlobalKey();
+  GlobalKey keyButton5 = GlobalKey();
+
+  @override
+  void initState() {
+    getBanner();
+    initGuide();
+    super.initState();
+  }
+
+  void initGuide() {
+    bool userGuide = homeCtlr.getUserGuide();
+    if (!userGuide) {
+      createTutorial();
+      Future.delayed(Duration.zero, showTutorial);
+      homeCtlr.saveUserGuide(true);
+    }
+  }
+
+  Future<void> getBanner() async {
+    var firestore = FirebaseFirestore.instance;
+    var querySnap = await firestore.collection("data_refresh").get();
+    if (querySnap.docs[0]['showPopup'] ?? false) {
+      showCupertinoDialog(
+        context: context,
+        builder: (context) => CupertinoAlertDialog(
+          title: Text(querySnap.docs[0]['popupTitle'] ?? ''),
+          content: Text(querySnap.docs[0]['popupSubtitle'] ?? ''),
+          actions: <Widget>[
+            CupertinoDialogAction(
+              child: Text(
+                'Okay',
+                style: GoogleFonts.ptSansCaption(fontSize: 12),
+              ),
+              onPressed: () => Navigator.of(context).pop(true),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return;
   }
 
   @override
@@ -68,7 +122,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
             ),
             child: SingleChildScrollView(
               physics: const AlwaysScrollableScrollPhysics(),
-              controller: ctlr.sScrollController,
+              controller: sScrollController,
               child: Column(
                 children: [
                   Padding(
@@ -132,10 +186,6 @@ class _SummaryScreenState extends State<SummaryScreen> {
                         .collection("data_refresh")
                         .snapshots(),
                     builder: (context, snapshot) {
-                      FirebaseCrashlytics.instance.log("Data Refreshing");
-                      debugPrint(
-                          "===>Print D ${snapshot.data?.docs.first.data()}");
-
                       return AnimatedSwitcher(
                         duration: const Duration(milliseconds: 300),
                         child: snapshot.data?.docs.first.data() != null &&
@@ -149,6 +199,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                 decoration: const BoxDecoration(
                                   color: Colors.white,
                                 ),
+                                margin: const EdgeInsets.only(top: 8),
                                 width: double.infinity,
                                 alignment: Alignment.center,
                                 child: Row(
@@ -176,34 +227,22 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                             CrossAxisAlignment.center,
                                         blankSpace: 100,
                                         velocity: 100.0,
-                                        pauseAfterRound: Duration(seconds: 1),
+                                        pauseAfterRound:
+                                            const Duration(seconds: 1),
                                         startPadding: 100.0,
                                         accelerationDuration:
-                                            Duration(seconds: 1),
+                                            const Duration(seconds: 1),
                                         accelerationCurve: Curves.linear,
                                         decelerationDuration:
-                                            Duration(milliseconds: 500),
+                                            const Duration(milliseconds: 500),
                                         decelerationCurve: Curves.easeOut,
                                       ),
-                                      // Text(
-                                      // snapshot.data?.docs.first.data()['title'] ??
-                                      //     'D-1 Data Undergoing Refresh...',
-                                      //   maxLines: 2,
-                                      //   overflow: TextOverflow.ellipsis,
-                                      //   style: GoogleFonts.ptSansCaption(
-                                      //     fontSize: 12,
-                                      //     fontWeight: FontWeight.w300,
-                                      //     color: AppColors.primary,
-                                      //   ),
-                                      // ),
                                     ),
                                   ],
                                 ),
                               )
                             : const SizedBox(),
                       );
-
-                      ;
                     },
                   ),
                   const SizedBox(height: 20),
@@ -214,6 +253,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
                         Expanded(
                           flex: 2,
                           child: Container(
+                            key: keyButton,
                             height: 50,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(25),
@@ -300,6 +340,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
                               isScrollControlled: true,
                             ),
                             child: Container(
+                              key: keyButton1,
                               height: 50,
                               alignment: Alignment.center,
                               decoration: BoxDecoration(
@@ -361,26 +402,40 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     Expanded(
-                                      child: Text(
-                                        'Retailing',
-                                        style: GoogleFonts.ptSans(
+                                      child: ThreeDText(
+                                        text: 'Retailing',
+                                        textStyle: GoogleFonts.ptSans(
                                           fontSize: 18,
                                           fontWeight: FontWeight.w700,
                                           color: AppColors.white,
                                         ),
+                                        depth: 2,
+                                        style: ThreeDStyle.inset,
+                                        angle: pi / 6,
+                                        perspectiveDepth: 10,
                                       ),
+                                      // Text(
+                                      //   'Retailing',
+                                      //   style: GoogleFonts.ptSans(
+                                      //     fontSize: 18,
+                                      //     fontWeight: FontWeight.w700,
+                                      //     color: AppColors.white,
+                                      //   ),
+                                      // ),
                                     ),
                                     Container(
                                       margin: const EdgeInsets.only(
                                           bottom: 0, left: 12, right: 4),
                                       decoration: BoxDecoration(
                                           // color: AppColors.white,
-                                          gradient: const LinearGradient(
+                                          gradient: LinearGradient(
                                             begin: Alignment.topCenter,
                                             end: Alignment.bottomCenter,
                                             colors: [
-                                              AppColors.contentColorCyan,
-                                              AppColors.contentColorBlue,
+                                              AppColors.contentColorCyan
+                                                  .withOpacity(.4),
+                                              AppColors.contentColorBlue
+                                                  .withOpacity(.4),
                                             ],
                                           ),
                                           border: Border.all(
@@ -395,6 +450,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                             onTap: () =>
                                                 ctlr.onChangeSummaryDI(true),
                                             child: Container(
+                                              key: keyButton2,
                                               decoration: BoxDecoration(
                                                 color: ctlr.isSummaryDirect
                                                     ? AppColors.white
@@ -447,7 +503,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                                       horizontal: 10,
                                                       vertical: 4),
                                               child: Text(
-                                                'Indirect',
+                                                'Distributor',
                                                 style:
                                                     GoogleFonts.ptSansCaption(
                                                   color: ctlr.isSummaryDirect
@@ -463,6 +519,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                               onTap: () =>
                                                   ctlr.onChangeSummaryDI(false),
                                               child: Container(
+                                                key: keyButton3,
                                                 decoration: BoxDecoration(
                                                   color: ctlr.isSummaryDirect
                                                       ? Colors.transparent
@@ -525,7 +582,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                                         horizontal: 10,
                                                         vertical: 4),
                                                 child: Text(
-                                                  'Indirect + Direct',
+                                                  'Total Retailing',
                                                   style:
                                                       GoogleFonts.ptSansCaption(
                                                     color: !ctlr.isSummaryDirect
@@ -541,6 +598,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                     ),
                                   ],
                                 ),
+                                showKey: keyButton4,
                                 onPressedShowMore: () =>
                                     Get.toNamed(AppPages.RETAILING_SCREEN),
                                 children: [
@@ -753,33 +811,33 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                                       ctlr.onChannelSalesChange(
                                                           true),
                                                   child: Container(
+                                                    margin:
+                                                        const EdgeInsets.only(
+                                                            right: 4),
                                                     decoration: BoxDecoration(
                                                       color: ctlr.channelSales
                                                           ? AppColors.white
                                                           : AppColors.white,
-                                                      gradient: ctlr
-                                                              .channelSales
-                                                          ? const LinearGradient(
-                                                              begin: Alignment
-                                                                  .topCenter,
-                                                              end: Alignment
-                                                                  .bottomCenter,
-                                                              colors: [
-                                                                AppColors
-                                                                    .contentColorCyan,
-                                                                AppColors
-                                                                    .contentColorBlue,
-                                                                // AppColors.contentColorCyan.withOpacity(.6),
-                                                              ],
-                                                            )
-                                                          : null,
-                                                      // border: Border.all(
-                                                      //   width: 1,
-                                                      //   color: ctlr.channelSales
-                                                      //       ? AppColors
-                                                      //           .contentColorBlue
-                                                      //       : AppColors.white,
-                                                      // ),
+                                                      gradient:
+                                                          ctlr.channelSales
+                                                              ? LinearGradient(
+                                                                  begin: Alignment
+                                                                      .topCenter,
+                                                                  end: Alignment
+                                                                      .bottomCenter,
+                                                                  colors: [
+                                                                    AppColors
+                                                                        .contentColorCyan
+                                                                        .withOpacity(
+                                                                            .7),
+                                                                    AppColors
+                                                                        .contentColorBlue
+                                                                        .withOpacity(
+                                                                            .7),
+                                                                    // AppColors.contentColorCyan.withOpacity(.6),
+                                                                  ],
+                                                                )
+                                                              : null,
                                                       boxShadow: ctlr
                                                               .channelSales
                                                           ? [
@@ -787,7 +845,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                                                 color: Colors
                                                                     .black
                                                                     .withOpacity(
-                                                                        .5),
+                                                                        .3),
                                                                 blurRadius: 2.0,
                                                                 spreadRadius:
                                                                     0.0,
@@ -839,17 +897,6 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                                       color: ctlr.channelSales
                                                           ? AppColors.white
                                                           : AppColors.primary,
-                                                      // border: ctlr.channelSales
-                                                      //     ? null
-                                                      //     : Border.all(
-                                                      //         width: 1,
-                                                      //         color: !ctlr
-                                                      //                 .channelSales
-                                                      //             ? AppColors
-                                                      //                 .primary
-                                                      //             : AppColors
-                                                      //                 .white,
-                                                      //       ),
                                                       gradient: !ctlr
                                                               .channelSales
                                                           ? const LinearGradient(
@@ -1274,7 +1321,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                                   CrossAxisAlignment.center,
                                               children: [
                                                 Text(
-                                                  'P3M GP (in ${ctlr.summaryData.first.dgpCompliance?.gpAbs?.contains('MM') ?? false ? 'MM' : ctlr.summaryData.first.dgpCompliance?.gpAbs?.contains('M') ?? false ? 'M' : 'M'})',
+                                                  'GP P3M (in ${ctlr.summaryData.first.dgpCompliance?.gpAbs?.contains('MM') ?? false ? 'MM' : ctlr.summaryData.first.dgpCompliance?.gpAbs?.contains('M') ?? false ? 'M' : 'M'})',
                                                   style: GoogleFonts.ptSans(
                                                     fontSize: 16,
                                                     fontWeight: FontWeight.w400,
@@ -1293,7 +1340,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                             Column(
                                               children: [
                                                 Text(
-                                                  'GP IYA',
+                                                  'GP P3M IYA',
                                                   style:
                                                       GoogleFonts.ptSansCaption(
                                                     fontSize: 16,
@@ -1475,6 +1522,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
                           );
                         },
                         child: Container(
+                          key: keyButton5,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(100),
                             color: Colors.white,
@@ -1502,27 +1550,339 @@ class _SummaryScreenState extends State<SummaryScreen> {
                       )
                     ],
                   ),
-
                   const SizedBox(height: 110),
-                  // ...ctlr.summaryData
-                  //     .map(
-                  //       (e) => const ListTile(
-                  //         title: Text('Title'),
-                  //       ),
-                  //     )
-                  //     .toList(),
                 ],
               ),
             ),
           ),
-          // : Center(
-          //     child: Text(
-          //       'Something went wrong!',
-          //       style: GoogleFonts.ptSans(),
-          //     ),
-          //   ),
         );
       },
     );
+  }
+
+  void showTutorial() {
+    tutorialCoachMark.show(context: context);
+  }
+
+  void createTutorial() {
+    tutorialCoachMark = TutorialCoachMark(
+      targets: _createTargets(),
+      colorShadow: AppColors.primary,
+      textSkip: "SKIP",
+      paddingFocus: 10,
+      opacityShadow: 0.5,
+      imageFilter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+      onFinish: () {
+        sScrollController.animateTo(
+          0.0,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.fastOutSlowIn,
+        );
+      },
+      onClickTarget: (target) {
+        if (target.identify == 'Target 3') {
+          sScrollController.animateTo(
+            600,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.fastOutSlowIn,
+          );
+        } else if (target.identify == 'Target 4') {
+          sScrollController.animateTo(
+            (sScrollController.position.maxScrollExtent + 300),
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.fastOutSlowIn,
+          );
+        }
+      },
+      onClickTargetWithTapPosition: (target, tapDetails) {
+        if (target.identify == 'Target 3') {
+          sScrollController.animateTo(
+            600,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.fastOutSlowIn,
+          );
+        } else if (target.identify == 'Target 4') {
+          sScrollController.animateTo(
+            (sScrollController.position.maxScrollExtent + 300),
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.fastOutSlowIn,
+          );
+        }
+      },
+      onClickOverlay: (target) {
+        if (target.identify == 'Target 3') {
+          sScrollController.animateTo(
+            600,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.fastOutSlowIn,
+          );
+        } else if (target.identify == 'Target 4') {
+          sScrollController.animateTo(
+            (sScrollController.position.maxScrollExtent + 300),
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.fastOutSlowIn,
+          );
+        }
+      },
+      onSkip: () {
+        return true;
+      },
+    );
+  }
+
+  List<TargetFocus> _createTargets() {
+    List<TargetFocus> targets = [];
+
+    targets.add(
+      TargetFocus(
+        identify: "Target 0",
+        keyTarget: keyButton,
+        color: AppColors.primary,
+        contents: [
+          TargetContent(
+            align: ContentAlign.bottom,
+            builder: (context, controller) {
+              return const Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  SizedBox(height: 60),
+                  Text(
+                    "Geography Filter",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      fontSize: 20.0,
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(top: 10.0),
+                    child: Text(
+                      "You can change the Geography by clicking on this filter button.",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ],
+              );
+            },
+          )
+        ],
+        shape: ShapeLightFocus.RRect,
+        radius: 5,
+      ),
+    );
+    targets.add(
+      TargetFocus(
+        identify: "Target 1",
+        keyTarget: keyButton1,
+        shape: ShapeLightFocus.RRect,
+        radius: 5,
+        color: AppColors.primary,
+        contents: [
+          TargetContent(
+            align: ContentAlign.bottom,
+            builder: (context, controller) {
+              return GetBuilder<HomeController>(
+                init: HomeController(homeRepo: Get.find()),
+                builder: (ctlr) {
+                  return const Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      SizedBox(height: 60),
+                      Text(
+                        "Month Filter",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            fontSize: 20.0),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(top: 10.0),
+                        child: Text(
+                          "You can change the selected month by clicking on this button.",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              );
+            },
+          ),
+        ],
+      ),
+    );
+    targets.add(
+      TargetFocus(
+        identify: "Target 2",
+        keyTarget: keyButton2,
+        color: AppColors.primary,
+        shape: ShapeLightFocus.RRect,
+        radius: 5,
+        contents: [
+          TargetContent(
+            align: ContentAlign.bottom,
+            builder: (context, controller) {
+              return GetBuilder<HomeController>(
+                init: HomeController(homeRepo: Get.find()),
+                builder: (ctlr) {
+                  return const Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      SizedBox(height: 160),
+                      Text(
+                        "Distributor ",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            fontSize: 20.0),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(top: 10.0),
+                        child: Text(
+                          "Distributor comprises of only those Retailing which are done by distributors.",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              );
+            },
+          ),
+        ],
+      ),
+    );
+    targets.add(
+      TargetFocus(
+        identify: "Target 3",
+        keyTarget: keyButton3,
+        shape: ShapeLightFocus.RRect,
+        radius: 5,
+        color: AppColors.primary,
+        contents: [
+          TargetContent(
+            align: ContentAlign.bottom,
+            builder: (context, controller) {
+              return GetBuilder<HomeController>(
+                init: HomeController(homeRepo: Get.find()),
+                builder: (ctlr) {
+                  return const Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      SizedBox(height: 160),
+                      Text(
+                        "Total Retailing",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            fontSize: 20.0),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(top: 10.0),
+                        child: Text(
+                          "Total Retailing comprises total retailing including Distributor as well as Non-Distributor Retailing.",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              );
+            },
+          ),
+        ],
+      ),
+    );
+    targets.add(
+      TargetFocus(
+        identify: "Target 4",
+        keyTarget: keyButton4,
+        shape: ShapeLightFocus.RRect,
+        radius: 5,
+        color: AppColors.primary,
+        contents: [
+          TargetContent(
+            align: ContentAlign.bottom,
+            builder: (context, controller) {
+              return GetBuilder<HomeController>(
+                init: HomeController(homeRepo: Get.find()),
+                builder: (ctlr) {
+                  return const Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      SizedBox(height: 60),
+                      Text(
+                        "Show More",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            fontSize: 20.0),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(top: 10.0),
+                        child: Text(
+                          "You can check the deepdives data by clicking on the show more button.",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              );
+            },
+          ),
+        ],
+      ),
+    );
+    targets.add(
+      TargetFocus(
+        identify: "Target 5",
+        keyTarget: keyButton5,
+        shape: ShapeLightFocus.RRect,
+        radius: 5,
+        color: AppColors.primary,
+        contents: [
+          TargetContent(
+            align: ContentAlign.top,
+            builder: (context, controller) {
+              return const Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  SizedBox(height: 160),
+                  Text(
+                    "Personalize",
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        fontSize: 20.0),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(top: 10.0),
+                    child: Text(
+                      "You can personalize your Summary page by clicking on this button.",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                  SizedBox(height: 160),
+                ],
+              );
+            },
+          ),
+        ],
+      ),
+    );
+    return targets;
   }
 }

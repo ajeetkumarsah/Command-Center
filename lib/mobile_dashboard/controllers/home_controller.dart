@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:convert';
 import 'package:command_centre/mobile_dashboard/services/analytics_utils.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
@@ -18,7 +17,6 @@ import 'package:command_centre/mobile_dashboard/utils/date_converter.dart';
 import 'package:command_centre/mobile_dashboard/utils/routes/app_pages.dart';
 import 'package:command_centre/mobile_dashboard/utils/global.dart' as globals;
 import 'package:command_centre/mobile_dashboard/data/repository/home_repo.dart';
-import 'package:command_centre/mobile_dashboard/views/widgets/custom_snackbar.dart';
 import 'package:command_centre/mobile_dashboard/data/models/response/trends_model.dart';
 import 'package:command_centre/mobile_dashboard/data/models/response/filters_model.dart';
 import 'package:command_centre/mobile_dashboard/data/models/response/summary_model.dart';
@@ -37,14 +35,13 @@ class HomeController extends GetxController {
 
 //
 
-  final ScrollController sScrollController = ScrollController();
   final ScrollController mScrollController = ScrollController();
 
   //
   final storage = new FlutterSecureStorage();
   //
   bool _isLoading = false,
-      _isSummaryExpanded = false,
+      _isSummaryExpanded = true,
       _isExpandedCategory = false,
       _isExpandedTrends = false,
       _isExpandedChannel = false,
@@ -1120,7 +1117,7 @@ class HomeController extends GetxController {
       _fbTrendsValue = getGeoValue();
     }
     if (!getOnlyShared) {
-      var futures = await Future.wait([
+      await Future.wait([
         getSummaryData().then((value) {
           getAllFilters().then((v) async {
             categoryFilters = filtersModel?.category ?? [];
@@ -1191,38 +1188,38 @@ class HomeController extends GetxController {
             } else {
               selectedRetailingChannelFilter = filtersModel?.attr1 ?? [];
             }
-            final trendMapDecoded = jsonDecode(
-                await storage.read(key: AppConstants.RETAILING_TRENDS) ?? '{}');
-            if (trendMapDecoded.isNotEmpty) {
-              Map<String, dynamic> _savedFilters = trendMapDecoded;
-              if (_savedFilters.containsKey('trends')) {
-                if (_savedFilters.containsKey('category') &&
-                    _savedFilters
-                        .containsKey('category')
-                        .toString()
-                        .isNotEmpty) {
-                  _selectedTrendsCategoryValue = _savedFilters['trends'];
-                  _selectedTrendsCategory = _savedFilters['category'];
-                  _selectedTrends = _selectedTrendsCategory;
-                  _retailingTrendsValue = _selectedTrendsCategoryValue;
-                } else if (_savedFilters.containsKey('channel') &&
-                    _savedFilters
-                        .containsKey('channel')
-                        .toString()
-                        .isNotEmpty) {
-                  _selectedTrendsChannelValue = _savedFilters['trends'];
-                  _selectedChannel = _savedFilters['channel'];
-                  _selectedTrends = _selectedChannel;
-                  _retailingTrendsValue = _selectedTrendsChannelValue;
-                } else if (_savedFilters.containsKey('geo') &&
-                    _savedFilters.containsKey('geo').toString().isNotEmpty) {
-                  _selectedTrendsGeoValue = _savedFilters['trends'];
-                  _selectedTrendsGeo = _savedFilters['geo'];
-                  _selectedTrends = _selectedTrendsGeo;
-                  _retailingTrendsValue = _selectedTrendsGeoValue;
-                }
-              }
-            }
+            // final trendMapDecoded = jsonDecode(
+            //     await storage.read(key: AppConstants.RETAILING_TRENDS) ?? '{}');
+            // if (trendMapDecoded.isNotEmpty) {
+            //   Map<String, dynamic> _savedFilters = trendMapDecoded;
+            //   if (_savedFilters.containsKey('trends')) {
+            //     if (_savedFilters.containsKey('category') &&
+            //         _savedFilters
+            //             .containsKey('category')
+            //             .toString()
+            //             .isNotEmpty) {
+            //       _selectedTrendsCategoryValue = _savedFilters['trends'];
+            //       _selectedTrendsCategory = _savedFilters['category'];
+            //       _selectedTrends = _selectedTrendsCategory;
+            //       _retailingTrendsValue = _selectedTrendsCategoryValue;
+            //     } else if (_savedFilters.containsKey('channel') &&
+            //         _savedFilters
+            //             .containsKey('channel')
+            //             .toString()
+            //             .isNotEmpty) {
+            //       _selectedTrendsChannelValue = _savedFilters['trends'];
+            //       _selectedChannel = _savedFilters['channel'];
+            //       _selectedTrends = _selectedChannel;
+            //       _retailingTrendsValue = _selectedTrendsChannelValue;
+            //     } else if (_savedFilters.containsKey('geo') &&
+            //         _savedFilters.containsKey('geo').toString().isNotEmpty) {
+            //       _selectedTrendsGeoValue = _savedFilters['trends'];
+            //       _selectedTrendsGeo = _savedFilters['geo'];
+            //       _selectedTrends = _selectedTrendsGeo;
+            //       _retailingTrendsValue = _selectedTrendsGeoValue;
+            //     }
+            // }
+            // }
 
             //coverage
             //getting coverage saved filters and setting it's values to the variables
@@ -1291,39 +1288,39 @@ class HomeController extends GetxController {
               selectedCoverageChannelFilter =
                   filtersModel?.otherAttrs?.attr1 ?? [];
             }
-            final coverageTrendMapDecoded = jsonDecode(
-                await storage.read(key: AppConstants.RETAILING_TRENDS) ?? '{}');
+            // final coverageTrendMapDecoded = jsonDecode(
+            //     await storage.read(key: AppConstants.RETAILING_TRENDS) ?? '{}');
 
-            if (coverageTrendMapDecoded.isNotEmpty) {
-              Map<String, dynamic> _savedFilters = coverageTrendMapDecoded;
-              if (_savedFilters.containsKey('trends')) {
-                if (_savedFilters.containsKey('category') &&
-                    _savedFilters
-                        .containsKey('category')
-                        .toString()
-                        .isNotEmpty) {
-                  _selectedTrendsCategoryValue = _savedFilters['trends'];
-                  _selectedTrendsCategory = _savedFilters['category'];
-                  _selectedCoverageTrends = _selectedTrendsCategory;
-                  _coverageTrendsValue = _selectedTrendsCategoryValue;
-                } else if (_savedFilters.containsKey('channel') &&
-                    _savedFilters
-                        .containsKey('channel')
-                        .toString()
-                        .isNotEmpty) {
-                  _selectedTrendsChannelValue = _savedFilters['trends'];
-                  _selectedChannel = _savedFilters['channel'];
-                  _selectedCoverageTrends = _selectedChannel;
-                  _coverageTrendsValue = _selectedTrendsChannelValue;
-                } else if (_savedFilters.containsKey('geo') &&
-                    _savedFilters.containsKey('geo').toString().isNotEmpty) {
-                  _selectedTrendsGeoValue = _savedFilters['trends'];
-                  _selectedTrendsGeo = _savedFilters['geo'];
-                  _selectedCoverageTrends = _selectedTrendsGeo;
-                  _coverageTrendsValue = _selectedTrendsGeoValue;
-                }
-              }
-            }
+            // if (coverageTrendMapDecoded.isNotEmpty) {
+            //   Map<String, dynamic> _savedFilters = coverageTrendMapDecoded;
+            //   if (_savedFilters.containsKey('trends')) {
+            //     if (_savedFilters.containsKey('category') &&
+            //         _savedFilters
+            //             .containsKey('category')
+            //             .toString()
+            //             .isNotEmpty) {
+            //       _selectedTrendsCategoryValue = _savedFilters['trends'];
+            //       _selectedTrendsCategory = _savedFilters['category'];
+            //       _selectedCoverageTrends = _selectedTrendsCategory;
+            //       _coverageTrendsValue = _selectedTrendsCategoryValue;
+            //     } else if (_savedFilters.containsKey('channel') &&
+            //         _savedFilters
+            //             .containsKey('channel')
+            //             .toString()
+            //             .isNotEmpty) {
+            //       _selectedTrendsChannelValue = _savedFilters['trends'];
+            //       _selectedChannel = _savedFilters['channel'];
+            //       _selectedCoverageTrends = _selectedChannel;
+            //       _coverageTrendsValue = _selectedTrendsChannelValue;
+            //     } else if (_savedFilters.containsKey('geo') &&
+            //         _savedFilters.containsKey('geo').toString().isNotEmpty) {
+            //       _selectedTrendsGeoValue = _savedFilters['trends'];
+            //       _selectedTrendsGeo = _savedFilters['geo'];
+            //       _selectedCoverageTrends = _selectedTrendsGeo;
+            //       _coverageTrendsValue = _selectedTrendsGeoValue;
+            //     }
+            //   }
+            // }
 
             ////////////////////
             /// //getting gp saved filters and
@@ -1384,38 +1381,38 @@ class HomeController extends GetxController {
             } else {
               selectedGPChannelFilter = filtersModel?.attr1 ?? [];
             }
-            final gpTrendMapDecoded = jsonDecode(
-                await storage.read(key: AppConstants.GP_TRENDS) ?? '{}');
-            if (gpTrendMapDecoded.isNotEmpty) {
-              Map<String, dynamic> _savedFilters = gpTrendMapDecoded;
-              if (_savedFilters.containsKey('trends')) {
-                if (_savedFilters.containsKey('category') &&
-                    _savedFilters
-                        .containsKey('category')
-                        .toString()
-                        .isNotEmpty) {
-                  _selectedTrendsCategoryValue = _savedFilters['trends'];
-                  _selectedTrendsCategory = _savedFilters['category'];
-                  _selectedTrends = _selectedTrendsCategory;
-                  _retailingTrendsValue = _selectedTrendsCategoryValue;
-                } else if (_savedFilters.containsKey('channel') &&
-                    _savedFilters
-                        .containsKey('channel')
-                        .toString()
-                        .isNotEmpty) {
-                  _selectedTrendsChannelValue = _savedFilters['trends'];
-                  _selectedChannel = _savedFilters['channel'];
-                  _selectedTrends = _selectedChannel;
-                  _retailingTrendsValue = _selectedTrendsChannelValue;
-                } else if (_savedFilters.containsKey('geo') &&
-                    _savedFilters.containsKey('geo').toString().isNotEmpty) {
-                  _selectedTrendsGeoValue = _savedFilters['trends'];
-                  _selectedTrendsGeo = _savedFilters['geo'];
-                  _selectedTrends = _selectedTrendsGeo;
-                  _retailingTrendsValue = _selectedTrendsGeoValue;
-                }
-              }
-            }
+            // final gpTrendMapDecoded = jsonDecode(
+            //     await storage.read(key: AppConstants.GP_TRENDS) ?? '{}');
+            // if (gpTrendMapDecoded.isNotEmpty) {
+            //   Map<String, dynamic> _savedFilters = gpTrendMapDecoded;
+            //   if (_savedFilters.containsKey('trends')) {
+            //     if (_savedFilters.containsKey('category') &&
+            //         _savedFilters
+            //             .containsKey('category')
+            //             .toString()
+            //             .isNotEmpty) {
+            //       _selectedTrendsCategoryValue = _savedFilters['trends'];
+            //       _selectedTrendsCategory = _savedFilters['category'];
+            //       _selectedTrends = _selectedTrendsCategory;
+            //       _retailingTrendsValue = _selectedTrendsCategoryValue;
+            //     } else if (_savedFilters.containsKey('channel') &&
+            //         _savedFilters
+            //             .containsKey('channel')
+            //             .toString()
+            //             .isNotEmpty) {
+            //       _selectedTrendsChannelValue = _savedFilters['trends'];
+            //       _selectedChannel = _savedFilters['channel'];
+            //       _selectedTrends = _selectedChannel;
+            //       _retailingTrendsValue = _selectedTrendsChannelValue;
+            //     } else if (_savedFilters.containsKey('geo') &&
+            //         _savedFilters.containsKey('geo').toString().isNotEmpty) {
+            //       _selectedTrendsGeoValue = _savedFilters['trends'];
+            //       _selectedTrendsGeo = _savedFilters['geo'];
+            //       _selectedTrends = _selectedTrendsGeo;
+            //       _retailingTrendsValue = _selectedTrendsGeoValue;
+            //     }
+            //   }
+            // }
 
             ////////////////////
             /// //getting fb saved filters and
@@ -1476,38 +1473,38 @@ class HomeController extends GetxController {
             } else {
               selectedFBChannelFilter = filtersModel?.attr1 ?? [];
             }
-            final fbTrendMapDecoded = jsonDecode(
-                await storage.read(key: AppConstants.GP_TRENDS) ?? '{}');
-            if (fbTrendMapDecoded.isNotEmpty) {
-              Map<String, dynamic> _savedFilters = fbTrendMapDecoded;
-              if (_savedFilters.containsKey('trends')) {
-                if (_savedFilters.containsKey('category') &&
-                    _savedFilters
-                        .containsKey('category')
-                        .toString()
-                        .isNotEmpty) {
-                  _selectedTrendsCategoryValue = _savedFilters['trends'];
-                  _selectedTrendsCategory = _savedFilters['category'];
-                  _selectedTrends = _selectedTrendsCategory;
-                  _retailingTrendsValue = _selectedTrendsCategoryValue;
-                } else if (_savedFilters.containsKey('channel') &&
-                    _savedFilters
-                        .containsKey('channel')
-                        .toString()
-                        .isNotEmpty) {
-                  _selectedTrendsChannelValue = _savedFilters['trends'];
-                  _selectedChannel = _savedFilters['channel'];
-                  _selectedTrends = _selectedChannel;
-                  _retailingTrendsValue = _selectedTrendsChannelValue;
-                } else if (_savedFilters.containsKey('geo') &&
-                    _savedFilters.containsKey('geo').toString().isNotEmpty) {
-                  _selectedTrendsGeoValue = _savedFilters['trends'];
-                  _selectedTrendsGeo = _savedFilters['geo'];
-                  _selectedTrends = _selectedTrendsGeo;
-                  _retailingTrendsValue = _selectedTrendsGeoValue;
-                }
-              }
-            }
+            // final fbTrendMapDecoded = jsonDecode(
+            //     await storage.read(key: AppConstants.GP_TRENDS) ?? '{}');
+            // if (fbTrendMapDecoded.isNotEmpty) {
+            //   Map<String, dynamic> _savedFilters = fbTrendMapDecoded;
+            //   if (_savedFilters.containsKey('trends')) {
+            //     if (_savedFilters.containsKey('category') &&
+            //         _savedFilters
+            //             .containsKey('category')
+            //             .toString()
+            //             .isNotEmpty) {
+            //       _selectedTrendsCategoryValue = _savedFilters['trends'];
+            //       _selectedTrendsCategory = _savedFilters['category'];
+            //       _selectedTrends = _selectedTrendsCategory;
+            //       _retailingTrendsValue = _selectedTrendsCategoryValue;
+            //     } else if (_savedFilters.containsKey('channel') &&
+            //         _savedFilters
+            //             .containsKey('channel')
+            //             .toString()
+            //             .isNotEmpty) {
+            //       _selectedTrendsChannelValue = _savedFilters['trends'];
+            //       _selectedChannel = _savedFilters['channel'];
+            //       _selectedTrends = _selectedChannel;
+            //       _retailingTrendsValue = _selectedTrendsChannelValue;
+            //     } else if (_savedFilters.containsKey('geo') &&
+            //         _savedFilters.containsKey('geo').toString().isNotEmpty) {
+            //       _selectedTrendsGeoValue = _savedFilters['trends'];
+            //       _selectedTrendsGeo = _savedFilters['geo'];
+            //       _selectedTrends = _selectedTrendsGeo;
+            //       _retailingTrendsValue = _selectedTrendsGeoValue;
+            //     }
+            //   }
+            // }
 
             categoryTrendsFilters = filtersModel?.category ?? [];
             channelFilter = filtersModel?.attr1 ?? [];
@@ -2364,6 +2361,10 @@ class HomeController extends GetxController {
     return homeRepo.getUserName();
   }
 
+  bool getUserGuide() {
+    return homeRepo.getUserGuide();
+  }
+
   String getYear() {
     return homeRepo.getYear();
   }
@@ -2394,6 +2395,10 @@ class HomeController extends GetxController {
 
   Future<bool> setSeen(bool seen) async {
     return await homeRepo.saveUserSeen(seen);
+  }
+
+  Future<bool> saveUserGuide(bool seen) async {
+    return await homeRepo.saveUserGuide(seen);
   }
 
   Future<bool> setYear(String year) async {
@@ -3952,7 +3957,7 @@ class HomeController extends GetxController {
     stopWatch.start();
     Logger().log(
         Level.debug, '===> Feedback Start: ${stopWatch.elapsed.toString()}');
-    SharedPreferences session = await SharedPreferences.getInstance();
+
     Response response = await homeRepo.getFeedback({
       "endPoint": "feedbackMail",
       "userName": userName,

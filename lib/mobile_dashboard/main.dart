@@ -9,11 +9,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:command_centre/mobile_dashboard/firebase_options.dart';
-import 'package:command_centre/mobile_dashboard/push_notification.dart';
-import 'package:command_centre/mobile_dashboard/services/firebase_api.dart';
 import 'package:command_centre/mobile_dashboard/bindings/home_binding.dart';
 import 'package:command_centre/mobile_dashboard/utils/routes/app_pages.dart';
-import 'package:command_centre/mobile_dashboard/views/store_fingertips/onboarding_screen.dart';
 
 Future _firebaseBackgroundMessage(RemoteMessage message) async {
   if (message.notification != null) {

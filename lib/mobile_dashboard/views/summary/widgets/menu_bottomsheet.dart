@@ -28,60 +28,60 @@ class MenuBottomsheet extends StatelessWidget {
         child: Column(
           children: [
             const SizedBox(height: 20),
-            // ListTile(
-            //   title: Text(
-            //     '  Account',
-            //     style: GoogleFonts.ptSans(
-            //       fontSize: 16,
-            //       fontWeight: FontWeight.w700,
-            //     ),
-            //   ),
-            //   trailing: TextButton(
-            //     onPressed: () {},
-            //     child: const Icon(
-            //       Icons.arrow_outward_rounded,
-            //       color: AppColors.primary,
-            //       size: 18,
-            //     ),
-            //   ),
-            // ),
-            // Container(
-            //   height: 1,
-            //   width: double.infinity,
-            //   color: AppColors.borderColor,
-            // ),
-            // const SizedBox(height: 10),
-            // Row(
-            //   mainAxisAlignment: MainAxisAlignment.start,
-            //   children: [
-            //     const SizedBox(width: 16),
-            //     Flexible(
-            //       child: Text(
-            //         'Switch Mode',
-            //         style: GoogleFonts.ptSans(
-            //           fontSize: 16,
-            //           fontWeight: FontWeight.w700,
-            //         ),
-            //       ),
-            //     ),
-            //   ],
-            // ),
-            // Row(
-            //   mainAxisAlignment: MainAxisAlignment.start,
-            //   children: [
-            //     const SizedBox(width: 16),
-            //     Flexible(
-            //       child: Text(
-            //         'To organize the data for you according to your purpose today',
-            //         style: GoogleFonts.ptSans(
-            //           fontSize: 16,
-            //           fontWeight: FontWeight.w400,
-            //         ),
-            //       ),
-            //     ),
-            //     const SizedBox(width: 16),
-            //   ],
-            // ),
+            ListTile(
+              title: Text(
+                '  Account',
+                style: GoogleFonts.ptSans(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              trailing: TextButton(
+                onPressed: () {},
+                child: const Icon(
+                  Icons.arrow_outward_rounded,
+                  color: AppColors.primary,
+                  size: 18,
+                ),
+              ),
+            ),
+            Container(
+              height: 1,
+              width: double.infinity,
+              color: AppColors.borderColor,
+            ),
+            const SizedBox(height: 10),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                const SizedBox(width: 16),
+                Flexible(
+                  child: Text(
+                    'Switch Mode',
+                    style: GoogleFonts.ptSans(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                const SizedBox(width: 16),
+                Flexible(
+                  child: Text(
+                    'To organize the data for you according to your purpose today',
+                    style: GoogleFonts.ptSans(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 16),
+              ],
+            ),
             Padding(
               padding:
                   const EdgeInsets.symmetric(horizontal: 12.0, vertical: 26),
@@ -158,11 +158,11 @@ class MenuBottomsheet extends StatelessWidget {
                 ],
               ),
             ),
-            // Container(
-            //   height: 1,
-            //   width: double.infinity,
-            //   color: AppColors.borderColor,
-            // ),
+            Container(
+              height: 1,
+              width: double.infinity,
+              color: AppColors.borderColor,
+            ),
             // ListTile(
             //   title: Text(
             //     '  View Abbreviations',

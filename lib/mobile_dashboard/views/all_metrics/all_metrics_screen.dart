@@ -1,4 +1,6 @@
+import 'dart:math';
 import 'package:get/get.dart';
+import 'package:text_3d/text_3d.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
@@ -11,6 +13,7 @@ import 'package:command_centre/mobile_dashboard/views/widgets/custom_shimmer.dar
 import 'package:command_centre/mobile_dashboard/views/summary/widgets/personalize_card.dart';
 import 'package:command_centre/mobile_dashboard/views/summary/widgets/retailing_graph_widget.dart';
 import 'package:command_centre/mobile_dashboard/views/summary/widgets/retailing_table_widget.dart';
+
 
 class AllMetricsScreen extends StatelessWidget {
   const AllMetricsScreen({super.key});
@@ -66,6 +69,247 @@ class AllMetricsScreen extends StatelessWidget {
                                         title: 'Retailing',
                                         onPressedShowMore: () => Get.toNamed(
                                             AppPages.RETAILING_SCREEN),
+                                        secondWidget: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Expanded(
+                                              child: ThreeDText(
+                                                text: 'Retailing',
+                                                textStyle: GoogleFonts.ptSans(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.w700,
+                                                  color: AppColors.white,
+                                                ),
+                                                depth: 2,
+                                                style: ThreeDStyle.inset,
+                                                angle: pi / 6,
+                                                perspectiveDepth: 10,
+                                              ),
+                                              // Text(
+                                              //   'Retailing',
+                                              //   style: GoogleFonts.ptSans(
+                                              //     fontSize: 18,
+                                              //     fontWeight: FontWeight.w700,
+                                              //     color: AppColors.white,
+                                              //   ),
+                                              // ),
+                                            ),
+                                            Container(
+                                              margin: const EdgeInsets.only(
+                                                  bottom: 0,
+                                                  left: 12,
+                                                  right: 4),
+                                              decoration: BoxDecoration(
+                                                  // color: AppColors.white,
+                                                  gradient:
+                                                      const LinearGradient(
+                                                    begin: Alignment.topCenter,
+                                                    end: Alignment.bottomCenter,
+                                                    colors: [
+                                                      AppColors
+                                                          .contentColorCyan,
+                                                      AppColors
+                                                          .contentColorBlue,
+                                                    ],
+                                                  ),
+                                                  border: Border.all(
+                                                    width: 1,
+                                                    color: AppColors.lightGrey,
+                                                  ),
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          100)),
+                                              child: Row(
+                                                children: [
+                                                  GestureDetector(
+                                                    onTap: () =>
+                                                        ctlr.onChangeSummaryDI(
+                                                            true),
+                                                    child: Container(
+                                                      decoration: BoxDecoration(
+                                                        color: ctlr
+                                                                .isSummaryDirect
+                                                            ? AppColors.white
+                                                            : Colors
+                                                                .transparent,
+                                                        gradient: !ctlr
+                                                                .isSummaryDirect
+                                                            ? const LinearGradient(
+                                                                begin: Alignment
+                                                                    .topCenter,
+                                                                end: Alignment
+                                                                    .bottomCenter,
+                                                                colors: [
+                                                                  AppColors
+                                                                      .contentColorCyan,
+                                                                  AppColors
+                                                                      .contentColorBlue,
+                                                                ],
+                                                              )
+                                                            : null,
+                                                        boxShadow:
+                                                            ctlr.isSummaryDirect
+                                                                ? [
+                                                                    BoxShadow(
+                                                                      color: Colors
+                                                                          .black
+                                                                          .withOpacity(
+                                                                              .5),
+                                                                      blurRadius:
+                                                                          2.0,
+                                                                      spreadRadius:
+                                                                          0.0,
+                                                                      offset: const Offset(
+                                                                          2.0,
+                                                                          2.0),
+                                                                    ),
+                                                                    BoxShadow(
+                                                                      color: Colors
+                                                                          .black
+                                                                          .withOpacity(
+                                                                              .2),
+                                                                      blurRadius:
+                                                                          2.0,
+                                                                      spreadRadius:
+                                                                          0.0,
+                                                                      offset: const Offset(
+                                                                          -2.0,
+                                                                          -2.0),
+                                                                    ),
+                                                                  ]
+                                                                : null,
+                                                        border: Border.all(
+                                                          width: 1,
+                                                          color: ctlr
+                                                                  .isSummaryDirect
+                                                              ? AppColors.white
+                                                              : Colors
+                                                                  .transparent,
+                                                        ),
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(100),
+                                                      ),
+                                                      padding: const EdgeInsets
+                                                          .symmetric(
+                                                          horizontal: 10,
+                                                          vertical: 4),
+                                                      child: Text(
+                                                        'Distributor',
+                                                        style: GoogleFonts
+                                                            .ptSansCaption(
+                                                          color: ctlr
+                                                                  .isSummaryDirect
+                                                              ? AppColors
+                                                                  .primary
+                                                              : Colors.white,
+                                                          fontSize: 12,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  if (ctlr.selectedGeo ==
+                                                      'All India')
+                                                    GestureDetector(
+                                                      onTap: () => ctlr
+                                                          .onChangeSummaryDI(
+                                                              false),
+                                                      child: Container(
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          color: ctlr
+                                                                  .isSummaryDirect
+                                                              ? Colors
+                                                                  .transparent
+                                                              : AppColors.white,
+                                                          gradient: ctlr
+                                                                  .isSummaryDirect
+                                                              ? const LinearGradient(
+                                                                  begin: Alignment
+                                                                      .topCenter,
+                                                                  end: Alignment
+                                                                      .bottomCenter,
+                                                                  colors: [
+                                                                    AppColors
+                                                                        .contentColorCyan,
+                                                                    AppColors
+                                                                        .contentColorBlue,
+                                                                  ],
+                                                                )
+                                                              : null,
+                                                          boxShadow: !ctlr
+                                                                  .isSummaryDirect
+                                                              ? [
+                                                                  BoxShadow(
+                                                                    color: Colors
+                                                                        .black
+                                                                        .withOpacity(
+                                                                            .5),
+                                                                    blurRadius:
+                                                                        2.0,
+                                                                    spreadRadius:
+                                                                        0.0,
+                                                                    offset:
+                                                                        const Offset(
+                                                                            2.0,
+                                                                            2.0),
+                                                                  ),
+                                                                  BoxShadow(
+                                                                    color: Colors
+                                                                        .black
+                                                                        .withOpacity(
+                                                                            .2),
+                                                                    blurRadius:
+                                                                        2.0,
+                                                                    spreadRadius:
+                                                                        0.0,
+                                                                    offset:
+                                                                        const Offset(
+                                                                            -2.0,
+                                                                            -2.0),
+                                                                  ),
+                                                                ]
+                                                              : null,
+                                                          border:
+                                                              ctlr.isSummaryDirect
+                                                                  ? null
+                                                                  : Border.all(
+                                                                      width: 1,
+                                                                      color: !ctlr.isSummaryDirect
+                                                                          ? AppColors
+                                                                              .white
+                                                                          : Colors
+                                                                              .transparent,
+                                                                    ),
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      100),
+                                                        ),
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .symmetric(
+                                                                horizontal: 10,
+                                                                vertical: 4),
+                                                        child: Text(
+                                                          'Total Retailing',
+                                                          style: GoogleFonts
+                                                              .ptSansCaption(
+                                                            color: !ctlr
+                                                                    .isSummaryDirect
+                                                                ? AppColors
+                                                                    .primary
+                                                                : Colors.white,
+                                                            fontSize: 12,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                         children: [
                                           Padding(
                                             padding: const EdgeInsets.all(12.0),
@@ -329,27 +573,61 @@ class AllMetricsScreen extends StatelessWidget {
                                                           child: Container(
                                                             decoration:
                                                                 BoxDecoration(
-                                                              color: ctlr
-                                                                      .channelSales
+                                                              color: ctlr.channelSales
                                                                   ? AppColors
-                                                                      .primary
+                                                                      .white
                                                                   : AppColors
                                                                       .white,
-                                                              border:
-                                                                  Border.all(
-                                                                width: 1,
-                                                                color: ctlr
-                                                                        .channelSales
-                                                                    ? AppColors
-                                                                        .primary
-                                                                    : AppColors
-                                                                        .white,
-                                                              ),
+                                                              gradient: ctlr
+                                                                      .channelSales
+                                                                  ? const LinearGradient(
+                                                                      begin: Alignment
+                                                                          .topCenter,
+                                                                      end: Alignment
+                                                                          .bottomCenter,
+                                                                      colors: [
+                                                                        AppColors
+                                                                            .contentColorCyan,
+                                                                        AppColors
+                                                                            .contentColorBlue,
+                                                                        // AppColors.contentColorCyan.withOpacity(.6),
+                                                                      ],
+                                                                    )
+                                                                  : null,
+                                                              boxShadow:
+                                                                  ctlr.channelSales
+                                                                      ? [
+                                                                          BoxShadow(
+                                                                            color:
+                                                                                Colors.black.withOpacity(.5),
+                                                                            blurRadius:
+                                                                                2.0,
+                                                                            spreadRadius:
+                                                                                0.0,
+                                                                            offset:
+                                                                                const Offset(2.0, 2.0),
+                                                                          ),
+                                                                          BoxShadow(
+                                                                            color:
+                                                                                Colors.black.withOpacity(.2),
+                                                                            blurRadius:
+                                                                                2.0,
+                                                                            spreadRadius:
+                                                                                0.0,
+                                                                            offset:
+                                                                                const Offset(-2.0, -2.0),
+                                                                          ),
+                                                                        ]
+                                                                      : null,
                                                               borderRadius:
                                                                   BorderRadius
                                                                       .circular(
                                                                           100),
                                                             ),
+                                                            margin:
+                                                                const EdgeInsets
+                                                                    .only(
+                                                                    right: 4),
                                                             padding:
                                                                 const EdgeInsets
                                                                     .symmetric(
@@ -383,17 +661,51 @@ class AllMetricsScreen extends StatelessWidget {
                                                                       .white
                                                                   : AppColors
                                                                       .primary,
-                                                              border: ctlr
+                                                              gradient: !ctlr
                                                                       .channelSales
-                                                                  ? null
-                                                                  : Border.all(
-                                                                      width: 1,
-                                                                      color: !ctlr.channelSales
-                                                                          ? AppColors
-                                                                              .primary
-                                                                          : AppColors
-                                                                              .white,
-                                                                    ),
+                                                                  ? const LinearGradient(
+                                                                      begin: Alignment
+                                                                          .topCenter,
+                                                                      end: Alignment
+                                                                          .bottomCenter,
+                                                                      colors: [
+                                                                        AppColors
+                                                                            .contentColorCyan,
+                                                                        AppColors
+                                                                            .contentColorBlue,
+                                                                        // AppColors.contentColorCyan.withOpacity(.6),
+                                                                      ],
+                                                                    )
+                                                                  : null,
+                                                              boxShadow: !ctlr
+                                                                      .channelSales
+                                                                  ? [
+                                                                      BoxShadow(
+                                                                        color: Colors
+                                                                            .black
+                                                                            .withOpacity(.5),
+                                                                        blurRadius:
+                                                                            2.0,
+                                                                        spreadRadius:
+                                                                            0.0,
+                                                                        offset: const Offset(
+                                                                            2.0,
+                                                                            2.0),
+                                                                      ),
+                                                                      BoxShadow(
+                                                                        color: Colors
+                                                                            .black
+                                                                            .withOpacity(.2),
+                                                                        blurRadius:
+                                                                            2.0,
+                                                                        spreadRadius:
+                                                                            0.0,
+                                                                        offset: const Offset(
+                                                                            -2.0,
+                                                                            -2.0),
+                                                                      ),
+                                                                    ]
+                                                                  : null,
                                                               borderRadius:
                                                                   BorderRadius
                                                                       .circular(
@@ -766,7 +1078,7 @@ class AllMetricsScreen extends StatelessWidget {
                                                               .center,
                                                       children: [
                                                         Text(
-                                                          'GP Abs (in ${ctlr.summaryData.first.dgpCompliance?.gpAbs?.contains('MM') ?? false ? 'MM' : ctlr.summaryData.first.dgpCompliance?.gpAbs?.contains('M') ?? false ? 'M' : 'M'})',
+                                                          'GP P3M (in ${ctlr.summaryData.first.dgpCompliance?.gpAbs?.contains('MM') ?? false ? 'MM' : ctlr.summaryData.first.dgpCompliance?.gpAbs?.contains('M') ?? false ? 'M' : 'M'})',
                                                           style: GoogleFonts
                                                               .ptSans(
                                                             fontSize: 16,
@@ -789,7 +1101,7 @@ class AllMetricsScreen extends StatelessWidget {
                                                     Column(
                                                       children: [
                                                         Text(
-                                                          'GP IYA',
+                                                          'GP P3M IYA',
                                                           style: GoogleFonts
                                                               .ptSansCaption(
                                                             fontSize: 16,
@@ -835,8 +1147,10 @@ class AllMetricsScreen extends StatelessWidget {
                                                     begin: Alignment.topRight,
                                                     end: Alignment.bottomLeft,
                                                     colors: [
-                                                      Color(0xff2CBBCE),
-                                                      Color(0xff83d1c8),
+                                                      AppColors
+                                                          .contentColorCyan,
+                                                      AppColors
+                                                          .contentColorBlue,
                                                     ],
                                                   ),
                                                 ),
@@ -930,8 +1244,10 @@ class AllMetricsScreen extends StatelessWidget {
                                                     begin: Alignment.topRight,
                                                     end: Alignment.bottomLeft,
                                                     colors: [
-                                                      Color(0xff2CBBCE),
-                                                      Color(0xff83d1c8),
+                                                      AppColors
+                                                          .contentColorCyan,
+                                                      AppColors
+                                                          .contentColorBlue,
                                                     ],
                                                   ),
                                                 ),

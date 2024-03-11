@@ -1,11 +1,8 @@
 import 'package:get/get.dart';
-import 'package:marquee/marquee.dart';
 import 'package:flutter/material.dart';
 import '../controllers/home_controller.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:command_centre/mobile_dashboard/views/summary/summary_screen.dart';
 import 'package:command_centre/mobile_dashboard/views/all_metrics/all_metrics_screen.dart';
 
@@ -23,16 +20,7 @@ class HomeView extends GetView<HomeController> {
             index: ctlr.selectedNav,
             children: const [SummaryScreen(), AllMetricsScreen()],
           ),
-          bottomNavigationBar:
-              //  Hidable(
-              //   controller: ctlr.selectedNav == 0
-              //       ? ctlr.sScrollController
-              //       : ctlr.mScrollController,
-              //   preferredWidgetSize: const Size.fromHeight(100),
-              //   // deltaFactor: 1,
-              //   enableOpacityAnimation: true,
-              //   child:
-              Column(
+          bottomNavigationBar: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(

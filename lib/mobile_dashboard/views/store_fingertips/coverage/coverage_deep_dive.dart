@@ -83,8 +83,7 @@ class CoverageDeepDiveScreen extends StatelessWidget {
                     Expanded(
                       child: LineChart(
                         sampleData1,
-                       duration:
-                            const Duration(milliseconds: 500),
+                        duration: const Duration(milliseconds: 500),
                       ),
                     ),
                   ],
@@ -517,7 +516,10 @@ class CoverageDeepDiveScreen extends StatelessWidget {
         return Container();
     }
 
-    return Text(text, style: style, textAlign: TextAlign.center);
+    return SideTitleWidget(
+        axisSide: meta.axisSide,
+        space: 8,
+        child: Text(text, style: style, textAlign: TextAlign.center));
   }
 
   SideTitles leftTitles() => SideTitles(
@@ -528,52 +530,52 @@ class CoverageDeepDiveScreen extends StatelessWidget {
       );
   SideTitles get bottomTitles => SideTitles(
         showTitles: true,
-        reservedSize: 32,
+        reservedSize: 40,
         interval: 1,
         getTitlesWidget: bottomTitleWidgets,
       );
   Widget bottomTitleWidgets(double value, TitleMeta meta) {
-    const style = TextStyle(
-      fontWeight: FontWeight.bold,
-      fontSize: 16,
+    TextStyle style = GoogleFonts.inter(
+      fontWeight: FontWeight.w600,
+      fontSize: 12,
     );
     Widget text;
     switch (value.toInt()) {
       case 1:
-        text = const Text('Jan', style: style);
+        text = Text('Jan', style: style);
         break;
       case 2:
-        text = const Text('Feb', style: style);
+        text = Text('Feb', style: style);
         break;
       case 3:
-        text = const Text('Mar', style: style);
+        text = Text('Mar', style: style);
         break;
       case 4:
-        text = const Text('Apr', style: style);
+        text = Text('Apr', style: style);
         break;
       case 5:
-        text = const Text('May', style: style);
+        text = Text('May', style: style);
         break;
       case 6:
-        text = const Text('Jun', style: style);
+        text = Text('Jun', style: style);
         break;
       case 7:
-        text = const Text('Jul', style: style);
+        text = Text('Jul', style: style);
         break;
       case 8:
-        text = const Text('Aug', style: style);
+        text = Text('Aug', style: style);
         break;
       case 9:
-        text = const Text('Sep', style: style);
+        text = Text('Sep', style: style);
         break;
       case 10:
-        text = const Text('Oct', style: style);
+        text = Text('Oct', style: style);
         break;
       case 11:
-        text = const Text('Nov', style: style);
+        text = Text('Nov', style: style);
         break;
       case 12:
-        text = const Text('Dec', style: style);
+        text = Text('Dec', style: style);
         break;
       default:
         text = const Text('');
@@ -582,7 +584,7 @@ class CoverageDeepDiveScreen extends StatelessWidget {
 
     return SideTitleWidget(
       axisSide: meta.axisSide,
-      space: 2,
+      space: 8,
       child: RotatedBox(quarterTurns: 3, child: text),
     );
   }

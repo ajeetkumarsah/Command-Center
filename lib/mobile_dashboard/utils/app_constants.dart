@@ -34,6 +34,7 @@ class AppConstants {
   static const String TOKEN = 'token';
   static const String EMAIL = 'email';
   static const String NAME = 'name';
+  static const String USER_GUIDE = 'userGuide';
   static const String UID = 'uid';
   static const String PING_CODE = 'pingCode';
   static const String SEEN = 'seen';
