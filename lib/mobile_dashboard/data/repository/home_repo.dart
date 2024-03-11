@@ -5,7 +5,6 @@ import 'package:command_centre/mobile_dashboard/utils/app_constants.dart';
 import 'package:command_centre/mobile_dashboard/data/api/api_client.dart';
 // ignore_for_file: no_leading_underscores_for_local_identifiers
 
-
 class HomeRepo {
   final ApiClient apiClient;
   final SharedPreferences sharedPreferences;
@@ -26,6 +25,10 @@ class HomeRepo {
 
   String getUserName() {
     return sharedPreferences.getString(AppConstants.NAME) ?? "";
+  }
+
+  bool getUserGuide() {
+    return sharedPreferences.getBool(AppConstants.USER_GUIDE) ?? false;
   }
 
   String getPersonalizedMoreMetrics() {
@@ -59,6 +62,10 @@ class HomeRepo {
 
   Future<bool> saveYear(String year) async {
     return await sharedPreferences.setString(AppConstants.YEAR, year);
+  }
+
+  Future<bool> saveUserGuide(bool guide) async {
+    return await sharedPreferences.setBool(AppConstants.USER_GUIDE, guide);
   }
 
   Future<bool> saveMonth(String month) async {
@@ -192,10 +199,14 @@ class HomeRepo {
   }
 
   Future<Response> getFeedback(Map<String, dynamic> body) async {
-    return await apiClient.postData(AppConstants.CHANNELLIST, body, headers: {});
+    return await apiClient
+        .postData(AppConstants.CHANNELLIST, body, headers: {});
   }
 
-  Future<Response> postBug(Map<String, String> body, List<MultipartBody> multipartBody) async {
-    return await apiClient.postMultipartData(AppConstants.CHANNELLIST,  body, multipartBody,  headers: {});
+  Future<Response> postBug(
+      Map<String, String> body, List<MultipartBody> multipartBody) async {
+    return await apiClient.postMultipartData(
+        AppConstants.CHANNELLIST, body, multipartBody,
+        headers: {});
   }
 }

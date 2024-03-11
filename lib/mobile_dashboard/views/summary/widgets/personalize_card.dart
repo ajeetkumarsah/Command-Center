@@ -1,3 +1,5 @@
+import 'dart:math';
+import 'package:text_3d/text_3d.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
@@ -14,8 +16,10 @@ class PersonalizeCard extends StatelessWidget {
   final String secondTitle;
   final Widget? trailing;
   final bool showMore;
+  final Key? showKey;
   const PersonalizeCard({
     super.key,
+    this.showKey,
     this.bottomInside = 24,
     this.isDataFound,
     required this.children,
@@ -41,12 +45,12 @@ class PersonalizeCard extends StatelessWidget {
           Container(
             decoration: BoxDecoration(
               gradient: isDataFound ?? true
-                  ? const LinearGradient(
+                  ? LinearGradient(
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
                       colors: [
-                        AppColors.contentColorCyan,
-                        AppColors.contentColorBlue,
+                        AppColors.contentColorCyan.withOpacity(.6),
+                        AppColors.contentColorBlue.withOpacity(.6),
                         // AppColors.contentColorCyan.withOpacity(.6),
                       ],
                     )
@@ -59,14 +63,26 @@ class PersonalizeCard extends StatelessWidget {
             child: ListTile(
               visualDensity: const VisualDensity(horizontal: 0, vertical: -3),
               title: secondWidget ??
-                  Text(
-                    '$title ',
-                    style: GoogleFonts.ptSans(
-                      fontSize: 16,
+                  ThreeDText(
+                    text: '$title ',
+                    textStyle: GoogleFonts.ptSans(
+                      fontSize: 18,
                       fontWeight: FontWeight.w700,
                       color: AppColors.white,
                     ),
+                    depth: 2,
+                    style: ThreeDStyle.inset,
+                    angle: pi / 6,
+                    perspectiveDepth: 10,
                   ),
+              // Text(
+              //   '$title ',
+              //   style: GoogleFonts.ptSans(
+              //     fontSize: 16,
+              //     fontWeight: FontWeight.w700,
+              //     color: AppColors.white,
+              //   ),
+              // ),
               subtitle: isDataFound ?? true ? null : const DataNotFoundWidget(),
               trailing: trailing,
             ),
@@ -88,6 +104,7 @@ class PersonalizeCard extends StatelessWidget {
             GestureDetector(
               onTap: isDataFound ?? true ? onPressedShowMore : null,
               child: Container(
+                key: showKey,
                 // height: 1,
                 width: double.infinity,
                 decoration: BoxDecoration(

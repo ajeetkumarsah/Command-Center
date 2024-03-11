@@ -206,7 +206,6 @@ class GPDeepDiveScreen extends StatelessWidget {
               // ),
 
               Container(
-                // height: 400,
                 margin: const EdgeInsets.only(left: 12, right: 12, bottom: 12),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(5.0),
@@ -242,41 +241,60 @@ class GPDeepDiveScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                    //Container(width:1,height: ,color:AppColors.greyTextColor,),
                     Expanded(
-                      child: ListTile(
-                        title: Text(
-                          '22',
-                          style: GoogleFonts.inter(
-                            fontSize: 24,
-                            fontWeight: FontWeight.w400,
+                      child: Container(
+                        decoration: const BoxDecoration(
+                          border: Border(
+                            left: BorderSide(
+                              width: 1,
+                              color: AppColors.greyTextColor,
+                            ),
                           ),
                         ),
-                        subtitle: Text(
-                          'P1M GP',
-                          style: GoogleFonts.inter(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w400,
-                            color: AppColors.greyTextColor,
+                        child: ListTile(
+                          title: Text(
+                            '22',
+                            style: GoogleFonts.inter(
+                              fontSize: 24,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                          subtitle: Text(
+                            'P1M GP',
+                            style: GoogleFonts.inter(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w400,
+                              color: AppColors.greyTextColor,
+                            ),
                           ),
                         ),
                       ),
                     ),
                     Expanded(
-                      child: ListTile(
-                        title: Text(
-                          '156',
-                          style: GoogleFonts.inter(
-                            fontSize: 24,
-                            fontWeight: FontWeight.w400,
+                      child: Container(
+                        decoration: const BoxDecoration(
+                          border: Border(
+                            left: BorderSide(
+                              width: 1,
+                              color: AppColors.greyTextColor,
+                            ),
                           ),
                         ),
-                        subtitle: Text(
-                          'P3M GP',
-                          style: GoogleFonts.inter(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w400,
-                            color: AppColors.greyTextColor,
+                        child: ListTile(
+                          title: Text(
+                            '156',
+                            style: GoogleFonts.inter(
+                              fontSize: 24,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                          subtitle: Text(
+                            'P3M GP',
+                            style: GoogleFonts.inter(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w400,
+                              color: AppColors.greyTextColor,
+                            ),
                           ),
                         ),
                       ),
@@ -620,394 +638,7 @@ class GPDeepDiveScreen extends StatelessWidget {
                   ],
                 ),
               ),
-              const SizedBox(height: 12),
-              Container(
-                margin:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(5.0),
-                  color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                      offset: const Offset(0, 4),
-                      blurRadius: 15,
-                      color: AppColors.black.withOpacity(.25),
-                    ),
-                  ],
-                ),
-                // padding: ,
-                child: Column(
-                  children: [
-                    Container(
-                      decoration: const BoxDecoration(
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(5.0),
-                          topRight: Radius.circular(5.0),
-                        ),
-                        color: Color(0xffF2F6FD),
-                      ),
-                      // padding: const EdgeInsets.symmetric(
-                      //     horizontal: 24, vertical: 16),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              '  SBF Name',
-                              style: GoogleFonts.inter(
-                                color: AppColors.storeTextLightColor,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                          Container(
-                            width: .5,
-                            color: Colors.black,
-                            height: 60,
-                          ),
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width * .56,
-                            child: Column(
-                              children: [
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: Center(
-                                        child: Text(
-                                          'P3M',
-                                          style: GoogleFonts.inter(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w600,
-                                            color:
-                                                AppColors.storeTextLightColor,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    Container(
-                                      width: .5,
-                                      color: Colors.black,
-                                      height: 30,
-                                    ),
-                                    Expanded(
-                                      child: Center(
-                                        child: Text(
-                                          'P1M',
-                                          style: GoogleFonts.inter(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w600,
-                                            color:
-                                                AppColors.storeTextLightColor,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Container(
-                                  width: double.infinity,
-                                  color: Colors.black,
-                                  height: .5,
-                                ),
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: Row(
-                                        children: [
-                                          Expanded(
-                                            child: Center(
-                                              child: Text(
-                                                'GP Ach',
-                                                style: GoogleFonts.inter(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.w600,
-                                                  color: AppColors
-                                                      .storeTextLightColor,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          Container(
-                                            width: .5,
-                                            color: Colors.black,
-                                            height: 30,
-                                          ),
-                                          Expanded(
-                                            child: Center(
-                                              child: Text(
-                                                'Sal%',
-                                                style: GoogleFonts.inter(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.w600,
-                                                  color: AppColors
-                                                      .storeTextLightColor,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    Container(
-                                      width: .5,
-                                      color: Colors.black,
-                                      height: 30,
-                                    ),
-                                    Expanded(
-                                      child: Row(
-                                        children: [
-                                          Expanded(
-                                            child: Center(
-                                              child: Text(
-                                                'GP Ach',
-                                                style: GoogleFonts.inter(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.w600,
-                                                  color: AppColors
-                                                      .storeTextLightColor,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          Container(
-                                            width: .5,
-                                            color: Colors.black,
-                                            height: 30,
-                                          ),
-                                          Expanded(
-                                            child: Center(
-                                              child: Text(
-                                                'Sal%',
-                                                style: GoogleFonts.inter(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.w600,
-                                                  color: AppColors
-                                                      .storeTextLightColor,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                            // Center(
-                            //   child: Text(
-                            //     'FB Ach',
-                            //     style: GoogleFonts.inter(
-                            //       color: AppColors.storeTextLightColor,
-                            //       fontSize: 14,
-                            //       fontWeight: FontWeight.w500,
-                            //     ),
-                            //   ),
-                            // ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    ...brandList
-                        .asMap()
-                        .map(
-                          (i, e) => MapEntry(
-                            i,
-                            Container(
-                              decoration: BoxDecoration(
-                                color: i % 2 == 0
-                                    ? Colors.white
-                                    : const Color(0xffF2F6FD),
-                              ),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Expanded(
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(left: 8.0),
-                                      child: Text(
-                                        e.name ?? '',
-                                        textAlign: TextAlign.left,
-                                      ),
-                                    ),
-                                  ),
-                                  Container(
-                                    width: .5,
-                                    color: Colors.black,
-                                    height: 30,
-                                  ),
-                                  SizedBox(
-                                    width:
-                                        MediaQuery.of(context).size.width * .56,
-                                    child: Row(
-                                      children: [
-                                        Expanded(
-                                          child: Row(
-                                            children: [
-                                              Expanded(
-                                                child: Center(
-                                                  child: Icon(
-                                                    e.p3mAch ?? false
-                                                        ? Icons.check
-                                                        : Icons.close,
-                                                    color: e.p3mAch ?? false
-                                                        ? AppColors.green
-                                                        : AppColors.red,
-                                                  ),
-                                                ),
-                                              ),
-                                              Container(
-                                                width: .5,
-                                                color: Colors.black,
-                                                height: 30,
-                                              ),
-                                              Expanded(
-                                                child: Center(
-                                                  child: Text(
-                                                    e.p3mSal ?? '',
-                                                    style: GoogleFonts.inter(
-                                                      fontSize: 14,
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                      color: AppColors.black,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        Container(
-                                          width: .5,
-                                          color: Colors.black,
-                                          height: 30,
-                                        ),
-                                        Expanded(
-                                          child: Row(
-                                            children: [
-                                              Expanded(
-                                                child: Center(
-                                                  child: Icon(
-                                                    e.p1mAch ?? false
-                                                        ? Icons.check
-                                                        : Icons.close,
-                                                    color: e.p1mAch ?? false
-                                                        ? AppColors.green
-                                                        : AppColors.red,
-                                                  ),
-                                                ),
-                                              ),
-                                              Container(
-                                                width: .5,
-                                                color: Colors.black,
-                                                height: 30,
-                                              ),
-                                              Expanded(
-                                                child: Center(
-                                                  child: Text(
-                                                    e.p1mSal ?? '',
-                                                    style: GoogleFonts.inter(
-                                                      fontSize: 14,
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                      color: AppColors.black,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        )
-                        .values
-                        .toList(),
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius: const BorderRadius.only(
-                          bottomLeft: Radius.circular(5.0),
-                          bottomRight: Radius.circular(5.0),
-                        ),
-                        color: brandList.length % 2 == 0
-                            ? Colors.white
-                            : const Color(0xffF2F6FD),
-                      ),
-                      padding: const EdgeInsets.symmetric(vertical: 8),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.only(left: 8.0),
-                              child: Text(
-                                'Total',
-                                textAlign: TextAlign.left,
-                                style: GoogleFonts.inter(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w700,
-                                  color: AppColors.primary,
-                                ),
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width * .56,
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: Row(
-                                    children: [
-                                      const Expanded(child: SizedBox()),
-                                      Expanded(
-                                        child: Center(
-                                          child: Text(
-                                            '100%',
-                                            style: GoogleFonts.inter(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w700,
-                                              color: AppColors.primary,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Expanded(
-                                  child: Row(
-                                    children: [
-                                      const Expanded(child: SizedBox()),
-                                      Expanded(
-                                        child: Center(
-                                          child: Text(
-                                            '100%',
-                                            style: GoogleFonts.inter(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w700,
-                                              color: AppColors.primary,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              // const SizedBox(height: 12),
 
               const SizedBox(height: 20),
             ],

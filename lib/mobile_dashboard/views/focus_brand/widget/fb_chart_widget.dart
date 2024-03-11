@@ -5,7 +5,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
 import 'package:command_centre/mobile_dashboard/controllers/home_controller.dart';
 import 'package:command_centre/mobile_dashboard/data/models/response/fb_trends_model.dart';
-import 'package:command_centre/mobile_dashboard/data/models/response/gp_trends_model.dart';
 
 class FBTrendsChartWidget extends StatefulWidget {
   final void Function()? onTap;
@@ -59,7 +58,7 @@ class _CustomExpandedChartWidgetState extends State<FBTrendsChartWidget> {
                             Hero(
                               tag: widget.title,
                               child: const Icon(
-                                Icons.keyboard_double_arrow_down_rounded,
+                                Icons.keyboard_double_arrow_up_rounded,
                                 color: AppColors.primary,
                               ),
                             ),
@@ -197,7 +196,7 @@ class _CustomExpandedChartWidgetState extends State<FBTrendsChartWidget> {
                                                             100),
                                                   ),
                                                   padding: const EdgeInsets
-                                                          .symmetric(
+                                                      .symmetric(
                                                       horizontal: 10,
                                                       vertical: 4),
                                                   child: Text(
@@ -236,7 +235,7 @@ class _CustomExpandedChartWidgetState extends State<FBTrendsChartWidget> {
                                                             100),
                                                   ),
                                                   padding: const EdgeInsets
-                                                          .symmetric(
+                                                      .symmetric(
                                                       horizontal: 10,
                                                       vertical: 4),
                                                   child: Text(
@@ -321,8 +320,7 @@ class _CustomExpandedChartWidgetState extends State<FBTrendsChartWidget> {
                                                 fitInsideVertically: true,
                                                 tooltipMargin: 40,
                                                 tooltipHorizontalAlignment:
-                                                    FLHorizontalAlignment
-                                                        .center,
+                                                    FLHorizontalAlignment.right,
                                                 getTooltipItems:
                                                     (touchedSpots) {
                                                   return touchedSpots.map(

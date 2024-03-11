@@ -1,13 +1,13 @@
-import 'package:command_centre/mobile_dashboard/data/models/response/map_data_model.dart';
-import 'package:flutter_map/flutter_map.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:latlong2/latlong.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:command_centre/mobile_dashboard/utils/routes/app_pages.dart';
 import 'package:command_centre/mobile_dashboard/data/repository/store_repo.dart';
+import 'package:command_centre/mobile_dashboard/data/models/response/map_data_model.dart';
 import 'package:command_centre/mobile_dashboard/data/models/response/response_model.dart';
 import 'package:command_centre/mobile_dashboard/data/models/response/store_intro_model.dart';
-import 'package:latlong2/latlong.dart';
 
 class StoreSelectionController extends GetxController {
   final StoreRepo storeRepo;
@@ -19,7 +19,7 @@ class StoreSelectionController extends GetxController {
       _isChannelLoading = false,
       _isMapLoading = false,
       _isStoreLoading = false;
-     // _isSelectedManually = false;
+  // _isSelectedManually = false;
 
   bool get isLoading => _isLoading;
   bool get isDistributorLoading => _isDistributorLoading;
@@ -107,25 +107,20 @@ class StoreSelectionController extends GetxController {
         _isBranchLoading = true;
       } else if (type.contains('channel')) {
         _isChannelLoading = true;
-      }else if (type.contains('storeWithFilter')) {
+      } else if (type.contains('storeWithFilter')) {
         _isStoreLoading = true;
       }
       update();
     });
     Response response = await storeRepo.getFilters({
-        "endPoint": type,
+      "endPoint": type,
       if (selectedDistributor != null &&
           selectedDistributor!.isNotEmpty &&
           type.contains('branch'))
-        "query": {
-          "distributor": selectedDistributor
-        },
+        "query": {"distributor": selectedDistributor},
 
       if (selectedBranch != null && type.contains('channel'))
-        "query": {
-          "distributor": selectedDistributor,
-          "branch": selectedBranch
-        },
+        "query": {"distributor": selectedDistributor, "branch": selectedBranch},
 
       if (selectedChannel != null && type.contains('storeWithFilter'))
         "query": {
@@ -133,7 +128,6 @@ class StoreSelectionController extends GetxController {
           "branch": selectedBranch,
           "channel": selectedChannel,
         }
-
 
       // "storeFilter": {
       //   "name": query,
@@ -150,7 +144,6 @@ class StoreSelectionController extends GetxController {
     ResponseModel responseModel;
     debugPrint('====> Channel List ');
     if (response.statusCode == 200) {
-
       if (response.body["successful"].toString().toLowerCase() == 'true') {
         final data = response.body["data"];
         if (data != null && data.isNotEmpty) {
@@ -160,8 +153,9 @@ class StoreSelectionController extends GetxController {
             branches = List<String>.from(data!.map((x) => x));
           } else if (type.contains('channel')) {
             channels = List<String>.from(data!.map((x) => x.toString()));
-          }else if (type.contains('storeWithFilter')) {
-            store = List<String>.from(data!.map((x) => x['storeName'].toString()).toList());
+          } else if (type.contains('storeWithFilter')) {
+            store = List<String>.from(
+                data!.map((x) => x['storeName'].toString()).toList());
           }
         }
         responseModel = ResponseModel(true, 'Success');
@@ -178,7 +172,7 @@ class StoreSelectionController extends GetxController {
       _isBranchLoading = false;
     } else if (type.contains('channel')) {
       _isChannelLoading = false;
-    }else if (type.contains('storeWithFilter')) {
+    } else if (type.contains('storeWithFilter')) {
       _isStoreLoading = false;
     }
     update();
@@ -187,18 +181,24 @@ class StoreSelectionController extends GetxController {
 
   void onChangeBranch(String value) {
     _selectedBranch = value;
+    _selectedChannel = null;
+    _selectedStore = null;
     getAllFilters('', type: 'channel');
     update();
   }
 
   void onChangeDistributor(String? value) {
     _selectedDistributor = value;
+    _selectedBranch = null;
+    _selectedChannel = null;
+    _selectedStore = null;
     getAllFilters('', type: 'branch');
     update();
   }
 
   void onChannelChange(String? value) {
     _selectedChannel = value;
+    _selectedStore = null;
     getAllFilters('', type: 'storeWithFilter');
     update();
   }
@@ -218,29 +218,29 @@ class StoreSelectionController extends GetxController {
       _isLoading = true;
       update();
     });
-    Response response = await storeRepo.postStoreData(
-        {
-          "endPoint": "storeWithFilter",
-          "query": {
-            "distributor": selectedDistributor ?? '',
-            "branch": selectedBranch ?? '',
-            "channel": selectedChannel ?? ''
-          }
-        }
-    //     {
-    //   "date": "Aug-$selectedYear",
-    //   "distributor": selectedDistributor ?? '',
-    //   "branch": selectedBranch ?? '',
-    //   "channel": selectedChannel ?? '',
-    // }
-    );
+    Response response = await storeRepo.postStoreData({
+      "endPoint": "storeWithFilter",
+      "query": {
+        "distributor": selectedDistributor ?? '',
+        "branch": selectedBranch ?? '',
+        "channel": selectedChannel ?? ''
+      }
+    }
+        //     {
+        //   "date": "Aug-$selectedYear",
+        //   "distributor": selectedDistributor ?? '',
+        //   "branch": selectedBranch ?? '',
+        //   "channel": selectedChannel ?? '',
+        // }
+        );
     ResponseModel responseModel;
     if (response.statusCode == 200) {
       if (response.body["successful"].toString().toLowerCase() == 'true') {
         final data = response.body["data"];
         if (data != null && data.isNotEmpty) {
           //
-          _storeIntroModel = List<StoreIntroModel>.from(data!.map((x) => StoreIntroModel.fromJson(x)));
+          _storeIntroModel = List<StoreIntroModel>.from(
+              data!.map((x) => StoreIntroModel.fromJson(x)));
           // if (_storeIntroModel.isNotEmpty) {
           //   //
           //   // saveStore(selectedChannel ?? '');
@@ -264,19 +264,14 @@ class StoreSelectionController extends GetxController {
     return responseModel;
   }
 
-
   Future<ResponseModel> mapStoreData() async {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _isMapLoading = true;
       update();
     });
-    Response response = await storeRepo.getFilters(
-        {
-          "endPoint": "store",
-          "query": {
-            "lat": "26.850000",
-            "long": "80.949997"
-          }
+    Response response = await storeRepo.getFilters({
+      "endPoint": "store",
+      "query": {"lat": "26.850000", "long": "80.949997"}
     });
     ResponseModel responseModel;
     if (response.statusCode == 200) {
@@ -314,7 +309,8 @@ class StoreSelectionController extends GetxController {
     if (responseModel.isSuccess) {
       markers = locations.map((location) {
         return Marker(
-          point: LatLng(double.parse(location.lat!), double.parse(location.long!)),
+          point:
+              LatLng(double.parse(location.lat!), double.parse(location.long!)),
           width: 40,
           height: 40,
           alignment: Alignment.topCenter,
@@ -346,8 +342,7 @@ class StoreSelectionController extends GetxController {
   getUserLocation() async {
     currentLocation = await locateUser();
 
-      _center = LatLng(currentLocation.latitude, currentLocation.longitude);
+    _center = LatLng(currentLocation.latitude, currentLocation.longitude);
     print('center $_center');
-
   }
 }

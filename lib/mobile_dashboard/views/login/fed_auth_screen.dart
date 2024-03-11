@@ -23,8 +23,6 @@ class FedAuthScreen extends StatefulWidget {
 }
 
 class _FedAuthScreenState extends State<FedAuthScreen> {
-  final Completer<WebViewController> _controller =
-      Completer<WebViewController>();
   late final WebViewController _controller1;
   late final WebViewCookieManager cookieManager = WebViewCookieManager();
 
@@ -64,16 +62,16 @@ class _FedAuthScreenState extends State<FedAuthScreen> {
       ..setNavigationDelegate(
         NavigationDelegate(
           onProgress: (int progress) {
-            logger.v('WebView is loading (progress : $progress%)');
+            logger.i('WebView is loading (progress : $progress%)');
           },
           onPageStarted: (String url) {
-            logger.v('Page started loading: $url');
+            logger.i('Page started loading: $url');
           },
           onPageFinished: (String url) {
-            logger.v('Page finished loading: $url');
+            logger.i('Page finished loading: $url');
           },
           onWebResourceError: (WebResourceError error) {
-            logger.v('''
+            logger.i('''
               Page resource error:
                 code: ${error.errorCode}
                 description: ${error.description}
@@ -211,7 +209,7 @@ class _FedAuthScreenState extends State<FedAuthScreen> {
             'Ocp-Apim-Subscription-Key': AppConstants.SUBSCRIPTION_KEY,
           });
       // debugPrint('==>Employee Response ${response.body}');
-      logger.v('====>Employee Response:${response.body}');
+      logger.i('====>Employee Response:${response.body}');
       if (response.statusCode == 200) {
         var mapResponse = json.decode(response.body);
         SharedPreferences session = await SharedPreferences.getInstance();
@@ -276,11 +274,11 @@ class _FedAuthScreenState extends State<FedAuthScreen> {
   // }
 
   void _onClearCookies() async {
-    final WebViewCookieManager cookieManager = WebViewCookieManager();
-    final bool hadCookies = await cookieManager.clearCookies();
-    String message = 'There were cookies. Now, they are gone!';
-    if (!hadCookies) {
-      message = 'There are no cookies.';
-    }
+    // final WebViewCookieManager cookieManager = WebViewCookieManager();
+    // final bool hadCookies = await cookieManager.clearCookies();
+    // String message = 'There were cookies. Now, they are gone!';
+    // if (!hadCookies) {
+    //   message = 'There are no cookies.';
+    // }
   }
 }

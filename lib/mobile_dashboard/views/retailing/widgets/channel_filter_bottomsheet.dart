@@ -1,6 +1,5 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
 import '../../../utils/summary_types.dart';
 import 'package:collection/collection.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -317,9 +316,11 @@ class _ChannelFilterBottomsheetState extends State<ChannelFilterBottomsheet> {
     // ctlr.onChangeChannelValue(
     //     _selectedChannelValue, widget.tabType);
     if (widget.isTrends) {
-      ctlr.onApplyMultiFilter('trends', 'geo', tabType: widget.tabType,subType: 'channel');
+      ctlr.onApplyMultiFilter('trends', 'geo',
+          tabType: widget.tabType, subType: 'channel');
     } else {
-      ctlr.onApplyMultiFilter('geo', 'channel', tabType: widget.tabType,subType: 'channel');
+      ctlr.onApplyMultiFilter('geo', 'channel',
+          tabType: widget.tabType, subType: 'channel');
     }
     Navigator.pop(context);
   }

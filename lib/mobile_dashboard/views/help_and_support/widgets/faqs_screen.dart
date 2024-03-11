@@ -34,82 +34,82 @@ class FAQsScreen extends StatelessWidget {
       ),
       body: Column(
         children: [
-          // Padding(
-          //   padding: const EdgeInsets.symmetric(horizontal: 8.0),
-          //   child: FAQ(
-          //     question: "Question 1",
-          //     answer:
-          //         "If I miss to add some feature, feel free to open a ticket or contribute! You can reach me here",
-          //     ansStyle: GoogleFonts.ptSansCaption(
-          //       color: AppColors.black,
-          //       fontSize: 12,
-          //       fontWeight: FontWeight.w400,
-          //     ),
-          //     queStyle: GoogleFonts.ptSansCaption(
-          //       color: AppColors.primary,
-          //       fontSize: 16,
-          //       fontWeight: FontWeight.w600,
-          //     ),
-          //     ansDecoration: BoxDecoration(
-          //       borderRadius: BorderRadius.circular(4),
-          //       color: AppColors.white,
-          //     ),
-          //     queDecoration: BoxDecoration(
-          //       color: Colors.white,
-          //       borderRadius: BorderRadius.circular(12),
-          //       boxShadow: [
-          //         BoxShadow(
-          //           color: AppColors.sfPrimary.withOpacity(.2),
-          //           blurRadius: 1,
-          //           offset: const Offset(0, 2),
-          //         ),
-          //         BoxShadow(
-          //           color: Colors.grey.withOpacity(.05),
-          //           blurRadius: .5,
-          //           offset: const Offset(0, -3),
-          //         ),
-          //       ],
-          //     ),
-          //   ),
-          // ),
-          // Padding(
-          //   padding: const EdgeInsets.symmetric(horizontal: 8.0),
-          //   child: FAQ(
-          //     question: "Question 2",
-          //     answer:
-          //         "If I miss to add some feature, feel free to open a ticket or contribute! You can reach me here",
-          //     ansStyle: GoogleFonts.ptSansCaption(
-          //       color: AppColors.black,
-          //       fontSize: 12,
-          //       fontWeight: FontWeight.w400,
-          //     ),
-          //     queStyle: GoogleFonts.ptSansCaption(
-          //       color: AppColors.primary,
-          //       fontSize: 16,
-          //       fontWeight: FontWeight.w600,
-          //     ),
-          //     ansDecoration: BoxDecoration(
-          //       borderRadius: BorderRadius.circular(4),
-          //       color: AppColors.white,
-          //     ),
-          //     queDecoration: BoxDecoration(
-          //       color: Colors.white,
-          //       borderRadius: BorderRadius.circular(12),
-          //       boxShadow: [
-          //         BoxShadow(
-          //           color: AppColors.sfPrimary.withOpacity(.2),
-          //           blurRadius: 1,
-          //           offset: const Offset(0, 2),
-          //         ),
-          //         BoxShadow(
-          //           color: Colors.grey.withOpacity(.05),
-          //           blurRadius: .5,
-          //           offset: const Offset(0, -3),
-          //         ),
-          //       ],
-          //     ),
-          //   ),
-          // ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: FAQ(
+              question: "What is Total Retailing?",
+              answer:
+                  "Total Retailing comprises total retailing including Distributor as well as Non-Distributor Retailing.",
+              ansStyle: GoogleFonts.ptSansCaption(
+                color: AppColors.black,
+                fontSize: 12,
+                fontWeight: FontWeight.w400,
+              ),
+              queStyle: GoogleFonts.ptSansCaption(
+                color: AppColors.primary,
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+              ),
+              ansDecoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(4),
+                color: AppColors.white,
+              ),
+              queDecoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.sfPrimary.withOpacity(.2),
+                    blurRadius: 1,
+                    offset: const Offset(0, 2),
+                  ),
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(.05),
+                    blurRadius: .5,
+                    offset: const Offset(0, -3),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: FAQ(
+              question: "What is Distributor?",
+              answer:
+                  "Distributor comprises of only those Retailing which are done by distributors.",
+              ansStyle: GoogleFonts.ptSansCaption(
+                color: AppColors.black,
+                fontSize: 12,
+                fontWeight: FontWeight.w400,
+              ),
+              queStyle: GoogleFonts.ptSansCaption(
+                color: AppColors.primary,
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+              ),
+              ansDecoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(4),
+                color: AppColors.white,
+              ),
+              queDecoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.sfPrimary.withOpacity(.2),
+                    blurRadius: 1,
+                    offset: const Offset(0, 2),
+                  ),
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(.05),
+                    blurRadius: .5,
+                    offset: const Offset(0, -3),
+                  ),
+                ],
+              ),
+            ),
+          ),
         ],
       ),
     );

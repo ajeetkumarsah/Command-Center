@@ -108,8 +108,8 @@ class StoreDashboardUI extends StatelessWidget {
                   child: Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(5.0),
+                      color: Colors.white,
                     ),
-                    color: Colors.white,
                     child: SizedBox(
                       width: double.infinity,
                       child: Column(
@@ -123,6 +123,7 @@ class StoreDashboardUI extends StatelessWidget {
                             },
                             child: SizedBox(
                               child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Padding(
                                     padding: const EdgeInsets.symmetric(
@@ -154,8 +155,7 @@ class StoreDashboardUI extends StatelessWidget {
                                     child: SizedBox(
                                       width:
                                           (MediaQuery.of(context).size.width -
-                                                  60) *
-                                              .8,
+                                              60),
                                       child: const Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
@@ -171,7 +171,7 @@ class StoreDashboardUI extends StatelessWidget {
                                         horizontal: 6.0),
                                     child: LinearPercentIndicator(
                                       width: MediaQuery.of(context).size.width -
-                                          60,
+                                          40,
                                       animation: true,
                                       animationDuration: 1000,
                                       lineHeight: 8.0,
@@ -190,7 +190,7 @@ class StoreDashboardUI extends StatelessWidget {
                                         horizontal: 6.0),
                                     child: LinearPercentIndicator(
                                       width: MediaQuery.of(context).size.width -
-                                          60,
+                                          40,
                                       animation: true,
                                       animationDuration: 1000,
                                       lineHeight: 8.0,
@@ -207,8 +207,7 @@ class StoreDashboardUI extends StatelessWidget {
                                     child: SizedBox(
                                       width:
                                           (MediaQuery.of(context).size.width -
-                                                  60) *
-                                              .9,
+                                              60),
                                       child: const Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
@@ -354,7 +353,7 @@ class StoreDashboardUI extends StatelessWidget {
                                 if (ctlr.dashboeardShowmore)
                                   AnimatedContainer(
                                     duration: const Duration(milliseconds: 300),
-                                    height: 70,
+                                    // height: 70,
                                     width: MediaQuery.of(context).size.width,
                                     color: AppColors.storeTableRowColor,
                                     // padding: EdgeInsets.only(left: 6),
@@ -435,12 +434,9 @@ class StoreDashboardUI extends StatelessWidget {
                       ctlr.onTabChange(1);
                       Get.toNamed(AppPages.sroreFingertipsLanding);
                     },
-                    child: Card(
-                      elevation: 10,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5.0),
-                      ),
+                    child: Container(
                       color: Colors.white,
+                      margin: const EdgeInsets.only(top: 8),
                       child: SizedBox(
                         width: double.infinity,
                         child: Padding(
@@ -661,7 +657,7 @@ class StoreDashboardUI extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(left: 10, right: 10),
+                  padding: const EdgeInsets.only(left: 10, right: 10, top: 4),
                   child: Row(
                     children: [
                       Expanded(

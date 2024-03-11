@@ -1,6 +1,5 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:command_centre/mobile_dashboard/utils/png_files.dart';
 import 'package:command_centre/mobile_dashboard/utils/routes/app_pages.dart';
@@ -124,7 +123,7 @@ class _RetryAccessDeniedState extends State<RetryAccessDeniedScreen>
                     main();
                     // Get.toNamed(AppPages.FED_AUTH_LOGIN);
                   },
-                  child: Row(
+                  child: const Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Padding(
@@ -161,12 +160,12 @@ class _RetryAccessDeniedState extends State<RetryAccessDeniedScreen>
   }
 
   void _onClearCookies(BuildContext context) async {
-    final WebViewCookieManager cookieManager = WebViewCookieManager();
-    final bool hadCookies = await cookieManager.clearCookies();
-    String message = 'There were cookies. Now, they are gone!';
-    if (!hadCookies) {
-      message = 'There are no cookies.';
-    }
+    // final WebViewCookieManager cookieManager = WebViewCookieManager();
+    // final bool hadCookies = await cookieManager.clearCookies();
+    // String message = 'There were cookies. Now, they are gone!';
+    // if (!hadCookies) {
+    //   message = 'There are no cookies.';
+    // }
     // ignore: deprecated_member_use
     // Scaffold.of(context).showSnackBar(SnackBar(
     //   content: Text(message),

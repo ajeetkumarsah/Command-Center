@@ -49,7 +49,7 @@ class _CustomExpandedWidgetState extends State<CustomExpandedWidget> {
 
   bool isFirst = true;
   void initColor() {
-    if (isFirst && widget.dataList != null && widget.dataList.isNotEmpty) {
+    if (isFirst && widget.dataList.isNotEmpty) {
       isFirst = false;
       var divider = (widget.dataList.length / 3).floor() + 1;
       for (var i = 0; i <= divider; i++) {
@@ -91,7 +91,7 @@ class _CustomExpandedWidgetState extends State<CustomExpandedWidget> {
                             Hero(
                               tag: widget.title,
                               child: const Icon(
-                                Icons.keyboard_double_arrow_down_rounded,
+                                Icons.keyboard_double_arrow_up_rounded,
                                 color: AppColors.primary,
                               ),
                             ),
@@ -149,7 +149,7 @@ class _CustomExpandedWidgetState extends State<CustomExpandedWidget> {
                                                         Container(
                                                           margin:
                                                               const EdgeInsets
-                                                                      .symmetric(
+                                                                  .symmetric(
                                                                   vertical: .5),
                                                           color: index == 0
                                                               ? null
@@ -164,8 +164,9 @@ class _CustomExpandedWidgetState extends State<CustomExpandedWidget> {
                                                                         MapEntry(
                                                                       i,
                                                                       Container(
-                                                                        padding:
-                                                                            const EdgeInsets.all(8.0),
+                                                                        padding: const EdgeInsets
+                                                                            .all(
+                                                                            8.0),
                                                                         width:
                                                                             86,
                                                                         child:
@@ -259,6 +260,7 @@ class _CustomExpandedWidgetState extends State<CustomExpandedWidget> {
                                           columnWidths: widget.secondColumnWidth
                                               ? {
                                                   0: const FlexColumnWidth(1.5),
+                                                  1: const FlexColumnWidth(1.2),
                                                 }
                                               : widget.firstColumnWidth
                                                   ? {
@@ -325,8 +327,9 @@ class _CustomExpandedWidgetState extends State<CustomExpandedWidget> {
                                                                           ),
                                                                         )
                                                                       : Padding(
-                                                                          padding:
-                                                                              const EdgeInsets.all(8.0),
+                                                                          padding: const EdgeInsets
+                                                                              .all(
+                                                                              8.0),
                                                                           child:
                                                                               Text(
                                                                             value,
@@ -367,20 +370,21 @@ class _CustomExpandedWidgetState extends State<CustomExpandedWidget> {
                                 right: 25,
                                 child: widget.tabType ==
                                         'Retailing by Geography'
-                                    ? const Text('Switch \'Indirect\' to Add Geo',
+                                    ? const Text(
+                                        'Switch to \'Distributor\' to Add Geo',
                                         style: TextStyle(
                                             fontSize: 12,
                                             fontWeight: FontWeight.w400))
                                     : widget.tabType == 'Coverage by Geography'
                                         ? const Text(
-                                            'Switch \'Indirect\' to Add Geo',
+                                            'Switch to \'Distributor\' to Add Geo',
                                             style: TextStyle(
                                                 fontSize: 12,
                                                 fontWeight: FontWeight.w400))
                                         : widget.tabType ==
                                                 'Focus Brand by Geography'
                                             ? const Text(
-                                                'Switch \'Indirect\' to Add Geo',
+                                                'Switch to \'Indirect\' to Add Geo',
                                                 style: TextStyle(
                                                     fontSize: 12,
                                                     fontWeight:
@@ -388,7 +392,7 @@ class _CustomExpandedWidgetState extends State<CustomExpandedWidget> {
                                             : widget.tabType ==
                                                     'Golden Points by Geography'
                                                 ? const Text(
-                                                    'Switch \'Indirect\' to Add Geo',
+                                                    'Switch to \'Indirect\' to Add Geo',
                                                     style: TextStyle(
                                                         fontSize: 12,
                                                         fontWeight:

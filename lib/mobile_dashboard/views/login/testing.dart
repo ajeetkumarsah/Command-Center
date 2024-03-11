@@ -2,25 +2,25 @@ import 'dart:io';
 import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
-
-import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
-import 'package:command_centre/mobile_dashboard/utils/app_constants.dart';
-import 'package:command_centre/mobile_dashboard/utils/routes/app_pages.dart';
-import 'package:command_centre/mobile_dashboard/views/login/access_denied_screen.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:google_fonts/google_fonts.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:webview_flutter_android/webview_flutter_android.dart';
+import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
+import 'package:command_centre/mobile_dashboard/utils/app_constants.dart';
+import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
+import 'package:command_centre/mobile_dashboard/utils/routes/app_pages.dart';
 import 'package:command_centre/mobile_dashboard/utils/global.dart' as globals;
+import 'package:command_centre/mobile_dashboard/views/login/access_denied_screen.dart';
 import 'package:webview_flutter_platform_interface/webview_flutter_platform_interface.dart';
 
-import 'package:webview_flutter_android/webview_flutter_android.dart';
+
 
 void main() => runApp(const MaterialApp(home: WebViewExample()));
 
@@ -472,11 +472,11 @@ Page resource error:
 
   Future<void> _onClearCookies(BuildContext context) async {
     await cookieManager.clearCookies();
-    final bool hadCookies = await cookieManager.clearCookies();
-    String message = 'There were cookies. Now, they are gone!';
-    if (!hadCookies) {
-      message = 'There are no cookies.';
-    }
+    // final bool hadCookies = await cookieManager.clearCookies();
+    // String message = 'There were cookies. Now, they are gone!';
+    // if (!hadCookies) {
+    //   message = 'There are no cookies.';
+    // }
     // if (context.mounted) {
     // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
     //   content: Text(message),

@@ -55,8 +55,8 @@ class _RetailingTableWidgetState extends State<RetailingTableWidget> {
                           color: index == 0
                               ? AppColors.white
                               : index % 2 == 0
-                                  ? AppColors.contentColorCyan.withOpacity(.03)
-                                  : AppColors.contentColorCyan.withOpacity(.1),
+                                  ? AppColors.primary.withOpacity(.12)
+                                  : AppColors.primary.withOpacity(.25),
                           borderRadius: index == 0
                               ? const BorderRadius.only(
                                   topLeft: Radius.circular(20),

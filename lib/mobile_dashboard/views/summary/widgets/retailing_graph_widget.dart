@@ -69,10 +69,9 @@ class _RetailingGraphWidgetState extends State<RetailingGraphWidget> {
                         });
                       },
                       touchTooltipData: BarTouchTooltipData(
-                        // tooltipBgColor: Colors.blueGrey,
                         tooltipHorizontalAlignment:
                             FLHorizontalAlignment.center,
-                        tooltipMargin: 0,
+                        tooltipMargin: 30,
                         tooltipBgColor: AppColors.primary,
                         tooltipRoundedRadius: 100,
                         getTooltipItem: (group, groupIndex, rod, rodIndex) {
@@ -112,7 +111,7 @@ class _RetailingGraphWidgetState extends State<RetailingGraphWidget> {
                             )
                             .toList(),
                     ],
-                    gridData: FlGridData(show: false),
+                    gridData: const FlGridData(show: false),
                     alignment: BarChartAlignment.spaceAround,
                     maxY: widget.maxValue,
                     minY: widget.minValue,
@@ -157,12 +156,14 @@ class _RetailingGraphWidgetState extends State<RetailingGraphWidget> {
                         touchTooltipData: LineTouchTooltipData(
                           tooltipBgColor: AppColors.primaryDark,
                           tooltipRoundedRadius: 20.0,
-                          showOnTopOfTheChartBoxArea: false,
+                          // showOnTopOfTheChartBoxArea: true,
                           fitInsideHorizontally: true,
                           fitInsideVertically: true,
-                          tooltipMargin: 40,
+                          tooltipMargin: 60,
                           tooltipHorizontalAlignment:
-                              FLHorizontalAlignment.center,
+                              FLHorizontalAlignment.right,
+                          // tooltipHorizontalAlignment:
+                          //     FLHorizontalAlignment.center,
                           getTooltipItems: (touchedSpots) {
                             return touchedSpots.map(
                               (LineBarSpot touchedSpot) {
@@ -183,11 +184,11 @@ class _RetailingGraphWidgetState extends State<RetailingGraphWidget> {
                             (LineChartBarData barData, List<int> indicators) {
                           return indicators.map(
                             (int index) {
-                              final line = FlLine(
+                              const line = FlLine(
                                   color: Colors.grey,
                                   strokeWidth: 1,
                                   dashArray: [2, 4]);
-                              return TouchedSpotIndicatorData(
+                              return const TouchedSpotIndicatorData(
                                 line,
                                 FlDotData(show: false),
                               );
@@ -199,7 +200,7 @@ class _RetailingGraphWidgetState extends State<RetailingGraphWidget> {
                         border: const Border(
                             bottom: BorderSide(width: .5),
                             left: BorderSide(width: .5))),
-                    gridData: FlGridData(
+                    gridData: const FlGridData(
                       show: true,
                       drawHorizontalLine: false,
                     ),
@@ -216,10 +217,10 @@ class _RetailingGraphWidgetState extends State<RetailingGraphWidget> {
                               getLeftLineTitles(value, meta, widget.yAxisData),
                         ),
                       ),
-                      topTitles:
-                          AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                      rightTitles:
-                          AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                      topTitles: const AxisTitles(
+                          sideTitles: SideTitles(showTitles: false)),
+                      rightTitles: const AxisTitles(
+                          sideTitles: SideTitles(showTitles: false)),
                     ),
                   ),
                 )

@@ -88,7 +88,7 @@ class _RetailingScreenState extends State<RetailingScreen> {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 10, vertical: 4),
                         child: Text(
-                          'Indirect',
+                          'Distributor',
                           style: GoogleFonts.ptSansCaption(
                             color: ctlr.isRetailingDeepDiveInd
                                 ? AppColors.primary
@@ -119,7 +119,7 @@ class _RetailingScreenState extends State<RetailingScreen> {
                           padding: const EdgeInsets.symmetric(
                               horizontal: 10, vertical: 4),
                           child: Text(
-                            'Indirect + Direct',
+                            'Total Retailing',
                             style: GoogleFonts.ptSansCaption(
                               color: ctlr.isRetailingDeepDiveInd
                                   ? AppColors.white

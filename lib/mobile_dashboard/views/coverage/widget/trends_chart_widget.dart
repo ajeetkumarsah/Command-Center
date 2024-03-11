@@ -68,7 +68,7 @@ class _CustomExpandedChartWidgetState extends State<CoverageTrendsChartWidget> {
                             Hero(
                               tag: widget.title,
                               child: const Icon(
-                                Icons.keyboard_double_arrow_down_rounded,
+                                Icons.keyboard_double_arrow_up_rounded,
                                 color: AppColors.primary,
                               ),
                             ),
@@ -282,8 +282,7 @@ class _CustomExpandedChartWidgetState extends State<CoverageTrendsChartWidget> {
                                                 fitInsideVertically: true,
                                                 tooltipMargin: 40,
                                                 tooltipHorizontalAlignment:
-                                                    FLHorizontalAlignment
-                                                        .center,
+                                                    FLHorizontalAlignment.right,
                                                 getTooltipItems:
                                                     (touchedSpots) {
                                                   return touchedSpots.map(
