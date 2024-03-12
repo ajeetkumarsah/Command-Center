@@ -77,9 +77,9 @@ void main() async {
   runApp(
     GetMaterialApp(
       title: "Command Center",
-      // initialRoute: AppPages.SPLASH_SCREEN,
+      initialRoute: AppPages.SPLASH_SCREEN,
       navigatorObservers: <NavigatorObserver>[observer],
-      home: AccessDeniedScreen(),
+      // home: AccessDeniedScreen(),
       getPages: AppPages.routes,
       debugShowCheckedModeBanner: false,
     ),
