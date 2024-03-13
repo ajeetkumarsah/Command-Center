@@ -34,15 +34,6 @@ class SummaryScreen extends StatefulWidget {
 
 class _SummaryScreenState extends State<SummaryScreen> {
   bool isFirst = true;
-  void initCall(HomeController ctlr) async {
-    FirebaseCrashlytics.instance.log("Summary Started");
-    if (isFirst) {
-      isFirst = false;
-      WidgetsBinding.instance.addPostFrameCallback((_) async {
-        await ctlr.getInitValues();
-      });
-    }
-  }
 
   final ScrollController sScrollController = ScrollController();
 
@@ -53,13 +44,24 @@ class _SummaryScreenState extends State<SummaryScreen> {
   GlobalKey keyButton2 = GlobalKey();
   GlobalKey keyButton3 = GlobalKey();
   GlobalKey keyButton4 = GlobalKey();
-  GlobalKey keyButton5 = GlobalKey();
+  // GlobalKey keyButton5 = GlobalKey();
 
   @override
   void initState() {
+    getInitValues();
     getBanner();
     initGuide();
     super.initState();
+  }
+
+  void getInitValues() {
+    FirebaseCrashlytics.instance.log("Summary Started");
+    if (isFirst) {
+      isFirst = false;
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        await homeCtlr.getInitValues();
+      });
+    }
   }
 
   void initGuide() {
@@ -107,7 +109,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
         // });
       },
       builder: (ctlr) {
-        initCall(ctlr);
+        // initCall(ctlr);
         return RefreshIndicator(
           onRefresh: () => ctlr.getSummaryData(),
           child: Container(
@@ -1522,7 +1524,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
                           );
                         },
                         child: Container(
-                          key: keyButton5,
+                          // key: keyButton5,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(100),
                             color: Colors.white,
@@ -1586,13 +1588,14 @@ class _SummaryScreenState extends State<SummaryScreen> {
             duration: const Duration(milliseconds: 300),
             curve: Curves.fastOutSlowIn,
           );
-        } else if (target.identify == 'Target 4') {
-          sScrollController.animateTo(
-            (sScrollController.position.maxScrollExtent + 300),
-            duration: const Duration(milliseconds: 300),
-            curve: Curves.fastOutSlowIn,
-          );
         }
+        // else if (target.identify == 'Target 4') {
+        //   sScrollController.animateTo(
+        //     (sScrollController.position.maxScrollExtent + 300),
+        //     duration: const Duration(milliseconds: 300),
+        //     curve: Curves.fastOutSlowIn,
+        //   );
+        // }
       },
       onClickTargetWithTapPosition: (target, tapDetails) {
         if (target.identify == 'Target 3') {
@@ -1601,13 +1604,14 @@ class _SummaryScreenState extends State<SummaryScreen> {
             duration: const Duration(milliseconds: 300),
             curve: Curves.fastOutSlowIn,
           );
-        } else if (target.identify == 'Target 4') {
-          sScrollController.animateTo(
-            (sScrollController.position.maxScrollExtent + 300),
-            duration: const Duration(milliseconds: 300),
-            curve: Curves.fastOutSlowIn,
-          );
         }
+        // else if (target.identify == 'Target 4') {
+        //   sScrollController.animateTo(
+        //     (sScrollController.position.maxScrollExtent + 300),
+        //     duration: const Duration(milliseconds: 300),
+        //     curve: Curves.fastOutSlowIn,
+        //   );
+        // }
       },
       onClickOverlay: (target) {
         if (target.identify == 'Target 3') {
@@ -1616,13 +1620,14 @@ class _SummaryScreenState extends State<SummaryScreen> {
             duration: const Duration(milliseconds: 300),
             curve: Curves.fastOutSlowIn,
           );
-        } else if (target.identify == 'Target 4') {
-          sScrollController.animateTo(
-            (sScrollController.position.maxScrollExtent + 300),
-            duration: const Duration(milliseconds: 300),
-            curve: Curves.fastOutSlowIn,
-          );
         }
+        // else if (target.identify == 'Target 4') {
+        //   sScrollController.animateTo(
+        //     (sScrollController.position.maxScrollExtent + 300),
+        //     duration: const Duration(milliseconds: 300),
+        //     curve: Curves.fastOutSlowIn,
+        //   );
+        // }
       },
       onSkip: () {
         return true;
@@ -1844,45 +1849,45 @@ class _SummaryScreenState extends State<SummaryScreen> {
         ],
       ),
     );
-    targets.add(
-      TargetFocus(
-        identify: "Target 5",
-        keyTarget: keyButton5,
-        shape: ShapeLightFocus.RRect,
-        radius: 5,
-        color: AppColors.primary,
-        contents: [
-          TargetContent(
-            align: ContentAlign.top,
-            builder: (context, controller) {
-              return const Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  SizedBox(height: 160),
-                  Text(
-                    "Personalize",
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        fontSize: 20.0),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(top: 10.0),
-                    child: Text(
-                      "You can personalize your Summary page by clicking on this button.",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                  SizedBox(height: 160),
-                ],
-              );
-            },
-          ),
-        ],
-      ),
-    );
+    // targets.add(
+    //   TargetFocus(
+    //     identify: "Target 5",
+    //     keyTarget: keyButton5,
+    //     shape: ShapeLightFocus.RRect,
+    //     radius: 5,
+    //     color: AppColors.primary,
+    //     contents: [
+    //       TargetContent(
+    //         align: ContentAlign.top,
+    //         builder: (context, controller) {
+    //           return const Column(
+    //             mainAxisSize: MainAxisSize.min,
+    //             crossAxisAlignment: CrossAxisAlignment.center,
+    //             mainAxisAlignment: MainAxisAlignment.center,
+    //             children: <Widget>[
+    //               SizedBox(height: 160),
+    //               Text(
+    //                 "Personalize",
+    //                 style: TextStyle(
+    //                     fontWeight: FontWeight.bold,
+    //                     color: Colors.white,
+    //                     fontSize: 20.0),
+    //               ),
+    //               Padding(
+    //                 padding: EdgeInsets.only(top: 10.0),
+    //                 child: Text(
+    //                   "You can personalize your Summary page by clicking on this button.",
+    //                   style: TextStyle(color: Colors.white),
+    //                 ),
+    //               ),
+    //               SizedBox(height: 160),
+    //             ],
+    //           );
+    //         },
+    //       ),
+    //     ],
+    //   ),
+    // );
     return targets;
   }
 }
