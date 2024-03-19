@@ -14,7 +14,6 @@ import 'package:command_centre/mobile_dashboard/views/summary/widgets/personaliz
 import 'package:command_centre/mobile_dashboard/views/summary/widgets/retailing_graph_widget.dart';
 import 'package:command_centre/mobile_dashboard/views/summary/widgets/retailing_table_widget.dart';
 
-
 class AllMetricsScreen extends StatelessWidget {
   const AllMetricsScreen({super.key});
 
@@ -1143,14 +1142,14 @@ class AllMetricsScreen extends StatelessWidget {
                                                   circularStrokeCap:
                                                       CircularStrokeCap.round,
                                                   linearGradient:
-                                                      const LinearGradient(
+                                                      LinearGradient(
                                                     begin: Alignment.topRight,
                                                     end: Alignment.bottomLeft,
                                                     colors: [
-                                                      AppColors
-                                                          .contentColorCyan,
-                                                      AppColors
-                                                          .contentColorBlue,
+                                                      AppColors.contentColorCyan
+                                                          .withOpacity(.6),
+                                                      AppColors.contentColorBlue
+                                                          .withOpacity(.6),
                                                     ],
                                                   ),
                                                 ),
@@ -1240,14 +1239,14 @@ class AllMetricsScreen extends StatelessWidget {
                                                   circularStrokeCap:
                                                       CircularStrokeCap.round,
                                                   linearGradient:
-                                                      const LinearGradient(
+                                                      LinearGradient(
                                                     begin: Alignment.topRight,
                                                     end: Alignment.bottomLeft,
                                                     colors: [
-                                                      AppColors
-                                                          .contentColorCyan,
-                                                      AppColors
-                                                          .contentColorBlue,
+                                                      AppColors.contentColorCyan
+                                                          .withOpacity(.6),
+                                                      AppColors.contentColorBlue
+                                                          .withOpacity(.6),
                                                     ],
                                                   ),
                                                 ),

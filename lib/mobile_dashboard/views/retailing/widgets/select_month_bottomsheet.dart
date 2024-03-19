@@ -4,7 +4,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
 import 'package:command_centre/mobile_dashboard/controllers/home_controller.dart';
 import 'package:command_centre/mobile_dashboard/views/widgets/custom_loader.dart';
-import 'package:command_centre/mobile_dashboard/views/widgets/custom_snackbar.dart';
 
 class SelectMonthBottomsheet extends StatelessWidget {
   final bool isLoadRetailing;
@@ -97,7 +96,13 @@ class SelectMonthBottomsheet extends StatelessWidget {
                                           .map(
                                             (month) => InkWell(
                                               onTap: () => ctlr
-                                                  .onChangeMonthFilter(month),
+                                                  .onChangeMonthFilter(
+                                                    month,
+                                                    isLoadRetailing:
+                                                        isLoadRetailing,
+                                                    isSummary: isSummary,
+                                                  )
+                                                  .then((value) => Get.back()),
                                               child: Row(
                                                 children: [
                                                   Transform.scale(
@@ -109,7 +114,14 @@ class SelectMonthBottomsheet extends StatelessWidget {
                                                           month.toLowerCase(),
                                                       onChanged: (v) => ctlr
                                                           .onChangeMonthFilter(
-                                                              month),
+                                                            month,
+                                                            isLoadRetailing:
+                                                                isLoadRetailing,
+                                                            isSummary:
+                                                                isSummary,
+                                                          )
+                                                          .then((value) =>
+                                                              Get.back()),
                                                     ),
                                                   ),
                                                   Flexible(
@@ -129,53 +141,55 @@ class SelectMonthBottomsheet extends StatelessWidget {
                       ),
                     ],
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      TextButton(
-                        onPressed: () => Get.back(),
-                        style: ButtonStyle(
-                          overlayColor:
-                              MaterialStateProperty.all(Colors.transparent),
-                        ),
-                        child: Text(
-                          'Clear',
-                          style: GoogleFonts.ptSans(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w400,
-                            color: Colors.grey,
-                          ),
-                        ),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          if (ctlr.selectedTempMonth != null) {
-                            ctlr.onChangeDate(
-                              isLoadRetailing: isLoadRetailing,
-                              tabType: 'All',
-                              isSummary: isSummary,
-                            );
-                            Navigator.pop(context);
-                          } else {
-                            showCustomSnackBar('Please select the month.',
-                                isError: false, isBlack: true);
-                          }
-                        },
-                        style: ButtonStyle(
-                          overlayColor:
-                              MaterialStateProperty.all(Colors.transparent),
-                        ),
-                        child: Text(
-                          'Apply Changes',
-                          style: GoogleFonts.ptSans(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w700,
-                            color: AppColors.primary,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                  // Row(
+                  //   mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  //   children: [
+                  //     TextButton(
+                  //       onPressed: () => Get.back(),
+                  //       style: ButtonStyle(
+                  //         overlayColor:
+                  //             MaterialStateProperty.all(Colors.transparent),
+                  //       ),
+                  //       child: Text(
+                  //         'Clear',
+                  //         style: GoogleFonts.ptSans(
+                  //           fontSize: 16,
+                  //           fontWeight: FontWeight.w400,
+                  //           color: Colors.grey,
+                  //         ),
+                  //       ),
+                  //     ),
+                  //     TextButton(
+                  //       onPressed: () {
+                  //         LoggerUtils.firebaseAnalytics(
+                  //             AnalyticsEvent.selected_month, "Selected Month ${ctlr.getUserName()}");
+                  //         if (ctlr.selectedTempMonth != null) {
+                  //           ctlr.onChangeDate(
+                  //             isLoadRetailing: isLoadRetailing,
+                  //             tabType: 'All',
+                  //             isSummary: isSummary,
+                  //           );
+                  //           Navigator.pop(context);
+                  //         } else {
+                  //           showCustomSnackBar('Please select the month.',
+                  //               isError: false, isBlack: true);
+                  //         }
+                  //       },
+                  //       style: ButtonStyle(
+                  //         overlayColor:
+                  //             MaterialStateProperty.all(Colors.transparent),
+                  //       ),
+                  //       child: Text(
+                  //         'Apply Changes',
+                  //         style: GoogleFonts.ptSans(
+                  //           fontSize: 16,
+                  //           fontWeight: FontWeight.w700,
+                  //           color: AppColors.primary,
+                  //         ),
+                  //       ),
+                  //     ),
+                  //   ],
+                  // ),
                   const SizedBox(height: 8),
                 ],
               ),

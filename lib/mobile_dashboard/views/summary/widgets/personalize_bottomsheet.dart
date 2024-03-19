@@ -8,7 +8,6 @@ import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
 import 'package:command_centre/mobile_dashboard/controllers/home_controller.dart';
 import 'package:command_centre/mobile_dashboard/data/models/body/personalized_body.dart';
 
-
 class PersonalizeBottomsheet extends StatefulWidget {
   const PersonalizeBottomsheet({super.key});
 
@@ -26,7 +25,7 @@ class _PersonalizeBottomsheetState extends State<PersonalizeBottomsheet> {
         'Golden Points',
         'Focus Brand'
       ],
-      moreMetrics = ['Shipment (TBD)']; //'Inventory'
+      moreMetrics = []; //'Inventory''Shipment (TBD)'
   List<PesonalizedHeaderBody> allLists(List<String> includedMetrics,
           List<String> moreMet, Function(bool, String, bool) onChange) =>
       [

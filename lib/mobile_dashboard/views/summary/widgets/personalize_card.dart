@@ -44,17 +44,15 @@ class PersonalizeCard extends StatelessWidget {
         children: [
           Container(
             decoration: BoxDecoration(
-              gradient: isDataFound ?? true
-                  ? LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        AppColors.contentColorCyan.withOpacity(.6),
-                        AppColors.contentColorBlue.withOpacity(.6),
-                        // AppColors.contentColorCyan.withOpacity(.6),
-                      ],
-                    )
-                  : null,
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  AppColors.contentColorCyan.withOpacity(.8),
+                  AppColors.contentColorBlue.withOpacity(.8),
+                  // AppColors.contentColorCyan.withOpacity(.6),
+                ],
+              ),
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(20),
                 topRight: Radius.circular(20),

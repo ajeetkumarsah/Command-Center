@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'dart:math';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:marquee/marquee.dart';
 import 'package:text_3d/text_3d.dart';
@@ -16,6 +17,7 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:command_centre/mobile_dashboard/utils/png_files.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:command_centre/mobile_dashboard/utils/date_converter.dart';
 import 'package:command_centre/mobile_dashboard/utils/routes/app_pages.dart';
 import 'package:command_centre/mobile_dashboard/controllers/home_controller.dart';
 import 'package:command_centre/mobile_dashboard/views/widgets/custom_shimmer.dart';
@@ -119,7 +121,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
             decoration: const BoxDecoration(
               image: DecorationImage(
                 image: AssetImage(PngFiles.homeBg),
-                fit: BoxFit.cover,
+                fit: BoxFit.fitWidth,
               ),
             ),
             child: SingleChildScrollView(
@@ -127,62 +129,6 @@ class _SummaryScreenState extends State<SummaryScreen> {
               controller: sScrollController,
               child: Column(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text.rich(
-                                TextSpan(
-                                  children: [
-                                    TextSpan(
-                                      text: 'Hello,',
-                                      style: GoogleFonts.ptSans(
-                                        fontSize: 22,
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w400,
-                                      ),
-                                    ),
-                                    TextSpan(
-                                      text: ' ${ctlr.getUserName()}',
-                                      style: GoogleFonts.ptSans(
-                                        fontSize: 22,
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w700,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Text(
-                                'Here\'s your MTD summary',
-                                style: GoogleFonts.ptSans(
-                                  fontSize: 16,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w400,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        IconButton(
-                          onPressed: () => Get.bottomSheet(
-                            MenuBottomsheet(version: ctlr.appVersion),
-                            isScrollControlled: true,
-                          ),
-                          // () => Get.to(const UpdateScreen()),
-                          icon: const Icon(
-                            Icons.menu,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
                   StreamBuilder(
                     stream: FirebaseFirestore.instance
                         .collection("data_refresh")
@@ -243,11 +189,101 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                   ],
                                 ),
                               )
-                            : const SizedBox(),
+                            : snapshot.data?.docs.first.data()['lastUpdated'] !=
+                                    null
+                                ? Container(
+                                    margin: const EdgeInsets.only(top: 8),
+                                    padding: const EdgeInsets.only(
+                                      left: 16,
+                                      top: 4,
+                                      bottom: 4,
+                                    ),
+                                    // decoration: BoxDecoration(
+                                    //   gradient: LinearGradient(
+                                    //     begin: Alignment.topCenter,
+                                    //     end: Alignment.bottomCenter,
+                                    //     colors: [
+                                    //       AppColors.primary.withOpacity(.4),
+                                    //       AppColors.primary.withOpacity(.3),
+                                    //     ],
+                                    //   ),
+                                    // ),
+                                    child: Row(
+                                      children: [
+                                        Flexible(
+                                          child: Text(
+                                            'Last Updated on ${DateFormat('MM/dd/yyyy, hh:mm a').format(DateTime.fromMillisecondsSinceEpoch(int.tryParse(snapshot.data?.docs.first.data()['lastUpdated']) ?? 1610268500000))}',
+                                            style: GoogleFonts.ptSans(
+                                              fontSize: 14,
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.w400,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                : const SizedBox(),
                       );
                     },
                   ),
-                  const SizedBox(height: 20),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text.rich(
+                                TextSpan(
+                                  children: [
+                                    TextSpan(
+                                      text: 'Hello,',
+                                      style: GoogleFonts.ptSans(
+                                        fontSize: 22,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                    ),
+                                    TextSpan(
+                                      text: ' ${ctlr.getUserName()}',
+                                      style: GoogleFonts.ptSans(
+                                        fontSize: 22,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Text(
+                                'Here\'s the Business Summary',
+                                style: GoogleFonts.ptSans(
+                                  fontSize: 16,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () => Get.bottomSheet(
+                            MenuBottomsheet(version: ctlr.appVersion),
+                            isScrollControlled: true,
+                          ),
+                          // () => Get.to(const UpdateScreen()),
+                          icon: const Icon(
+                            Icons.menu,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 16),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 12.0),
                     child: Row(
@@ -292,6 +328,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                           const Icon(
                                             Icons.arrow_drop_down,
                                             color: AppColors.black,
+                                            size: 26,
                                           ),
                                         ],
                                       ),
@@ -302,26 +339,36 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                     height: 56, width: 1, color: Colors.grey),
                                 Expanded(
                                   flex: 1,
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 4),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Flexible(
-                                          child: Text(
-                                            ctlr.selectedGeoValue,
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: GoogleFonts.ptSans(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w500,
-                                              color: AppColors.black,
+                                  child: GestureDetector(
+                                    onTap: () => Get.bottomSheet(
+                                      const GeographyBottomsheet(
+                                        tabType: 'All',
+                                        isLoadRetailing: true,
+                                        isSummary: true,
+                                      ),
+                                      isScrollControlled: true,
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 4),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Flexible(
+                                            child: Text(
+                                              ctlr.selectedGeoValue,
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: GoogleFonts.ptSans(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w500,
+                                                color: AppColors.black,
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -371,6 +418,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                   const Icon(
                                     Icons.arrow_drop_down,
                                     color: AppColors.black,
+                                    size: 26,
                                   ),
                                 ],
                               ),
@@ -685,7 +733,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                           child: Column(
                                             children: [
                                               Text(
-                                                'FYTD IYA',
+                                                '${DateConverter().returnMonth(DateTime.now()).substring(0, 3).toLowerCase() == ctlr.selectedMonth?.substring(0, 3).toLowerCase() ? 'P3M' : 'FYTD'} IYA',
                                                 style: GoogleFonts.ptSans(
                                                   fontSize: 16,
                                                   fontWeight: FontWeight.w400,
@@ -1181,47 +1229,6 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                         ),
                                         Expanded(
                                           child: Column(
-                                            children: [
-                                              Text(
-                                                '${ctlr.selectedMonth?.substring(0, 3)}${ctlr.selectedMonth?.substring(6, 8)} Billing %',
-                                                style: GoogleFonts.ptSans(
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.w400,
-                                                ),
-                                              ),
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: [
-                                                  Flexible(
-                                                    child: Text(
-                                                      '${ctlr.summaryData.first.coverage?.billing?.contains('') ?? false ? ctlr.summaryData.first.coverage?.billing?.replaceAll('%', '') : ctlr.summaryData.first.coverage?.billing}',
-                                                      style: GoogleFonts.ptSans(
-                                                        fontSize: 40,
-                                                        fontWeight:
-                                                            FontWeight.w400,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 12.0, vertical: 12),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Expanded(
-                                          child: Column(
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.center,
                                             children: [
@@ -1251,6 +1258,78 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                             ],
                                           ),
                                         ),
+                                        // Expanded(
+                                        //   child: Column(
+                                        //     children: [
+                                        //       // Text(
+                                        //       //   '${ctlr.selectedMonth?.substring(0, 3)}${ctlr.selectedMonth?.substring(6, 8)} Billing %',
+                                        //       //   style: GoogleFonts.ptSans(
+                                        //       //     fontSize: 16,
+                                        //       //     fontWeight: FontWeight.w400,
+                                        //       //   ),
+                                        //       // ),
+                                        //       Row(
+                                        //         mainAxisAlignment:
+                                        //             MainAxisAlignment.center,
+                                        //         children: [
+                                        //           Flexible(
+                                        //             child: Text(
+                                        //               '${ctlr.summaryData.first.coverage?.billing?.contains('') ?? false ? ctlr.summaryData.first.coverage?.billing?.replaceAll('%', '') : ctlr.summaryData.first.coverage?.billing}',
+                                        //               style: GoogleFonts.ptSans(
+                                        //                 fontSize: 40,
+                                        //                 fontWeight:
+                                        //                     FontWeight.w400,
+                                        //               ),
+                                        //             ),
+                                        //           ),
+                                        //         ],
+                                        //       )
+                                        //     ],
+                                        //   ),
+                                        // ),
+                                      ],
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 12.0, vertical: 12),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        // Expanded(
+                                        //   child: Column(
+                                        //     crossAxisAlignment:
+                                        //         CrossAxisAlignment.center,
+                                        //     children: [
+                                        //       Text(
+                                        //         'Call Hit Rate %',
+                                        //         style: GoogleFonts.ptSans(
+                                        //           fontSize: 16,
+                                        //           fontWeight: FontWeight.w400,
+                                        //         ),
+                                        //       ),
+                                        //       Row(
+                                        //         mainAxisAlignment:
+                                        //             MainAxisAlignment.center,
+                                        //         children: [
+                                        //           Flexible(
+                                        //             child: Text(
+                                        //               '${ctlr.summaryData.first.coverage?.ccCurrentMonth}',
+                                        //               style: GoogleFonts.ptSans(
+                                        //                 fontSize: 40,
+                                        //                 fontWeight:
+                                        //                     FontWeight.w400,
+                                        //               ),
+                                        //             ),
+                                        //           ),
+                                        //         ],
+                                        //       )
+                                        //     ],
+                                        //   ),
+                                        // ),
                                         Expanded(
                                           child: Column(
                                             children: [
@@ -1380,12 +1459,14 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                           curve: Curves.easeInBack,
                                           circularStrokeCap:
                                               CircularStrokeCap.round,
-                                          linearGradient: const LinearGradient(
+                                          linearGradient: LinearGradient(
                                             begin: Alignment.topRight,
                                             end: Alignment.bottomLeft,
                                             colors: [
-                                              AppColors.contentColorCyan,
-                                              AppColors.contentColorBlue,
+                                              AppColors.contentColorCyan
+                                                  .withOpacity(.6),
+                                              AppColors.contentColorBlue
+                                                  .withOpacity(.6),
                                             ],
                                           ),
                                         ),
@@ -1467,12 +1548,14 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                           curve: Curves.easeInBack,
                                           circularStrokeCap:
                                               CircularStrokeCap.round,
-                                          linearGradient: const LinearGradient(
+                                          linearGradient: LinearGradient(
                                             begin: Alignment.topRight,
                                             end: Alignment.bottomLeft,
                                             colors: [
-                                              AppColors.contentColorCyan,
-                                              AppColors.contentColorBlue,
+                                              AppColors.contentColorCyan
+                                                  .withOpacity(.6),
+                                              AppColors.contentColorBlue
+                                                  .withOpacity(.6),
                                             ],
                                           ),
                                         ),
@@ -1552,7 +1635,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
                       )
                     ],
                   ),
-                  const SizedBox(height: 110),
+                  const SizedBox(height: 30),
                 ],
               ),
             ),

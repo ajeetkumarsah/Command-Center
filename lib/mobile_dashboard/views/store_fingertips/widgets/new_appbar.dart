@@ -40,7 +40,7 @@ class NewAppBar extends StatelessWidget {
           children: [
             ListTile(
               title: Text(
-                ctlr.selectedStore ?? '',
+                ctlr.selectedStore ?? ctlr.title ?? '',
                 style: GoogleFonts.inter(
                   fontSize: 26,
                   fontWeight: FontWeight.w400,
@@ -88,6 +88,7 @@ class NewAppBar extends StatelessWidget {
                   horizontal: 16.0, vertical: 6),
               child: Row(
                 children: [
+
                   SizedBox(
                     height: 24,
                     width: 24,

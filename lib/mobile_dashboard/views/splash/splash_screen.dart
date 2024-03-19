@@ -8,6 +8,8 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_constants.dart';
 import 'package:command_centre/mobile_dashboard/utils/routes/app_pages.dart';
 import 'package:command_centre/mobile_dashboard/controllers/auth_controller.dart';
+import 'package:command_centre/mobile_dashboard/utils/sec_helper/obfuscation.dart';
+import 'package:command_centre/mobile_dashboard/views/onboarding/onboarding_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -53,7 +55,8 @@ class _SplashScreenState extends State<SplashScreen> {
                 if (geo.isNotEmpty && geoValue.isNotEmpty) {
                   FirebaseCrashlytics.instance.log("Splash Geo Check");
                   debugPrint('===>Splash Geo $geo Value $geoValue');
-                  Get.offAndToNamed(AppPages.INITIAL);
+                  Get.to(const OnboardingScreen());
+                  // Get.offAndToNamed(AppPages.INITIAL);
                   // Get.offAndToNamed(AppPages.PERSONA_SCREEN);
                 } else {
                   Get.offAndToNamed(AppPages.PERSONA_SCREEN);

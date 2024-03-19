@@ -24,8 +24,7 @@ class AuthController extends GetxController {
   FiltersModel? get filtersModel => _filtersModel;
   ConfigModel? _configModel;
   ConfigModel? get configModel => _configModel;
-  //
-  Map<String, dynamic>? _body;
+
   //String
   String _selectedGeo = 'All India';
   String get selectedGeo => _selectedGeo;

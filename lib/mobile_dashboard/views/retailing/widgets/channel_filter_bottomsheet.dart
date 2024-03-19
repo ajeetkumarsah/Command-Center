@@ -4,6 +4,7 @@ import '../../../utils/summary_types.dart';
 import 'package:collection/collection.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
+import 'package:command_centre/mobile_dashboard/services/analytics_utils.dart';
 import 'package:command_centre/mobile_dashboard/controllers/home_controller.dart';
 
 class ChannelFilterBottomsheet extends StatefulWidget {
@@ -39,12 +40,40 @@ class _ChannelFilterBottomsheetState extends State<ChannelFilterBottomsheet> {
     if (isFirst) {
       isFirst = false;
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (ctlr.selectedChannel == 'attr1') {
-          onChangeFilter('Level 1');
-          ctlr.onChangeChannel('Level 1', widget.tabType);
-        } else {
-          onChangeFilter(ctlr.selectedChannel);
-          ctlr.onChangeChannel(ctlr.selectedChannel, widget.tabType);
+        debugPrint('===>Channel Filter ==>${ctlr.selectedRetailingChannel}');
+        ctlr.channelFilterInit(widget.tabType);
+        if (SummaryTypes.retailing.type == widget.tabType) {
+          if (ctlr.selectedRetailingChannel == 'attr1') {
+            onChangeFilter('Level 1');
+            ctlr.onChangeChannel('Level 1', widget.tabType);
+          } else {
+            onChangeFilter(ctlr.selectedRetailingChannel);
+            ctlr.onChangeChannel(ctlr.selectedRetailingChannel, widget.tabType);
+          }
+        } else if (SummaryTypes.coverage.type == widget.tabType) {
+          if (ctlr.selectedCoverageChannel == 'attr1') {
+            onChangeFilter('Level 1');
+            ctlr.onChangeChannel('Level 1', widget.tabType);
+          } else {
+            onChangeFilter(ctlr.selectedCoverageChannel);
+            ctlr.onChangeChannel(ctlr.selectedCoverageChannel, widget.tabType);
+          }
+        } else if (SummaryTypes.gp.type == widget.tabType) {
+          if (ctlr.selectedGPChannel == 'attr1') {
+            onChangeFilter('Level 1');
+            ctlr.onChangeChannel('Level 1', widget.tabType);
+          } else {
+            onChangeFilter(ctlr.selectedGPChannel);
+            ctlr.onChangeChannel(ctlr.selectedGPChannel, widget.tabType);
+          }
+        } else if (SummaryTypes.fb.type == widget.tabType) {
+          if (ctlr.selectedFBChannel == 'attr1') {
+            onChangeFilter('Level 1');
+            ctlr.onChangeChannel('Level 1', widget.tabType);
+          } else {
+            onChangeFilter(ctlr.selectedFBChannel);
+            ctlr.onChangeChannel(ctlr.selectedFBChannel, widget.tabType);
+          }
         }
       });
     }
@@ -169,8 +198,14 @@ class _ChannelFilterBottomsheetState extends State<ChannelFilterBottomsheet> {
                                                     _selectedChannel),
                                           ),
                                         ),
-                                        const Flexible(
-                                          child: Text('Select All'),
+                                        Flexible(
+                                          child: Text(
+                                            'Select All',
+                                            style: GoogleFonts.ptSans(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
                                         )
                                       ],
                                     ),
@@ -187,6 +222,10 @@ class _ChannelFilterBottomsheetState extends State<ChannelFilterBottomsheet> {
                                                       ? ctlr
                                                           .selectedRetailingChannelFilter
                                                           .contains(e)
+                                                      //      &&
+                                                      // _selectedChannel ==
+                                                      //     ctlr
+                                                      //         .selectedChannel
                                                       : SummaryTypes.coverage
                                                                   .type ==
                                                               widget.tabType
@@ -216,7 +255,13 @@ class _ChannelFilterBottomsheetState extends State<ChannelFilterBottomsheet> {
                                                 ),
                                               ),
                                               Flexible(
-                                                child: Text(e),
+                                                child: Text(
+                                                  e,
+                                                  style: GoogleFonts.ptSans(
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.w400,
+                                                  ),
+                                                ),
                                               )
                                             ],
                                           ),
@@ -311,6 +356,8 @@ class _ChannelFilterBottomsheetState extends State<ChannelFilterBottomsheet> {
   }
 
   void onApplyFilter(HomeController ctlr) {
+    LoggerUtils.firebaseAnalytics(AnalyticsEvent.deep_dive_selected_channel,
+        "Added Selected Channel ${ctlr.getUserName()}");
     // ctlr.onChangeChannel(_selectedChannel);
     ctlr.onChangeChannel1(_selectedChannel, tabType: widget.tabType);
     // ctlr.onChangeChannelValue(

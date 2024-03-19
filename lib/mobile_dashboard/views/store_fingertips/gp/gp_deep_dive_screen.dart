@@ -444,7 +444,7 @@ class GPDeepDiveScreen extends StatelessWidget {
                       (v) => Padding(
                         padding: const EdgeInsets.all(6.0),
                         child: LinearPercentIndicator(
-                          width: MediaQuery.of(context).size.width * .55,
+                          width: MediaQuery.of(context).size.width * .54,
                           animation: true,
 
                           animationDuration: 1000,

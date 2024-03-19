@@ -1,3 +1,4 @@
+import 'package:command_centre/mobile_dashboard/services/analytics_utils.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -498,6 +499,8 @@ class _GeographyMultiSelectBottomsheetState
   }
 
   void onApplyFilter(HomeController ctlr) {
+    LoggerUtils.firebaseAnalytics(
+        AnalyticsEvent.deep_dive_selected_geo, "Added Selected Geo ${ctlr.getUserName()}");
     ctlr.onMultiGeoChange(_selectedFilter);
 
     if (widget.isTrends) {

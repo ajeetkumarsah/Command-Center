@@ -4,6 +4,7 @@ import 'package:collection/collection.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
 import 'package:command_centre/mobile_dashboard/utils/summary_types.dart';
+import 'package:command_centre/mobile_dashboard/services/analytics_utils.dart';
 import 'package:command_centre/mobile_dashboard/controllers/home_controller.dart';
 
 class CategoryFilterBottomsheet extends StatefulWidget {
@@ -30,6 +31,10 @@ class _CategoryFilterBottomsheetState extends State<CategoryFilterBottomsheet> {
   void catInit(HomeController ctlr, {required String tabType}) {
     if (_isFirst) {
       _isFirst = false;
+       WidgetsBinding.instance.addPostFrameCallback((_) {
+  
+      ctlr.categoryFilterInit(tabType);
+      });
       if (tabType == SummaryTypes.retailing.type) {
         _selectedCategory = ctlr.selectedCategory;
       } else if (tabType == SummaryTypes.gp.type) {
@@ -341,6 +346,8 @@ class _CategoryFilterBottomsheetState extends State<CategoryFilterBottomsheet> {
   }
 
   void onApplyFilter(HomeController ctlr) {
+    LoggerUtils.firebaseAnalytics(AnalyticsEvent.deep_dive_selected_channel,
+        "Added Selected Category ${ctlr.getUserName()}");
     ctlr.onChangeCategory1(_selectedCategory, tabType: widget.tabType);
     if (widget.isTrends) {
       ctlr.onApplyMultiFilter('trends', 'geo',

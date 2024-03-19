@@ -16,7 +16,7 @@ class RetailingGeoModel {
         indDir: json["ind_dir"] == null
             ? []
             : List<List<String>>.from(json["ind_dir"]!
-                .map((x) => List<String>.from(x.map((x) => x)))),
+                .map((x) => List<String>.from(x.map((x) => x.toString())))),
       );
 
   Map<String, dynamic> toJson() => {

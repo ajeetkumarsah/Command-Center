@@ -1,3 +1,4 @@
+import 'widgets/new_appbar.dart';
 import 'package:get/get.dart';
 import 'widgets/new_appbar.dart';
 import 'package:flutter/gestures.dart';
@@ -109,7 +110,15 @@ class StoreDashboardUI extends StatelessWidget {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(5.0),
                       color: Colors.white,
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Colors.grey,
+                          offset: Offset(0.0, 1.0), //(x,y)
+                          blurRadius: 2.0,
+                        ),
+                      ],
                     ),
+
                     child: SizedBox(
                       width: double.infinity,
                       child: Column(
@@ -123,7 +132,6 @@ class StoreDashboardUI extends StatelessWidget {
                             },
                             child: SizedBox(
                               child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Padding(
                                     padding: const EdgeInsets.symmetric(
@@ -149,21 +157,18 @@ class StoreDashboardUI extends StatelessWidget {
                                     ),
                                   ),
                                   const SizedBox(height: 15),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 8.0),
-                                    child: SizedBox(
-                                      width:
-                                          (MediaQuery.of(context).size.width -
-                                              60),
-                                      child: const Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text("0.00K"),
-                                          Text("87.71K"),
-                                        ],
-                                      ),
+                                  SizedBox(
+                                    width:
+                                    (MediaQuery.of(context).size.width -
+                                        60) *
+                                        .9,
+                                    child: const Row(
+                                      mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text("0.00K"),
+                                        Text("87.71K"),
+                                      ],
                                     ),
                                   ),
                                   Padding(
@@ -171,7 +176,7 @@ class StoreDashboardUI extends StatelessWidget {
                                         horizontal: 6.0),
                                     child: LinearPercentIndicator(
                                       width: MediaQuery.of(context).size.width -
-                                          40,
+                                          60,
                                       animation: true,
                                       animationDuration: 1000,
                                       lineHeight: 8.0,
@@ -190,7 +195,7 @@ class StoreDashboardUI extends StatelessWidget {
                                         horizontal: 6.0),
                                     child: LinearPercentIndicator(
                                       width: MediaQuery.of(context).size.width -
-                                          40,
+                                          60,
                                       animation: true,
                                       animationDuration: 1000,
                                       lineHeight: 8.0,
@@ -206,11 +211,12 @@ class StoreDashboardUI extends StatelessWidget {
                                         horizontal: 8.0),
                                     child: SizedBox(
                                       width:
-                                          (MediaQuery.of(context).size.width -
-                                              60),
+                                      (MediaQuery.of(context).size.width -
+                                          60) *
+                                          .9,
                                       child: const Row(
                                         mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
+                                        MainAxisAlignment.spaceBetween,
                                         children: [
                                           Text("0.00K"),
                                           Text("87.71K"),
@@ -236,7 +242,7 @@ class StoreDashboardUI extends StatelessWidget {
                               boxShadow: [
                                 BoxShadow(
                                   color:
-                                      const Color(0xff000000).withOpacity(.08),
+                                  const Color(0xff000000).withOpacity(.08),
                                   blurRadius: 12,
                                   offset: const Offset(0, 4),
                                 ),
@@ -255,8 +261,9 @@ class StoreDashboardUI extends StatelessWidget {
                                         child: Center(
                                           child: Text(
                                             'Channel Name',
+
                                             style: GoogleFonts.inter(
-                                              fontSize: 12,
+                                              fontSize: 11,
                                               fontWeight: FontWeight.w400,
                                               color: AppColors.greyTextColor,
                                             ),
@@ -284,7 +291,7 @@ class StoreDashboardUI extends StatelessWidget {
                                           child: Text(
                                             'Seller Type',
                                             style: GoogleFonts.inter(
-                                              fontSize: 12,
+                                              fontSize: 11,
                                               fontWeight: FontWeight.w400,
                                               color: AppColors.greyTextColor,
                                             ),
@@ -312,7 +319,7 @@ class StoreDashboardUI extends StatelessWidget {
                                           child: Text(
                                             'DSE Code',
                                             style: GoogleFonts.inter(
-                                              fontSize: 12,
+                                              fontSize: 11,
                                               fontWeight: FontWeight.w400,
                                               color: AppColors.greyTextColor,
                                             ),
@@ -340,7 +347,7 @@ class StoreDashboardUI extends StatelessWidget {
                                           child: Text(
                                             'Last visited',
                                             style: GoogleFonts.inter(
-                                              fontSize: 12,
+                                              fontSize: 11,
                                               fontWeight: FontWeight.w400,
                                               color: AppColors.greyTextColor,
                                             ),
@@ -353,7 +360,7 @@ class StoreDashboardUI extends StatelessWidget {
                                 if (ctlr.dashboeardShowmore)
                                   AnimatedContainer(
                                     duration: const Duration(milliseconds: 300),
-                                    // height: 70,
+                                    height: 110,
                                     width: MediaQuery.of(context).size.width,
                                     color: AppColors.storeTableRowColor,
                                     // padding: EdgeInsets.only(left: 6),
@@ -428,255 +435,272 @@ class StoreDashboardUI extends StatelessWidget {
                 //   ),
                 // ),
                 Padding(
-                  padding: const EdgeInsets.only(left: 10, right: 10),
+                  padding: const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
                   child: GestureDetector(
                     onTap: () {
                       ctlr.onTabChange(1);
                       Get.toNamed(AppPages.sroreFingertipsLanding);
                     },
                     child: Container(
-                      color: Colors.white,
-                      margin: const EdgeInsets.only(top: 8),
-                      child: SizedBox(
-                        width: double.infinity,
-                        child: Padding(
-                          padding: const EdgeInsets.only(
-                              left: 8.0, top: 12, bottom: 12),
-                          child: Column(
-                            children: [
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      "Coverage/Visit",
-                                      textAlign: TextAlign.start,
-                                      style: GoogleFonts.inter(
-                                        color: AppColors.black,
-                                        fontSize: 22,
-                                        fontWeight: FontWeight.w400,
-                                      ),
-                                    ),
-                                  ),
-                                  const Icon(
-                                    Icons.arrow_forward_ios_rounded,
-                                    color: AppColors.greyTextColor,
-                                    size: 18,
-                                  ),
-                                  const SizedBox(width: 12),
-                                ],
-                              ),
-                              const SizedBox(height: 15),
-                              Row(
-                                // mainAxisAlignment: MainAxisAlignment.end,
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  Expanded(
-                                    flex: 5,
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.all(6.0),
-                                          child: LinearPercentIndicator(
-                                            width: 140.0,
-                                            animation: true,
-                                            animationDuration: 1000,
-                                            lineHeight: 8.0,
-                                            barRadius:
-                                                const Radius.circular(10),
-                                            leading: const Text("Target Calls"),
-                                            trailing: const Text("8"),
-                                            percent: 0.8,
-                                            linearStrokeCap:
-                                                LinearStrokeCap.butt,
-                                            progressColor: AppColors.sfPrimary,
-                                            backgroundColor: AppColors.bgLight,
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.all(6.0),
-                                          child: LinearPercentIndicator(
-                                            width: 140.0,
-                                            animation: true,
-                                            animationDuration: 1000,
-                                            lineHeight: 8.0,
-                                            barRadius:
-                                                const Radius.circular(10),
-                                            leading: const Text("Call Made   "),
-                                            trailing: const Text("9"),
-                                            percent: 0.9,
-                                            linearStrokeCap:
-                                                LinearStrokeCap.butt,
-                                            progressColor: AppColors.sfPrimary,
-                                            backgroundColor: AppColors.bgLight,
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.all(6.0),
-                                          child: LinearPercentIndicator(
-                                            width: 140.0,
-                                            animation: true,
-                                            animationDuration: 1000,
-                                            lineHeight: 8.0,
-                                            barRadius:
-                                                const Radius.circular(10),
-                                            leading: const Text("CCR Calls   "),
-                                            trailing: const Text("6"),
-                                            percent: 0.7,
-                                            linearStrokeCap:
-                                                LinearStrokeCap.butt,
-                                            progressColor: AppColors.sfPrimary,
-                                            backgroundColor: AppColors.bgLight,
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.all(6.0),
-                                          child: LinearPercentIndicator(
-                                            width: 140.0,
-                                            animation: true,
-                                            animationDuration: 1000,
-                                            lineHeight: 8.0,
-                                            barRadius:
-                                                const Radius.circular(10),
-                                            leading:
-                                                const Text("Billed Calls "),
-                                            trailing: const Text("8"),
-                                            percent: 0.8,
-                                            linearStrokeCap:
-                                                LinearStrokeCap.butt,
-                                            progressColor: AppColors.sfPrimary,
-                                            backgroundColor: AppColors.bgLight,
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.all(6.0),
-                                          child: LinearPercentIndicator(
-                                            width: 140.0,
-                                            animation: true,
 
-                                            animationDuration: 1000,
-                                            lineHeight: 8.0,
-                                            barRadius:
-                                                const Radius.circular(10),
-                                            // backgroundColor:
-                                            //     const Color.fromARGB(255, 2, 74, 133),
-                                            leading:
-                                                const Text("Pro Calls    "),
-                                            trailing: const Text("8"),
-                                            percent: 0.8,
-                                            // ignore: deprecated_member_use
-                                            linearStrokeCap:
-                                                LinearStrokeCap.butt,
-                                            progressColor: AppColors.sfPrimary,
-                                            backgroundColor: AppColors.bgLight,
-                                          ),
-                                        ),
-                                      ],
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5.0),
+                        color: Colors.white,
+                        boxShadow: const [
+                          BoxShadow(
+                            color: Colors.grey,
+                            offset: Offset(0.0, 1.0), //(x,y)
+                            blurRadius: 2.0,
+                          ),
+                        ],
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                            left: 8.0, top: 12, bottom: 12),
+                        child: Column(
+                          children: [
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    "Coverage/Visit",
+                                    textAlign: TextAlign.start,
+                                    style: GoogleFonts.inter(
+                                      color: AppColors.black,
+                                      fontSize: 22,
+                                      fontWeight: FontWeight.w400,
                                     ),
                                   ),
-                                  Expanded(
-                                    flex: 2,
-                                    child: Column(
-                                      children: [
-                                        Container(
-                                          height: 30,
-                                          decoration: const BoxDecoration(
-                                            borderRadius: BorderRadius.only(
-                                              topLeft: Radius.circular(100),
-                                              bottomLeft: Radius.circular(100),
-                                            ),
-                                          ),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.end,
-                                            children: [
-                                              const SizedBox(width: 12),
-                                              Flexible(
-                                                child: Text.rich(
-                                                  TextSpan(
-                                                    children: [
-                                                      TextSpan(
-                                                        text: '33.07',
-                                                        style:
-                                                            GoogleFonts.inter(
-                                                          fontSize: 20,
-                                                          color:
-                                                              AppColors.black,
-                                                        ),
-                                                      ),
-                                                      TextSpan(
-                                                        text: 'min',
-                                                        style:
-                                                            GoogleFonts.inter(
-                                                          fontSize: 12,
-                                                          color:
-                                                              AppColors.black,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                              const SizedBox(width: 6),
-                                            ],
+                                ),
+                                const Icon(
+                                  Icons.arrow_forward_ios_rounded,
+                                  color: AppColors.greyTextColor,
+                                  size: 18,
+                                ),
+                                const SizedBox(width: 12),
+                              ],
+                            ),
+                            const SizedBox(height: 15),
+                            Row(
+                              // mainAxisAlignment: MainAxisAlignment.end,
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Expanded(
+                                  flex: 5,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                    CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.all(6.0),
+                                        child: LinearPercentIndicator(
+                                          width: 130.0,
+                                          animation: true,
+                                          animationDuration: 1000,
+                                          lineHeight: 8.0,
+                                          barRadius:
+                                          const Radius.circular(10),
+                                          leading: const Text("Target Calls"),
+                                          trailing: const Text("8"),
+                                          percent: 0.8,
+                                          linearStrokeCap:
+                                          LinearStrokeCap.butt,
+                                          progressColor: AppColors.sfPrimary,
+                                          backgroundColor: AppColors.bgLight,
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(6.0),
+                                        child: LinearPercentIndicator(
+                                          width: 130.0,
+                                          animation: true,
+                                          animationDuration: 1000,
+                                          lineHeight: 8.0,
+                                          barRadius:
+                                          const Radius.circular(10),
+                                          leading: const Text("Call Made   "),
+                                          trailing: const Text("9"),
+                                          percent: 0.9,
+                                          linearStrokeCap:
+                                          LinearStrokeCap.butt,
+                                          progressColor: AppColors.sfPrimary,
+                                          backgroundColor: AppColors.bgLight,
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(6.0),
+                                        child: LinearPercentIndicator(
+                                          width: 130.0,
+                                          animation: true,
+                                          animationDuration: 1000,
+                                          lineHeight: 8.0,
+                                          barRadius:
+                                          const Radius.circular(10),
+                                          leading: const Text("CCR Calls   "),
+                                          trailing: const Text("6"),
+                                          percent: 0.7,
+                                          linearStrokeCap:
+                                          LinearStrokeCap.butt,
+                                          progressColor: AppColors.sfPrimary,
+                                          backgroundColor: AppColors.bgLight,
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(6.0),
+                                        child: LinearPercentIndicator(
+                                          width: 130.0,
+                                          animation: true,
+                                          animationDuration: 1000,
+                                          lineHeight: 8.0,
+                                          barRadius:
+                                          const Radius.circular(10),
+                                          leading:
+                                          const Text("Billed Calls "),
+                                          trailing: const Text("8"),
+                                          percent: 0.8,
+                                          linearStrokeCap:
+                                          LinearStrokeCap.butt,
+                                          progressColor: AppColors.sfPrimary,
+                                          backgroundColor: AppColors.bgLight,
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(6.0),
+                                        child: LinearPercentIndicator(
+                                          width: 130.0,
+                                          animation: true,
+
+                                          animationDuration: 1000,
+                                          lineHeight: 8.0,
+                                          barRadius:
+                                          const Radius.circular(10),
+                                          // backgroundColor:
+                                          //     const Color.fromARGB(255, 2, 74, 133),
+                                          leading:
+                                          const Text("Pro Calls    "),
+                                          trailing: const Text("8"),
+                                          percent: 0.8,
+                                          // ignore: deprecated_member_use
+                                          linearStrokeCap:
+                                          LinearStrokeCap.butt,
+                                          progressColor: AppColors.sfPrimary,
+                                          backgroundColor: AppColors.bgLight,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 2,
+                                  child: Column(
+                                    children: [
+                                      Container(
+                                        height: 30,
+                                        decoration: const BoxDecoration(
+                                          borderRadius: BorderRadius.only(
+                                            topLeft: Radius.circular(100),
+                                            bottomLeft: Radius.circular(100),
                                           ),
                                         ),
-                                        Row(
+                                        child: Row(
                                           mainAxisAlignment:
-                                              MainAxisAlignment.end,
+                                          MainAxisAlignment.end,
                                           children: [
+                                            const SizedBox(width: 12),
                                             Flexible(
-                                              child: Text(
-                                                'Avg in-Store Time',
-                                                overflow: TextOverflow.ellipsis,
-                                                style: GoogleFonts.inter(
-                                                  // fontStyle: FontStyle.italic,
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.w400,
-                                                  color:
-                                                      AppColors.greyTextColor,
+                                              child: Text.rich(
+                                                TextSpan(
+                                                  children: [
+                                                    TextSpan(
+                                                      text: '33.07',
+                                                      style:
+                                                      GoogleFonts.inter(
+                                                        fontSize: 18,
+                                                        color:
+                                                        AppColors.black,
+                                                      ),
+                                                    ),
+                                                    TextSpan(
+                                                      text: 'min',
+                                                      style:
+                                                      GoogleFonts.inter(
+                                                        fontSize: 10,
+                                                        color:
+                                                        AppColors.black,
+                                                      ),
+                                                    ),
+                                                  ],
                                                 ),
                                               ),
                                             ),
                                             const SizedBox(width: 6),
                                           ],
                                         ),
-                                        const SizedBox(height: 8),
-                                      ],
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ],
-                          ),
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                        MainAxisAlignment.end,
+                                        children: [
+                                          Flexible(
+                                            child: Text(
+                                              'Avg in-Store Time',
+                                              overflow: TextOverflow.ellipsis,
+                                              style: GoogleFonts.inter(
+                                                // fontStyle: FontStyle.italic,
+                                                fontSize: 10,
+                                                fontWeight: FontWeight.w400,
+                                                color:
+                                                AppColors.greyTextColor,
+                                              ),
+                                            ),
+                                          ),
+                                          const SizedBox(width: 6),
+                                        ],
+                                      ),
+                                      const SizedBox(height: 8),
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
+                          ],
                         ),
                       ),
                     ),
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(left: 10, right: 10, top: 4),
+                  padding: const EdgeInsets.only(left: 10, right: 10),
                   child: Row(
                     children: [
                       Expanded(
-                        child: Card(
-                          color: Colors.white,
-                          elevation: 10.00,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5.0),
+                            color: Colors.white,
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Colors.grey,
+                                offset: Offset(0.0, 1.0), //(x,y)
+                                blurRadius: 2.0,
+                              ),
+                            ],
+                          ),
                           child: GestureDetector(
                             onTap: () {
                               ctlr.onTabChange(2);
                               Get.toNamed(AppPages.sroreFingertipsLanding);
                             },
                             child: Container(
-                              height: 250,
+                              height: 285,
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10.0),
                                   color: Colors.white),
                               child: Column(
                                 mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
+                                MainAxisAlignment.spaceAround,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Padding(
@@ -713,7 +737,7 @@ class StoreDashboardUI extends StatelessWidget {
                                     ),
                                   ),
                                   LinearPercentIndicator(
-                                    width: 160,
+                                    width: 140,
 
                                     animation: true,
                                     animationDuration: 1000,
@@ -741,7 +765,7 @@ class StoreDashboardUI extends StatelessWidget {
                                     ),
                                   ),
                                   LinearPercentIndicator(
-                                    width: 160.0,
+                                    width: 140.0,
                                     animation: true,
                                     animationDuration: 1000,
                                     lineHeight: 8.0,
@@ -765,7 +789,7 @@ class StoreDashboardUI extends StatelessWidget {
                                     ),
                                   ),
                                   LinearPercentIndicator(
-                                    width: 160.0,
+                                    width: 140.0,
                                     animation: true,
                                     animationDuration: 1000,
                                     lineHeight: 8.0,
@@ -786,17 +810,27 @@ class StoreDashboardUI extends StatelessWidget {
                           ),
                         ),
                       ),
+                      const SizedBox(width: 10,),
                       Expanded(
-                        child: Card(
-                          color: Colors.white,
-                          elevation: 10.00,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5.0),
+                            color: Colors.white,
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Colors.grey,
+                                offset: Offset(0.0, 1.0), //(x,y)
+                                blurRadius: 2.0,
+                              ),
+                            ],
+                          ),
                           child: GestureDetector(
                             onTap: () {
                               ctlr.onTabChange(3);
                               Get.toNamed(AppPages.sroreFingertipsLanding);
                             },
                             child: Container(
-                              height: 250,
+                              height: 285,
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10.0),
                                   color: Colors.white),
@@ -826,7 +860,7 @@ class StoreDashboardUI extends StatelessWidget {
                                   ),
                                   const SizedBox(height: 35),
                                   CircularPercentIndicator(
-                                    radius: 52.0,
+                                    radius: 50.0,
                                     lineWidth: 8.0,
                                     percent: 0.75,
                                     progressColor: AppColors.sfPrimary,
@@ -854,24 +888,27 @@ class StoreDashboardUI extends StatelessWidget {
                                     circularStrokeCap: CircularStrokeCap.round,
                                   ),
                                   const SizedBox(height: 20),
-                                  Text.rich(
-                                    TextSpan(
-                                      children: [
-                                        TextSpan(
-                                          text: "FB Target / ",
-                                          style: GoogleFonts.ptSans(
-                                            color: AppColors.greyTextColor,
-                                            fontSize: 16,
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 8.0),
+                                    child: Text.rich(
+                                      TextSpan(
+                                        children: [
+                                          TextSpan(
+                                            text: "FB Target / ",
+                                            style: GoogleFonts.ptSans(
+                                              color: AppColors.greyTextColor,
+                                              fontSize: 16,
+                                            ),
                                           ),
-                                        ),
-                                        TextSpan(
-                                          text: "FB Achieved",
-                                          style: GoogleFonts.ptSans(
-                                            color: AppColors.black,
-                                            fontSize: 16,
-                                          ),
-                                        )
-                                      ],
+                                          TextSpan(
+                                            text: "FB Achieved",
+                                            style: GoogleFonts.ptSans(
+                                              color: AppColors.black,
+                                              fontSize: 16,
+                                            ),
+                                          )
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ],
@@ -883,6 +920,7 @@ class StoreDashboardUI extends StatelessWidget {
                     ],
                   ),
                 ),
+                const SizedBox(height: 10,),
               ],
             ),
           );
@@ -911,7 +949,7 @@ class StoreDashboardUI extends StatelessWidget {
                 child: Text(
                   'Large A Pharmacy',
                   style: GoogleFonts.inter(
-                    fontSize: 14,
+                    fontSize: 11,
                     fontWeight: FontWeight.w400,
                     color: AppColors.greyTextColor,
                   ),
@@ -938,7 +976,7 @@ class StoreDashboardUI extends StatelessWidget {
               child: Text(
                 'Field Seller',
                 style: GoogleFonts.inter(
-                  fontSize: 14,
+                  fontSize: 11,
                   fontWeight: FontWeight.w400,
                   color: AppColors.greyTextColor,
                 ),
@@ -964,7 +1002,7 @@ class StoreDashboardUI extends StatelessWidget {
               child: Text(
                 'CGADH_MS104',
                 style: GoogleFonts.inter(
-                  fontSize: 14,
+                  fontSize: 11,
                   fontWeight: FontWeight.w400,
                   color: AppColors.greyTextColor,
                 ),
@@ -990,7 +1028,7 @@ class StoreDashboardUI extends StatelessWidget {
               child: Text(
                 '31-12-2023',
                 style: GoogleFonts.inter(
-                  fontSize: 14,
+                  fontSize: 11,
                   fontWeight: FontWeight.w400,
                   color: AppColors.greyTextColor,
                 ),
