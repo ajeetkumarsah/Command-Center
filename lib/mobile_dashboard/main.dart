@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
@@ -30,8 +32,10 @@ void main() async {
   FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
   FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
   FirebaseAnalytics analytics = FirebaseAnalytics.instance;
+
   FirebaseAnalyticsObserver observer =
   FirebaseAnalyticsObserver(analytics: analytics);
+  FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(true);
   // var initializationSettingsAndroid =
   // const AndroidInitializationSettings('@mipmap/ic_launcher');
   Future<bool> securityCheck() async {
@@ -71,7 +75,7 @@ void main() async {
         backgroundColor: Colors.red,
         textColor: Colors.white,
         fontSize: 16.0);
-    return;
+    exit(0);
   }
   runApp(
     GetMaterialApp(

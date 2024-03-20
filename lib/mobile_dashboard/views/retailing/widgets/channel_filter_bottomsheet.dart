@@ -1,3 +1,5 @@
+import 'package:command_centre/mobile_dashboard/services/analytics_utils.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import '../../../utils/summary_types.dart';
@@ -356,8 +358,7 @@ class _ChannelFilterBottomsheetState extends State<ChannelFilterBottomsheet> {
   }
 
   void onApplyFilter(HomeController ctlr) {
-    LoggerUtils.firebaseAnalytics(AnalyticsEvent.deep_dive_selected_channel,
-        "Added Selected Channel ${ctlr.getUserName()}");
+    FirebaseAnalytics.instance.logEvent(name: 'deep_dive_selected_channel', parameters: {"message": 'Added Selected Channel ${ctlr.getUserName()}'});
     // ctlr.onChangeChannel(_selectedChannel);
     ctlr.onChangeChannel1(_selectedChannel, tabType: widget.tabType);
     // ctlr.onChangeChannelValue(

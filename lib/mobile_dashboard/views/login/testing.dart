@@ -172,7 +172,7 @@ Page resource error:
           },
           onNavigationRequest: (NavigationRequest request) {
             if (request.url
-                .startsWith('http://localhost:3000/callback?code=')) {
+                .startsWith('${AppConstants.REDIRECT_URI}?code=')) {
               FirebaseCrashlytics.instance.log("Login : Code Generated");
               debugPrint('blocking navigation to ${request.url}');
               var uri = Uri.dataFromString(request.url);
@@ -204,7 +204,7 @@ Page resource error:
         },
       )
       ..loadRequest(Uri.parse(
-          'https://fedauthtst.pg.com/as/authorization.oauth2?client_id=IT%20Command%20Center&response_type=code&scope=openid%20pingid%20email%20profile&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fcallback&pfidpadapterid=ad..OAuth&rememberChoice=true&response_mode=query'));
+          AppConstants.FED_AUTH_URL));
 
     // #docregion platform_features
     if (controller.platform is AndroidWebViewController) {

@@ -1,3 +1,5 @@
+import 'package:command_centre/mobile_dashboard/services/analytics_utils.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
@@ -32,7 +34,7 @@ class _CategoryFilterBottomsheetState extends State<CategoryFilterBottomsheet> {
     if (_isFirst) {
       _isFirst = false;
        WidgetsBinding.instance.addPostFrameCallback((_) {
-  
+
       ctlr.categoryFilterInit(tabType);
       });
       if (tabType == SummaryTypes.retailing.type) {
@@ -346,8 +348,7 @@ class _CategoryFilterBottomsheetState extends State<CategoryFilterBottomsheet> {
   }
 
   void onApplyFilter(HomeController ctlr) {
-    LoggerUtils.firebaseAnalytics(AnalyticsEvent.deep_dive_selected_channel,
-        "Added Selected Category ${ctlr.getUserName()}");
+    FirebaseAnalytics.instance.logEvent(name: 'deep_dive_selected_channel', parameters: {"message": 'Added Selected Category ${ctlr.getUserName()}'});
     ctlr.onChangeCategory1(_selectedCategory, tabType: widget.tabType);
     if (widget.isTrends) {
       ctlr.onApplyMultiFilter('trends', 'geo',

@@ -1,4 +1,7 @@
 import 'dart:convert';
+import 'package:command_centre/mobile_dashboard/services/analytics_utils.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 import '../utils/app_constants.dart';
@@ -267,8 +270,7 @@ class HomeController extends GetxController {
   }
 
   void getReatilingInit() {
-    // LoggerUtils.firebaseAnalytics(
-    //     AnalyticsEvent.retailing, "Retailing Started ${getUserName()}");
+    FirebaseAnalytics.instance.logEvent(name: 'retailing', parameters: {"message": 'Retailing Started ${getUserName()}'});
     if (_selectedGeoValue.toLowerCase() == 'all india') {
       _isRetailingDeepDiveInd = false;
     } else {
@@ -291,8 +293,7 @@ class HomeController extends GetxController {
   }
 
   void getCoverageInit() {
-    LoggerUtils.firebaseAnalytics(
-        AnalyticsEvent.coverage, "Coverage Started ${getUserName()}");
+    FirebaseAnalytics.instance.logEvent(name: 'coverage', parameters: {"message": 'Coverage Started ${getUserName()}'});
     _isRetailingDeepDiveInd = true;
     if (coverageList.isEmpty) {
       getCoverageData();
@@ -307,8 +308,7 @@ class HomeController extends GetxController {
   }
 
   void getGPInit() {
-    LoggerUtils.firebaseAnalytics(
-        AnalyticsEvent.gp, "GP Started ${getUserName()}");
+    FirebaseAnalytics.instance.logEvent(name: 'gp', parameters: {"message": 'GP Started ${getUserName()}'});
     _isRetailingDeepDiveInd = true;
     if (gpList.isEmpty) {
       getGPData();
@@ -326,8 +326,7 @@ class HomeController extends GetxController {
   }
 
   void getFBInit() {
-    LoggerUtils.firebaseAnalytics(
-        AnalyticsEvent.fb, "FB Started ${getUserName()}");
+    FirebaseAnalytics.instance.logEvent(name: 'fb', parameters: {"message": 'FB Started ${getUserName()}'});
     _isRetailingDeepDiveInd = true;
     if (fbList.isEmpty) {
       getFocusBrandData();
@@ -345,10 +344,10 @@ class HomeController extends GetxController {
   }
 
   void onChangeSummaryDI(bool value) {
-    LoggerUtils.firebaseAnalytics(AnalyticsEvent.selected_switch,
-        "Direct Indirect Started ${getUserName()}");
+    FirebaseAnalytics.instance.logEvent(name: 'selected_switch', parameters: {"message": 'Direct Indirect Started ${getUserName()}'});
     if (selectedGeo == 'All India') {
       _isSummaryDirect = value;
+      FirebaseAnalytics.instance.logEvent(name: 'selected_switch', parameters: {"message": 'Selected Trends Category $_isSummaryDirect ${getUserName()}'});
       FirebaseCrashlytics.instance.log("Direct Indirect Selected");
     }
     update();
@@ -356,10 +355,10 @@ class HomeController extends GetxController {
 
   void onChangeDeepDiveIndirect(bool value) {
     if (selectedGeo == 'All India') {
-      LoggerUtils.firebaseAnalytics(AnalyticsEvent.selected_switch,
-          "Deep Dive Direct Indirect Selected ${getUserName()}");
+      FirebaseAnalytics.instance.logEvent(name: 'selected_switch', parameters: {"message": 'Deep Dive Direct Indirect Selected ${getUserName()}'});
       FirebaseCrashlytics.instance.log("Deep Dive Direct Indirect Selected");
       _isRetailingDeepDiveInd = value;
+      FirebaseAnalytics.instance.logEvent(name: 'selected_switch', parameters: {"message": 'Selected Trends Category $_isRetailingDeepDiveInd ${getUserName()}'});
     }
     update();
   }
@@ -367,8 +366,7 @@ class HomeController extends GetxController {
   void onSavePersonalizedData(
       {required List<String> active, required List<String> more}) {
     FirebaseCrashlytics.instance.log("Save Selected Personalized");
-    LoggerUtils.firebaseAnalytics(
-        AnalyticsEvent.logs, "Save Selected Personalized ${getUserName()}");
+    FirebaseAnalytics.instance.logEvent(name: 'logs', parameters: {"message": 'Save Selected Personalized ${getUserName()}'});
     savePersonalizedActiveMetrics(json.encode(active));
     savePersonalizedMoreMetrics(json.encode(more));
     update();
@@ -390,32 +388,36 @@ class HomeController extends GetxController {
 
   void onChangeCategory1(String value, {required String tabType}) {
     FirebaseCrashlytics.instance.log("On Category1 Changed");
-    LoggerUtils.firebaseAnalytics(AnalyticsEvent.selected_filter,
-        "On Chategory Changed ${getUserName()}");
+    FirebaseAnalytics.instance.logEvent(name: 'selected_filter', parameters: {"message": 'On Category Changed ${getUserName()}'});
     if (tabType == SummaryTypes.retailing.type) {
       _selectedCategory = value;
+      FirebaseAnalytics.instance.logEvent(name: 'selected_filter_category', parameters: {"message": 'On Category Changed $_selectedCategory ${getUserName()}'});
     } else if (tabType == SummaryTypes.gp.type) {
       _selectedGPCategory = value;
+      FirebaseAnalytics.instance.logEvent(name: 'selected_filter_gp', parameters: {"message": 'On Category Changed $_selectedGPCategory ${getUserName()}'});
     } else if (tabType == SummaryTypes.fb.type) {
       _selectedFBCategory = value;
+      FirebaseAnalytics.instance.logEvent(name: 'selected_filter_fb', parameters: {"message": 'On Category Changed $_selectedFBCategory ${getUserName()}'});
     }
 
     update();
   }
 
   void onChangeCategory(String value, String category, {bool isInit = false}) {
-    LoggerUtils.firebaseAnalytics(AnalyticsEvent.selected_filter,
-        "On Chategory Changed ${getUserName()}");
+    FirebaseAnalytics.instance.logEvent(name: 'selected_filter', parameters: {"message": 'On Category Changed ${getUserName()}'});
     FirebaseCrashlytics.instance.log("On Category Changed");
     // _selectedTempCategory = category;
     // if (!isInit) selectedCategoryFilters.clear();
     if (filtersModel != null) {
       if (value.toLowerCase().startsWith('category')) {
         categoryFilters = filtersModel?.category ?? [];
+        FirebaseAnalytics.instance.logEvent(name: 'selected_filter_category', parameters: {"message": 'On Category Changed $categoryFilters ${getUserName()}'});
       } else if (value.toLowerCase().startsWith('brand form')) {
         categoryFilters = filtersModel?.brandForm ?? [];
+        FirebaseAnalytics.instance.logEvent(name: 'selected_filter_category', parameters: {"message": 'On Category Changed $categoryFilters ${getUserName()}'});
       } else if (value.trim().toLowerCase().startsWith('brand')) {
         categoryFilters = filtersModel?.brand ?? [];
+        FirebaseAnalytics.instance.logEvent(name: 'selected_filter_category', parameters: {"message": 'On Category Changed $categoryFilters ${getUserName()}'});
       } else if (value.trim().toLowerCase().startsWith('sub-brand')) {
         // categoryFilters = filtersModel?.subBrandForm ?? [];
       }
@@ -429,25 +431,27 @@ class HomeController extends GetxController {
 
   void onChangeTrendsCategoryValue(String value) {
     FirebaseCrashlytics.instance.log("On Trends Changed");
-    LoggerUtils.firebaseAnalytics(AnalyticsEvent.selected_trend_analysis,
-        "On Trends Changed ${getUserName()}");
     _selectedTrendsCategory = value;
+    FirebaseAnalytics.instance.logEvent(name: 'selected_trend_analysis', parameters: {"message": 'On Trends Changed $_selectedTrendsCategory ${getUserName()}'});
     update();
   }
 
   void onChangeTrendsCategory(String value) {
-    LoggerUtils.firebaseAnalytics(AnalyticsEvent.selected_trend_analysis,
-        "On Trends Changed ${getUserName()}");
+    FirebaseAnalytics.instance.logEvent(name: 'selected_trend_analysis', parameters: {"message": 'On Trends Changed ${getUserName()}'});
     FirebaseCrashlytics.instance.log("On Trends Changed");
     if (filtersModel != null) {
       if (value.toLowerCase().startsWith('category')) {
         categoryTrendsFilters = filtersModel?.category ?? [];
+        FirebaseAnalytics.instance.logEvent(name: 'selected_filter_trends_category', parameters: {"message": 'On Category Trends Changed $categoryTrendsFilters ${getUserName()}'});
       } else if (value.toLowerCase().startsWith('brand form')) {
         categoryTrendsFilters = filtersModel?.brandForm ?? [];
+        FirebaseAnalytics.instance.logEvent(name: 'selected_filter_trends_category', parameters: {"message": 'On Category Trends Changed $categoryTrendsFilters ${getUserName()}'});
       } else if (value.trim().toLowerCase().startsWith('brand')) {
         categoryTrendsFilters = filtersModel?.brand ?? [];
+        FirebaseAnalytics.instance.logEvent(name: 'selected_filter_trends_category', parameters: {"message": 'On Category Trends Changed $categoryTrendsFilters ${getUserName()}'});
       } else if (value.trim().toLowerCase().startsWith('sub-brand')) {
         categoryTrendsFilters = [];
+        FirebaseAnalytics.instance.logEvent(name: 'selected_filter_trends_category', parameters: {"message": 'On Category Trends Changed $categoryTrendsFilters ${getUserName()}'});
       }
     } else {
       debugPrint('====>Filter model is Null');
@@ -458,18 +462,21 @@ class HomeController extends GetxController {
 
   void onChangeChannel1(String value, {String? tabType}) {
     FirebaseCrashlytics.instance.log("On Channel Changed");
-    LoggerUtils.firebaseAnalytics(
-        AnalyticsEvent.selected_filter, "On Channel Changed ${getUserName()}");
+    FirebaseAnalytics.instance.logEvent(name: 'selected_filter', parameters: {"message": 'On Channel Changed ${getUserName()}'});
     _selectedChannel = value;
     if (tabType != null) {
       if (tabType == SummaryTypes.retailing.type) {
         _selectedRetailingChannel = value;
+        FirebaseAnalytics.instance.logEvent(name: 'selected_filter_channel', parameters: {"message": 'On Channel Changed $_selectedRetailingChannel ${getUserName()}'});
       } else if (tabType == SummaryTypes.coverage.type) {
         _selectedCoverageChannel = value;
+        FirebaseAnalytics.instance.logEvent(name: 'selected_filter_channel', parameters: {"message": 'On Coverage Channel Changed $_selectedCoverageChannel ${getUserName()}'});
       } else if (tabType == SummaryTypes.gp.type) {
         _selectedGPChannel = value;
+        FirebaseAnalytics.instance.logEvent(name: 'selected_filter_channel', parameters: {"message": 'On GP Channel Changed $_selectedGPChannel ${getUserName()}'});
       } else if (tabType == SummaryTypes.fb.type) {
         _selectedFBChannel = value;
+        FirebaseAnalytics.instance.logEvent(name: 'selected_filter_channel', parameters: {"message": 'On FB Channel Changed $_selectedFBChannel ${getUserName()}'});
       }
     }
 
@@ -478,9 +485,9 @@ class HomeController extends GetxController {
 
   void onChangeTrendsChannel(String value) {
     FirebaseCrashlytics.instance.log("On Trends Channel Changed");
-    LoggerUtils.firebaseAnalytics(AnalyticsEvent.selected_trend_analysis,
-        "On Trends Changed ${getUserName()}");
+
     _selectedTrendsChannel = value;
+    FirebaseAnalytics.instance.logEvent(name: 'selected_trend_analysis', parameters: {"message": 'On Trends Changed $_selectedTrendsChannel ${getUserName()}'});
     update();
   }
 
@@ -490,91 +497,88 @@ class HomeController extends GetxController {
         if (channelSales) {
           if (value.toLowerCase().startsWith('level 1')) {
             FirebaseCrashlytics.instance.log("On Level 1 Changed");
-            LoggerUtils.firebaseAnalytics(AnalyticsEvent.level_filter,
-                "On Level 1 Changed ${getUserName()}");
-            debugPrint(
-                '===>  Sales is True :$value  ==>${filtersModel?.attr1}');
+            FirebaseAnalytics.instance.logEvent(name: 'level_filter', parameters: {"message": 'On Level 1 Changed ${getUserName()}'});
+            debugPrint('===> $value  ==>${filtersModel?.attr1}');
 
             channelFilter = _filtersModel?.attr1 ?? [];
+            FirebaseAnalytics.instance.logEvent(name: 'selected_filter_channel', parameters: {"message": 'On Channel Changed Level 1 $channelFilter ${getUserName()}'});
           } else if (value.toLowerCase().startsWith('level 2')) {
-            LoggerUtils.firebaseAnalytics(AnalyticsEvent.level_filter,
-                "On Level 2 Changed ${getUserName()}");
+            FirebaseAnalytics.instance.logEvent(name: 'level_filter', parameters: {"message": 'On Level 2 Changed ${getUserName()}'});
             FirebaseCrashlytics.instance.log("On Level 2 Changed");
             debugPrint('===> $value  ==>${filtersModel?.attr2}');
             channelFilter = _filtersModel?.attr2 ?? [];
+            FirebaseAnalytics.instance.logEvent(name: 'selected_filter_channel', parameters: {"message": 'On Channel Changed Level 2 $channelFilter ${getUserName()}'});
           } else if (value.toLowerCase().startsWith('level 3')) {
             FirebaseCrashlytics.instance.log("On Level 3 Changed");
-            LoggerUtils.firebaseAnalytics(AnalyticsEvent.level_filter,
-                "On Level 3 Changed ${getUserName()}");
+            FirebaseAnalytics.instance.logEvent(name: 'level_filter', parameters: {"message": 'On Level 3 Changed ${getUserName()}'});
             channelFilter = _filtersModel?.attr3 ?? [];
+            FirebaseAnalytics.instance.logEvent(name: 'selected_filter_channel', parameters: {"message": 'On Channel Changed Level 3 $channelFilter ${getUserName()}'});
           } else if (value.toLowerCase().startsWith('level 4')) {
             FirebaseCrashlytics.instance.log("On Level 4 Changed");
-            LoggerUtils.firebaseAnalytics(AnalyticsEvent.level_filter,
-                "On Level 4 Changed ${getUserName()}");
+            FirebaseAnalytics.instance.logEvent(name: 'level_filter', parameters: {"message": 'On Level 4 Changed ${getUserName()}'});
             channelFilter = _filtersModel?.attr4 ?? [];
+            FirebaseAnalytics.instance.logEvent(name: 'selected_filter_channel', parameters: {"message": 'On Channel Changed Level 4 $channelFilter ${getUserName()}'});
           } else if (value.toLowerCase().startsWith('level 5')) {
             FirebaseCrashlytics.instance.log("On Level 5 Changed");
-            LoggerUtils.firebaseAnalytics(AnalyticsEvent.level_filter,
-                "On Level 5 Changed ${getUserName()}");
+            FirebaseAnalytics.instance.logEvent(name: 'level_filter', parameters: {"message": 'On Level 5 Changed ${getUserName()}'});
             channelFilter = _filtersModel?.attr5 ?? [];
+            FirebaseAnalytics.instance.logEvent(name: 'selected_filter_channel', parameters: {"message": 'On Channel Changed Level 5 $channelFilter ${getUserName()}'});
           }
         } else {
           if (value.toLowerCase().startsWith('level 1')) {
             FirebaseCrashlytics.instance.log("On Level 1 Changed");
-            LoggerUtils.firebaseAnalytics(AnalyticsEvent.level_filter,
-                "On Level 1 Changed ${getUserName()}");
-            debugPrint(
-                '===>  Sales is False :$value  ==>${filtersModel?.indAttr1}');
+            FirebaseAnalytics.instance.logEvent(name: 'level_filter', parameters: {"message": 'On Level 1 Changed ${getUserName()}'});
             channelFilter = _filtersModel?.indAttr1 ?? [];
+            FirebaseAnalytics.instance.logEvent(name: 'selected_filter_channel', parameters: {"message": 'On Channel Changed Level 1 $channelFilter ${getUserName()}'});
           } else if (value.toLowerCase().startsWith('level 2')) {
             FirebaseCrashlytics.instance.log("On Level 2 Changed");
-            LoggerUtils.firebaseAnalytics(AnalyticsEvent.level_filter,
-                "On Level 2 Changed ${getUserName()}");
+            FirebaseAnalytics.instance.logEvent(name: 'level_filter', parameters: {"message": 'On Level 2 Changed ${getUserName()}'});
             channelFilter = _filtersModel?.indAttr2 ?? [];
+            FirebaseAnalytics.instance.logEvent(name: 'selected_filter_channel', parameters: {"message": 'On Channel Changed Level 2 $channelFilter ${getUserName()}'});
           } else if (value.toLowerCase().startsWith('level 3')) {
             FirebaseCrashlytics.instance.log("On Level 3 Changed");
-            LoggerUtils.firebaseAnalytics(AnalyticsEvent.level_filter,
-                "On Level 3 Changed ${getUserName()}");
+            FirebaseAnalytics.instance.logEvent(name: 'level_filter', parameters: {"message": 'On Level 3 Changed ${getUserName()}'});
             channelFilter = _filtersModel?.indAttr3 ?? [];
+            FirebaseAnalytics.instance.logEvent(name: 'selected_filter_channel', parameters: {"message": 'On Channel Changed Level 3 $channelFilter ${getUserName()}'});
           } else if (value.toLowerCase().startsWith('level 4')) {
             FirebaseCrashlytics.instance.log("On Level 4 Changed");
-            LoggerUtils.firebaseAnalytics(AnalyticsEvent.level_filter,
-                "On Level 4 Changed ${getUserName()}");
+            FirebaseAnalytics.instance.logEvent(name: 'level_filter', parameters: {"message": 'On Level 4 Changed ${getUserName()}'});
             channelFilter = _filtersModel?.indAttr4 ?? [];
+            FirebaseAnalytics.instance.logEvent(name: 'selected_filter_channel', parameters: {"message": 'On Channel Changed Level 4 $channelFilter ${getUserName()}'});
           } else if (value.toLowerCase().startsWith('level 5')) {
             FirebaseCrashlytics.instance.log("On Level 5 Changed");
-            LoggerUtils.firebaseAnalytics(AnalyticsEvent.level_filter,
-                "On Level 5 Changed ${getUserName()}");
+            FirebaseAnalytics.instance.logEvent(name: 'level_filter', parameters: {"message": 'On Level 5 Changed ${getUserName()}'});
             channelFilter = _filtersModel?.indAttr5 ?? [];
+            FirebaseAnalytics.instance.logEvent(name: 'selected_filter_channel', parameters: {"message": 'On Channel Changed Level 5 $channelFilter ${getUserName()}'});
           }
         }
       } else {
         getAllFilters().then((v) {
           if (value.toLowerCase().startsWith('level 1')) {
             FirebaseCrashlytics.instance.log("On Level 1 Changed");
-            LoggerUtils.firebaseAnalytics(AnalyticsEvent.level_filter,
-                "On Level 1 Changed ${getUserName()}");
+            FirebaseAnalytics.instance.logEvent(name: 'level_filter', parameters: {"message": 'On Level 1 Changed ${getUserName()}'});
             channelFilter = filtersModel?.attr1 ?? [];
+            FirebaseAnalytics.instance.logEvent(name: 'selected_filter_channel', parameters: {"message": 'On Channel Changed Level 1 $channelFilter ${getUserName()}'});
           } else if (value.toLowerCase().startsWith('level 2')) {
             FirebaseCrashlytics.instance.log("On Level 2 Changed");
-            LoggerUtils.firebaseAnalytics(AnalyticsEvent.level_filter,
-                "On Level 2 Changed ${getUserName()}");
+            FirebaseAnalytics.instance.logEvent(name: 'level_filter', parameters: {"message": 'On Level 2 Changed ${getUserName()}'});
             channelFilter = filtersModel?.attr2 ?? [];
+            FirebaseAnalytics.instance.logEvent(name: 'selected_filter_channel', parameters: {"message": 'On Channel Changed Level 2 $channelFilter ${getUserName()}'});
           } else if (value.toLowerCase().startsWith('level 3')) {
             FirebaseCrashlytics.instance.log("On Level 3 Changed");
-            LoggerUtils.firebaseAnalytics(AnalyticsEvent.level_filter,
-                "On Level 3 Changed ${getUserName()}");
+            FirebaseAnalytics.instance.logEvent(name: 'level_filter', parameters: {"message": 'On Level 3 Changed ${getUserName()}'});
             channelFilter = filtersModel?.attr3 ?? [];
+            FirebaseAnalytics.instance.logEvent(name: 'selected_filter_channel', parameters: {"message": 'On Channel Changed Level 3 $channelFilter ${getUserName()}'});
           } else if (value.toLowerCase().startsWith('level 4')) {
             FirebaseCrashlytics.instance.log("On Level 4 Changed");
-            LoggerUtils.firebaseAnalytics(AnalyticsEvent.level_filter,
-                "On Level 4 Changed ${getUserName()}");
+            FirebaseAnalytics.instance.logEvent(name: 'level_filter', parameters: {"message": 'On Level 4 Changed ${getUserName()}'});
             channelFilter = filtersModel?.attr4 ?? [];
+            FirebaseAnalytics.instance.logEvent(name: 'selected_filter_channel', parameters: {"message": 'On Channel Changed Level 4 $channelFilter ${getUserName()}'});
           } else if (value.toLowerCase().startsWith('level 5')) {
-            LoggerUtils.firebaseAnalytics(AnalyticsEvent.level_filter,
-                "On Level 5 Changed ${getUserName()}");
+            FirebaseAnalytics.instance.logEvent(name: 'level_filter', parameters: {"message": 'On Level 5 Changed ${getUserName()}'});
             FirebaseCrashlytics.instance.log("On Level 5 Changed");
             channelFilter = filtersModel?.attr5 ?? [];
+            FirebaseAnalytics.instance.logEvent(name: 'selected_filter_channel', parameters: {"message": 'On Channel Changed Level 5 $channelFilter ${getUserName()}'});
           }
         });
       }
@@ -582,59 +586,59 @@ class HomeController extends GetxController {
       if (filtersModel != null) {
         if (value.toLowerCase().startsWith('level 1')) {
           FirebaseCrashlytics.instance.log("On Level 1 Changed");
-          LoggerUtils.firebaseAnalytics(AnalyticsEvent.level_filter,
-              "On Level 1 Changed ${getUserName()}");
+          FirebaseAnalytics.instance.logEvent(name: 'level_filter', parameters: {"message": 'On Level 1 Changed ${getUserName()}'});
           debugPrint('===> $value');
           channelFilter = filtersModel?.otherAttrs?.attr1 ?? [];
+          FirebaseAnalytics.instance.logEvent(name: 'selected_filter_channel', parameters: {"message": 'On Channel Changed Level 1 $channelFilter ${getUserName()}'});
         } else if (value.toLowerCase().startsWith('level 2')) {
           FirebaseCrashlytics.instance.log("On Level 2 Changed");
-          LoggerUtils.firebaseAnalytics(AnalyticsEvent.level_filter,
-              "On Level 2 Changed ${getUserName()}");
+          FirebaseAnalytics.instance.logEvent(name: 'level_filter', parameters: {"message": 'On Level 2 Changed ${getUserName()}'});
           debugPrint('===> $value  ==>${filtersModel?.attr2}');
           channelFilter = filtersModel?.otherAttrs?.attr2 ?? [];
+          FirebaseAnalytics.instance.logEvent(name: 'selected_filter_channel', parameters: {"message": 'On Channel Changed Level 2 $channelFilter ${getUserName()}'});
         } else if (value.toLowerCase().startsWith('level 3')) {
           FirebaseCrashlytics.instance.log("On Level 3 Changed");
-          LoggerUtils.firebaseAnalytics(AnalyticsEvent.level_filter,
-              "On Level 3 Changed ${getUserName()}");
+          FirebaseAnalytics.instance.logEvent(name: 'level_filter', parameters: {"message": 'On Level 3 Changed ${getUserName()}'});
           channelFilter = filtersModel?.otherAttrs?.attr3 ?? [];
+          FirebaseAnalytics.instance.logEvent(name: 'selected_filter_channel', parameters: {"message": 'On Channel Changed Level 3 $channelFilter ${getUserName()}'});
         } else if (value.toLowerCase().startsWith('level 4')) {
           FirebaseCrashlytics.instance.log("On Level 4 Changed");
-          LoggerUtils.firebaseAnalytics(AnalyticsEvent.level_filter,
-              "On Level 4 Changed ${getUserName()}");
+          FirebaseAnalytics.instance.logEvent(name: 'level_filter', parameters: {"message": 'On Level 4 Changed ${getUserName()}'});
           channelFilter = filtersModel?.otherAttrs?.attr4 ?? [];
+          FirebaseAnalytics.instance.logEvent(name: 'selected_filter_channel', parameters: {"message": 'On Channel Changed Level 4 $channelFilter ${getUserName()}'});
         } else if (value.toLowerCase().startsWith('level 5')) {
           FirebaseCrashlytics.instance.log("On Level 5 Changed");
-          LoggerUtils.firebaseAnalytics(AnalyticsEvent.level_filter,
-              "On Level 5 Changed ${getUserName()}");
+          FirebaseAnalytics.instance.logEvent(name: 'level_filter', parameters: {"message": 'On Level 5 Changed ${getUserName()}'});
           channelFilter = filtersModel?.otherAttrs?.attr5 ?? [];
+          FirebaseAnalytics.instance.logEvent(name: 'selected_filter_channel', parameters: {"message": 'On Channel Changed Level 5 $channelFilter ${getUserName()}'});
         }
       } else {
         getAllFilters().then((v) {
           if (value.toLowerCase().startsWith('level 1')) {
             FirebaseCrashlytics.instance.log("On Level 1 Changed");
-            LoggerUtils.firebaseAnalytics(AnalyticsEvent.level_filter,
-                "On Level 1 Changed ${getUserName()}");
+            FirebaseAnalytics.instance.logEvent(name: 'level_filter', parameters: {"message": 'On Level 1 Changed ${getUserName()}'});
             channelFilter = filtersModel?.otherAttrs?.attr1 ?? [];
+            FirebaseAnalytics.instance.logEvent(name: 'selected_filter_channel', parameters: {"message": 'On Channel Changed Level 1 $channelFilter ${getUserName()}'});
           } else if (value.toLowerCase().startsWith('level 2')) {
             FirebaseCrashlytics.instance.log("On Level 2 Changed");
-            LoggerUtils.firebaseAnalytics(AnalyticsEvent.level_filter,
-                "On Level 2 Changed ${getUserName()}");
+            FirebaseAnalytics.instance.logEvent(name: 'level_filter', parameters: {"message": 'On Level 2 Changed ${getUserName()}'});
             channelFilter = filtersModel?.otherAttrs?.attr2 ?? [];
+            FirebaseAnalytics.instance.logEvent(name: 'selected_filter_channel', parameters: {"message": 'On Channel Changed Level 2 $channelFilter ${getUserName()}'});
           } else if (value.toLowerCase().startsWith('level 3')) {
             FirebaseCrashlytics.instance.log("On Level 3 Changed");
-            LoggerUtils.firebaseAnalytics(AnalyticsEvent.level_filter,
-                "On Level 3 Changed ${getUserName()}");
+            FirebaseAnalytics.instance.logEvent(name: 'level_filter', parameters: {"message": 'On Level 3 Changed ${getUserName()}'});
             channelFilter = filtersModel?.otherAttrs?.attr3 ?? [];
+            FirebaseAnalytics.instance.logEvent(name: 'selected_filter_channel', parameters: {"message": 'On Channel Changed Level 3 $channelFilter ${getUserName()}'});
           } else if (value.toLowerCase().startsWith('level 4')) {
             FirebaseCrashlytics.instance.log("On Level 4 Changed");
-            LoggerUtils.firebaseAnalytics(AnalyticsEvent.level_filter,
-                "On Level 4 Changed ${getUserName()}");
+            FirebaseAnalytics.instance.logEvent(name: 'level_filter', parameters: {"message": 'On Level 4 Changed ${getUserName()}'});
             channelFilter = filtersModel?.otherAttrs?.attr4 ?? [];
+            FirebaseAnalytics.instance.logEvent(name: 'selected_filter_channel', parameters: {"message": 'On Channel Changed Level 4 $channelFilter ${getUserName()}'});
           } else if (value.toLowerCase().startsWith('level 5')) {
             FirebaseCrashlytics.instance.log("On Level 5 Changed");
-            LoggerUtils.firebaseAnalytics(AnalyticsEvent.level_filter,
-                "On Level 5 Changed ${getUserName()}");
+            FirebaseAnalytics.instance.logEvent(name: 'level_filter', parameters: {"message": 'On Level 5 Changed ${getUserName()}'});
             channelFilter = filtersModel?.otherAttrs?.attr5 ?? [];
+            FirebaseAnalytics.instance.logEvent(name: 'selected_filter_channel', parameters: {"message": 'On Channel Changed Level 5 $channelFilter ${getUserName()}'});
           }
         });
       }
@@ -647,57 +651,57 @@ class HomeController extends GetxController {
       if (filtersModel != null) {
         if (value.toLowerCase().startsWith('level 1')) {
           FirebaseCrashlytics.instance.log("On Trends Level 1 Changed");
-          LoggerUtils.firebaseAnalytics(AnalyticsEvent.level_filter,
-              "On Trends Level 1 Changed ${getUserName()}");
+          FirebaseAnalytics.instance.logEvent(name: 'level_filter', parameters: {"message": 'On Trends Level 1 Changed ${getUserName()}'});
           channelTrendsFilter = filtersModel?.attr1 ?? [];
+          FirebaseAnalytics.instance.logEvent(name: 'selected_filter_trends_channel', parameters: {"message": 'On Trends Channel Changed Level 1 $channelTrendsFilter ${getUserName()}'});
         } else if (value.toLowerCase().startsWith('level 2')) {
           FirebaseCrashlytics.instance.log("On Trends Level 2 Changed");
-          LoggerUtils.firebaseAnalytics(AnalyticsEvent.level_filter,
-              "On Trends Level 2 Changed ${getUserName()}");
+          FirebaseAnalytics.instance.logEvent(name: 'level_filter', parameters: {"message": 'On Trends Level 2 Changed ${getUserName()}'});
           channelTrendsFilter = filtersModel?.attr2 ?? [];
+          FirebaseAnalytics.instance.logEvent(name: 'selected_filter_trends_channel', parameters: {"message": 'On Trends Channel Changed Level 2 $channelTrendsFilter ${getUserName()}'});
         } else if (value.toLowerCase().startsWith('level 3')) {
           FirebaseCrashlytics.instance.log("On Trends Level 3 Changed");
-          LoggerUtils.firebaseAnalytics(AnalyticsEvent.level_filter,
-              "On Trends Level 3 Changed ${getUserName()}");
+          FirebaseAnalytics.instance.logEvent(name: 'level_filter', parameters: {"message": 'On Trends Level 3 Changed ${getUserName()}'});
           channelTrendsFilter = filtersModel?.attr3 ?? [];
+          FirebaseAnalytics.instance.logEvent(name: 'selected_filter_trends_channel', parameters: {"message": 'On Trends Channel Changed Level 3 $channelTrendsFilter ${getUserName()}'});
         } else if (value.toLowerCase().startsWith('level 4')) {
           FirebaseCrashlytics.instance.log("On Trends Level 4 Changed");
-          LoggerUtils.firebaseAnalytics(AnalyticsEvent.level_filter,
-              "On Trends Level 4 Changed ${getUserName()}");
+          FirebaseAnalytics.instance.logEvent(name: 'level_filter', parameters: {"message": 'On Trends Level 4 Changed ${getUserName()}'});
           channelTrendsFilter = filtersModel?.attr4 ?? [];
+          FirebaseAnalytics.instance.logEvent(name: 'selected_filter_trends_channel', parameters: {"message": 'On Trends Channel Changed Level 4 $channelTrendsFilter ${getUserName()}'});
         } else if (value.toLowerCase().startsWith('level 5')) {
           FirebaseCrashlytics.instance.log("On Trends Level 5 Changed");
-          LoggerUtils.firebaseAnalytics(AnalyticsEvent.level_filter,
-              "On Trends Level 5 Changed ${getUserName()}");
+          FirebaseAnalytics.instance.logEvent(name: 'level_filter', parameters: {"message": 'On Trends Level 5 Changed ${getUserName()}'});
           channelTrendsFilter = filtersModel?.attr5 ?? [];
+          FirebaseAnalytics.instance.logEvent(name: 'selected_filter_trends_channel', parameters: {"message": 'On Trends Channel Changed Level 5 $channelTrendsFilter ${getUserName()}'});
         }
       } else {
         getAllFilters().then((v) {
           if (value.toLowerCase().startsWith('level 1')) {
             FirebaseCrashlytics.instance.log("On Trends Level 1 Changed");
-            LoggerUtils.firebaseAnalytics(AnalyticsEvent.level_filter,
-                "On Trends Level 1 Changed ${getUserName()}");
+            FirebaseAnalytics.instance.logEvent(name: 'level_filter', parameters: {"message": 'On Trends Level 1 Changed ${getUserName()}'});
             channelTrendsFilter = filtersModel?.attr1 ?? [];
+            FirebaseAnalytics.instance.logEvent(name: 'selected_filter_trends_channel', parameters: {"message": 'On Trends Channel Changed Level 1 $channelTrendsFilter ${getUserName()}'});
           } else if (value.toLowerCase().startsWith('level 2')) {
             FirebaseCrashlytics.instance.log("On Trends Level 2 Changed");
-            LoggerUtils.firebaseAnalytics(AnalyticsEvent.level_filter,
-                "On Trends Level 2 Changed ${getUserName()}");
+            FirebaseAnalytics.instance.logEvent(name: 'level_filter', parameters: {"message": 'On Trends Level 2 Changed ${getUserName()}'});
             channelTrendsFilter = filtersModel?.attr2 ?? [];
+            FirebaseAnalytics.instance.logEvent(name: 'selected_filter_trends_channel', parameters: {"message": 'On Trends Channel Changed Level 2 $channelTrendsFilter ${getUserName()}'});
           } else if (value.toLowerCase().startsWith('level 3')) {
             FirebaseCrashlytics.instance.log("On Trends Level 3 Changed");
-            LoggerUtils.firebaseAnalytics(AnalyticsEvent.level_filter,
-                "On Trends Level 3 Changed ${getUserName()}");
+            FirebaseAnalytics.instance.logEvent(name: 'level_filter', parameters: {"message": 'On Trends Level 3 Changed ${getUserName()}'});
             channelTrendsFilter = filtersModel?.attr3 ?? [];
+            FirebaseAnalytics.instance.logEvent(name: 'selected_filter_trends_channel', parameters: {"message": 'On Trends Channel Changed Level 3 $channelTrendsFilter ${getUserName()}'});
           } else if (value.toLowerCase().startsWith('level 4')) {
             FirebaseCrashlytics.instance.log("On Trends Level 4 Changed");
-            LoggerUtils.firebaseAnalytics(AnalyticsEvent.level_filter,
-                "On Trends Level 4 Changed ${getUserName()}");
+            FirebaseAnalytics.instance.logEvent(name: 'level_filter', parameters: {"message": 'On Trends Level 4 Changed ${getUserName()}'});
             channelTrendsFilter = filtersModel?.attr4 ?? [];
+            FirebaseAnalytics.instance.logEvent(name: 'selected_filter_trends_channel', parameters: {"message": 'On Trends Channel Changed Level 4 $channelTrendsFilter ${getUserName()}'});
           } else if (value.toLowerCase().startsWith('level 5')) {
             FirebaseCrashlytics.instance.log("On Trends Level 5 Changed");
-            LoggerUtils.firebaseAnalytics(AnalyticsEvent.level_filter,
-                "On Trends Level 5 Changed ${getUserName()}");
+            FirebaseAnalytics.instance.logEvent(name: 'level_filter', parameters: {"message": 'On Trends Level 5 Changed ${getUserName()}'});
             channelTrendsFilter = filtersModel?.attr5 ?? [];
+            FirebaseAnalytics.instance.logEvent(name: 'selected_filter_trends_channel', parameters: {"message": 'On Trends Channel Changed Level 5 $channelTrendsFilter ${getUserName()}'});
           }
         });
       }
@@ -706,57 +710,57 @@ class HomeController extends GetxController {
       if (filtersModel != null) {
         if (value.toLowerCase().startsWith('level 1')) {
           FirebaseCrashlytics.instance.log("On Trends Level 1 Changed");
-          LoggerUtils.firebaseAnalytics(AnalyticsEvent.level_filter,
-              "On Trends Level 1 Changed ${getUserName()}");
+          FirebaseAnalytics.instance.logEvent(name: 'level_filter', parameters: {"message": 'On Trends Level 1 Changed ${getUserName()}'});
           channelTrendsFilter = filtersModel?.otherAttrs?.attr1 ?? [];
+          FirebaseAnalytics.instance.logEvent(name: 'selected_filter_trends_channel', parameters: {"message": 'On Trends Channel Changed Level 1 $channelTrendsFilter ${getUserName()}'});
         } else if (value.toLowerCase().startsWith('level 2')) {
           FirebaseCrashlytics.instance.log("On Trends Level 2 Changed");
-          LoggerUtils.firebaseAnalytics(AnalyticsEvent.level_filter,
-              "On Trends Level 2 Changed ${getUserName()}");
+          FirebaseAnalytics.instance.logEvent(name: 'level_filter', parameters: {"message": 'On Trends Level 2 Changed ${getUserName()}'});
           channelTrendsFilter = filtersModel?.otherAttrs?.attr2 ?? [];
+          FirebaseAnalytics.instance.logEvent(name: 'selected_filter_trends_channel', parameters: {"message": 'On Trends Channel Changed Level 2 $channelTrendsFilter ${getUserName()}'});
         } else if (value.toLowerCase().startsWith('level 3')) {
           FirebaseCrashlytics.instance.log("On Trends Level 3 Changed");
-          LoggerUtils.firebaseAnalytics(AnalyticsEvent.level_filter,
-              "On Trends Level 3 Changed ${getUserName()}");
+          FirebaseAnalytics.instance.logEvent(name: 'level_filter', parameters: {"message": 'On Trends Level 3 Changed ${getUserName()}'});
           channelTrendsFilter = filtersModel?.otherAttrs?.attr3 ?? [];
+          FirebaseAnalytics.instance.logEvent(name: 'selected_filter_trends_channel', parameters: {"message": 'On Trends Channel Changed Level 3 $channelTrendsFilter ${getUserName()}'});
         } else if (value.toLowerCase().startsWith('level 4')) {
           FirebaseCrashlytics.instance.log("On Trends Level 4 Changed");
-          LoggerUtils.firebaseAnalytics(AnalyticsEvent.level_filter,
-              "On Trends Level 4 Changed ${getUserName()}");
+          FirebaseAnalytics.instance.logEvent(name: 'level_filter', parameters: {"message": 'On Trends Level 4 Changed ${getUserName()}'});
           channelTrendsFilter = filtersModel?.otherAttrs?.attr4 ?? [];
+          FirebaseAnalytics.instance.logEvent(name: 'selected_filter_trends_channel', parameters: {"message": 'On Trends Channel Changed Level 4 $channelTrendsFilter ${getUserName()}'});
         } else if (value.toLowerCase().startsWith('level 5')) {
           FirebaseCrashlytics.instance.log("On Trends Level 5 Changed");
-          LoggerUtils.firebaseAnalytics(AnalyticsEvent.level_filter,
-              "On Trends Level 5 Changed ${getUserName()}");
+          FirebaseAnalytics.instance.logEvent(name: 'level_filter', parameters: {"message": 'On Trends Level 5 Changed ${getUserName()}'});
           channelTrendsFilter = filtersModel?.otherAttrs?.attr5 ?? [];
+          FirebaseAnalytics.instance.logEvent(name: 'selected_filter_trends_channel', parameters: {"message": 'On Trends Channel Changed Level 5 $channelTrendsFilter ${getUserName()}'});
         }
       } else {
         getAllFilters().then((v) {
           if (value.toLowerCase().startsWith('level 1')) {
             FirebaseCrashlytics.instance.log("On Trends Level 1 Changed");
-            LoggerUtils.firebaseAnalytics(AnalyticsEvent.level_filter,
-                "On Trends Level 1 Changed ${getUserName()}");
+            FirebaseAnalytics.instance.logEvent(name: 'level_filter', parameters: {"message": 'On Trends Level 1 Changed ${getUserName()}'});
             channelTrendsFilter = filtersModel?.otherAttrs?.attr1 ?? [];
+            FirebaseAnalytics.instance.logEvent(name: 'selected_filter_trends_channel', parameters: {"message": 'On Trends Channel Changed Level 1 $channelTrendsFilter ${getUserName()}'});
           } else if (value.toLowerCase().startsWith('level 2')) {
             FirebaseCrashlytics.instance.log("On Trends Level 2 Changed");
-            LoggerUtils.firebaseAnalytics(AnalyticsEvent.level_filter,
-                "On Trends Level 2 Changed ${getUserName()}");
+            FirebaseAnalytics.instance.logEvent(name: 'level_filter', parameters: {"message": 'On Trends Level 2 Changed ${getUserName()}'});
             channelTrendsFilter = filtersModel?.otherAttrs?.attr2 ?? [];
+            FirebaseAnalytics.instance.logEvent(name: 'selected_filter_trends_channel', parameters: {"message": 'On Trends Channel Changed Level 2 $channelTrendsFilter ${getUserName()}'});
           } else if (value.toLowerCase().startsWith('level 3')) {
             FirebaseCrashlytics.instance.log("On Trends Level 3 Changed");
-            LoggerUtils.firebaseAnalytics(AnalyticsEvent.level_filter,
-                "On Trends Level 3 Changed ${getUserName()}");
+            FirebaseAnalytics.instance.logEvent(name: 'level_filter', parameters: {"message": 'On Trends Level 3 Changed ${getUserName()}'});
             channelTrendsFilter = filtersModel?.otherAttrs?.attr3 ?? [];
+            FirebaseAnalytics.instance.logEvent(name: 'selected_filter_trends_channel', parameters: {"message": 'On Trends Channel Changed Level 3 $channelTrendsFilter ${getUserName()}'});
           } else if (value.toLowerCase().startsWith('level 4')) {
             FirebaseCrashlytics.instance.log("On Trends Level 4 Changed");
-            LoggerUtils.firebaseAnalytics(AnalyticsEvent.level_filter,
-                "On Trends Level 4 Changed ${getUserName()}");
+            FirebaseAnalytics.instance.logEvent(name: 'level_filter', parameters: {"message": 'On Trends Level 4 Changed ${getUserName()}'});
             channelTrendsFilter = filtersModel?.otherAttrs?.attr4 ?? [];
+            FirebaseAnalytics.instance.logEvent(name: 'selected_filter_trends_channel', parameters: {"message": 'On Trends Channel Changed Level 4 $channelTrendsFilter ${getUserName()}'});
           } else if (value.toLowerCase().startsWith('level 5')) {
             FirebaseCrashlytics.instance.log("On Trends Level 5 Changed");
-            LoggerUtils.firebaseAnalytics(AnalyticsEvent.level_filter,
-                "On Trends Level 5 Changed ${getUserName()}");
+            FirebaseAnalytics.instance.logEvent(name: 'level_filter', parameters: {"message": 'On Trends Level 5 Changed ${getUserName()}'});
             channelTrendsFilter = filtersModel?.otherAttrs?.attr5 ?? [];
+            FirebaseAnalytics.instance.logEvent(name: 'selected_filter_trends_channel', parameters: {"message": 'On Trends Channel Changed Level 5 $channelTrendsFilter ${getUserName()}'});
           }
         });
       }
@@ -766,8 +770,7 @@ class HomeController extends GetxController {
 
   void onChangeCategoryValue(String value, String cat, String tabType) {
     FirebaseCrashlytics.instance.log("On Changed Category Value");
-    LoggerUtils.firebaseAnalytics(AnalyticsEvent.deep_dive_selected_category,
-        "On Changed Category Value ${getUserName()}");
+    FirebaseAnalytics.instance.logEvent(name: 'deep_dive_selected_category', parameters: {"message": 'On Changed Category Value  ${getUserName()}'});
     if (_selectedTempCategory.toLowerCase() != cat.toLowerCase()) {
       _selectedTempCategory = cat;
       if (tabType == SummaryTypes.retailing.type) {
@@ -837,12 +840,10 @@ class HomeController extends GetxController {
 
   void onChangeFiltersAll({String type = 'branch', required String tabType}) {
     FirebaseCrashlytics.instance.log("On Filter Changed");
-    LoggerUtils.firebaseAnalytics(AnalyticsEvent.deep_dive_selected_all,
-        "On Filter Changed ${getUserName()}");
+    FirebaseAnalytics.instance.logEvent(name: 'deep_dive_selected_all', parameters: {"message": 'On Filter Changed ${getUserName()}'});
     if (type == 'branch') {
       FirebaseCrashlytics.instance.log("On Branch Filter Changed");
-      LoggerUtils.firebaseAnalytics(AnalyticsEvent.deep_dive_selected_all,
-          "On Branch Filter Changed ${getUserName()}");
+      FirebaseAnalytics.instance.logEvent(name: 'deep_dive_selected_all', parameters: {"message": 'On Branch Filter Changed ${getUserName()}'});
       if (eq(selectedMultiFilters, branchFilter)) {
         selectedMultiFilters.clear();
       } else {
@@ -851,8 +852,7 @@ class HomeController extends GetxController {
       }
     } else if (type == 'category') {
       FirebaseCrashlytics.instance.log("On Category Filter Changed");
-      LoggerUtils.firebaseAnalytics(AnalyticsEvent.deep_dive_selected_all,
-          "On Category Filter Changed ${getUserName()}");
+      FirebaseAnalytics.instance.logEvent(name: 'deep_dive_selected_all', parameters: {"message": 'On Category Filter Changed ${getUserName()}'});
       if (tabType == SummaryTypes.retailing.type) {
         //retaling tab
         if (eq(selectedRetailingCategoryFilters, categoryFilters)) {
@@ -893,8 +893,7 @@ class HomeController extends GetxController {
 
   void onChangeChannelValue(String value, String tabType, String channel) {
     FirebaseCrashlytics.instance.log("On Changed Channel Value");
-    LoggerUtils.firebaseAnalytics(AnalyticsEvent.deep_dive_selected_channel,
-        "On Channel Filter Changed ${getUserName()}");
+    FirebaseAnalytics.instance.logEvent(name: 'deep_dive_selected_channel', parameters: {"message": 'On Channel Filter Changed ${getUserName()}'});
     if (tabType == SummaryTypes.retailing.type) {
       if (_selectedTempRetailingChannel != channel) {
         _selectedTempRetailingChannel = channel;
@@ -944,8 +943,7 @@ class HomeController extends GetxController {
   void onChangeTrendsChannelValue(String value, String tabType,
       {bool isChannel = true}) {
     FirebaseCrashlytics.instance.log("On Changed Trends Value");
-    LoggerUtils.firebaseAnalytics(AnalyticsEvent.deep_dive_selected_trends,
-        "On Trends Filter Changed ${getUserName()}");
+    FirebaseAnalytics.instance.logEvent(name: 'deep_dive_selected_trends', parameters: {"message": 'On Trends Filter Changed ${getUserName()}'});
     if (isChannel) {
       _selectedTrendsGeoValue = '';
       _selectedTrendsCategoryValue = '';
@@ -972,8 +970,7 @@ class HomeController extends GetxController {
 
   void onChangeChannelAllSelect(String tabType, String channel) {
     FirebaseCrashlytics.instance.log("On Changed Channel All Select");
-    LoggerUtils.firebaseAnalytics(AnalyticsEvent.deep_dive_selected_all,
-        "On Changed Channel All Select ${getUserName()}");
+    FirebaseAnalytics.instance.logEvent(name: 'deep_dive_selected_all', parameters: {"message": 'On Changed Channel All Select ${getUserName()}'});
     if (tabType == SummaryTypes.retailing.type) {
       if (_selectedTempRetailingChannel != channel) {
         _selectedTempRetailingChannel = channel;
@@ -1025,8 +1022,7 @@ class HomeController extends GetxController {
 
   void onTrendsFilterSelect(String value, String tabType) {
     FirebaseCrashlytics.instance.log("On Trends Filter Select");
-    LoggerUtils.firebaseAnalytics(AnalyticsEvent.deep_dive_selected_trends,
-        "On Trends Filter Changed ${getUserName()}");
+    FirebaseAnalytics.instance.logEvent(name: 'deep_dive_selected_trends', parameters: {"message": 'On Trends Filter Changed ${getUserName()}'});
     if (tabType == SummaryTypes.retailing.type) {
       _selectedTrends = value;
     } else if (tabType == SummaryTypes.coverage.type) {
@@ -1079,8 +1075,7 @@ class HomeController extends GetxController {
 
   Future<void> getInitValues({bool getOnlyShared = false}) async {
     FirebaseCrashlytics.instance.log("Init Values set");
-    LoggerUtils.firebaseAnalytics(
-        AnalyticsEvent.logs, "Init values set ${getUserName()}");
+    FirebaseAnalytics.instance.logEvent(name: 'logs', parameters: {"message": 'Init values set ${getUserName()}'});
     // getPersonalizedData();
     if (getMonth().trim().isNotEmpty) {
       _selectedMonth = getMonth();
@@ -1139,22 +1134,27 @@ class HomeController extends GetxController {
               if (_savedFilters.containsKey('allIndia')) {
                 selectedRetailingMultiAllIndia =
                     List<String>.from(_savedFilters['allIndia'].map((v) => v));
+                FirebaseAnalytics.instance.logEvent(name: 'deep_dive_retailing_allIndia', parameters: {"message": 'Selected Multi Filter $selectedRetailingMultiAllIndia ${getUserName()}'});
               }
               if (_savedFilters.containsKey('division')) {
                 selectedRetailingMultiDivisions =
                     List<String>.from(_savedFilters['division'].map((v) => v));
+                FirebaseAnalytics.instance.logEvent(name: 'deep_dive_retailing_division', parameters: {"message": 'Selected Multi Filter $selectedRetailingMultiDivisions ${getUserName()}'});
               }
               if (_savedFilters.containsKey('branches')) {
                 selectedRetailingMultiBranches =
                     List<String>.from(_savedFilters['branches'].map((v) => v));
+                FirebaseAnalytics.instance.logEvent(name: 'deep_dive_retailing_branches', parameters: {"message": 'Selected Multi Filter $selectedRetailingMultiBranches ${getUserName()}'});
               }
               if (_savedFilters.containsKey('cluster')) {
                 selectedRetailingMultiClusters =
                     List<String>.from(_savedFilters['cluster'].map((v) => v));
+                FirebaseAnalytics.instance.logEvent(name: 'deep_dive_retailing_cluster', parameters: {"message": 'Selected Multi Filter $selectedRetailingMultiClusters ${getUserName()}'});
               }
               if (_savedFilters.containsKey('sites')) {
                 selectedRetailingMultiSites =
                     List<String>.from(_savedFilters['sites'].map((v) => v));
+                FirebaseAnalytics.instance.logEvent(name: 'deep_dive_retailing_sites', parameters: {"message": 'Selected Multi Filter $selectedRetailingMultiSites ${getUserName()}'});
               }
             }
 
@@ -1169,6 +1169,7 @@ class HomeController extends GetxController {
               if (_savedFilters.containsKey('category')) {
                 selectedRetailingCategoryFilters =
                     List<String>.from(_savedFilters['category'].map((v) => v));
+                FirebaseAnalytics.instance.logEvent(name: 'deep_dive_retailing_category', parameters: {"message": 'Selected Multi Filter $selectedRetailingCategoryFilters ${getUserName()}'});
               }
               if (_savedFilters.containsKey('selected')) {
                 _selectedCategory = _savedFilters['selected'];
@@ -1180,11 +1181,11 @@ class HomeController extends GetxController {
             if (channelMapDecoded.isNotEmpty) {
               Map<String, dynamic> _savedFilters = channelMapDecoded;
               if (_savedFilters.containsKey('channel')) {
-                FirebaseCrashlytics.instance
-                    .log("Channel saved $_savedFilters");
+                FirebaseCrashlytics.instance.log("Channel saved $_savedFilters");
                 debugPrint('====>Channel saved $_savedFilters');
                 selectedRetailingChannelFilter =
                     List<String>.from(_savedFilters['channel'].map((v) => v));
+                FirebaseAnalytics.instance.logEvent(name: 'deep_dive_retailing_channel', parameters: {"message": 'Selected Multi Filter $selectedRetailingChannelFilter ${getUserName()}'});
               }
               if (_savedFilters.containsKey('selected')) {
                 _selectedRetailingChannel = _savedFilters['selected'];
@@ -1236,22 +1237,27 @@ class HomeController extends GetxController {
               if (_savedFilters.containsKey('allIndia')) {
                 selectedCoverageMultiAllIndia =
                     List<String>.from(_savedFilters['allIndia'].map((v) => v));
+                FirebaseAnalytics.instance.logEvent(name: 'deep_dive_coverage_allIndia', parameters: {"message": 'Selected Multi Filter $selectedCoverageMultiAllIndia ${getUserName()}'});
               }
               if (_savedFilters.containsKey('division')) {
                 selectedCoverageMultiDivisions =
                     List<String>.from(_savedFilters['division'].map((v) => v));
+                FirebaseAnalytics.instance.logEvent(name: 'deep_dive_coverage_division', parameters: {"message": 'Selected Multi Filter $selectedCoverageMultiDivisions ${getUserName()}'});
               }
               if (_savedFilters.containsKey('branches')) {
                 selectedCoverageMultiBranches =
                     List<String>.from(_savedFilters['branches'].map((v) => v));
+                FirebaseAnalytics.instance.logEvent(name: 'deep_dive_coverage_branches', parameters: {"message": 'Selected Multi Filter $selectedCoverageMultiBranches ${getUserName()}'});
               }
               if (_savedFilters.containsKey('cluster')) {
                 selectedCoverageMultiClusters =
                     List<String>.from(_savedFilters['cluster'].map((v) => v));
+                FirebaseAnalytics.instance.logEvent(name: 'deep_dive_coverage_cluster', parameters: {"message": 'Selected Multi Filter $selectedCoverageMultiClusters ${getUserName()}'});
               }
               if (_savedFilters.containsKey('sites')) {
                 selectedCoverageMultiSites =
                     List<String>.from(_savedFilters['sites'].map((v) => v));
+                FirebaseAnalytics.instance.logEvent(name: 'deep_dive_coverage_sites', parameters: {"message": 'Selected Multi Filter $selectedCoverageMultiSites ${getUserName()}'});
               }
             }
 
@@ -1284,6 +1290,7 @@ class HomeController extends GetxController {
                 debugPrint('====>Channel saved $_savedFilters');
                 selectedCoverageChannelFilter =
                     List<String>.from(_savedFilters['channel'].map((v) => v));
+                FirebaseAnalytics.instance.logEvent(name: 'deep_dive_coverage_channel', parameters: {"message": 'Selected Multi Filter $selectedCoverageChannelFilter ${getUserName()}'});
               }
               if (_savedFilters.containsKey('selected')) {
                 _selectedCoverageChannel = _savedFilters['selected'];
@@ -1337,22 +1344,27 @@ class HomeController extends GetxController {
               if (_savedFilters.containsKey('allIndia')) {
                 selectedGPMultiAllIndia =
                     List<String>.from(_savedFilters['allIndia'].map((v) => v));
+                FirebaseAnalytics.instance.logEvent(name: 'deep_dive_gp_allIndia', parameters: {"message": 'Selected Multi Filter $selectedGPMultiAllIndia ${getUserName()}'});
               }
               if (_savedFilters.containsKey('division')) {
                 selectedGPMultiDivisions =
                     List<String>.from(_savedFilters['division'].map((v) => v));
+                FirebaseAnalytics.instance.logEvent(name: 'deep_dive_gp_division', parameters: {"message": 'Selected Multi Filter $selectedGPMultiDivisions ${getUserName()}'});
               }
               if (_savedFilters.containsKey('branches')) {
                 selectedGPMultiBranches =
                     List<String>.from(_savedFilters['branches'].map((v) => v));
+                FirebaseAnalytics.instance.logEvent(name: 'deep_dive_gp_branches', parameters: {"message": 'Selected Multi Filter $selectedGPMultiBranches ${getUserName()}'});
               }
               if (_savedFilters.containsKey('cluster')) {
                 selectedGPMultiClusters =
                     List<String>.from(_savedFilters['cluster'].map((v) => v));
+                FirebaseAnalytics.instance.logEvent(name: 'deep_dive_gp_cluster', parameters: {"message": 'Selected Multi Filter $selectedGPMultiClusters ${getUserName()}'});
               }
               if (_savedFilters.containsKey('sites')) {
                 selectedGPMultiSites =
                     List<String>.from(_savedFilters['sites'].map((v) => v));
+                FirebaseAnalytics.instance.logEvent(name: 'deep_dive_gp_sites', parameters: {"message": 'Selected Multi Filter $selectedGPMultiSites ${getUserName()}'});
               }
             }
 
@@ -1365,6 +1377,7 @@ class HomeController extends GetxController {
               if (_savedFilters.containsKey('category')) {
                 selectedGPCategoryFilters =
                     List<String>.from(_savedFilters['category'].map((v) => v));
+                FirebaseAnalytics.instance.logEvent(name: 'deep_dive_gp_category', parameters: {"message": 'Selected Multi Filter $selectedGPCategoryFilters ${getUserName()}'});
               }
               if (_savedFilters.containsKey('selected')) {
                 _selectedGPCategory = _savedFilters['selected'];
@@ -1378,6 +1391,7 @@ class HomeController extends GetxController {
                 debugPrint('====>Channel saved $_savedFilters');
                 selectedGPChannelFilter =
                     List<String>.from(_savedFilters['channel'].map((v) => v));
+                FirebaseAnalytics.instance.logEvent(name: 'deep_dive_gp_channel', parameters: {"message": 'Selected Multi Filter $selectedGPChannelFilter ${getUserName()}'});
               }
               if (_savedFilters.containsKey('selected')) {
                 _selectedGPChannel = _savedFilters['selected'];
@@ -1429,22 +1443,27 @@ class HomeController extends GetxController {
               if (_savedFilters.containsKey('allIndia')) {
                 selectedFBMultiAllIndia =
                     List<String>.from(_savedFilters['allIndia'].map((v) => v));
+                FirebaseAnalytics.instance.logEvent(name: 'deep_dive_fb_allIndia', parameters: {"message": 'Selected Multi Filter $selectedFBMultiAllIndia ${getUserName()}'});
               }
               if (_savedFilters.containsKey('division')) {
                 selectedFBMultiDivisions =
                     List<String>.from(_savedFilters['division'].map((v) => v));
+                FirebaseAnalytics.instance.logEvent(name: 'deep_dive_fb_division', parameters: {"message": 'Selected Multi Filter $selectedFBMultiDivisions ${getUserName()}'});
               }
               if (_savedFilters.containsKey('branches')) {
                 selectedFBMultiBranches =
                     List<String>.from(_savedFilters['branches'].map((v) => v));
+                FirebaseAnalytics.instance.logEvent(name: 'deep_dive_fb_branches', parameters: {"message": 'Selected Multi Filter $selectedFBMultiBranches ${getUserName()}'});
               }
               if (_savedFilters.containsKey('cluster')) {
                 selectedFBMultiClusters =
                     List<String>.from(_savedFilters['cluster'].map((v) => v));
+                FirebaseAnalytics.instance.logEvent(name: 'deep_dive_fb_cluster', parameters: {"message": 'Selected Multi Filter $selectedFBMultiClusters ${getUserName()}'});
               }
               if (_savedFilters.containsKey('sites')) {
                 selectedFBMultiSites =
                     List<String>.from(_savedFilters['sites'].map((v) => v));
+                FirebaseAnalytics.instance.logEvent(name: 'deep_dive_fb_sites', parameters: {"message": 'Selected Multi Filter $selectedFBMultiSites ${getUserName()}'});
               }
             }
 
@@ -1457,6 +1476,7 @@ class HomeController extends GetxController {
               if (_savedFilters.containsKey('category')) {
                 selectedFBCategoryFilters =
                     List<String>.from(_savedFilters['category'].map((v) => v));
+                FirebaseAnalytics.instance.logEvent(name: 'deep_dive_fb_category', parameters: {"message": 'Selected Multi Filter $selectedFBCategoryFilters ${getUserName()}'});
               }
               if (_savedFilters.containsKey('selected')) {
                 _selectedFBCategory = _savedFilters['selected'];
@@ -1470,6 +1490,7 @@ class HomeController extends GetxController {
                 debugPrint('====>Channel saved $_savedFilters');
                 selectedFBChannelFilter =
                     List<String>.from(_savedFilters['channel'].map((v) => v));
+                FirebaseAnalytics.instance.logEvent(name: 'deep_dive_fb_channel', parameters: {"message": 'Selected Multi Filter $selectedFBChannelFilter ${getUserName()}'});
               }
               if (_savedFilters.containsKey('selected')) {
                 _selectedFBChannel = _savedFilters['selected'];
@@ -1669,8 +1690,7 @@ class HomeController extends GetxController {
   Future<void> onChangeMonthFilter(String value,
       {required bool isLoadRetailing, required bool isSummary}) async {
     debugPrint('====>Selected Month $value');
-    LoggerUtils.firebaseAnalytics(AnalyticsEvent.selected_month,
-        "Selected Month Changed ${getUserName()}");
+    FirebaseAnalytics.instance.logEvent(name: 'selected_month', parameters: {"message": 'Selected Month Changed ${getUserName()}'});
     if (selectedTempMonth != null &&
         value.trim().toLowerCase() == selectedTempMonth!.trim().toLowerCase()) {
       // _selectedTempMonth = null;
@@ -1693,8 +1713,7 @@ class HomeController extends GetxController {
   }
 
   void onChangeGeo(String geo, String geoValue) {
-    LoggerUtils.firebaseAnalytics(AnalyticsEvent.selected_filter,
-        "Selected Geo Changed ${getUserName()}");
+    FirebaseAnalytics.instance.logEvent(name: 'selected_filter', parameters: {"message": 'Selected Geo Changed ${getUserName()}'});
     _selectedGeo = geo;
     _selectedGeoValue = geoValue;
     saveGeo(geo);
@@ -1706,10 +1725,10 @@ class HomeController extends GetxController {
       {bool isLoadRetailing = false,
       String tabType = 'Retailing',
       bool isSummary = false}) async {
-    LoggerUtils.firebaseAnalytics(
-        AnalyticsEvent.data_refreash, "Data Refreshing ${getUserName()}");
+    FirebaseAnalytics.instance.logEvent(name: 'data_refreash', parameters: {"message": 'Data Refreshing ${getUserName()}'});
     _selectedMonth = _selectedTempMonth;
     setMonth(_selectedTempMonth ?? '');
+    FirebaseAnalytics.instance.logEvent(name: 'data_refreash', parameters: {"message": 'Selected Month $_selectedTempMonth ${getUserName()}'});
     if (isSummary) {
       await getSummaryData();
     } else {
@@ -1749,8 +1768,7 @@ class HomeController extends GetxController {
   }
 
   void onMultiGeoChange(String value) {
-    LoggerUtils.firebaseAnalytics(AnalyticsEvent.deep_dive_selected_geo,
-        "Selected Multi Geo Changed ${getUserName()}");
+    FirebaseAnalytics.instance.logEvent(name: 'deep_dive_selected_geo', parameters: {"message": 'Selected Multi Geo Changed ${getUserName()}'});
     _selectedMultiGeo = value;
     update();
   }
@@ -1758,8 +1776,7 @@ class HomeController extends GetxController {
   void onGeoChange(String value, {bool isMultiSelect = false}) {
     if (isMultiSelect) {
       //multiFilters
-      LoggerUtils.firebaseAnalytics(AnalyticsEvent.deep_dive_selected_geo,
-          "Selected Multi Geo Changed ${getUserName()}");
+      FirebaseAnalytics.instance.logEvent(name: 'deep_dive_selected_geo', parameters: {"message": 'Selected Multi Geo Changed ${getUserName()}'});
       selectedMultiFilters.clear();
       if (filtersModel != null) {
         if (value.startsWith('All India')) {
@@ -1831,8 +1848,7 @@ class HomeController extends GetxController {
   }
 
   void onChangeGeoTrends(String value) {
-    LoggerUtils.firebaseAnalytics(
-        AnalyticsEvent.logs, "Selected Geo Changed ${getUserName()}");
+    FirebaseAnalytics.instance.logEvent(name: 'logs', parameters: {"message": 'Selected Geo Changed ${getUserName()}'});
     _selectedTrendsGeo = value;
 
     _selectedTrends = value;
@@ -1846,8 +1862,7 @@ class HomeController extends GetxController {
   }
 
   void onTrendsGeoChange(String value) {
-    LoggerUtils.firebaseAnalytics(
-        AnalyticsEvent.logs, "Selected Trends Geo Changed ${getUserName()}");
+    FirebaseAnalytics.instance.logEvent(name: 'logs', parameters: {"message": 'Selected Trends Geo Changed ${getUserName()}'});
     _selectedTrendsChannelValue = '';
     _gpTrendsValue = '';
     if (filtersModel != null) {
@@ -1888,14 +1903,14 @@ class HomeController extends GetxController {
     bool isSummary = false,
   }) async {
     //Apply geo filter
-    LoggerUtils.firebaseAnalytics(
-        AnalyticsEvent.logs, "Apply Filters click ${getUserName()}");
+    FirebaseAnalytics.instance.logEvent(name: 'logs', parameters: {"message": 'Apply Filters click ${getUserName()}'});
     debugPrint(
         '===>selected Filter $selectedTempGeo  -- $selectedTempGeoValue');
     _selectedGeo = _selectedTempGeo;
     _selectedGeoValue = _selectedTempGeoValue;
     if (_selectedTempGeo.toLowerCase() == 'All India'.toLowerCase()) {
       debugPrint('==>Applied Filter is All India');
+      FirebaseAnalytics.instance.logEvent(name: 'logs', parameters: {"message": 'Applied Filter is All India ${getUserName()}'});
       _isRetailingDeepDiveInd = false;
     } else {
       debugPrint('==>Applied Filter is not All India');
@@ -1905,6 +1920,7 @@ class HomeController extends GetxController {
 
     saveGeo(_selectedTempGeo);
     saveGeoValue(_selectedTempGeoValue);
+    FirebaseAnalytics.instance.logEvent(name: 'logs', parameters: {"message": 'Applied Filter is $_selectedTempGeoValue ${getUserName()}'});
     debugPrint('===>Trends Value:$_selectedTrendsGeoValue');
     if (SummaryTypes.retailing.type == tabType) {
       if (_selectedTrendsGeoValue.trim().isNotEmpty) {
@@ -2003,8 +2019,7 @@ class HomeController extends GetxController {
   }
 
   void reloadAllDeepDive() {
-    LoggerUtils.firebaseAnalytics(
-        AnalyticsEvent.logs, "Data Reloaded ${getUserName()}");
+    FirebaseAnalytics.instance.logEvent(name: 'logs', parameters: {"message": 'Data Reloaded ${getUserName()}'});
     //retailing screen data
     getRetailingData();
     getRetailingData(type: 'category', name: 'category');
@@ -2034,8 +2049,7 @@ class HomeController extends GetxController {
     bool isTrendsFilter = false,
     required String subType,
   }) async {
-    LoggerUtils.firebaseAnalytics(
-        AnalyticsEvent.logs, "Apply Filters ${getUserName()}");
+    FirebaseAnalytics.instance.logEvent(name: 'logs', parameters: {"message": 'Apply Filters ${getUserName()}'});
     if (SummaryTypes.retailing.type == tabType) {
       //retailing screen data
       if (subType == 'geo') {
@@ -2290,8 +2304,7 @@ class HomeController extends GetxController {
   }
 
   void onChangeTrendsFilters(String value, String tabType) {
-    LoggerUtils.firebaseAnalytics(
-        AnalyticsEvent.logs, "Changed in Trends Filter ${getUserName()}");
+    FirebaseAnalytics.instance.logEvent(name: 'logs', parameters: {"message": 'Changed in Trends Filter ${getUserName()}'});
     _selectedTrendsGeoValue = value;
     _selectedTrendsCategoryValue = '';
     _selectedTrendsChannelValue = '';
@@ -2311,8 +2324,7 @@ class HomeController extends GetxController {
 
   void clearMultiFilter(String name, String type,
       {String tabType = 'Retailing'}) {
-    LoggerUtils.firebaseAnalytics(
-        AnalyticsEvent.logs, "Clear Multi Filter ${getUserName()}");
+    FirebaseAnalytics.instance.logEvent(name: 'logs', parameters: {"message": 'Clear Multi Filter ${getUserName()}'});
     selectedRetailingMultiAllIndia.clear();
     selectedRetailingMultiDivisions.clear();
     selectedCoverageMultiDivisions.clear();
@@ -2336,8 +2348,7 @@ class HomeController extends GetxController {
 
   void onChangeMultiFilters(String value,
       {String tabType = 'retailing', required String selectedMultiGeoFilter}) {
-    LoggerUtils.firebaseAnalytics(
-        AnalyticsEvent.logs, "On Changed Multi Filter ${getUserName()}");
+    FirebaseAnalytics.instance.logEvent(name: 'logs', parameters: {"message": 'On Changed Multi Filter ${getUserName()}'});
     //
 
     if (selectedMultiGeoFilter == 'All India') {
@@ -2656,8 +2667,7 @@ class HomeController extends GetxController {
   List<Map<String, dynamic>> geoFilters = [];
 
   Future<ResponseModel> getSummaryData() async {
-    LoggerUtils.firebaseAnalytics(
-        AnalyticsEvent.logs, "Get Summary Data ${getUserName()}");
+    FirebaseAnalytics.instance.logEvent(name: 'logs', parameters: {"message": 'Get Summary Data ${getUserName()}'});
     _isSummaryPageLoading = true;
     summaryData.clear();
     update();
@@ -2701,8 +2711,7 @@ class HomeController extends GetxController {
   }
 
   Future<ResponseModel> getMonthFilters({String year = '2023'}) async {
-    LoggerUtils.firebaseAnalytics(
-        AnalyticsEvent.logs, "Month Data ${getUserName()}");
+    FirebaseAnalytics.instance.logEvent(name: 'logs', parameters: {"message": 'Month Data ${getUserName()}'});
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _isFilterLoading = true;
       update();
@@ -2750,8 +2759,7 @@ class HomeController extends GetxController {
     var stopWatch = Stopwatch();
     stopWatch.reset();
     stopWatch.start();
-    // LoggerUtils.firebaseAnalytics(
-    //     AnalyticsEvent.retailing, "Retailing Data Reloaded ${getUserName()}");
+    FirebaseAnalytics.instance.logEvent(name: 'retailing', parameters: {"message": 'Retailing Data Reloaded ${getUserName()}'});
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (name.startsWith('trends')) {
         _isRetailingTrendsLoading = true;
@@ -3148,8 +3156,7 @@ class HomeController extends GetxController {
     var stopWatch = Stopwatch();
     stopWatch.reset();
     stopWatch.start();
-    LoggerUtils.firebaseAnalytics(
-        AnalyticsEvent.coverage, "Coverage Data Reloaded ${getUserName()}");
+    FirebaseAnalytics.instance.logEvent(name: 'coverage', parameters: {"message": 'Coverage Data Reloaded ${getUserName()}'});
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (name.startsWith('trends')) {
         Logger().log(Level.debug,
@@ -3446,8 +3453,7 @@ class HomeController extends GetxController {
     var stopWatch = Stopwatch();
     stopWatch.reset();
     stopWatch.start();
-    LoggerUtils.firebaseAnalytics(
-        AnalyticsEvent.gp, "GP Data Reloaded ${getUserName()}");
+    FirebaseAnalytics.instance.logEvent(name: 'gp', parameters: {"message": 'GP Data Reloaded ${getUserName()}'});
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (name.startsWith('trends')) {
         Logger().log(Level.debug,
@@ -3768,8 +3774,7 @@ class HomeController extends GetxController {
     var stopWatch = Stopwatch();
     stopWatch.reset();
     stopWatch.start();
-    LoggerUtils.firebaseAnalytics(
-        AnalyticsEvent.fb, "FB Data Reloaded ${getUserName()}");
+    FirebaseAnalytics.instance.logEvent(name: 'fb', parameters: {"message": 'FB Data Reloaded ${getUserName()}'});
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (name.startsWith('trends')) {
         Logger().log(Level.debug,
@@ -4045,8 +4050,7 @@ class HomeController extends GetxController {
   }
 
   Future<ResponseModel> postPersonaSelected() async {
-    LoggerUtils.firebaseAnalytics(
-        AnalyticsEvent.logs, "Persona Selected  ${getUserName()}");
+    FirebaseAnalytics.instance.logEvent(name: 'logs', parameters: {"message": 'Persona Selected ${getUserName()}'});
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _isFilterLoading = true;
       update();
@@ -4097,8 +4101,7 @@ class HomeController extends GetxController {
       {required String userName,
       required String rating,
       required String feedback}) async {
-    LoggerUtils.firebaseAnalytics(
-        AnalyticsEvent.logs, "Feed Back ${getUserName()}");
+    FirebaseAnalytics.instance.logEvent(name: 'logs', parameters: {"message": 'Feed Back ${getUserName()}'});
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _isFilterLoading = true;
       update();
@@ -4154,8 +4157,7 @@ class HomeController extends GetxController {
       {required PickedFile file,
       required String title,
       required String comment}) async {
-    LoggerUtils.firebaseAnalytics(
-        AnalyticsEvent.logs, "Bugs Reported ${getUserName()}");
+    FirebaseAnalytics.instance.logEvent(name: 'logs', parameters: {"message": 'Bugs Reported ${getUserName()}'});
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _isFilterLoading = true;
       update();

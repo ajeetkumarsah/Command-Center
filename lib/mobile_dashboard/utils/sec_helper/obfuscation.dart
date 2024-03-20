@@ -26,7 +26,4 @@ class Obfuscation {
 
     return decryptedString;
   }
-
-
-
 }

@@ -1,4 +1,5 @@
 import 'package:command_centre/mobile_dashboard/services/analytics_utils.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -42,8 +43,11 @@ class _CategoryTrendsFilterBottomsheetState
         if (widget.tabType == SummaryTypes.retailing.type) {
           //
         }
+
         onFilterChange(ctlr.selectedTrendsCategory);
+
         onFilterChangeValue(ctlr.selectedTrendsCategoryValue);
+        FirebaseAnalytics.instance.logEvent(name: 'data_refreash', parameters: {"message": 'Selected Trends Category ${ctlr.selectedTrendsCategoryValue} ${ctlr.getUserName()}'});
         setState(() {});
       });
     }
@@ -186,8 +190,7 @@ class _CategoryTrendsFilterBottomsheetState
                     ),
                     TextButton(
                       onPressed: () {
-                        LoggerUtils.firebaseAnalytics(
-                            AnalyticsEvent.deep_dive_selected_category, "Added Selected Category ${ctlr.getUserName()}");
+                        FirebaseAnalytics.instance.logEvent(name: 'deep_dive_selected_category', parameters: {"message": 'Added Selected Category ${ctlr.getUserName()}'});
                         ctlr.onTrendsFilterSelect(widget.type, widget.tabType);
                         ctlr.onChangeTrendsChannelValue(
                             _selectedTrendsCategoryValue, widget.tabType,
