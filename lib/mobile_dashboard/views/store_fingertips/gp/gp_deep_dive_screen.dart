@@ -1,95 +1,16 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:inner_shadow_widget/inner_shadow_widget.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
-import 'package:command_centre/mobile_dashboard/utils/png_files.dart';
-import 'package:command_centre/mobile_dashboard/utils/svg_files.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
 import 'package:command_centre/mobile_dashboard/controllers/store_controller.dart';
-import 'package:command_centre/mobile_dashboard/views/store_fingertips/fb/fb_deep_dive.dart';
-import 'package:command_centre/mobile_dashboard/views/store_fingertips/widgets/category_bottomsheet.dart';
 
 class GPDeepDiveScreen extends StatelessWidget {
   const GPDeepDiveScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    List<StaticGraph> listData = [
-      StaticGraph(xValue: 0, yValue: 9),
-      StaticGraph(xValue: 1, yValue: 8),
-      StaticGraph(xValue: 2, yValue: 7),
-      StaticGraph(xValue: 3, yValue: 3),
-      StaticGraph(xValue: 4, yValue: 10),
-      StaticGraph(xValue: 5, yValue: 7),
-      StaticGraph(xValue: 6, yValue: 6),
-      StaticGraph(xValue: 7, yValue: 3),
-      StaticGraph(xValue: 8, yValue: 8),
-      StaticGraph(xValue: 9, yValue: 9),
-      StaticGraph(xValue: 10, yValue: 2),
-      StaticGraph(xValue: 11, yValue: 1),
-    ];
-    List<StaticGraph> listData1 = [
-      StaticGraph(xValue: 0, yValue: 19),
-      StaticGraph(xValue: 1, yValue: 18),
-      StaticGraph(xValue: 2, yValue: 17),
-      StaticGraph(xValue: 3, yValue: 13),
-      StaticGraph(xValue: 4, yValue: 20),
-      StaticGraph(xValue: 5, yValue: 17),
-      StaticGraph(xValue: 6, yValue: 16),
-      StaticGraph(xValue: 7, yValue: 13),
-      StaticGraph(xValue: 8, yValue: 18),
-      StaticGraph(xValue: 9, yValue: 19),
-      StaticGraph(xValue: 10, yValue: 12),
-      StaticGraph(xValue: 11, yValue: 11),
-    ];
-    List<GPDummyData> brandList = [
-      GPDummyData(
-          name: 'Whspr Ultra XL + 30s',
-          p3mAch: true,
-          p3mSal: '36%',
-          p1mAch: false,
-          p1mSal: '36%'),
-      GPDummyData(
-          name: 'Simply Venus 3s Disp',
-          p3mAch: true,
-          p3mSal: '19%',
-          p1mAch: false,
-          p1mSal: ''),
-      GPDummyData(
-          name: 'BLUE Pants Jumbo New XL',
-          p3mAch: true,
-          p3mSal: '8%',
-          p1mAch: false,
-          p1mSal: '8%'),
-      GPDummyData(
-          name: 'BLUE Pants Value MD',
-          p3mAch: true,
-          p3mSal: '4%',
-          p1mAch: false,
-          p1mSal: '4%'),
-      GPDummyData(
-          name: 'Whspr Ultra XL + 30s',
-          p3mAch: true,
-          p3mSal: '4%',
-          p1mAch: false,
-          p1mSal: '4%'),
-      GPDummyData(
-          name: 'Simply Venus 3s Disp',
-          p3mAch: true,
-          p3mSal: '3%',
-          p1mAch: false,
-          p1mSal: '3%'),
-      GPDummyData(
-          name: 'BLUE Pants Jumbo New XL',
-          p3mAch: true,
-          p3mSal: '4%',
-          p1mAch: false,
-          p1mSal: '4%'),
-    ];
-
     return GetBuilder<StoreController>(
       init: StoreController(storeRepo: Get.find()),
       builder: (ctlr) {

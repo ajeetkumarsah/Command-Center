@@ -20,8 +20,6 @@ import 'package:command_centre/mobile_dashboard/utils/global.dart' as globals;
 import 'package:command_centre/mobile_dashboard/views/login/access_denied_screen.dart';
 import 'package:webview_flutter_platform_interface/webview_flutter_platform_interface.dart';
 
-
-
 void main() => runApp(const MaterialApp(home: WebViewExample()));
 
 const String kNavigationExamplePage = '''
@@ -357,7 +355,7 @@ Page resource error:
           Get.offAndToNamed(AppPages.INITIAL);
           // Get.offAndToNamed(AppPages.PERSONA_SCREEN);
         } else {
-          Get.offAndToNamed(AppPages.PERSONA_SCREEN);
+          Get.offAndToNamed(AppPages.businessOnboarding);
         }
       } else if (response.statusCode == 401) {
         FirebaseCrashlytics.instance.log("Login : User Not Verified");

@@ -1,15 +1,13 @@
-import 'package:command_centre/mobile_dashboard/controllers/home_controller.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:flutter/material.dart';
+import '../../../utils/app_constants.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:reviews_slider/reviews_slider.dart';
-import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
-import 'package:command_centre/mobile_dashboard/utils/global.dart' as globals;
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../../../utils/app_constants.dart';
+import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
+import 'package:command_centre/mobile_dashboard/controllers/home_controller.dart';
 
 class FeedbackScreen extends StatefulWidget {
   const FeedbackScreen({super.key});
@@ -25,7 +23,6 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
   bool isLoading = false;
   @override
   Widget build(BuildContext context) {
-
     return GetBuilder<HomeController>(
       init: HomeController(homeRepo: Get.find()),
       builder: (ctlr) {
@@ -72,7 +69,8 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 40),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 8.0, horizontal: 40),
                   child: Text(
                     'Please select a topic below and let us know about your concern',
                     textAlign: TextAlign.center,
@@ -103,32 +101,37 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                     decoration: InputDecoration(
                       hintText: 'Comments',
                       enabledBorder: OutlineInputBorder(
-                        borderSide:
-                        const BorderSide(width: .5, color: AppColors.primary),
+                        borderSide: const BorderSide(
+                            width: .5, color: AppColors.primary),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       focusedBorder: OutlineInputBorder(
-                        borderSide:
-                        const BorderSide(width: .5, color: AppColors.primary),
+                        borderSide: const BorderSide(
+                            width: .5, color: AppColors.primary),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       border: OutlineInputBorder(
-                        borderSide:
-                        const BorderSide(width: .5, color: AppColors.primary),
+                        borderSide: const BorderSide(
+                            width: .5, color: AppColors.primary),
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
                   ),
                 ),
                 InkWell(
-                  onTap: () async{
-                    if(controller.text.isNotEmpty && selected_valueoftxt != ''){
+                  onTap: () async {
+                    if (controller.text.isNotEmpty &&
+                        selected_valueoftxt != '') {
                       isLoading = true;
-                      SharedPreferences session = await SharedPreferences.getInstance();
-                      await ctlr.postFeedbackReport(userName: '${session.getString(AppConstants.NAME)}', rating: selected_valueoftxt, feedback: controller.text);
+                      SharedPreferences session =
+                          await SharedPreferences.getInstance();
+                      await ctlr.postFeedbackReport(
+                          userName: '${session.getString(AppConstants.NAME)}',
+                          rating: selected_valueoftxt,
+                          feedback: controller.text);
                       isLoading = false;
                       Get.back();
-                    }else{
+                    } else {
                       isLoading = true;
                       Fluttertoast.showToast(
                           msg: "Something went wrong",
@@ -137,8 +140,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                           timeInSecForIosWeb: 10,
                           backgroundColor: Colors.blue,
                           textColor: Colors.white,
-                          fontSize: 16.0
-                      );
+                          fontSize: 16.0);
                       isLoading = false;
                     }
                   },
@@ -148,20 +150,23 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                       color: AppColors.primary,
                     ),
                     padding: const EdgeInsets.symmetric(vertical: 16),
-                    margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                    child:
-                    isLoading ?
-                    const Center(child: CircularProgressIndicator(color: Colors.white,))
+                    margin: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 20),
+                    child: isLoading
+                        ? const Center(
+                            child: CircularProgressIndicator(
+                            color: Colors.white,
+                          ))
                         : Center(
-                      child: Text(
-                        'Submit',
-                        style: GoogleFonts.ptSansCaption(
-                          color: AppColors.white,
-                          fontWeight: FontWeight.w500,
-                          fontSize: 18,
-                        ),
-                      ),
-                    ),
+                            child: Text(
+                              'Submit',
+                              style: GoogleFonts.ptSansCaption(
+                                color: AppColors.white,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 18,
+                              ),
+                            ),
+                          ),
                   ),
                 ),
               ],
@@ -170,9 +175,5 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
         );
       },
     );
-
-
-
-
   }
 }

@@ -1,10 +1,10 @@
-import 'package:command_centre/mobile_dashboard/controllers/store_selection_controller.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:command_centre/mobile_dashboard/utils/png_files.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
 import 'package:command_centre/mobile_dashboard/controllers/home_controller.dart';
+import 'package:command_centre/mobile_dashboard/controllers/store_selection_controller.dart';
 import 'package:command_centre/mobile_dashboard/views/summary/widgets/menu_bottomsheet.dart';
 
 class NewAppBar extends StatelessWidget {
@@ -40,7 +40,7 @@ class NewAppBar extends StatelessWidget {
           children: [
             ListTile(
               title: Text(
-                ctlr.selectedStore ?? ctlr.title ?? '',
+                ctlr.selectedStore ?? ctlr.title ,
                 style: GoogleFonts.inter(
                   fontSize: 26,
                   fontWeight: FontWeight.w400,

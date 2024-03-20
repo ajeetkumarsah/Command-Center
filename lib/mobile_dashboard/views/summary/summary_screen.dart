@@ -212,7 +212,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                       children: [
                                         Flexible(
                                           child: Text(
-                                            'Last Updated on ${DateFormat('MM/dd/yyyy, hh:mm a').format(DateTime.fromMillisecondsSinceEpoch(int.tryParse(snapshot.data?.docs.first.data()['lastUpdated']) ?? 1610268500000))}',
+                                            'Complete Data Upto ${DateFormat('MMMEd').format(DateTime.fromMillisecondsSinceEpoch(int.tryParse(snapshot.data?.docs.first.data()['lastUpdated']) ?? 1610268500000))}',
                                             style: GoogleFonts.ptSans(
                                               fontSize: 14,
                                               color: Colors.white,
@@ -223,7 +223,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                       ],
                                     ),
                                   )
-                                : const SizedBox(),
+                                : const SizedBox(height: 30),
                       );
                     },
                   ),

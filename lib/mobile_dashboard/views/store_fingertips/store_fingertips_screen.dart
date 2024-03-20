@@ -1,7 +1,5 @@
-import 'widgets/new_appbar.dart';
 import 'package:get/get.dart';
 import 'widgets/new_appbar.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
@@ -9,7 +7,6 @@ import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
 import 'package:command_centre/mobile_dashboard/utils/routes/app_pages.dart';
 import 'package:command_centre/mobile_dashboard/controllers/store_controller.dart';
-import 'package:command_centre/mobile_dashboard/views/store_fingertips/widgets/tab_item_widget.dart';
 
 class StoreFingertipsScreen extends StatelessWidget {
   const StoreFingertipsScreen({super.key});
@@ -118,7 +115,6 @@ class StoreDashboardUI extends StatelessWidget {
                         ),
                       ],
                     ),
-
                     child: SizedBox(
                       width: double.infinity,
                       child: Column(
@@ -158,13 +154,12 @@ class StoreDashboardUI extends StatelessWidget {
                                   ),
                                   const SizedBox(height: 15),
                                   SizedBox(
-                                    width:
-                                    (MediaQuery.of(context).size.width -
-                                        60) *
+                                    width: (MediaQuery.of(context).size.width -
+                                            60) *
                                         .9,
                                     child: const Row(
                                       mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text("0.00K"),
                                         Text("87.71K"),
@@ -211,12 +206,12 @@ class StoreDashboardUI extends StatelessWidget {
                                         horizontal: 8.0),
                                     child: SizedBox(
                                       width:
-                                      (MediaQuery.of(context).size.width -
-                                          60) *
-                                          .9,
+                                          (MediaQuery.of(context).size.width -
+                                                  60) *
+                                              .9,
                                       child: const Row(
                                         mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                            MainAxisAlignment.spaceBetween,
                                         children: [
                                           Text("0.00K"),
                                           Text("87.71K"),
@@ -242,7 +237,7 @@ class StoreDashboardUI extends StatelessWidget {
                               boxShadow: [
                                 BoxShadow(
                                   color:
-                                  const Color(0xff000000).withOpacity(.08),
+                                      const Color(0xff000000).withOpacity(.08),
                                   blurRadius: 12,
                                   offset: const Offset(0, 4),
                                 ),
@@ -261,7 +256,6 @@ class StoreDashboardUI extends StatelessWidget {
                                         child: Center(
                                           child: Text(
                                             'Channel Name',
-
                                             style: GoogleFonts.inter(
                                               fontSize: 11,
                                               fontWeight: FontWeight.w400,
@@ -435,14 +429,14 @@ class StoreDashboardUI extends StatelessWidget {
                 //   ),
                 // ),
                 Padding(
-                  padding: const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
+                  padding: const EdgeInsets.only(
+                      left: 10, right: 10, top: 10, bottom: 10),
                   child: GestureDetector(
                     onTap: () {
                       ctlr.onTabChange(1);
                       Get.toNamed(AppPages.sroreFingertipsLanding);
                     },
                     child: Container(
-
                       width: double.infinity,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(5.0),
@@ -490,7 +484,7 @@ class StoreDashboardUI extends StatelessWidget {
                                   flex: 5,
                                   child: Column(
                                     crossAxisAlignment:
-                                    CrossAxisAlignment.start,
+                                        CrossAxisAlignment.start,
                                     mainAxisAlignment: MainAxisAlignment.end,
                                     children: [
                                       Padding(
@@ -500,13 +494,11 @@ class StoreDashboardUI extends StatelessWidget {
                                           animation: true,
                                           animationDuration: 1000,
                                           lineHeight: 8.0,
-                                          barRadius:
-                                          const Radius.circular(10),
+                                          barRadius: const Radius.circular(10),
                                           leading: const Text("Target Calls"),
                                           trailing: const Text("8"),
                                           percent: 0.8,
-                                          linearStrokeCap:
-                                          LinearStrokeCap.butt,
+                                          linearStrokeCap: LinearStrokeCap.butt,
                                           progressColor: AppColors.sfPrimary,
                                           backgroundColor: AppColors.bgLight,
                                         ),
@@ -518,13 +510,11 @@ class StoreDashboardUI extends StatelessWidget {
                                           animation: true,
                                           animationDuration: 1000,
                                           lineHeight: 8.0,
-                                          barRadius:
-                                          const Radius.circular(10),
+                                          barRadius: const Radius.circular(10),
                                           leading: const Text("Call Made   "),
                                           trailing: const Text("9"),
                                           percent: 0.9,
-                                          linearStrokeCap:
-                                          LinearStrokeCap.butt,
+                                          linearStrokeCap: LinearStrokeCap.butt,
                                           progressColor: AppColors.sfPrimary,
                                           backgroundColor: AppColors.bgLight,
                                         ),
@@ -536,13 +526,11 @@ class StoreDashboardUI extends StatelessWidget {
                                           animation: true,
                                           animationDuration: 1000,
                                           lineHeight: 8.0,
-                                          barRadius:
-                                          const Radius.circular(10),
+                                          barRadius: const Radius.circular(10),
                                           leading: const Text("CCR Calls   "),
                                           trailing: const Text("6"),
                                           percent: 0.7,
-                                          linearStrokeCap:
-                                          LinearStrokeCap.butt,
+                                          linearStrokeCap: LinearStrokeCap.butt,
                                           progressColor: AppColors.sfPrimary,
                                           backgroundColor: AppColors.bgLight,
                                         ),
@@ -554,14 +542,11 @@ class StoreDashboardUI extends StatelessWidget {
                                           animation: true,
                                           animationDuration: 1000,
                                           lineHeight: 8.0,
-                                          barRadius:
-                                          const Radius.circular(10),
-                                          leading:
-                                          const Text("Billed Calls "),
+                                          barRadius: const Radius.circular(10),
+                                          leading: const Text("Billed Calls "),
                                           trailing: const Text("8"),
                                           percent: 0.8,
-                                          linearStrokeCap:
-                                          LinearStrokeCap.butt,
+                                          linearStrokeCap: LinearStrokeCap.butt,
                                           progressColor: AppColors.sfPrimary,
                                           backgroundColor: AppColors.bgLight,
                                         ),
@@ -574,17 +559,14 @@ class StoreDashboardUI extends StatelessWidget {
 
                                           animationDuration: 1000,
                                           lineHeight: 8.0,
-                                          barRadius:
-                                          const Radius.circular(10),
+                                          barRadius: const Radius.circular(10),
                                           // backgroundColor:
                                           //     const Color.fromARGB(255, 2, 74, 133),
-                                          leading:
-                                          const Text("Pro Calls    "),
+                                          leading: const Text("Pro Calls    "),
                                           trailing: const Text("8"),
                                           percent: 0.8,
                                           // ignore: deprecated_member_use
-                                          linearStrokeCap:
-                                          LinearStrokeCap.butt,
+                                          linearStrokeCap: LinearStrokeCap.butt,
                                           progressColor: AppColors.sfPrimary,
                                           backgroundColor: AppColors.bgLight,
                                         ),
@@ -606,7 +588,7 @@ class StoreDashboardUI extends StatelessWidget {
                                         ),
                                         child: Row(
                                           mainAxisAlignment:
-                                          MainAxisAlignment.end,
+                                              MainAxisAlignment.end,
                                           children: [
                                             const SizedBox(width: 12),
                                             Flexible(
@@ -615,20 +597,16 @@ class StoreDashboardUI extends StatelessWidget {
                                                   children: [
                                                     TextSpan(
                                                       text: '33.07',
-                                                      style:
-                                                      GoogleFonts.inter(
+                                                      style: GoogleFonts.inter(
                                                         fontSize: 18,
-                                                        color:
-                                                        AppColors.black,
+                                                        color: AppColors.black,
                                                       ),
                                                     ),
                                                     TextSpan(
                                                       text: 'min',
-                                                      style:
-                                                      GoogleFonts.inter(
+                                                      style: GoogleFonts.inter(
                                                         fontSize: 10,
-                                                        color:
-                                                        AppColors.black,
+                                                        color: AppColors.black,
                                                       ),
                                                     ),
                                                   ],
@@ -641,7 +619,7 @@ class StoreDashboardUI extends StatelessWidget {
                                       ),
                                       Row(
                                         mainAxisAlignment:
-                                        MainAxisAlignment.end,
+                                            MainAxisAlignment.end,
                                         children: [
                                           Flexible(
                                             child: Text(
@@ -651,8 +629,7 @@ class StoreDashboardUI extends StatelessWidget {
                                                 // fontStyle: FontStyle.italic,
                                                 fontSize: 10,
                                                 fontWeight: FontWeight.w400,
-                                                color:
-                                                AppColors.greyTextColor,
+                                                color: AppColors.greyTextColor,
                                               ),
                                             ),
                                           ),
@@ -700,7 +677,7 @@ class StoreDashboardUI extends StatelessWidget {
                                   color: Colors.white),
                               child: Column(
                                 mainAxisAlignment:
-                                MainAxisAlignment.spaceAround,
+                                    MainAxisAlignment.spaceAround,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Padding(
@@ -810,7 +787,9 @@ class StoreDashboardUI extends StatelessWidget {
                           ),
                         ),
                       ),
-                      const SizedBox(width: 10,),
+                      const SizedBox(
+                        width: 10,
+                      ),
                       Expanded(
                         child: Container(
                           decoration: BoxDecoration(
@@ -920,7 +899,9 @@ class StoreDashboardUI extends StatelessWidget {
                     ],
                   ),
                 ),
-                const SizedBox(height: 10,),
+                const SizedBox(
+                  height: 10,
+                ),
               ],
             ),
           );

@@ -162,12 +162,4 @@ class OtherAttrs {
             ? []
             : List<String>.from(json["attr5"]!.map((x) => x)),
       );
-
-  Map<String, dynamic> toJson() => {
-        "attr1": attr1 == null ? [] : List<dynamic>.from(attr1.map((x) => x)),
-        "attr2": attr2 == null ? [] : List<dynamic>.from(attr2.map((x) => x)),
-        "attr3": attr3 == null ? [] : List<dynamic>.from(attr3.map((x) => x)),
-        "attr4": attr4 == null ? [] : List<dynamic>.from(attr4.map((x) => x)),
-        "attr5": attr5 == null ? [] : List<dynamic>.from(attr5.map((x) => x)),
-      };
 }

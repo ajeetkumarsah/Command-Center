@@ -233,7 +233,7 @@ class _FedAuthScreenState extends State<FedAuthScreen> {
           // Get.offAndToNamed(AppPages.PERSONA_SCREEN);
         } else {
           _onClearCookies();
-          Get.offAndToNamed(AppPages.PERSONA_SCREEN);
+          Get.offAndToNamed(AppPages.businessOnboarding);
         }
       } else if (response.statusCode == 401) {
         _onClearCookies();

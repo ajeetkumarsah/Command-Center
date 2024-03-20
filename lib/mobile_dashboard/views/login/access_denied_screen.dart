@@ -2,7 +2,6 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:command_centre/mobile_dashboard/utils/png_files.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
 import 'package:command_centre/mobile_dashboard/utils/routes/app_pages.dart';
 
@@ -29,9 +28,10 @@ class _AccessDeniedState extends State<AccessDeniedScreen> {
       body: Container(
         // color: const Color(0xff6F81E6),
         decoration: const BoxDecoration(
-          gradient: LinearGradient(begin: Alignment.topLeft,end: Alignment.bottomRight,
-              colors: [AppColors.primary, AppColors.blueLighter])
-        ),
+            gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [AppColors.primary, AppColors.blueLighter])),
         child: Padding(
           padding: const EdgeInsets.all(10),
           child: Column(

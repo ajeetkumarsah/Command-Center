@@ -1,8 +1,8 @@
-import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:logger/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:intl/intl.dart';
-import 'package:logger/logger.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
+// ignore_for_file: constant_identifier_names
 
 enum AnalyticsEvent {
   catch_event,
@@ -27,24 +27,26 @@ enum AnalyticsEvent {
   level_filter
 }
 
-class LoggerUtils{
+class LoggerUtils {
   static showToast(String title) {
     Fluttertoast.showToast(toastLength: Toast.LENGTH_LONG, msg: title);
     Logger().wtf(title);
   }
 
   static firebaseAnalytics(AnalyticsEvent event, String title) {
-    FirebaseAnalytics.instance.logEvent(name: event.toString(), parameters: {"message": title});
+    FirebaseAnalytics.instance
+        .logEvent(name: event.toString(), parameters: {"message": title});
     Logger().wtf(title);
   }
 
-  static toastWithAnalytics(AnalyticsEvent event, String title){
+  static toastWithAnalytics(AnalyticsEvent event, String title) {
     Fluttertoast.showToast(toastLength: Toast.LENGTH_LONG, msg: title);
-    FirebaseAnalytics.instance.logEvent(name: event.toString(), parameters: {"message": title});
+    FirebaseAnalytics.instance
+        .logEvent(name: event.toString(), parameters: {"message": title});
     Logger().wtf(title);
   }
 
-  static detailsToast(String title){
+  static detailsToast(String title) {
     Fluttertoast.showToast(
         msg: title,
         toastLength: Toast.LENGTH_LONG,

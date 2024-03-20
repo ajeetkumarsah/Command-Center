@@ -1,17 +1,14 @@
 import 'dart:io';
-import 'package:command_centre/mobile_dashboard/controllers/home_controller.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
 import 'package:command_centre/mobile_dashboard/utils/routes/app_pages.dart';
 import 'package:command_centre/mobile_dashboard/views/widgets/photo_gride.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
-import '../../../utils/app_constants.dart';
+import 'package:command_centre/mobile_dashboard/controllers/home_controller.dart';
 
 
 class ReportBugScreen extends StatefulWidget {

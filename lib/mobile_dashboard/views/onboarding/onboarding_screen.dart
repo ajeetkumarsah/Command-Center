@@ -1,7 +1,9 @@
+import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
+import 'package:command_centre/mobile_dashboard/utils/routes/app_pages.dart';
 
 class OnboardingContents {
   final String title;
@@ -15,14 +17,15 @@ class OnboardingContents {
   });
 }
 
-class OnboardingScreen extends StatefulWidget {
-  const OnboardingScreen({Key? key}) : super(key: key);
+class BusinessOnboardingScreen extends StatefulWidget {
+  const BusinessOnboardingScreen({Key? key}) : super(key: key);
 
   @override
-  State<OnboardingScreen> createState() => _OnboardingScreenState();
+  State<BusinessOnboardingScreen> createState() =>
+      _BusinessOnboardingScreenState();
 }
 
-class _OnboardingScreenState extends State<OnboardingScreen> {
+class _BusinessOnboardingScreenState extends State<BusinessOnboardingScreen> {
   late PageController _controller;
 
   @override
@@ -75,20 +78,19 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       title: "Track Your Business Summary",
       image: "assets/svg/on.svg",
       desc:
-          "Lorem Ipsum is simply dummy text of the printing and typesetting industry. ",
+          "Track all India Retailing, Coverage, Golden Points and Focus Brand across channels and categories",
     ),
     OnboardingContents(
       title: "Stay updated with the data everyday.",
       image: "assets/svg/on1.svg",
-      desc:
-          "Lorem Ipsum is simply dummy text of the printing and typesetting industry. ",
+      desc: "Stay updated with latest data till D-1 everyday",
     ),
-    OnboardingContents(
-      title: "Get notified when work happens",
-      image: "assets/svg/on2.svg",
-      desc:
-          "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-    ),
+    // OnboardingContents(
+    //   title: "Get notified when work happens",
+    //   image: "assets/svg/on2.svg",
+    //   desc:
+    //       "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+    // ),
   ];
 
   @override
@@ -98,7 +100,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     double height = screenH!;
 
     return Scaffold(
-      backgroundColor: colors[_currentPage],
+      backgroundColor: AppColors.white, //colors[_currentPage],
       body: SafeArea(
         child: Column(
           children: [
@@ -166,7 +168,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             transitionOnUserGestures: true,
                             tag: 'hero1',
                             child: ElevatedButton(
-                              onPressed: () {},
+                              onPressed: () =>
+                                  Get.offAndToNamed(AppPages.PERSONA_SCREEN),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: AppColors.primary,
                                 shape: RoundedRectangleBorder(

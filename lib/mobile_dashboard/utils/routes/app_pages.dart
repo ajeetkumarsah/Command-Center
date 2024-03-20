@@ -1,17 +1,16 @@
-import 'package:command_centre/mobile_dashboard/views/login/testing.dart';
 import 'package:get/get.dart';
 import '../../views/home_view.dart';
 import '../../bindings/home_binding.dart';
 import '../../views/login/persona_select_screen.dart';
 import '../../views/login/retry_access_denied_screen.dart';
 import '../../views/store_fingertips/sales/sales_deep_dive_screen.dart';
+import 'package:command_centre/mobile_dashboard/views/login/testing.dart';
 import 'package:command_centre/mobile_dashboard/views/login/login_screen.dart';
 import 'package:command_centre/mobile_dashboard/views/splash/intro_screen.dart';
 import 'package:command_centre/mobile_dashboard/views/update/update_screen.dart';
 import 'package:command_centre/mobile_dashboard/views/login/purpose_screen.dart';
 import 'package:command_centre/mobile_dashboard/views/splash/splash_screen.dart';
 import 'package:command_centre/mobile_dashboard/views/widgets/image_preview.dart';
-import 'package:command_centre/mobile_dashboard/views/login/fed_auth_screen.dart';
 import 'package:command_centre/mobile_dashboard/views/summary/summary_screen.dart';
 import 'package:command_centre/mobile_dashboard/views/login/select_geo_screen.dart';
 import 'package:command_centre/mobile_dashboard/views/coverage/coverage_screen.dart';
@@ -19,6 +18,7 @@ import 'package:command_centre/mobile_dashboard/views/widgets/image_list_preview
 import 'package:command_centre/mobile_dashboard/views/login/access_denied_screen.dart';
 import 'package:command_centre/mobile_dashboard/views/retailing/retailing_screen.dart';
 import 'package:command_centre/mobile_dashboard/views/login/select_profile_screen.dart';
+import 'package:command_centre/mobile_dashboard/views/onboarding/onboarding_screen.dart';
 import 'package:command_centre/mobile_dashboard/views/maintenance/maintenance_screen.dart';
 import 'package:command_centre/mobile_dashboard/views/focus_brand/focus_brand_screen.dart';
 import 'package:command_centre/mobile_dashboard/views/store_fingertips/fb/fb_deep_dive.dart';
@@ -64,6 +64,7 @@ class AppPages {
   static const IMAGE_PREVIEW_LIST = _Paths.IMAGE_PREVIEW_LIST;
   static const updateScreen = Routes.UPDATE_SCREEN;
   static const maintenanceScreen = Routes.MAINTENANCE_SCREEN;
+  static const businessOnboarding = Routes.ONBOARDING_SCREEN;
   //Store@fingertips
   static const sroreFingertipsLanding = Routes.STORE_FINGERTIPS_LANDING;
   static const sroreFingertipsOnboarding = Routes.STORE_FINGERTIPS_ONBOARDING;
@@ -82,6 +83,11 @@ class AppPages {
     GetPage(
       name: _Paths.FED_AUTH_LOGIN_TEST,
       page: () => const WebViewExample(),
+      binding: HomeBinding(),
+    ),
+    GetPage(
+      name: _Paths.ONBOARDING_SCREEN,
+      page: () => const BusinessOnboardingScreen(),
       binding: HomeBinding(),
     ),
     GetPage(

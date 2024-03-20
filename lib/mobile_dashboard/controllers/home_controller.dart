@@ -1834,6 +1834,8 @@ class HomeController extends GetxController {
     LoggerUtils.firebaseAnalytics(
         AnalyticsEvent.logs, "Selected Geo Changed ${getUserName()}");
     _selectedTrendsGeo = value;
+
+    _selectedTrends = value;
     selectedRetailingChannelFilter.clear();
     selectedCoverageChannelFilter.clear();
     selectedGPChannelFilter.clear();
@@ -1885,6 +1887,7 @@ class HomeController extends GetxController {
     String tabType = 'Retailing',
     bool isSummary = false,
   }) async {
+    //Apply geo filter
     LoggerUtils.firebaseAnalytics(
         AnalyticsEvent.logs, "Apply Filters click ${getUserName()}");
     debugPrint(
@@ -2276,6 +2279,8 @@ class HomeController extends GetxController {
     bool isSummary = false,
   }) async {
     _selectedTempGeoValue = value;
+    onChangeGeoTrends('Geography');
+    onChangeTrendsFilters(value, tabType);
     onApplyFilter(
       isLoadRetailing: isLoadRetailing,
       tabType: tabType,

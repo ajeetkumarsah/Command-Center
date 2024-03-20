@@ -1,12 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
 import '../utils/app_constants.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 Future<void> handleBackgroundMessage(RemoteMessage message) async {
   //
@@ -90,7 +89,7 @@ class FirebaseApi {
     FirebaseMessaging.onMessage.listen((event) {
       final notification = event.notification;
       if (notification != null) {
-        if (notification != null) {
+        if (notification.body != null) {
           _localNotification.show(
               notification.hashCode,
               notification.title,
