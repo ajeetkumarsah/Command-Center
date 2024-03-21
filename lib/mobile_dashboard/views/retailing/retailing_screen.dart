@@ -176,8 +176,12 @@ class _RetailingScreenState extends State<RetailingScreen> {
                                       GeographyMultiSelectBottomsheet(
                                           tabType: SummaryTypes.retailing.type),
                                       isScrollControlled: true,
-                                    ),
-                                    tabType: 'Retailing by Geography',
+                                    ).then((value) {
+                                      if (value == null) {
+                                        ctlr.clearRetailingGeo();
+                                      }
+                                    }),
+                                    tabType: SummaryTypes.retailing.type,
                                   )
                                 : const SizedBox(),
                         const SizedBox(height: 16),

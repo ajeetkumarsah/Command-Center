@@ -1,8 +1,7 @@
-import 'package:command_centre/mobile_dashboard/services/analytics_utils.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
 import 'package:command_centre/mobile_dashboard/utils/summary_types.dart';
 import 'package:command_centre/mobile_dashboard/controllers/home_controller.dart';
@@ -500,7 +499,9 @@ class _GeographyMultiSelectBottomsheetState
   }
 
   void onApplyFilter(HomeController ctlr) {
-    FirebaseAnalytics.instance.logEvent(name: 'deep_dive_selected_geo', parameters: {"message": 'Added Selected Geo ${ctlr.getUserName()}'});
+    FirebaseAnalytics.instance.logEvent(
+        name: 'deep_dive_selected_geo',
+        parameters: {"message": 'Added Selected Geo ${ctlr.getUserName()}'});
     ctlr.onMultiGeoChange(_selectedFilter);
 
     if (widget.isTrends) {
@@ -510,6 +511,6 @@ class _GeographyMultiSelectBottomsheetState
       ctlr.onApplyMultiFilter('geo', 'geo',
           tabType: widget.tabType, subType: 'geo');
     }
-    Navigator.pop(context);
+    Navigator.pop(context, true);
   }
 }

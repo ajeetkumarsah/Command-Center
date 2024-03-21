@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
+import 'package:command_centre/mobile_dashboard/utils/summary_types.dart';
 import 'package:command_centre/mobile_dashboard/controllers/home_controller.dart';
 
 class CustomExpandedWidget extends StatefulWidget {
@@ -353,7 +354,9 @@ class _CustomExpandedWidgetState extends State<CustomExpandedWidget> {
                                           ],
                                         )),
                         ),
-                        widget.isSummary && ctlr.isRetailingDeepDiveInd
+                        widget.isSummary &&
+                                ctlr.isRetailingDeepDiveInd &&
+                                widget.tabType == SummaryTypes.retailing.type
                             ? Positioned(
                                 top: 6,
                                 right: 12,
@@ -365,41 +368,20 @@ class _CustomExpandedWidgetState extends State<CustomExpandedWidget> {
                                   ),
                                 ),
                               )
-                            : Positioned(
-                                top: 16,
-                                right: 25,
-                                child: widget.tabType ==
-                                        'Retailing by Geography'
-                                    ? const Text(
-                                        'Switch to \'Distributor\' to Add Geo',
-                                        style: TextStyle(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w400))
-                                    : widget.tabType == 'Coverage by Geography'
-                                        ? const Text(
-                                            'Switch to \'Distributor\' to Add Geo',
-                                            style: TextStyle(
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.w400))
-                                        : widget.tabType ==
-                                                'Focus Brand by Geography'
-                                            ? const Text(
-                                                'Switch to \'Indirect\' to Add Geo',
-                                                style: TextStyle(
-                                                    fontSize: 12,
-                                                    fontWeight:
-                                                        FontWeight.w400))
-                                            : widget.tabType ==
-                                                    'Golden Points by Geography'
-                                                ? const Text(
-                                                    'Switch to \'Indirect\' to Add Geo',
-                                                    style: TextStyle(
-                                                        fontSize: 12,
-                                                        fontWeight:
-                                                            FontWeight.w400))
-                                                : const Text(''),
-                              ),
-                        if (widget.isSummary && ctlr.isRetailingDeepDiveInd)
+                            : widget.tabType == SummaryTypes.retailing.type
+                                ? const Positioned(
+                                    top: 16,
+                                    right: 25,
+                                    child: Text(
+                                      'Switch to \'Distributor\' to Add Geo',
+                                      style: TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w400),
+                                    ),
+                                  )
+                                : const SizedBox(),
+                        if (widget.isSummary &&
+                            widget.tabType != SummaryTypes.retailing.type)
                           Positioned(
                             top: 6,
                             right: 12,
