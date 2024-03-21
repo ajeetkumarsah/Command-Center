@@ -96,7 +96,7 @@ class _CoverageScreenState extends State<CoverageScreen> {
                                           tabType: SummaryTypes.coverage.type),
                                       isScrollControlled: true,
                                     ),
-                                    tabType: 'Coverage by Geography',
+                                    tabType: SummaryTypes.coverage.type,
                                   )
                                 : const SizedBox(),
                         const SizedBox(height: 16),

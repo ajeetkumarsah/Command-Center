@@ -28,20 +28,13 @@ class _GeographyMultiSelectBottomsheetState
     setState(() {});
   }
 
-  // void onChangeFilterValue(String value) {
-  //   if (selectedFilterValue.contains(value)) {
-  //     selectedFilterValue.remove(value);
-  //   } else {
-  //     selectedFilterValue.add(value);
-  //   }
-  //   setState(() {});
-  // }
   bool isFirst = true;
-  void initCall(String value) {
+  void initCall(String value, HomeController ctlr) {
     if (isFirst) {
       isFirst = false;
       WidgetsBinding.instance.addPostFrameCallback((_) {
         onChangeFilter(value);
+        ctlr.onGeoChange(_selectedFilter, isMultiSelect: true);
       });
     }
   }
@@ -59,7 +52,7 @@ class _GeographyMultiSelectBottomsheetState
       init: HomeController(homeRepo: Get.find()),
       initState: (_) {},
       builder: (ctlr) {
-        initCall(ctlr.selectedMultiGeo);
+        initCall(ctlr.selectedMultiGeo, ctlr);
         return Container(
           decoration: const BoxDecoration(
             borderRadius: BorderRadius.only(

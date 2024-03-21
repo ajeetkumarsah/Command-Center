@@ -361,7 +361,7 @@ class _CustomExpandedWidgetState extends State<CustomExpandedWidget> {
                                 top: 6,
                                 right: 12,
                                 child: IconButton(
-                                  onPressed: widget.onFilterTap,
+                                  onPressed: widget.onAddGeoTap,
                                   icon: const Icon(
                                     Icons.add,
                                     size: 20,

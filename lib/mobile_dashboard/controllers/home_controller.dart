@@ -778,12 +778,14 @@ class HomeController extends GetxController {
       }
     } else {
       if (filtersModel != null) {
+        debugPrint(
+            '====>Filter aatr1 :${filtersModel?.otherAttrs?.attr1 ?? []}');
         if (value.toLowerCase().startsWith('level 1')) {
           FirebaseCrashlytics.instance.log("On Level 1 Changed");
           FirebaseAnalytics.instance.logEvent(
               name: 'level_filter',
               parameters: {"message": 'On Level 1 Changed ${getUserName()}'});
-          debugPrint('===> $value');
+          debugPrint('===> Channel Filter:s $value');
           channelFilter = filtersModel?.otherAttrs?.attr1 ?? [];
           FirebaseAnalytics.instance.logEvent(
               name: 'selected_filter_channel',
@@ -1330,6 +1332,7 @@ class HomeController extends GetxController {
     FirebaseAnalytics.instance.logEvent(
         name: 'deep_dive_selected_channel',
         parameters: {"message": 'On Channel Filter Changed ${getUserName()}'});
+    debugPrint('====>Channel filter==>');
     if (tabType == SummaryTypes.retailing.type) {
       if (_selectedTempRetailingChannel != channel) {
         _selectedTempRetailingChannel = channel;
