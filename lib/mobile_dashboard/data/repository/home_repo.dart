@@ -161,6 +161,10 @@ class HomeRepo {
 //clearData
   bool clearSharedData() {
     sharedPreferences.remove(AppConstants.TOKEN);
+    sharedPreferences.remove(AppConstants.ACCESS_TOKEN);
+    sharedPreferences.remove(AppConstants.FCMToken);
+
+    // sharedPreferences.remove(AppConstants.TOKEN);
     sharedPreferences.clear();
     apiClient.token = null;
     return true;

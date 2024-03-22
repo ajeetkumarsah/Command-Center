@@ -173,7 +173,7 @@ class _RetailingGraphWidgetState extends State<RetailingGraphWidget> {
                                   color: Colors.white,
                                 );
                                 return LineTooltipItem(
-                                  '${widget.trendsData[touchedSpot.spotIndex].month}\n${double.tryParse((widget.trendsData[touchedSpot.spotIndex].iya ?? '0.0'))?.toStringAsFixed(2) ?? '0.0'}',
+                                  '${widget.trendsData[touchedSpot.spotIndex].month}\n${double.tryParse((widget.trendsData[touchedSpot.spotIndex].iya ?? '0.0'))?.toStringAsFixed(0) ?? '0.0'}',
                                   textStyle,
                                 );
                               },

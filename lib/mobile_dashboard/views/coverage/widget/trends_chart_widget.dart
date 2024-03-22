@@ -295,7 +295,7 @@ class _CustomExpandedChartWidgetState extends State<CoverageTrendsChartWidget> {
                                                         color: Colors.white,
                                                       );
                                                       return LineTooltipItem(
-                                                        '${widget.trendsList[0].data![touchedSpot.spotIndex].monthYear}\n${ctlr.selectedCoverageTrendsFilter == 'Billing %' ? widget.trendsList[0].data![touchedSpot.spotIndex].billingPer?.toString() ?? '0.0' : ctlr.selectedCoverageTrendsFilter == 'Prod %' ? double.tryParse((widget.trendsList[0].data![touchedSpot.spotIndex].productivityPer ?? '0.0'))?.toStringAsFixed(2) ?? '0.0' : ctlr.selectedCoverageTrendsFilter == 'Call Hit Rate %' ? double.tryParse((widget.trendsList[0].data![touchedSpot.spotIndex].ccPer ?? '0.0'))?.toStringAsFixed(2) ?? '0.0' : '0.0'}',
+                                                        '${widget.trendsList[0].data![touchedSpot.spotIndex].monthYear}\n${ctlr.selectedCoverageTrendsFilter == 'Billing %' ? widget.trendsList[0].data![touchedSpot.spotIndex].billingPer?.toString() ?? '0.0' : ctlr.selectedCoverageTrendsFilter == 'Prod %' ? double.tryParse((widget.trendsList[0].data![touchedSpot.spotIndex].productivityPer ?? '0.0'))?.toStringAsFixed(0) ?? '0.0' : ctlr.selectedCoverageTrendsFilter == 'Call Hit Rate %' ? double.tryParse((widget.trendsList[0].data![touchedSpot.spotIndex].ccPer ?? '0.0'))?.toStringAsFixed(0) ?? '0.0' : '0.0'}',
                                                         textStyle,
                                                       );
                                                     },

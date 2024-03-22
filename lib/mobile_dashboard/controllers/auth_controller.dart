@@ -38,6 +38,13 @@ class AuthController extends GetxController {
     getAllFilters();
   }
 
+  void logout() {
+    //logout the current user
+    authRepo.clearSharedData();
+    Get.offAndToNamed(AppPages.FED_AUTH_LOGIN_TEST);
+    update();
+  }
+
 //
   // Future<ResponseModel> registration() async {
   //   _isLoading = true;
@@ -156,7 +163,7 @@ class AuthController extends GetxController {
       }
     } else if (response.statusCode == 401) {
       responseModel = ResponseModel(false, response.statusText ?? "");
-      Get.offAndToNamed(AppPages.FED_AUTH_LOGIN_TEST);
+      logout();
     } else {
       responseModel = ResponseModel(false, response.statusText ?? "");
     }
@@ -187,7 +194,7 @@ class AuthController extends GetxController {
       }
     } else if (response.statusCode == 401) {
       responseModel = ResponseModel(false, response.statusText ?? "");
-      Get.offAndToNamed(AppPages.FED_AUTH_LOGIN_TEST);
+      logout();
     } else {
       responseModel = ResponseModel(false, response.statusText ?? "");
     }
@@ -233,7 +240,7 @@ class AuthController extends GetxController {
       }
     } else if (response.statusCode == 401) {
       responseModel = ResponseModel(false, response.statusText ?? "");
-      Get.offAndToNamed(AppPages.FED_AUTH_LOGIN_TEST);
+      logout();
     } else {
       responseModel = ResponseModel(false, response.statusText ?? "");
     }

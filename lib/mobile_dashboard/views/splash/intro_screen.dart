@@ -1,12 +1,11 @@
 import 'dart:async';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
 import 'package:command_centre/mobile_dashboard/utils/routes/app_pages.dart';
 import 'package:command_centre/mobile_dashboard/controllers/home_controller.dart';
-
 
 class IntroScreen extends StatefulWidget {
   const IntroScreen({Key? key}) : super(key: key);
@@ -22,7 +21,7 @@ class _IntroScreenState extends State<IntroScreen> {
   final controller = Get.put(HomeController(homeRepo: Get.find()));
   Future<void> _onIntroEnd(context) async {
     // SharedPreferencesUtils.setBool('seen', true);
-    Get.offAndToNamed(AppPages.FED_AUTH_LOGIN_TEST);
+
     // Navigator.pushReplacement(
     //     context,
     //     MaterialPageRoute(

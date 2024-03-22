@@ -96,6 +96,7 @@ class AuthRepo {
   bool clearSharedData() {
     sharedPreferences.remove(AppConstants.TOKEN);
     sharedPreferences.remove(AppConstants.ACCESS_TOKEN);
+    // sharedPreferences.remove(AppConstants.FCMToken);
     sharedPreferences.clear();
     apiClient.token = null;
     return true;
@@ -123,6 +124,7 @@ class AuthRepo {
   }
 
   Future<Response> getPersonaSelect(Map<String, dynamic> body) async {
-    return await apiClient.postData(AppConstants.PERSONASELECT, body, headers: {});
+    return await apiClient
+        .postData(AppConstants.PERSONASELECT, body, headers: {});
   }
 }

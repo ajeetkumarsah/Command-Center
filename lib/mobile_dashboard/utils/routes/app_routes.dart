@@ -13,7 +13,7 @@ abstract class Routes {
   static const ACCESS_DENIED = _Paths.ACCESS_DENIED;
   static const PURPOSE_SCREEN = _Paths.PURPOSE_SCREEN;
   static const PERSONA_SCREEN = _Paths.PERSONA_SCREEN;
-  static const INTRO_SCREEN = _Paths.INTRO_SCREEN;
+  // static const INTRO_SCREEN = _Paths.INTRO_SCREEN;
   static const HOME = _Paths.HOME;
   static const SUMMARY = _Paths.SUMMARY;
   static const RETAILING_SCREEN = _Paths.RETAILING_SCREEN;
@@ -47,7 +47,7 @@ abstract class _Paths {
   static const ACCESS_DENIED = '/accessDenied';
   static const PURPOSE_SCREEN = '/purposeScreen';
   static const PERSONA_SCREEN = '/personaScreen';
-  static const INTRO_SCREEN = '/introScreen';
+  // static const INTRO_SCREEN = '/introScreen';
   static const UPDATE_SCREEN = '/updateScreen';
   static const MAINTENANCE_SCREEN = '/maintenanceScreen';
   static const HOME = '/home';

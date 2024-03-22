@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:command_centre/mobile_dashboard/utils/sec_helper/obfuscation.dart';
 import 'package:get/get.dart';
 import 'dart:io' show Platform;
 import 'package:lottie/lottie.dart';
@@ -26,7 +25,6 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     // controller.getConfig();
     startTimer();
-
   }
 
   void startTimer() {
@@ -71,7 +69,7 @@ class _SplashScreenState extends State<SplashScreen> {
           Get.offAndToNamed(AppPages.FED_AUTH_LOGIN_TEST);
         }
       } else {
-        Get.offAndToNamed(AppPages.INTRO_SCREEN);
+        Get.offAndToNamed(AppPages.FED_AUTH_LOGIN_TEST);
       }
       //   }
       // }

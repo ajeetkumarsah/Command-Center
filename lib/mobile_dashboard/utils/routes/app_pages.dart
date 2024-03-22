@@ -6,7 +6,6 @@ import '../../views/login/retry_access_denied_screen.dart';
 import '../../views/store_fingertips/sales/sales_deep_dive_screen.dart';
 import 'package:command_centre/mobile_dashboard/views/login/testing.dart';
 import 'package:command_centre/mobile_dashboard/views/login/login_screen.dart';
-import 'package:command_centre/mobile_dashboard/views/splash/intro_screen.dart';
 import 'package:command_centre/mobile_dashboard/views/update/update_screen.dart';
 import 'package:command_centre/mobile_dashboard/views/login/purpose_screen.dart';
 import 'package:command_centre/mobile_dashboard/views/splash/splash_screen.dart';
@@ -44,7 +43,7 @@ class AppPages {
   static const ACCESS_DENIED = Routes.ACCESS_DENIED;
   static const PURPOSE_SCREEN = Routes.PURPOSE_SCREEN;
   static const PERSONA_SCREEN = Routes.PERSONA_SCREEN;
-  static const INTRO_SCREEN = Routes.INTRO_SCREEN;
+  // static const INTRO_SCREEN = Routes.INTRO_SCREEN;
   static const INITIAL = Routes.HOME;
   static const SUMMARY = Routes.SUMMARY;
   static const RETAILING_SCREEN = Routes.RETAILING_SCREEN;
@@ -90,11 +89,11 @@ class AppPages {
       page: () => const BusinessOnboardingScreen(),
       binding: HomeBinding(),
     ),
-    GetPage(
-      name: _Paths.INTRO_SCREEN,
-      page: () => const IntroScreen(),
-      binding: HomeBinding(),
-    ),
+    // GetPage(
+    //   name: _Paths.INTRO_SCREEN,
+    //   page: () => const IntroScreen(),
+    //   binding: HomeBinding(),
+    // ),
     GetPage(
       name: _Paths.SELECT_PROFILE,
       page: () => const SelectProfile(),

@@ -396,6 +396,7 @@ class Ind {
   final double? yPerMin;
   final double? yPerMax;
   final double? yPerInterval;
+
   Ind({
     this.cmIya,
     this.progressBarCmIya,

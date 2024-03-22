@@ -388,7 +388,7 @@ class _CustomExpandedChartWidgetState extends State<CustomExpandedChartWidget> {
                                                         color: Colors.white,
                                                       );
                                                       return LineTooltipItem(
-                                                        '${widget.trendsList?.data![touchedSpot.spotIndex].month}\n${ctlr.channelSales ? (widget.trendsList?.data![touchedSpot.spotIndex].cyRtRv ?? '0.0') : double.tryParse((widget.trendsList?.data![touchedSpot.spotIndex].iya ?? '0.0'))?.toStringAsFixed(2) ?? "0.0"}',
+                                                        '${widget.trendsList?.data![touchedSpot.spotIndex].month}\n${ctlr.channelSales ? (widget.trendsList?.data![touchedSpot.spotIndex].cyRtRv ?? '0.0') : double.tryParse((widget.trendsList?.data![touchedSpot.spotIndex].iya ?? '0.0'))?.toStringAsFixed(0) ?? "0.0"}',
                                                         textStyle,
                                                       );
                                                     },

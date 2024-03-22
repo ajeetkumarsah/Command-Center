@@ -3263,6 +3263,13 @@ class HomeController extends GetxController {
     update();
   }
 
+  void logout() {
+    //logout the current user
+    homeRepo.clearSharedData();
+    Get.offAndToNamed(AppPages.FED_AUTH_LOGIN_TEST);
+    update();
+  }
+
   List<SummaryModel> summaryData = [];
   RetailingGeoModel? retailingGeoModel;
   RetailingGeoModel? categoryRetailingModel;
@@ -3322,7 +3329,7 @@ class HomeController extends GetxController {
       responseModel = ResponseModel(true, 'Success');
     } else if (response.statusCode == 401) {
       responseModel = ResponseModel(false, response.statusText ?? "");
-      Get.offAndToNamed(AppPages.FED_AUTH_LOGIN_TEST);
+      logout();
     } else {
       responseModel = ResponseModel(false, response.statusText ?? "");
     }
@@ -3362,7 +3369,7 @@ class HomeController extends GetxController {
       }
     } else if (response.statusCode == 401) {
       responseModel = ResponseModel(false, response.statusText ?? "");
-      Get.offAndToNamed(AppPages.FED_AUTH_LOGIN_TEST);
+      logout();
     } else {
       responseModel = ResponseModel(false, response.statusText ?? "");
     }
@@ -3651,7 +3658,7 @@ class HomeController extends GetxController {
       }
     } else if (response.statusCode == 401) {
       responseModel = ResponseModel(false, response.statusText ?? "");
-      Get.offAndToNamed(AppPages.FED_AUTH_LOGIN_TEST);
+      logout();
     } else {
       // showCustomSnackBar('${response.body}');
 
@@ -3715,7 +3722,7 @@ class HomeController extends GetxController {
       }
     } else if (response.statusCode == 401) {
       responseModel = ResponseModel(false, response.statusText ?? "");
-      Get.offAndToNamed(AppPages.FED_AUTH_LOGIN_TEST);
+      logout();
     } else {
       responseModel = ResponseModel(false, response.statusText ?? "");
     }
@@ -3762,7 +3769,7 @@ class HomeController extends GetxController {
       }
     } else if (response.statusCode == 401) {
       responseModel = ResponseModel(false, response.statusText ?? "");
-      Get.offAndToNamed(AppPages.FED_AUTH_LOGIN_TEST);
+      logout();
     } else {
       responseModel = ResponseModel(false, response.statusText ?? "");
     }
@@ -4043,7 +4050,7 @@ class HomeController extends GetxController {
       }
     } else if (response.statusCode == 401) {
       responseModel = ResponseModel(false, response.statusText ?? "");
-      Get.offAndToNamed(AppPages.FED_AUTH_LOGIN_TEST);
+      logout();
     } else {
       // Logger().e(response.body);
       responseModel = ResponseModel(false, response.statusText ?? "");
@@ -4366,7 +4373,7 @@ class HomeController extends GetxController {
       }
     } else if (response.statusCode == 401) {
       responseModel = ResponseModel(false, response.statusText ?? "");
-      Get.offAndToNamed(AppPages.FED_AUTH_LOGIN_TEST);
+      logout();
     } else {
       // Logger().e(
       //     "===>Status Code:${response.statusCode} Name:$name --Type:$type  :${response.body}");
@@ -4653,7 +4660,7 @@ class HomeController extends GetxController {
       }
     } else if (response.statusCode == 401) {
       responseModel = ResponseModel(false, response.statusText ?? "");
-      Get.offAndToNamed(AppPages.FED_AUTH_LOGIN_TEST);
+      logout();
     } else {
       // Logger().e('==>Focus Brand $type $name ${response.body}');
       responseModel = ResponseModel(false, response.statusText ?? "");
@@ -4718,7 +4725,7 @@ class HomeController extends GetxController {
       }
     } else if (response.statusCode == 401) {
       responseModel = ResponseModel(false, response.statusText ?? "");
-      Get.offAndToNamed(AppPages.FED_AUTH_LOGIN_TEST);
+      logout();
     } else {
       responseModel = ResponseModel(false, response.statusText ?? "");
     }
@@ -4775,7 +4782,7 @@ class HomeController extends GetxController {
       }
     } else if (response.statusCode == 401) {
       responseModel = ResponseModel(false, response.statusText ?? "");
-      Get.offAndToNamed(AppPages.FED_AUTH_LOGIN_TEST);
+      logout();
     } else {
       responseModel = ResponseModel(false, response.statusText ?? "");
     }
@@ -4834,7 +4841,7 @@ class HomeController extends GetxController {
       }
     } else if (response.statusCode == 401) {
       responseModel = ResponseModel(false, response.statusText ?? "");
-      Get.offAndToNamed(AppPages.FED_AUTH_LOGIN_TEST);
+      logout();
     } else {
       responseModel = ResponseModel(false, response.statusText ?? "");
     }
