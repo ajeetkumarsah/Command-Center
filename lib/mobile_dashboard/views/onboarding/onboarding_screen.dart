@@ -100,7 +100,9 @@ class _BusinessOnboardingScreenState extends State<BusinessOnboardingScreen> {
     double height = screenH!;
 
     return Scaffold(
-      backgroundColor: AppColors.white, //colors[_currentPage],
+      backgroundColor: AppColors.white,
+      //colors[_currentPage],
+      resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: Column(
           children: [

@@ -34,9 +34,9 @@ class _IntroScreenState extends State<IntroScreen> {
     FirebaseCrashlytics.instance.log("Intro Started");
     Timer(const Duration(seconds: 2), () {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        setState(() {
+        // setState(() {
           _inArrow = true;
-        });
+        // });
       });
     });
     FirebaseCrashlytics.instance.log("Intro Seen Check");
