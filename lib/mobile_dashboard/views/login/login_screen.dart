@@ -1,5 +1,4 @@
 import 'package:get/get.dart';
-import 'package:logger/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -77,9 +76,7 @@ class _LoginScreenState extends State<LoginScreen> {
               debugPrint('blocking navigation to ${request.url}');
               var uri = Uri.dataFromString(request.url);
               var code = uri.queryParameters['code'];
-
               authCtlr.getUserProfile(code ?? '');
-
               return NavigationDecision.prevent;
             } else if (request.url.contains('access_denied')) {
               FirebaseCrashlytics.instance.log("Login : Access Denied");

@@ -688,12 +688,13 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                             children: [
                                               Text(
                                                 ctlr.isSummaryDirect
-                                                    ? 'Sellout (in ${ctlr.summaryData.first.mtdRetailing?.ind?.cmSellout?.contains('Cr') ?? false ? 'Cr' : ctlr.summaryData.first.mtdRetailing?.ind?.cmSellout?.contains('Lk') ?? false ? 'Lk' : ''})'
-                                                    : 'Sellout (in ${ctlr.summaryData.first.mtdRetailing?.indDir?.cmSellout?.contains('Cr') ?? false ? 'Cr' : ctlr.summaryData.first.mtdRetailing?.indDir?.cmSellout?.contains('Lk') ?? false ? 'Lk' : ''})',
+                                                    ? 'Sellout CY  \n(in ${ctlr.summaryData.first.mtdRetailing?.ind?.cmSellout?.contains('Cr') ?? false ? 'Cr' : ctlr.summaryData.first.mtdRetailing?.ind?.cmSellout?.contains('Lk') ?? false ? 'Lk' : ''})'
+                                                    : 'Sellout CY   \n(in ${ctlr.summaryData.first.mtdRetailing?.indDir?.cmSellout?.contains('Cr') ?? false ? 'Cr' : ctlr.summaryData.first.mtdRetailing?.indDir?.cmSellout?.contains('Lk') ?? false ? 'Lk' : ''})',
                                                 style: GoogleFonts.ptSans(
                                                   fontSize: 16,
                                                   fontWeight: FontWeight.w400,
                                                 ),
+                                                textAlign: TextAlign.center,
                                               ),
                                               Row(
                                                 mainAxisAlignment:
@@ -709,6 +710,8 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                                         fontWeight:
                                                             FontWeight.w400,
                                                       ),
+                                                      textAlign:
+                                                          TextAlign.center,
                                                     ),
                                                   ),
                                                 ],
@@ -716,6 +719,72 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                             ],
                                           ),
                                         ),
+                                        if (ctlr.isSummaryDirect
+                                            ? (ctlr
+                                                        .summaryData
+                                                        .first
+                                                        .mtdRetailing
+                                                        ?.ind
+                                                        ?.cmPySellout !=
+                                                    null &&
+                                                ctlr
+                                                    .summaryData
+                                                    .first
+                                                    .mtdRetailing!
+                                                    .ind!
+                                                    .cmPySellout!
+                                                    .isNotEmpty)
+                                            : ctlr
+                                                        .summaryData
+                                                        .first
+                                                        .mtdRetailing
+                                                        ?.indDir
+                                                        ?.cmPySellout !=
+                                                    null &&
+                                                ctlr
+                                                    .summaryData
+                                                    .first
+                                                    .mtdRetailing!
+                                                    .indDir!
+                                                    .cmPySellout!
+                                                    .isNotEmpty)
+                                          Expanded(
+                                            child: Column(
+                                              children: [
+                                                Text(
+                                                  ctlr.isSummaryDirect
+                                                      ? 'Sellout PY \n (in ${ctlr.summaryData.first.mtdRetailing?.ind?.cmPySellout?.contains('Cr') ?? false ? 'Cr' : ctlr.summaryData.first.mtdRetailing?.ind?.cmPySellout?.contains('Lk') ?? false ? 'Lk' : ''})'
+                                                      : 'Sellout PY  \n(in ${ctlr.summaryData.first.mtdRetailing?.indDir?.cmPySellout?.contains('Cr') ?? false ? 'Cr' : ctlr.summaryData.first.mtdRetailing?.indDir?.cmPySellout?.contains('Lk') ?? false ? 'Lk' : ''})',
+                                                  style: GoogleFonts.ptSans(
+                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.w400,
+                                                  ),
+                                                  textAlign: TextAlign.center,
+                                                ),
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Flexible(
+                                                      child: Text(
+                                                        ctlr.isSummaryDirect
+                                                            ? '${ctlr.summaryData.first.mtdRetailing?.ind?.cmPySellout?.contains('Cr') ?? false ? ctlr.summaryData.first.mtdRetailing?.ind?.cmPySellout?.replaceAll('Cr', '') : ctlr.summaryData.first.mtdRetailing?.ind?.cmPySellout?.contains('Lk') ?? false ? ctlr.summaryData.first.mtdRetailing?.ind?.cmPySellout?.replaceAll('Lk', '') : ctlr.summaryData.first.mtdRetailing?.ind?.cmPySellout}'
+                                                            : '${ctlr.summaryData.first.mtdRetailing?.indDir?.cmPySellout?.contains('Cr') ?? false ? ctlr.summaryData.first.mtdRetailing?.indDir?.cmPySellout?.replaceAll('Cr', '') : ctlr.summaryData.first.mtdRetailing?.indDir?.cmPySellout?.contains('Lk') ?? false ? ctlr.summaryData.first.mtdRetailing?.indDir?.cmPySellout?.replaceAll('Lk', '') : ctlr.summaryData.first.mtdRetailing?.indDir?.cmPySellout}',
+                                                        style:
+                                                            GoogleFonts.ptSans(
+                                                          fontSize: 40,
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                        ),
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                )
+                                              ],
+                                            ),
+                                          ),
                                         if (ctlr.isSummaryDirect
                                             ? (ctlr
                                                         .summaryData
@@ -751,11 +820,12 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                                   CrossAxisAlignment.center,
                                               children: [
                                                 Text(
-                                                  '${ctlr.selectedMonth?.substring(0, 3)}${ctlr.selectedMonth?.substring(6, 8)} IYA',
+                                                  '${ctlr.selectedMonth?.substring(0, 3)}${ctlr.selectedMonth?.substring(6, 8)} \nIYA',
                                                   style: GoogleFonts.ptSans(
                                                     fontSize: 16,
                                                     fontWeight: FontWeight.w400,
                                                   ),
+                                                  textAlign: TextAlign.center,
                                                 ),
                                                 Row(
                                                   mainAxisAlignment:
@@ -775,6 +845,8 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                                           fontWeight:
                                                               FontWeight.w400,
                                                         ),
+                                                        textAlign:
+                                                            TextAlign.center,
                                                       ),
                                                     ),
                                                   ],
@@ -815,11 +887,12 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                             child: Column(
                                               children: [
                                                 Text(
-                                                  '${DateConverter().returnMonth(DateTime.now()).substring(0, 3).toLowerCase() == ctlr.selectedMonth?.substring(0, 3).toLowerCase() ? 'P3M' : 'FYTD'} IYA',
+                                                  '${DateConverter().returnMonth(DateTime.now()).substring(0, 3).toLowerCase() == ctlr.selectedMonth?.substring(0, 3).toLowerCase() ? 'P3M' : 'FYTD'} \nIYA',
                                                   style: GoogleFonts.ptSans(
                                                     fontSize: 16,
                                                     fontWeight: FontWeight.w400,
                                                   ),
+                                                  textAlign: TextAlign.center,
                                                 ),
                                                 Row(
                                                   mainAxisAlignment:
@@ -836,6 +909,72 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                                           fontWeight:
                                                               FontWeight.w400,
                                                         ),
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                        if (ctlr.isSummaryDirect
+                                            ? (ctlr
+                                                        .summaryData
+                                                        .first
+                                                        .mtdRetailing
+                                                        ?.ind
+                                                        ?.cyP3MIya !=
+                                                    null &&
+                                                ctlr
+                                                    .summaryData
+                                                    .first
+                                                    .mtdRetailing!
+                                                    .ind!
+                                                    .cyP3MIya!
+                                                    .isNotEmpty)
+                                            : ctlr
+                                                        .summaryData
+                                                        .first
+                                                        .mtdRetailing
+                                                        ?.indDir
+                                                        ?.cyP3MIya !=
+                                                    null &&
+                                                ctlr
+                                                    .summaryData
+                                                    .first
+                                                    .mtdRetailing!
+                                                    .indDir!
+                                                    .cyP3MIya!
+                                                    .isNotEmpty)
+                                          Expanded(
+                                            child: Column(
+                                              children: [
+                                                Text(
+                                                  '${DateConverter().returnMonth(DateTime.now()).substring(0, 3).toLowerCase() == ctlr.selectedMonth?.substring(0, 3).toLowerCase() ? 'P3M' : 'FYTD'} \nIYA',
+                                                  style: GoogleFonts.ptSans(
+                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.w400,
+                                                  ),
+                                                  textAlign: TextAlign.center,
+                                                ),
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Flexible(
+                                                      child: Text(
+                                                        ctlr.isSummaryDirect
+                                                            ? '${ctlr.summaryData.first.mtdRetailing?.ind?.cyP3MIya}'
+                                                            : '${ctlr.summaryData.first.mtdRetailing?.indDir?.cyP3MIya}',
+                                                        style:
+                                                            GoogleFonts.ptSans(
+                                                          fontSize: 40,
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                        ),
+                                                        textAlign:
+                                                            TextAlign.center,
                                                       ),
                                                     ),
                                                   ],

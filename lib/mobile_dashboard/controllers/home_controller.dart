@@ -2919,6 +2919,11 @@ class HomeController extends GetxController {
 
     if (tabType == SummaryTypes.retailing.type) {
       _retailingTrendsValue = value;
+      if (value.toLowerCase().contains('allindia')) {
+        // _isRetailingDeepDiveInd = false;
+      } else {
+        _isRetailingDeepDiveInd = true;
+      }
     } else if (tabType == SummaryTypes.coverage.type) {
       _coverageTrendsValue = value;
     } else if (tabType == SummaryTypes.gp.type) {

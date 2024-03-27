@@ -136,18 +136,22 @@ class Coverage {
   final String? ccCurrentMonth;
   final bool? dataFound;
 
+  final String? progressBarCcCurrentMonth;
+
   Coverage({
     this.cmCoverage,
     this.billing,
     this.progressBarBillingIya,
     this.ccCurrentMonth,
     this.dataFound,
+    this.progressBarCcCurrentMonth,
   });
 
   factory Coverage.fromJson(Map<String, dynamic> json) => Coverage(
         cmCoverage: json["cmCoverage"],
         billing: json["billing"],
         ccCurrentMonth: json["ccCurrentMonth"],
+        progressBarCcCurrentMonth: json["progressBarCcCurrentMonth"],
         progressBarBillingIya: json["progressBarBillingIYA"],
         dataFound: json["dataFound"],
       );
@@ -397,6 +401,12 @@ class Ind {
   final double? yPerMax;
   final double? yPerInterval;
 
+  final String? cyP3MIya;
+
+  final String? progressBarP3MIya;
+
+  final String? cmPySellout;
+
   Ind({
     this.cmIya,
     this.progressBarCmIya,
@@ -415,10 +425,16 @@ class Ind {
     this.yPerInterval,
     this.yPerMax,
     this.yPerMin,
+    this.cmPySellout,
+    this.cyP3MIya,
+    this.progressBarP3MIya,
   });
 
   factory Ind.fromJson(Map<String, dynamic> json) => Ind(
         dataFound: json["dataFound"],
+        cyP3MIya: json["cyP3MIya"],
+        progressBarP3MIya: json["progressBarP3MIya"],
+        cmPySellout: json["cmPySellout"],
         cmIya: json["cmIya"],
         progressBarCmIya: json["progressBarCmIya"],
         fyIya: json["fyIya"],

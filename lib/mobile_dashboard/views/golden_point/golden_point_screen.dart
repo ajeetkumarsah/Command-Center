@@ -5,6 +5,7 @@ import 'package:command_centre/mobile_dashboard/utils/summary_types.dart';
 import 'package:command_centre/mobile_dashboard/controllers/home_controller.dart';
 import 'package:command_centre/mobile_dashboard/views/widgets/custom_loader.dart';
 import 'package:command_centre/mobile_dashboard/views/widgets/custom_shimmer.dart';
+import 'package:command_centre/mobile_dashboard/views/widgets/custom_snackbar.dart';
 import 'package:command_centre/mobile_dashboard/views/widgets/custom_deepdive_appbar.dart';
 import 'package:command_centre/mobile_dashboard/views/golden_point/widget/gp_chart_widget.dart';
 import 'package:command_centre/mobile_dashboard/views/retailing/widgets/custom_epanded_Widget.dart';
@@ -54,21 +55,37 @@ class _GoldenPointScreenState extends State<GoldenPointScreen> {
             backgroundColor: AppColors.bgLight,
             appBar: CustomDeepDiveAppBar(
               title: 'Golden Points',
-              onDivisionTap: () => Get.bottomSheet(
-                GeographyBottomsheet(
-                  isLoadRetailing: true,
-                  isSummary: false,
-                  tabType: SummaryTypes.gp.type,
-                ),
-                isScrollControlled: true,
-              ),
-              onMonthTap: () => Get.bottomSheet(
-                SelectMonthBottomsheet(
-                  isLoadRetailing: true,
-                  tabType: SummaryTypes.gp.type,
-                ),
-                isScrollControlled: true,
-              ),
+              onDivisionTap: ctlr.isGPGeoLoading ||
+                      ctlr.isGPCategoryLoading ||
+                      ctlr.isGPChannelLoading ||
+                      ctlr.isGPTrendsLoading
+                  ? () {
+                      showCustomSnackBar('Please wait data is loading! ',
+                          isError: false, isBlack: true);
+                    }
+                  : () => Get.bottomSheet(
+                        GeographyBottomsheet(
+                          isLoadRetailing: true,
+                          isSummary: false,
+                          tabType: SummaryTypes.gp.type,
+                        ),
+                        isScrollControlled: true,
+                      ),
+              onMonthTap: ctlr.isGPGeoLoading ||
+                      ctlr.isGPCategoryLoading ||
+                      ctlr.isGPChannelLoading ||
+                      ctlr.isGPTrendsLoading
+                  ? () {
+                      showCustomSnackBar('Please wait data is loading! ',
+                          isError: false, isBlack: true);
+                    }
+                  : () => Get.bottomSheet(
+                        SelectMonthBottomsheet(
+                          isLoadRetailing: true,
+                          tabType: SummaryTypes.gp.type,
+                        ),
+                        isScrollControlled: true,
+                      ),
               geo: ctlr.selectedGeo,
               geoValue: ctlr.selectedGeoValue,
               date: ctlr.selectedMonth != null ? '${ctlr.selectedMonth}' : '',

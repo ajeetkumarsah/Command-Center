@@ -4,7 +4,6 @@ import '../../bindings/home_binding.dart';
 import '../../views/login/persona_select_screen.dart';
 import '../../views/login/retry_access_denied_screen.dart';
 import '../../views/store_fingertips/sales/sales_deep_dive_screen.dart';
-import 'package:command_centre/mobile_dashboard/views/login/testing.dart';
 import 'package:command_centre/mobile_dashboard/views/login/login_screen.dart';
 import 'package:command_centre/mobile_dashboard/views/update/update_screen.dart';
 import 'package:command_centre/mobile_dashboard/views/login/purpose_screen.dart';

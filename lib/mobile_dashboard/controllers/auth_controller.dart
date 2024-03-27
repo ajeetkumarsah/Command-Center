@@ -295,19 +295,22 @@ class AuthController extends GetxController {
     });
     debugPrint(' Employee data API response===> ');
     http.Response response;
-    response =
-        await http.post(Uri.parse(AppConstants.FED_AUTH_TOKEN), headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/x-www-form-urlencoded',
-      'Cookie': 'PF=gAvY5cL83UUST7sxealWO2',
-    }, body: {
-      "code": code,
-      'client_id': AppConstants.CLIENT_ID,
-      'grant_type': 'authorization_code',
-      'redirect_uri': AppConstants.REDIRECT_URI,
-      'client_secret': AppConstants.CLIENT_SECRET,
-      'scope': 'openid profile',
-    });
+    response = await http.post(
+      Uri.parse(AppConstants.FED_AUTH_TOKEN),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Cookie': 'PF=gAvY5cL83UUST7sxealWO2',
+      },
+      body: {
+        "code": code,
+        'client_id': AppConstants.CLIENT_ID,
+        'grant_type': 'authorization_code',
+        'redirect_uri': AppConstants.REDIRECT_URI,
+        'client_secret': AppConstants.CLIENT_SECRET,
+        'scope': 'openid profile',
+      },
+    );
     // Response response = await authRepo.getUserData({
     //   "code": code,
     //   'client_id': AppConstants.CLIENT_ID,
@@ -329,10 +332,10 @@ class AuthController extends GetxController {
       getEmployeeData(resBody['access_token']);
       responseModel = ResponseModel(true, 'Success');
     } else if (response.statusCode == 401) {
-      responseModel = ResponseModel(false, response.body ?? "");
+      responseModel = ResponseModel(false, response.body);
       logout();
     } else {
-      responseModel = ResponseModel(false, response.body ?? "");
+      responseModel = ResponseModel(false, response.body);
     }
     _isLoading = false;
     update();

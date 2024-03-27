@@ -6,6 +6,7 @@ import 'package:command_centre/mobile_dashboard/utils/summary_types.dart';
 import 'package:command_centre/mobile_dashboard/controllers/home_controller.dart';
 import 'package:command_centre/mobile_dashboard/views/widgets/custom_loader.dart';
 import 'package:command_centre/mobile_dashboard/views/widgets/custom_shimmer.dart';
+import 'package:command_centre/mobile_dashboard/views/widgets/custom_snackbar.dart';
 import 'package:command_centre/mobile_dashboard/views/widgets/custom_deepdive_appbar.dart';
 import 'package:command_centre/mobile_dashboard/views/retailing/widgets/custom_epanded_Widget.dart';
 import 'package:command_centre/mobile_dashboard/views/retailing/widgets/geography_bottomsheet.dart';
@@ -132,21 +133,37 @@ class _RetailingScreenState extends State<RetailingScreen> {
                   ],
                 ),
               ),
-              onDivisionTap: () => Get.bottomSheet(
-                GeographyBottomsheet(
-                  isLoadRetailing: true,
-                  tabType: SummaryTypes.retailing.type,
-                  isSummary: false,
-                ),
-                isScrollControlled: true,
-              ),
-              onMonthTap: () => Get.bottomSheet(
-                SelectMonthBottomsheet(
-                  isLoadRetailing: true,
-                  tabType: SummaryTypes.retailing.type,
-                ),
-                isScrollControlled: true,
-              ),
+              onDivisionTap: ctlr.isRetailingTrendsLoading ||
+                      ctlr.isRetailingGeoLoading ||
+                      ctlr.isRetailingChannelLoading ||
+                      ctlr.isRetailingCategoryLoading
+                  ? () {
+                      showCustomSnackBar('Please wait data is loading! ',
+                          isError: false, isBlack: true);
+                    }
+                  : () => Get.bottomSheet(
+                        GeographyBottomsheet(
+                          isLoadRetailing: true,
+                          tabType: SummaryTypes.retailing.type,
+                          isSummary: false,
+                        ),
+                        isScrollControlled: true,
+                      ),
+              onMonthTap: ctlr.isRetailingTrendsLoading ||
+                      ctlr.isRetailingGeoLoading ||
+                      ctlr.isRetailingChannelLoading ||
+                      ctlr.isRetailingCategoryLoading
+                  ? () {
+                      showCustomSnackBar('Please wait data is loading! ',
+                          isError: false, isBlack: true);
+                    }
+                  : () => Get.bottomSheet(
+                        SelectMonthBottomsheet(
+                          isLoadRetailing: true,
+                          tabType: SummaryTypes.retailing.type,
+                        ),
+                        isScrollControlled: true,
+                      ),
               geo: ctlr.selectedGeo,
               geoValue: ctlr.selectedGeoValue,
               date: ctlr.selectedMonth != null ? '${ctlr.selectedMonth}' : '',

@@ -5,6 +5,7 @@ import 'package:command_centre/mobile_dashboard/utils/summary_types.dart';
 import 'package:command_centre/mobile_dashboard/controllers/home_controller.dart';
 import 'package:command_centre/mobile_dashboard/views/widgets/custom_loader.dart';
 import 'package:command_centre/mobile_dashboard/views/widgets/custom_shimmer.dart';
+import 'package:command_centre/mobile_dashboard/views/widgets/custom_snackbar.dart';
 import 'package:command_centre/mobile_dashboard/views/widgets/custom_deepdive_appbar.dart';
 import 'package:command_centre/mobile_dashboard/views/focus_brand/widget/fb_chart_widget.dart';
 import 'package:command_centre/mobile_dashboard/views/retailing/widgets/custom_epanded_Widget.dart';
@@ -55,21 +56,37 @@ class _FocusBrandScreenState extends State<FocusBrandScreen> {
             backgroundColor: AppColors.bgLight,
             appBar: CustomDeepDiveAppBar(
               title: 'Focus Brand',
-              onDivisionTap: () => Get.bottomSheet(
-                GeographyBottomsheet(
-                  isSummary: false,
-                  isLoadRetailing: true,
-                  tabType: SummaryTypes.fb.type,
-                ),
-                isScrollControlled: true,
-              ),
-              onMonthTap: () => Get.bottomSheet(
-                SelectMonthBottomsheet(
-                  isLoadRetailing: true,
-                  tabType: SummaryTypes.fb.type,
-                ),
-                isScrollControlled: true,
-              ),
+              onDivisionTap: ctlr.isFBGeoLoading ||
+                      ctlr.isFBCategoryLoading ||
+                      ctlr.isFBChannelLoading ||
+                      ctlr.isFBTrendsLoading
+                  ? () {
+                      showCustomSnackBar('Please wait data is loading! ',
+                          isError: false, isBlack: true);
+                    }
+                  : () => Get.bottomSheet(
+                        GeographyBottomsheet(
+                          isSummary: false,
+                          isLoadRetailing: true,
+                          tabType: SummaryTypes.fb.type,
+                        ),
+                        isScrollControlled: true,
+                      ),
+              onMonthTap: ctlr.isFBGeoLoading ||
+                      ctlr.isFBCategoryLoading ||
+                      ctlr.isFBChannelLoading ||
+                      ctlr.isFBTrendsLoading
+                  ? () {
+                      showCustomSnackBar('Please wait data is loading! ',
+                          isError: false, isBlack: true);
+                    }
+                  : () => Get.bottomSheet(
+                        SelectMonthBottomsheet(
+                          isLoadRetailing: true,
+                          tabType: SummaryTypes.fb.type,
+                        ),
+                        isScrollControlled: true,
+                      ),
               geo: ctlr.selectedGeo,
               geoValue: ctlr.selectedGeoValue,
               date: ctlr.selectedMonth != null ? '${ctlr.selectedMonth}' : '',
