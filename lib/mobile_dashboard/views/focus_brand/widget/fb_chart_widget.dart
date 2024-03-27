@@ -333,7 +333,7 @@ class _CustomExpandedChartWidgetState extends State<FBTrendsChartWidget> {
                                                         color: Colors.white,
                                                       );
                                                       return LineTooltipItem(
-                                                        '${widget.trendsList[0].data![touchedSpot.spotIndex].calendarMonth}\n${ctlr.channelSales ? (widget.trendsList[0].data![touchedSpot.spotIndex].fbAchieveSumRv ?? '0.0') : double.tryParse((widget.trendsList[0].data![touchedSpot.spotIndex].fb ?? '0.0'))?.toStringAsFixed(2) ?? '0.0'}',
+                                                        '${widget.trendsList[0].data![touchedSpot.spotIndex].calendarMonth}\n${ctlr.channelSales ? (widget.trendsList[0].data![touchedSpot.spotIndex].fbAchieveSumRv ?? '0.0') : double.tryParse((widget.trendsList[0].data![touchedSpot.spotIndex].fb ?? '0.0'))?.toStringAsFixed(0) ?? '0.0'}',
                                                         textStyle,
                                                       );
                                                     },

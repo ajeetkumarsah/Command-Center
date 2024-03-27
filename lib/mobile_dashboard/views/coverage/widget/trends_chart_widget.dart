@@ -307,7 +307,7 @@ class _CustomExpandedChartWidgetState extends State<CoverageTrendsChartWidget> {
                                                       List<int> indicators) {
                                                 return indicators.map(
                                                   (int index) {
-                                                    final line = FlLine(
+                                                    const line = FlLine(
                                                         color: Colors.grey,
                                                         strokeWidth: 1,
                                                         dashArray: [4, 2]);
@@ -339,7 +339,7 @@ class _CustomExpandedChartWidgetState extends State<CoverageTrendsChartWidget> {
                                               border: const Border(
                                                   bottom: BorderSide(width: .5),
                                                   left: BorderSide(width: .5))),
-                                          gridData: FlGridData(
+                                          gridData: const FlGridData(
                                             show: true,
                                             drawHorizontalLine: false,
                                           ),
@@ -368,10 +368,10 @@ class _CustomExpandedChartWidgetState extends State<CoverageTrendsChartWidget> {
                                                             []),
                                               ),
                                             ),
-                                            topTitles: AxisTitles(
+                                            topTitles: const AxisTitles(
                                                 sideTitles: SideTitles(
                                                     showTitles: false)),
-                                            rightTitles: AxisTitles(
+                                            rightTitles: const AxisTitles(
                                                 sideTitles: SideTitles(
                                                     showTitles: false)),
                                           ),

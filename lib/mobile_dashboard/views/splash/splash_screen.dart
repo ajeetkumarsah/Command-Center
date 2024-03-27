@@ -27,19 +27,18 @@ class _SplashScreenState extends State<SplashScreen> {
     startTimer();
   }
 
-  void startTimer() {
+  void startTimer() async {
     FirebaseCrashlytics.instance.log("Splash Started");
-    Timer(const Duration(seconds: 3), () async {
-      bool seen = await controller.getSeen();
-      var token = await controller.getUserToken();
-      var geo = await controller.getGeo();
-      var geoValue = await controller.getGeoValue();
-      var accessToken = await controller.getAccessToken();
-
-      if (seen) {
-        if (token.isNotEmpty && accessToken.isNotEmpty) {
-          FirebaseCrashlytics.instance.log("Splash Token Check");
-          debugPrint('===>Firebase Carsh Analytics');
+    bool seen = await controller.getSeen();
+    var token = await controller.getUserToken();
+    var geo = await controller.getGeo();
+    var geoValue = await controller.getGeoValue();
+    var accessToken = await controller.getAccessToken();
+    Timer(const Duration(seconds: 3), () {
+      if (token.isNotEmpty && accessToken.isNotEmpty) {
+        FirebaseCrashlytics.instance.log("Splash Token Check");
+        debugPrint('===>Firebase Carsh Analytics');
+        if (seen) {
           if (controller.configModel != null) {
             if (controller.configModel?.onMaintenance ?? false) {
               Get.offAndToNamed(AppPages.maintenanceScreen);
@@ -65,12 +64,13 @@ class _SplashScreenState extends State<SplashScreen> {
             }
           }
         } else {
-          FirebaseCrashlytics.instance.log("Splash Token False");
-          Get.offAndToNamed(AppPages.FED_AUTH_LOGIN_TEST);
+          Get.offAndToNamed(AppPages.businessOnboarding);
         }
       } else {
+        FirebaseCrashlytics.instance.log("Splash Token False");
         Get.offAndToNamed(AppPages.FED_AUTH_LOGIN_TEST);
       }
+
       //   }
       // }
     });

@@ -81,7 +81,7 @@ class AppPages {
     // ),
     GetPage(
       name: _Paths.FED_AUTH_LOGIN_TEST,
-      page: () => const WebViewExample(),
+      page: () => const LoginScreen(),
       binding: HomeBinding(),
     ),
     GetPage(

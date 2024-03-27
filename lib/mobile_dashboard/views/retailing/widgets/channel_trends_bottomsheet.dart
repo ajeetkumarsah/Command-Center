@@ -1,8 +1,7 @@
-import 'package:command_centre/mobile_dashboard/services/analytics_utils.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
 import 'package:command_centre/mobile_dashboard/utils/summary_types.dart';
 import 'package:command_centre/mobile_dashboard/controllers/home_controller.dart';
@@ -192,7 +191,12 @@ class _ChannelTrendsFilterBottomsheetState
                     ),
                     TextButton(
                       onPressed: () {
-                        FirebaseAnalytics.instance.logEvent(name: 'deep_dive_selected_channel', parameters: {"message": 'Added Selected Channel ${ctlr.getUserName()}'});
+                        FirebaseAnalytics.instance.logEvent(
+                            name: 'deep_dive_selected_channel',
+                            parameters: {
+                              "message":
+                                  'Added Selected Channel ${ctlr.getUserName()}'
+                            });
                         ctlr.onChangeChannel(
                             _selectedTrendsChannel, widget.tabType);
                         ctlr.onTrendsFilterSelect(widget.type, widget.tabType);

@@ -1,7 +1,11 @@
+import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_constants.dart';
 import 'package:command_centre/mobile_dashboard/utils/routes/app_pages.dart';
 import 'package:command_centre/mobile_dashboard/utils/global.dart' as globals;
@@ -40,7 +44,7 @@ class AuthController extends GetxController {
 
   void logout() {
     //logout the current user
-    authRepo.clearSharedData();
+    // authRepo.clearSharedData();
     Get.offAndToNamed(AppPages.FED_AUTH_LOGIN_TEST);
     update();
   }
@@ -77,9 +81,21 @@ class AuthController extends GetxController {
     await authRepo.updateToken(token);
   }
 
+  Future<void> updateUserName(String name) async {
+    await authRepo.saveUserName(name);
+  }
+
+  Future<void> updateUserEmail(String email) async {
+    await authRepo.saveUserEmail(email);
+  }
+
+  Future<void> updateUID(String uid) async {
+    await authRepo.saveUserUID(uid);
+  }
+
   Future<void> saveToken(String token, String xToken) async {
     await authRepo.saveUserToken(token);
-    await authRepo.saveUserXToken(xToken);
+    await authRepo.saveUserAccessToken(xToken);
   }
 
   bool isLoggedIn() {
@@ -92,6 +108,22 @@ class AuthController extends GetxController {
 
   Future<String> getUserToken() async {
     return authRepo.getUserToken();
+  }
+
+  Future<String> getUserAccessToken() async {
+    return authRepo.getUserAccessToken();
+  }
+
+  Future<String> getUserName() async {
+    return authRepo.getUserName();
+  }
+
+  Future<String> getUserEmail() async {
+    return authRepo.getUserEmail();
+  }
+
+  Future<String> getUID() async {
+    return authRepo.getUID();
   }
 
   Future<String> getPingCode() async {
@@ -163,7 +195,7 @@ class AuthController extends GetxController {
       }
     } else if (response.statusCode == 401) {
       responseModel = ResponseModel(false, response.statusText ?? "");
-      logout();
+      // logout();
     } else {
       responseModel = ResponseModel(false, response.statusText ?? "");
     }
@@ -180,6 +212,7 @@ class AuthController extends GetxController {
     Response response =
         await authRepo.getConfig({"appVersion": true, "inventory": false});
     ResponseModel responseModel;
+    debugPrint(' Config API response===> ${response.body}');
     if (response.statusCode == 200) {
       if (response.body["successful"].toString().toLowerCase() == 'true') {
         final data = response.body["data"];
@@ -251,6 +284,102 @@ class AuthController extends GetxController {
     stopWatch.reset();
     //
     _isFilterLoading = false;
+    update();
+    return responseModel;
+  }
+
+  Future<ResponseModel> getUserProfile(String? code) async {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _isLoading = true;
+      update();
+    });
+    debugPrint(' Employee data API response===> ');
+    http.Response response;
+    response =
+        await http.post(Uri.parse(AppConstants.FED_AUTH_TOKEN), headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Cookie': 'PF=gAvY5cL83UUST7sxealWO2',
+    }, body: {
+      "code": code,
+      'client_id': AppConstants.CLIENT_ID,
+      'grant_type': 'authorization_code',
+      'redirect_uri': AppConstants.REDIRECT_URI,
+      'client_secret': AppConstants.CLIENT_SECRET,
+      'scope': 'openid profile',
+    });
+    // Response response = await authRepo.getUserData({
+    //   "code": code,
+    //   'client_id': AppConstants.CLIENT_ID,
+    //   'grant_type': 'authorization_code',
+    //   'redirect_uri': AppConstants.REDIRECT_URI,
+    //   'client_secret': AppConstants.CLIENT_SECRET,
+    //   'scope': 'openid profile',
+    // });
+    ResponseModel responseModel;
+    debugPrint(' Employee data API response===> ${response.body}');
+    if (response.statusCode == 200) {
+      FirebaseCrashlytics.instance.log("Login : Token Verified");
+      FirebaseAnalytics.instance.logEvent(
+          name: 'employee_auth',
+          parameters: <String, dynamic>{'response': 200});
+      debugPrint('===>User Profile data: ${response.body}');
+      var resBody = json.decode(response.body);
+      saveToken('', resBody['access_token'] ?? '');
+      getEmployeeData(resBody['access_token']);
+      responseModel = ResponseModel(true, 'Success');
+    } else if (response.statusCode == 401) {
+      responseModel = ResponseModel(false, response.body ?? "");
+      logout();
+    } else {
+      responseModel = ResponseModel(false, response.body ?? "");
+    }
+    _isLoading = false;
+    update();
+    return responseModel;
+  }
+
+  Future<ResponseModel> getEmployeeData(String? token) async {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _isLoading = true;
+      update();
+    });
+    debugPrint(' Starting Employee Data===>');
+    Response response =
+        await authRepo.getEmployeeAuth({'access_token': token}, token: token);
+    ResponseModel responseModel;
+    debugPrint(' Employee data API response===> ${response.body}');
+    if (response.statusCode == 200) {
+      FirebaseCrashlytics.instance.log("Login : User Verified");
+      var resBody = response.body;
+
+      saveToken(resBody['token'], token ?? '');
+      updateUserName(resBody['user']['first_name']);
+      updateUserEmail(resBody['user']['email']);
+      updateUID(resBody['user']['id']);
+
+      globals.token = await getUserToken();
+      globals.name = await getUserName();
+      globals.email = await getUserEmail();
+      globals.uId = await getUID();
+
+      var geo = await getGeo();
+      var geoValue = await getGeoValue();
+      debugPrint('===>Before Token check');
+      if (geo.trim().isNotEmpty && geoValue.trim().isNotEmpty) {
+        debugPrint('===>After Token check');
+        Get.offAndToNamed(AppPages.INITIAL);
+      } else {
+        Get.offAndToNamed(AppPages.businessOnboarding);
+      }
+      responseModel = ResponseModel(false, 'Something went wrong');
+    } else if (response.statusCode == 401) {
+      responseModel = ResponseModel(false, response.statusText ?? "");
+      logout();
+    } else {
+      responseModel = ResponseModel(false, response.statusText ?? "");
+    }
+    _isLoading = false;
     update();
     return responseModel;
   }

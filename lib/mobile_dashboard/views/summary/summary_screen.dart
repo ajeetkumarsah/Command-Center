@@ -21,11 +21,13 @@ import 'package:command_centre/mobile_dashboard/utils/date_converter.dart';
 import 'package:command_centre/mobile_dashboard/utils/routes/app_pages.dart';
 import 'package:command_centre/mobile_dashboard/controllers/home_controller.dart';
 import 'package:command_centre/mobile_dashboard/views/widgets/custom_shimmer.dart';
+import 'package:command_centre/mobile_dashboard/views/widgets/custom_snackbar.dart';
 import 'package:command_centre/mobile_dashboard/views/summary/widgets/menu_bottomsheet.dart';
 import 'package:command_centre/mobile_dashboard/views/summary/widgets/personalize_card.dart';
 import 'package:command_centre/mobile_dashboard/views/summary/widgets/retailing_graph_widget.dart';
 import 'package:command_centre/mobile_dashboard/views/summary/widgets/retailing_table_widget.dart';
 import 'package:command_centre/mobile_dashboard/views/summary/widgets/personalize_bottomsheet.dart';
+// ignore_for_file: depend_on_referenced_packages
 
 class SummaryScreen extends StatefulWidget {
   const SummaryScreen({super.key});
@@ -302,14 +304,21 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                 Expanded(
                                   flex: 1,
                                   child: InkWell(
-                                    onTap: () => Get.bottomSheet(
-                                      const GeographyBottomsheet(
-                                        tabType: 'All',
-                                        isLoadRetailing: true,
-                                        isSummary: true,
-                                      ),
-                                      isScrollControlled: true,
-                                    ),
+                                    onTap: ctlr.isSummaryPageLoading
+                                        ? () {
+                                            showCustomSnackBar(
+                                                'Please wait data is loading! ',
+                                                isError: false,
+                                                isBlack: true);
+                                          }
+                                        : () => Get.bottomSheet(
+                                              const GeographyBottomsheet(
+                                                tabType: 'All',
+                                                isLoadRetailing: true,
+                                                isSummary: true,
+                                              ),
+                                              isScrollControlled: true,
+                                            ),
                                     child: SizedBox(
                                       child: Row(
                                         mainAxisAlignment:
@@ -340,14 +349,21 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                 Expanded(
                                   flex: 1,
                                   child: GestureDetector(
-                                    onTap: () => Get.bottomSheet(
-                                      const GeographyBottomsheet(
-                                        tabType: 'All',
-                                        isLoadRetailing: true,
-                                        isSummary: true,
-                                      ),
-                                      isScrollControlled: true,
-                                    ),
+                                    onTap: ctlr.isSummaryPageLoading
+                                        ? () {
+                                            showCustomSnackBar(
+                                                'Please wait data is loading! ',
+                                                isError: false,
+                                                isBlack: true);
+                                          }
+                                        : () => Get.bottomSheet(
+                                              const GeographyBottomsheet(
+                                                tabType: 'All',
+                                                isLoadRetailing: true,
+                                                isSummary: true,
+                                              ),
+                                              isScrollControlled: true,
+                                            ),
                                     child: Padding(
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 4),
@@ -380,14 +396,21 @@ class _SummaryScreenState extends State<SummaryScreen> {
                         Expanded(
                           flex: 1,
                           child: InkWell(
-                            onTap: () => Get.bottomSheet(
-                              const SelectMonthBottomsheet(
-                                tabType: 'All',
-                                isLoadRetailing: true,
-                                isSummary: true,
-                              ),
-                              isScrollControlled: true,
-                            ),
+                            onTap: ctlr.isSummaryPageLoading
+                                ? () {
+                                    showCustomSnackBar(
+                                        'Please wait data is loading! ',
+                                        isError: false,
+                                        isBlack: true);
+                                  }
+                                : () => Get.bottomSheet(
+                                      const SelectMonthBottomsheet(
+                                        tabType: 'All',
+                                        isLoadRetailing: true,
+                                        isSummary: true,
+                                      ),
+                                      isScrollControlled: true,
+                                    ),
                             child: Container(
                               key: keyButton1,
                               height: 50,
@@ -693,73 +716,133 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                             ],
                                           ),
                                         ),
-                                        Expanded(
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            children: [
-                                              Text(
-                                                '${ctlr.selectedMonth?.substring(0, 3)}${ctlr.selectedMonth?.substring(6, 8)} IYA',
-                                                style: GoogleFonts.ptSans(
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.w400,
+                                        if (ctlr.isSummaryDirect
+                                            ? (ctlr
+                                                        .summaryData
+                                                        .first
+                                                        .mtdRetailing
+                                                        ?.ind
+                                                        ?.cmIya !=
+                                                    null &&
+                                                ctlr
+                                                    .summaryData
+                                                    .first
+                                                    .mtdRetailing!
+                                                    .ind!
+                                                    .cmIya!
+                                                    .isNotEmpty)
+                                            : ctlr
+                                                        .summaryData
+                                                        .first
+                                                        .mtdRetailing
+                                                        ?.indDir
+                                                        ?.cmIya !=
+                                                    null &&
+                                                ctlr
+                                                    .summaryData
+                                                    .first
+                                                    .mtdRetailing!
+                                                    .indDir!
+                                                    .cmIya!
+                                                    .isNotEmpty)
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                Text(
+                                                  '${ctlr.selectedMonth?.substring(0, 3)}${ctlr.selectedMonth?.substring(6, 8)} IYA',
+                                                  style: GoogleFonts.ptSans(
+                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.w400,
+                                                  ),
                                                 ),
-                                              ),
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: [
-                                                  Flexible(
-                                                    child: Text(
-                                                      ctlr.isSummaryDirect
-                                                          ? '${ctlr.summaryData.first.mtdRetailing?.ind?.cmIya}'
-                                                          : '${ctlr.summaryData.first.mtdRetailing?.indDir?.cmIya}',
-                                                      maxLines: 1,
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      style: GoogleFonts.ptSans(
-                                                        fontSize: 40,
-                                                        fontWeight:
-                                                            FontWeight.w400,
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Flexible(
+                                                      child: Text(
+                                                        ctlr.isSummaryDirect
+                                                            ? '${ctlr.summaryData.first.mtdRetailing?.ind?.cmIya}'
+                                                            : '${ctlr.summaryData.first.mtdRetailing?.indDir?.cmIya}',
+                                                        maxLines: 1,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        style:
+                                                            GoogleFonts.ptSans(
+                                                          fontSize: 40,
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                        ),
                                                       ),
                                                     ),
-                                                  ),
-                                                ],
-                                              )
-                                            ],
+                                                  ],
+                                                )
+                                              ],
+                                            ),
                                           ),
-                                        ),
-                                        Expanded(
-                                          child: Column(
-                                            children: [
-                                              Text(
-                                                '${DateConverter().returnMonth(DateTime.now()).substring(0, 3).toLowerCase() == ctlr.selectedMonth?.substring(0, 3).toLowerCase() ? 'P3M' : 'FYTD'} IYA',
-                                                style: GoogleFonts.ptSans(
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.w400,
+                                        if (ctlr.isSummaryDirect
+                                            ? (ctlr
+                                                        .summaryData
+                                                        .first
+                                                        .mtdRetailing
+                                                        ?.ind
+                                                        ?.fyIya !=
+                                                    null &&
+                                                ctlr
+                                                    .summaryData
+                                                    .first
+                                                    .mtdRetailing!
+                                                    .ind!
+                                                    .fyIya!
+                                                    .isNotEmpty)
+                                            : ctlr
+                                                        .summaryData
+                                                        .first
+                                                        .mtdRetailing
+                                                        ?.indDir
+                                                        ?.fyIya !=
+                                                    null &&
+                                                ctlr
+                                                    .summaryData
+                                                    .first
+                                                    .mtdRetailing!
+                                                    .indDir!
+                                                    .fyIya!
+                                                    .isNotEmpty)
+                                          Expanded(
+                                            child: Column(
+                                              children: [
+                                                Text(
+                                                  '${DateConverter().returnMonth(DateTime.now()).substring(0, 3).toLowerCase() == ctlr.selectedMonth?.substring(0, 3).toLowerCase() ? 'P3M' : 'FYTD'} IYA',
+                                                  style: GoogleFonts.ptSans(
+                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.w400,
+                                                  ),
                                                 ),
-                                              ),
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: [
-                                                  Flexible(
-                                                    child: Text(
-                                                      ctlr.isSummaryDirect
-                                                          ? '${ctlr.summaryData.first.mtdRetailing?.ind?.fyIya}'
-                                                          : '${ctlr.summaryData.first.mtdRetailing?.indDir?.fyIya}',
-                                                      style: GoogleFonts.ptSans(
-                                                        fontSize: 40,
-                                                        fontWeight:
-                                                            FontWeight.w400,
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Flexible(
+                                                      child: Text(
+                                                        ctlr.isSummaryDirect
+                                                            ? '${ctlr.summaryData.first.mtdRetailing?.ind?.fyIya}'
+                                                            : '${ctlr.summaryData.first.mtdRetailing?.indDir?.fyIya}',
+                                                        style:
+                                                            GoogleFonts.ptSans(
+                                                          fontSize: 40,
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                        ),
                                                       ),
                                                     ),
-                                                  ),
-                                                ],
-                                              )
-                                            ],
+                                                  ],
+                                                )
+                                              ],
+                                            ),
                                           ),
-                                        ),
                                       ],
                                     ),
                                   ),
@@ -1418,26 +1501,37 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                               ],
                                             ),
                                             const SizedBox(height: 16),
-                                            Column(
-                                              children: [
-                                                Text(
-                                                  'GP P3M IYA',
-                                                  style:
-                                                      GoogleFonts.ptSansCaption(
-                                                    fontSize: 16,
-                                                    fontWeight: FontWeight.w500,
+                                            if (ctlr.summaryData.first
+                                                        .dgpCompliance?.gpIya !=
+                                                    null &&
+                                                ctlr
+                                                    .summaryData
+                                                    .first
+                                                    .dgpCompliance!
+                                                    .gpIya!
+                                                    .isNotEmpty)
+                                              Column(
+                                                children: [
+                                                  Text(
+                                                    'GP P3M IYA',
+                                                    style: GoogleFonts
+                                                        .ptSansCaption(
+                                                      fontSize: 16,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                    ),
                                                   ),
-                                                ),
-                                                Text(
-                                                  '${ctlr.summaryData.first.dgpCompliance?.gpIya}',
-                                                  style:
-                                                      GoogleFonts.ptSansCaption(
-                                                    fontSize: 40,
-                                                    fontWeight: FontWeight.w500,
+                                                  Text(
+                                                    '${ctlr.summaryData.first.dgpCompliance?.gpIya}',
+                                                    style: GoogleFonts
+                                                        .ptSansCaption(
+                                                      fontSize: 40,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                    ),
                                                   ),
-                                                ),
-                                              ],
-                                            ),
+                                                ],
+                                              ),
                                           ],
                                         ),
                                         CircularPercentIndicator(

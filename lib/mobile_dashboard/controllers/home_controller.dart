@@ -124,7 +124,7 @@ class HomeController extends GetxController {
   String get coverageTrendsValue => _coverageTrendsValue;
   String get gpTrendsValue => _gpTrendsValue;
   String get fbTrendsValue => _fbTrendsValue;
-  String _selectedCoverageTrendsFilter = 'Billing %';
+  String _selectedCoverageTrendsFilter = 'Prod %';
   String get selectedCoverageTrendsFilter => _selectedCoverageTrendsFilter;
   String _selectedTrends = 'Geography';
   String get selectedTrends => _selectedTrends;
@@ -3267,7 +3267,6 @@ class HomeController extends GetxController {
     //logout the current user
     homeRepo.clearSharedData();
     Get.offAndToNamed(AppPages.FED_AUTH_LOGIN_TEST);
-    update();
   }
 
   List<SummaryModel> summaryData = [];

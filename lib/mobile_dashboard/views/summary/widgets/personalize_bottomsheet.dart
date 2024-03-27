@@ -98,6 +98,7 @@ class _PersonalizeBottomsheetState extends State<PersonalizeBottomsheet> {
   }
 
   DragAndDropList buildList(PesonalizedHeaderBody list) => DragAndDropList(
+        contentsWhenEmpty: Text('More metrics'),
         header: Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
           child: Text(
@@ -185,9 +186,12 @@ class _PersonalizeBottomsheetState extends State<PersonalizeBottomsheet> {
                     contentsWhenEmpty: const SizedBox(
                       height: 50,
                       child: Center(
-                        child: SizedBox(),
+                        child: SizedBox(
+                          child: Text('More metrics'),
+                        ),
                       ),
                     ),
+                    listTarget: const SizedBox(height: 40),
                     listPadding: const EdgeInsets.symmetric(vertical: 4),
                     listInnerDecoration:
                         const BoxDecoration(color: Colors.transparent),

@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
 import 'package:command_centre/mobile_dashboard/utils/routes/app_pages.dart';
+import 'package:command_centre/mobile_dashboard/controllers/home_controller.dart';
 
 class OnboardingContents {
   final String title;
@@ -27,10 +28,12 @@ class BusinessOnboardingScreen extends StatefulWidget {
 
 class _BusinessOnboardingScreenState extends State<BusinessOnboardingScreen> {
   late PageController _controller;
+  final controller = Get.put(HomeController(homeRepo: Get.find()));
 
   @override
   void initState() {
     _controller = PageController();
+    controller.setSeen(true);
     super.initState();
   }
 

@@ -9,6 +9,7 @@ import 'package:http/http.dart' as http;
 import 'package:google_fonts/google_fonts.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
@@ -171,8 +172,7 @@ Page resource error:
           ''');
           },
           onNavigationRequest: (NavigationRequest request) {
-            if (request.url
-                .startsWith('${AppConstants.REDIRECT_URI}?code=')) {
+            if (request.url.startsWith('${AppConstants.REDIRECT_URI}?code=')) {
               FirebaseCrashlytics.instance.log("Login : Code Generated");
               debugPrint('blocking navigation to ${request.url}');
               var uri = Uri.dataFromString(request.url);
@@ -182,6 +182,9 @@ Page resource error:
               return NavigationDecision.prevent;
             } else if (request.url.contains('access_denied')) {
               FirebaseCrashlytics.instance.log("Login : Access Denied");
+              FirebaseAnalytics.instance.logEvent(
+                  name: 'fed_auth_login',
+                  parameters: <String, dynamic>{'response': request.url});
               Get.offAndToNamed(AppPages.RETRY_ACCESS_DENIED);
             }
             debugPrint('allowing navigation to ${request.url}');
@@ -203,8 +206,7 @@ Page resource error:
           );
         },
       )
-      ..loadRequest(Uri.parse(
-          AppConstants.FED_AUTH_URL));
+      ..loadRequest(Uri.parse(AppConstants.FED_AUTH_URL));
 
     // #docregion platform_features
     if (controller.platform is AndroidWebViewController) {
@@ -226,22 +228,8 @@ Page resource error:
           'Command Center',
           style: GoogleFonts.ptSans(color: AppColors.black),
         ),
-        // actions: [
-        //   ElevatedButton(
-        //     onPressed: () {
-        //       FirebaseCrashlytics.instance.crash();
-        //     },
-        //     child: Text("Make Me Crash",style:  TextStyle(color: Colors.black)),
-        //   ),
-        // ],
-        // This drop down menu demonstrates that Flutter widgets can be shown over the web view.
-        // actions: <Widget>[
-        //   NavigationControls(webViewController: _controller),
-        //   SampleMenu(webViewController: _controller),
-        // ],
       ),
       body: WebViewWidget(controller: _controller),
-      // floatingActionButton: favoriteButton(),
     );
   }
 
@@ -277,10 +265,14 @@ Page resource error:
         'client_secret': AppConstants.CLIENT_SECRET,
         'scope': 'openid profile',
       });
-      // debugPrint('===>User Profile Response:${response.body}');
+      debugPrint('===>User Profile Response:${response.body}');
       Logger().d('===>User Response:${response.body}');
       if (response.statusCode == 200) {
         FirebaseCrashlytics.instance.log("Login : Token Verified");
+        FirebaseAnalytics.instance.logEvent(
+            name: 'employee_auth',
+            parameters: <String, dynamic>{'response': 200});
+
         var mapResponse = json.decode(response.body);
 
         await session.setString(
@@ -302,6 +294,14 @@ Page resource error:
         _onClearCookies(context);
         _onClearCache(context);
       }
+      FirebaseAnalytics.instance.logEvent(
+        name: 'employee_auth',
+        parameters: <String, dynamic>{
+          'state': 'Acess denied',
+          'response': e,
+        },
+      );
+
       Get.offAndToNamed(AppPages.RETRY_ACCESS_DENIED);
       // Navigator.pushReplacement(
       //     context,
@@ -380,7 +380,14 @@ Page resource error:
           _onClearCookies(context);
           _onClearCache(context);
         }
-        Get.offAndToNamed(AppPages.RETRY_ACCESS_DENIED);
+        FirebaseAnalytics.instance.logEvent(
+          name: 'employee_auth',
+          parameters: <String, dynamic>{
+            'code': response.statusCode,
+            'response': response.body,
+          },
+        );
+        // Get.offAndToNamed(AppPages.RETRY_ACCESS_DENIED);
       }
     } catch (e) {
       FirebaseCrashlytics.instance.log("Login : User Not Verified");

@@ -35,7 +35,7 @@ class _IntroScreenState extends State<IntroScreen> {
     Timer(const Duration(seconds: 2), () {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         // setState(() {
-          _inArrow = true;
+        _inArrow = true;
         // });
       });
     });
@@ -45,7 +45,6 @@ class _IntroScreenState extends State<IntroScreen> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
   }
 
