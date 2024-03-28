@@ -164,7 +164,7 @@ class HomeRepo {
     sharedPreferences.remove(AppConstants.ACCESS_TOKEN);
 
     // sharedPreferences.remove(AppConstants.TOKEN);
-    sharedPreferences.clear();
+    // sharedPreferences.clear();
     apiClient.token = null;
     return true;
   }

@@ -227,21 +227,30 @@ class _CustomExpandedChartWidgetState extends State<CoverageTrendsChartWidget> {
                                                         i.toDouble(),
                                                         ctlr.selectedCoverageTrendsFilter ==
                                                                 'Billing %'
-                                                            ? double.tryParse(
-                                                                    (point.billingPer ??
-                                                                        '0.0')) ??
-                                                                0.0
+                                                            ? (double.tryParse((point.billingPer ?? '0.0')) ??
+                                                                        0.0) >
+                                                                    0
+                                                                ? (double.tryParse(
+                                                                        (point.billingPer ??
+                                                                            '0.0')) ??
+                                                                    0.0)
+                                                                : 0
                                                             : ctlr.selectedCoverageTrendsFilter ==
                                                                     'Prod %'
-                                                                ? double.tryParse(
-                                                                        (point.productivityPer ??
+                                                                ? (double.tryParse((point.productivityPer ?? '0.0')) ??
+                                                                            0.0) >
+                                                                        0
+                                                                    ? (double.tryParse((point.productivityPer ??
                                                                             '0.0')) ??
-                                                                    0.0
+                                                                        0.0)
+                                                                    : 0
                                                                 : ctlr.selectedCoverageTrendsFilter ==
                                                                         'Call Hit Rate %'
-                                                                    ? double.tryParse((point.ccPer ??
-                                                                            '0.0')) ??
-                                                                        0.0
+                                                                    ? (double.tryParse((point.ccPer ?? '0.0')) ?? 0.0) >
+                                                                            0
+                                                                        ? (double.tryParse((point.ccPer ?? '0.0')) ??
+                                                                            0.0)
+                                                                        : 0
                                                                     : 0.0,
                                                       ),
                                                     ),

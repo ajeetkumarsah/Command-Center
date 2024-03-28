@@ -328,8 +328,8 @@ class AuthController extends GetxController {
           parameters: <String, dynamic>{'response': 200});
       debugPrint('===>User Profile data: ${response.body}');
       var resBody = json.decode(response.body);
-      saveToken('', resBody['access_token'] ?? '');
-      getEmployeeData(resBody['access_token']);
+      // saveToken('', resBody['access_token'] ?? '');
+      getEmployeeData(resBody['access_token'] ?? '');
       responseModel = ResponseModel(true, 'Success');
     } else if (response.statusCode == 401) {
       responseModel = ResponseModel(false, response.body);
@@ -342,21 +342,21 @@ class AuthController extends GetxController {
     return responseModel;
   }
 
-  Future<ResponseModel> getEmployeeData(String? token) async {
+  Future<ResponseModel> getEmployeeData(String accessToken) async {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _isLoading = true;
       update();
     });
     debugPrint(' Starting Employee Data===>');
-    Response response =
-        await authRepo.getEmployeeAuth({'access_token': token}, token: token);
+    Response response = await authRepo
+        .getEmployeeAuth({'access_token': accessToken}, token: accessToken);
     ResponseModel responseModel;
     debugPrint(' Employee data API response===> ${response.body}');
     if (response.statusCode == 200) {
       FirebaseCrashlytics.instance.log("Login : User Verified");
       var resBody = response.body;
 
-      saveToken(resBody['token'], token ?? '');
+      saveToken(resBody['token'], accessToken);
       updateUserName(resBody['user']['first_name']);
       updateUserEmail(resBody['user']['email']);
       updateUID(resBody['user']['id']);

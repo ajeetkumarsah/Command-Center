@@ -130,7 +130,11 @@ class _RetailingGraphWidgetState extends State<RetailingGraphWidget> {
                             .map(
                               (point) => FlSpot(
                                 point.index?.toDouble() ?? 0,
-                                double.tryParse((point.iya ?? '0.0')) ?? 0.0,
+                                (double.tryParse((point.iya ?? '0.0')) ?? 0.0) >
+                                        0
+                                    ? (double.tryParse((point.iya ?? '0.0')) ??
+                                        0.0)
+                                    : 0,
                               ),
                             )
                             .toList(),

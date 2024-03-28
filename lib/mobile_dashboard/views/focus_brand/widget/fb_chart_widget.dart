@@ -275,14 +275,26 @@ class _CustomExpandedChartWidgetState extends State<FBTrendsChartWidget> {
                                                     (point) => FlSpot(
                                                       point.index ?? 0,
                                                       ctlr.channelSales
-                                                          ? double.tryParse(
-                                                                  (point.fbAchieveSum ??
-                                                                      '0.0')) ??
-                                                              0.0
-                                                          : double.tryParse(
-                                                                  (point.fb ??
-                                                                      '0.0')) ??
-                                                              0.0,
+                                                          ? (double.tryParse((point
+                                                                              .fbAchieveSum ??
+                                                                          '0.0')) ??
+                                                                      0.0) >
+                                                                  0
+                                                              ? double.tryParse(
+                                                                      (point.fbAchieveSum ??
+                                                                          '0.0')) ??
+                                                                  0.0
+                                                              : 0
+                                                          : (double.tryParse((point
+                                                                              .fb ??
+                                                                          '0.0')) ??
+                                                                      0.0) >
+                                                                  0
+                                                              ? double.tryParse(
+                                                                      (point.fb ??
+                                                                          '0.0')) ??
+                                                                  0.0
+                                                              : 0,
                                                     ),
                                                   )
                                                   .toList(),

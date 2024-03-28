@@ -35,6 +35,7 @@ abstract class Routes {
   static const IMAGE_PREVIEW_WIDGET = _Paths.IMAGE_PREVIEW_WIDGET;
   static const IMAGE_PREVIEW_LIST = _Paths.IMAGE_PREVIEW_LIST;
   static const ONBOARDING_SCREEN = _Paths.ONBOARDING_SCREEN;
+  static const SOMETHING_WENT_WRONG = _Paths.SOMETHING_WENT_WRONG;
 }
 
 abstract class _Paths {
@@ -68,6 +69,7 @@ abstract class _Paths {
   static const IMAGE_PREVIEW_LIST =
       '/imagePreviewList'; //BusinessOnboardingScreen
   static const ONBOARDING_SCREEN = '/onboardingScreen';
+  static const SOMETHING_WENT_WRONG = '/somethingWentWrong';
   //store@fingertips
   static const STORE_FINGERTIPS_LANDING = '/storeFingertipsLanding';
   static const STORE_FINGERTIPS_ONBOARDING = '/storeFingertipsOnboarding';

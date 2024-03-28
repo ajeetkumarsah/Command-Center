@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
 import 'package:command_centre/mobile_dashboard/utils/routes/app_pages.dart';
+import 'package:command_centre/mobile_dashboard/utils/global.dart' as globals;
 
 class MenuBottomsheet extends StatelessWidget {
   final String version;
@@ -179,7 +180,7 @@ class MenuBottomsheet extends StatelessWidget {
             //     ),
             //   ),
             // ),
-            // SelectableText("${globals.FCMToken}"),
+            SelectableText("${globals.FCMToken}"),
             ListTile(
               onTap: () {
                 Get.back();

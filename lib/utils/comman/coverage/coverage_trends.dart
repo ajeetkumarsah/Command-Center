@@ -1,11 +1,10 @@
-import 'package:fl_chart/fl_chart.dart';
-import 'package:flutter/material.dart';
-import '../../../activities/retailing_screen.dart';
 import '../../colors/colors.dart';
-import 'package:charts_flutter/flutter.dart' as charts;
-
-import '../../const/const_array.dart';
 import '../../style/text_style.dart';
+import '../../const/const_array.dart';
+import 'package:flutter/material.dart';
+import 'package:fl_chart/fl_chart.dart';
+import '../../../activities/retailing_screen.dart';
+import 'package:charts_flutter/flutter.dart' as charts;
 
 class ApiService {
   Future<List<List<double>>> getData() async {
@@ -23,7 +22,9 @@ class ApiService {
 class CoverageTrends extends StatelessWidget {
   final Function(bool) onExpansionChanged;
   final bool isExpanded;
-   CoverageTrends({Key? key, required this.onExpansionChanged, required this.isExpanded}) : super(key: key);
+  CoverageTrends(
+      {Key? key, required this.onExpansionChanged, required this.isExpanded})
+      : super(key: key);
 
   final ApiService apiService = ApiService();
 
@@ -31,20 +32,30 @@ class CoverageTrends extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(left: 15, right: 15, bottom: 50, top: 15),
-      child:  ClipRRect(
+      child: ClipRRect(
         borderRadius: BorderRadius.circular(30.0),
         child: Theme(
-          data: Theme.of(context).copyWith(// here for close state
+          data: Theme.of(context).copyWith(
+            // here for close state
             colorScheme: const ColorScheme.light(
               primary: MyColors.expandedTitle,
             ), // here for open state in replacement of deprecated accentColor
-            dividerColor: Colors.transparent, // if you want to remove the border
+            dividerColor:
+                Colors.transparent, // if you want to remove the border
           ),
           child: ExpansionTile(
             shape: const Border(),
             collapsedBackgroundColor: Colors.white,
             // backgroundColor: Colors.red,
-            trailing: isExpanded? const Icon(Icons.keyboard_double_arrow_up_sharp, color: MyColors.primary,): const Icon(Icons.keyboard_double_arrow_down_sharp,color: MyColors.primary,),
+            trailing: isExpanded
+                ? const Icon(
+                    Icons.keyboard_double_arrow_up_sharp,
+                    color: MyColors.primary,
+                  )
+                : const Icon(
+                    Icons.keyboard_double_arrow_down_sharp,
+                    color: MyColors.primary,
+                  ),
 
             title: const Padding(
               padding: EdgeInsets.only(left: 8.0),
@@ -81,8 +92,7 @@ class CoverageTrends extends StatelessWidget {
                         children: [
                           Text(
                             'Category',
-                            style:
-                                ThemeText.categoryText,
+                            style: ThemeText.categoryText,
                           ),
                           SizedBox(
                             width: 5,
@@ -132,20 +142,22 @@ class CoverageTrends extends StatelessWidget {
                       SizedBox(
                         height: 150,
                         // padding: EdgeInsets.all(10),
-                        child:  FutureBuilder<List<List<double>>>(
-                          future: apiService.getData(), // Assuming this method fetches data from the API
+                        child: FutureBuilder<List<List<double>>>(
+                          future: apiService
+                              .getData(), // Assuming this method fetches data from the API
                           builder: (context, snapshot) {
-                            if (snapshot.connectionState == ConnectionState.waiting) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
                               return Center(child: CircularProgressIndicator());
                             } else if (snapshot.hasError) {
                               return Center(child: Text('Error occurred'));
                             } else {
                               final data = snapshot.data;
-                              return ChartWidget(data1: data![0], data2: data[1]);
+                              return ChartWidget(
+                                  data1: data![0], data2: data[1]);
                             }
                           },
                         ),
-
                       ),
                     ],
                   ),
@@ -173,7 +185,8 @@ class ChartWidget extends StatelessWidget {
         LineChartData(
           lineBarsData: [
             LineChartBarData(
-              spots: getDataSpots(data1), // Convert the first set of data to FlSpot
+              spots: getDataSpots(
+                  data1), // Convert the first set of data to FlSpot
               isCurved: true,
               color: Colors.blue,
               barWidth: 2,
@@ -181,7 +194,8 @@ class ChartWidget extends StatelessWidget {
               belowBarData: BarAreaData(show: false),
             ),
             LineChartBarData(
-              spots: getDataSpots(data2), // Convert the second set of data to FlSpot
+              spots: getDataSpots(
+                  data2), // Convert the second set of data to FlSpot
               isCurved: true,
               color: Colors.red,
               barWidth: 2,
@@ -199,12 +213,17 @@ class ChartWidget extends StatelessWidget {
   }
 
   List<FlSpot> getDataSpots(List<double> data) {
-    return data.asMap().entries.map((entry) => FlSpot(entry.key.toDouble(), entry.value)).toList();
+    return data
+        .asMap()
+        .entries
+        .map((entry) =>
+            FlSpot(entry.key.toDouble(), entry.value > 0 ? entry.value : 0))
+        .toList();
   }
 
   double calculateMaxY(List<double> data1, List<double> data2) {
     final List<double> combinedData = [...data1, ...data2];
-    return combinedData.reduce((value, element) => value > element ? value : element);
+    return combinedData
+        .reduce((value, element) => value > element ? value : element);
   }
-
 }

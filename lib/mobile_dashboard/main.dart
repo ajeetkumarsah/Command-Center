@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
@@ -10,31 +9,27 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:command_centre/mobile_dashboard/firebase_options.dart';
+import 'package:command_centre/mobile_dashboard/push_notification.dart';
+import 'package:command_centre/mobile_dashboard/services/firebase_api.dart';
 import 'package:command_centre/mobile_dashboard/bindings/home_binding.dart';
 import 'package:command_centre/mobile_dashboard/utils/routes/app_pages.dart';
-
-Future _firebaseBackgroundMessage(RemoteMessage message) async {
-  if (message.notification != null) {
-    print('Some Notification Received');
-  }
-}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
       name: 'comandc-99a4a', options: DefaultFirebaseOptions.currentPlatform);
   await Future.delayed(const Duration(seconds: 2));
-  // await FirebaseApi().initNotifications();
+  await FirebaseApi().initNotifications();
   await HomeBinding().dependencies();
 
-  // await PushNotifications.init();
-  FirebaseMessaging.onBackgroundMessage(_firebaseBackgroundMessage);
+  await PushNotifications.init();
+  FirebaseMessaging.onBackgroundMessage((v) async {});
   FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
   FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
   FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
   FirebaseAnalyticsObserver observer =
-  FirebaseAnalyticsObserver(analytics: analytics);
+      FirebaseAnalyticsObserver(analytics: analytics);
   FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(true);
   // var initializationSettingsAndroid =
   // const AndroidInitializationSettings('@mipmap/ic_launcher');

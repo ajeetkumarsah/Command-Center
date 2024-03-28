@@ -12,6 +12,7 @@ import 'package:command_centre/mobile_dashboard/views/widgets/image_preview.dart
 import 'package:command_centre/mobile_dashboard/views/summary/summary_screen.dart';
 import 'package:command_centre/mobile_dashboard/views/login/select_geo_screen.dart';
 import 'package:command_centre/mobile_dashboard/views/coverage/coverage_screen.dart';
+import 'package:command_centre/mobile_dashboard/views/login/smething_went_wrong.dart';
 import 'package:command_centre/mobile_dashboard/views/widgets/image_list_preview.dart';
 import 'package:command_centre/mobile_dashboard/views/login/access_denied_screen.dart';
 import 'package:command_centre/mobile_dashboard/views/retailing/retailing_screen.dart';
@@ -58,11 +59,12 @@ class AppPages {
   static const COVERAGE_DEEP_DIVE = Routes.COVERAGE_DEEP_DIVE_SCREEN;
   static const SALES_DEEP_DIVE = Routes.SALES_DEEP_DIVE_SCREEN;
   static const HELP_SUPPORT = Routes.HELP_SUPPORT_SCREEN;
-  static const IMAGE_PREVIEW_WIDGET = _Paths.IMAGE_PREVIEW_WIDGET;
-  static const IMAGE_PREVIEW_LIST = _Paths.IMAGE_PREVIEW_LIST;
+  static const IMAGE_PREVIEW_WIDGET = Routes.IMAGE_PREVIEW_WIDGET;
+  static const IMAGE_PREVIEW_LIST = Routes.IMAGE_PREVIEW_LIST;
   static const updateScreen = Routes.UPDATE_SCREEN;
   static const maintenanceScreen = Routes.MAINTENANCE_SCREEN;
   static const businessOnboarding = Routes.ONBOARDING_SCREEN;
+  static const somethingWentWrong = Routes.SOMETHING_WENT_WRONG;
   //Store@fingertips
   static const sroreFingertipsLanding = Routes.STORE_FINGERTIPS_LANDING;
   static const sroreFingertipsOnboarding = Routes.STORE_FINGERTIPS_ONBOARDING;
@@ -73,11 +75,11 @@ class AppPages {
       page: () => const LoginScreen(),
       binding: HomeBinding(),
     ),
-    // GetPage(
-    //   name: _Paths.FED_AUTH_LOGIN,
-    //   page: () => const FedAuthScreen(),
-    //   binding: HomeBinding(),
-    // ),
+    GetPage(
+      name: _Paths.SOMETHING_WENT_WRONG,
+      page: () => const SomethingWentWrong(),
+      binding: HomeBinding(),
+    ),
     GetPage(
       name: _Paths.FED_AUTH_LOGIN_TEST,
       page: () => const LoginScreen(),

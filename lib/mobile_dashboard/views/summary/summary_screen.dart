@@ -58,6 +58,13 @@ class _SummaryScreenState extends State<SummaryScreen> {
     super.initState();
   }
 
+  String addSpaceBeforeCapitals(String input) {
+    // Use a regular expression to replace each capital letter (except the first one
+    // if it is capital) with a space followed by the capital letter itself.
+    return input.replaceAllMapped(
+        RegExp(r'(?<!^)([A-Z])'), (Match match) => ' ${match.group(0)}');
+  }
+
   void getInitValues() {
     FirebaseCrashlytics.instance.log("Summary Started");
     if (isFirst) {
@@ -242,7 +249,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                 TextSpan(
                                   children: [
                                     TextSpan(
-                                      text: 'Hello,',
+                                      text: 'Hello, ',
                                       style: GoogleFonts.ptSans(
                                         fontSize: 22,
                                         color: Colors.white,
@@ -250,7 +257,8 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                       ),
                                     ),
                                     TextSpan(
-                                      text: ' ${ctlr.getUserName()}',
+                                      text: addSpaceBeforeCapitals(
+                                          ctlr.getUserName()),
                                       style: GoogleFonts.ptSans(
                                         fontSize: 22,
                                         color: Colors.white,

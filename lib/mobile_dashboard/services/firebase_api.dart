@@ -88,6 +88,7 @@ class FirebaseApi {
     FirebaseMessaging.onBackgroundMessage(handleBackgroundMessage);
     FirebaseMessaging.onMessage.listen((event) {
       final notification = event.notification;
+
       if (notification != null) {
         if (notification.body != null) {
           _localNotification.show(
@@ -95,13 +96,13 @@ class FirebaseApi {
               notification.title,
               notification.body,
               NotificationDetails(
-                android: AndroidNotificationDetails(
-                  _androidChannel.id,
-                  _androidChannel.name,
-                  channelDescription: _androidChannel.description,
-                  icon: '@drawable/ic_launcher',
-                ),
-              ),
+                  android: AndroidNotificationDetails(
+                    _androidChannel.id,
+                    _androidChannel.name,
+                    channelDescription: _androidChannel.description,
+                    icon: '@drawable/ic_launcher',
+                  ),
+                  iOS: const DarwinNotificationDetails(presentAlert: true)),
               payload: jsonEncode(event.toMap()));
         }
       }

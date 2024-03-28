@@ -326,13 +326,22 @@ class _CustomExpandedChartWidgetState extends State<CustomExpandedChartWidget> {
                                                       i,
                                                       FlSpot(
                                                         i.toDouble(),
-                                                        double.tryParse(ctlr
-                                                                    .channelSales
-                                                                ? (point.cyRt ??
-                                                                    '0.0')
-                                                                : (point.iya ??
-                                                                    '0.0')) ??
-                                                            0.0,
+                                                        (double.tryParse(ctlr
+                                                                            .channelSales
+                                                                        ? (point.cyRt ??
+                                                                            '0.0')
+                                                                        : (point.iya ??
+                                                                            '0.0')) ??
+                                                                    0.0) >
+                                                                0
+                                                            ? (double.tryParse(ctlr
+                                                                        .channelSales
+                                                                    ? (point.cyRt ??
+                                                                        '0.0')
+                                                                    : (point.iya ??
+                                                                        '0.0')) ??
+                                                                0.0)
+                                                            : 0,
                                                       ),
                                                     ),
                                                   )
@@ -400,7 +409,7 @@ class _CustomExpandedChartWidgetState extends State<CustomExpandedChartWidget> {
                                                       List<int> indicators) {
                                                 return indicators.map(
                                                   (int index) {
-                                                    final line = FlLine(
+                                                    const line = FlLine(
                                                         color: Colors.grey,
                                                         strokeWidth: 1,
                                                         dashArray: [2, 4]);
@@ -432,7 +441,8 @@ class _CustomExpandedChartWidgetState extends State<CustomExpandedChartWidget> {
                                               border: const Border(
                                                   bottom: BorderSide(width: .5),
                                                   left: BorderSide(width: .5))),
-                                          gridData: FlGridData(show: false),
+                                          gridData:
+                                              const FlGridData(show: false),
                                           titlesData: FlTitlesData(
                                             // leftTitles: _leftTitles,
                                             bottomTitles: AxisTitles(
@@ -470,7 +480,7 @@ class _CustomExpandedChartWidgetState extends State<CustomExpandedChartWidget> {
                                                                 []),
                                               ),
                                             ),
-                                            topTitles: AxisTitles(
+                                            topTitles: const AxisTitles(
                                                 sideTitles: SideTitles(
                                                     showTitles: false)),
                                             rightTitles: AxisTitles(

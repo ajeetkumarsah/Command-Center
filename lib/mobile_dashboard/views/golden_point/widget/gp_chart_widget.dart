@@ -285,14 +285,24 @@ class _CustomExpandedChartWidgetState extends State<GPTrendsChartWidget> {
                                                       FlSpot(
                                                         i.toDouble(),
                                                         ctlr.channelSales
-                                                            ? double.tryParse(
-                                                                    (point.cyGp ??
-                                                                        '0.0')) ??
-                                                                0.0
-                                                            : double.tryParse(
-                                                                    (point.gpIya ??
-                                                                        '0.0')) ??
-                                                                0.0,
+                                                            ? (double.tryParse((point.cyGp ??
+                                                                            '0.0')) ??
+                                                                        0.0) >
+                                                                    0
+                                                                ? (double.tryParse(
+                                                                        (point.cyGp ??
+                                                                            '0.0')) ??
+                                                                    0.0)
+                                                                : 0
+                                                            : (double.tryParse((point.gpIya ??
+                                                                            '0.0')) ??
+                                                                        0.0) >
+                                                                    0
+                                                                ? double.tryParse(
+                                                                        (point.gpIya ??
+                                                                            '0.0')) ??
+                                                                    0.0
+                                                                : 0,
                                                       ),
                                                     ),
                                                   )
