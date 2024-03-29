@@ -1624,14 +1624,36 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 12.0, vertical: 12),
                                     child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment: ((ctlr
+                                                          .summaryData
+                                                          .first
+                                                          .dgpCompliance
+                                                          ?.gpAbs !=
+                                                      null &&
+                                                  ctlr
+                                                      .summaryData
+                                                      .first
+                                                      .dgpCompliance!
+                                                      .gpAbs!
+                                                      .isNotEmpty) ||
+                                              (ctlr
+                                                          .summaryData
+                                                          .first
+                                                          .dgpCompliance
+                                                          ?.gpIya !=
+                                                      null &&
+                                                  ctlr
+                                                      .summaryData
+                                                      .first
+                                                      .dgpCompliance!
+                                                      .gpIya!
+                                                      .isNotEmpty))
+                                          ? MainAxisAlignment.spaceBetween
+                                          : MainAxisAlignment.center,
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        Column(
-                                          children: [
-                                            if (ctlr.summaryData.first
+                                        if ((ctlr.summaryData.first
                                                         .dgpCompliance?.gpAbs !=
                                                     null &&
                                                 ctlr
@@ -1639,31 +1661,8 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                                     .first
                                                     .dgpCompliance!
                                                     .gpAbs!
-                                                    .isNotEmpty)
-                                              Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
-                                                children: [
-                                                  Text(
-                                                    'GP P3M (in ${ctlr.summaryData.first.dgpCompliance?.gpAbs?.contains('MM') ?? false ? 'MM' : ctlr.summaryData.first.dgpCompliance?.gpAbs?.contains('M') ?? false ? 'M' : 'M'})',
-                                                    style: GoogleFonts.ptSans(
-                                                      fontSize: 16,
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                    ),
-                                                  ),
-                                                  Text(
-                                                    '${ctlr.summaryData.first.dgpCompliance?.gpAbs?.contains('MM') ?? false ? ctlr.summaryData.first.dgpCompliance?.gpAbs?.replaceAll('MM', '') : ctlr.summaryData.first.dgpCompliance?.gpAbs?.contains('M') ?? false ? ctlr.summaryData.first.dgpCompliance?.gpAbs?.replaceAll('M', '') : ctlr.summaryData.first.dgpCompliance?.gpAbs}',
-                                                    style: GoogleFonts.ptSans(
-                                                      fontSize: 40,
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                    ),
-                                                  )
-                                                ],
-                                              ),
-                                            const SizedBox(height: 16),
-                                            if (ctlr.summaryData.first
+                                                    .isNotEmpty) ||
+                                            (ctlr.summaryData.first
                                                         .dgpCompliance?.gpIya !=
                                                     null &&
                                                 ctlr
@@ -1671,31 +1670,80 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                                     .first
                                                     .dgpCompliance!
                                                     .gpIya!
-                                                    .isNotEmpty)
-                                              Column(
-                                                children: [
-                                                  Text(
-                                                    'GP P3M IYA',
-                                                    style: GoogleFonts
-                                                        .ptSansCaption(
-                                                      fontSize: 16,
-                                                      fontWeight:
-                                                          FontWeight.w500,
+                                                    .isNotEmpty))
+                                          Column(
+                                            children: [
+                                              if (ctlr
+                                                          .summaryData
+                                                          .first
+                                                          .dgpCompliance
+                                                          ?.gpAbs !=
+                                                      null &&
+                                                  ctlr
+                                                      .summaryData
+                                                      .first
+                                                      .dgpCompliance!
+                                                      .gpAbs!
+                                                      .isNotEmpty)
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
+                                                  children: [
+                                                    Text(
+                                                      'GP P3M (in ${ctlr.summaryData.first.dgpCompliance?.gpAbs?.contains('MM') ?? false ? 'MM' : ctlr.summaryData.first.dgpCompliance?.gpAbs?.contains('M') ?? false ? 'M' : 'M'})',
+                                                      style: GoogleFonts.ptSans(
+                                                        fontSize: 16,
+                                                        fontWeight:
+                                                            FontWeight.w400,
+                                                      ),
                                                     ),
-                                                  ),
-                                                  Text(
-                                                    '${ctlr.summaryData.first.dgpCompliance?.gpIya}',
-                                                    style: GoogleFonts
-                                                        .ptSansCaption(
-                                                      fontSize: 40,
-                                                      fontWeight:
-                                                          FontWeight.w500,
+                                                    Text(
+                                                      '${ctlr.summaryData.first.dgpCompliance?.gpAbs?.contains('MM') ?? false ? ctlr.summaryData.first.dgpCompliance?.gpAbs?.replaceAll('MM', '') : ctlr.summaryData.first.dgpCompliance?.gpAbs?.contains('M') ?? false ? ctlr.summaryData.first.dgpCompliance?.gpAbs?.replaceAll('M', '') : ctlr.summaryData.first.dgpCompliance?.gpAbs}',
+                                                      style: GoogleFonts.ptSans(
+                                                        fontSize: 40,
+                                                        fontWeight:
+                                                            FontWeight.w400,
+                                                      ),
+                                                    )
+                                                  ],
+                                                ),
+                                              const SizedBox(height: 16),
+                                              if (ctlr
+                                                          .summaryData
+                                                          .first
+                                                          .dgpCompliance
+                                                          ?.gpIya !=
+                                                      null &&
+                                                  ctlr
+                                                      .summaryData
+                                                      .first
+                                                      .dgpCompliance!
+                                                      .gpIya!
+                                                      .isNotEmpty)
+                                                Column(
+                                                  children: [
+                                                    Text(
+                                                      'GP P3M IYA',
+                                                      style: GoogleFonts
+                                                          .ptSansCaption(
+                                                        fontSize: 16,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                      ),
                                                     ),
-                                                  ),
-                                                ],
-                                              ),
-                                          ],
-                                        ),
+                                                    Text(
+                                                      '${ctlr.summaryData.first.dgpCompliance?.gpIya}',
+                                                      style: GoogleFonts
+                                                          .ptSansCaption(
+                                                        fontSize: 40,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                            ],
+                                          ),
                                         CircularPercentIndicator(
                                           radius: 50.0,
                                           lineWidth: 12.0,

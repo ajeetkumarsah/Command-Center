@@ -3305,7 +3305,7 @@ class HomeController extends GetxController {
         name: 'logs',
         parameters: {"message": 'Get Summary Data ${getUserName()}'});
     _isSummaryPageLoading = true;
-    summaryData.clear();
+    summaryData = [];
     update();
     var stopWatch = Stopwatch();
     stopWatch.reset();
