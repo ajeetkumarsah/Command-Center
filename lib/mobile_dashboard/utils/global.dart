@@ -16,3 +16,4 @@ bool isLoggedIn = false;
 String authorization = '';
 String FCMToken = '';
 String uId = '';
+bool navigate = true;

@@ -45,7 +45,10 @@ class AuthController extends GetxController {
   void logout() {
     //logout the current user
     // authRepo.clearSharedData();
-    Get.offAndToNamed(AppPages.FED_AUTH_LOGIN_TEST);
+    if (globals.navigate) {
+      Get.offAndToNamed(AppPages.FED_AUTH_LOGIN_TEST);
+      globals.navigate = false;
+    }
     update();
   }
 
@@ -311,14 +314,7 @@ class AuthController extends GetxController {
         'scope': 'openid profile',
       },
     );
-    // Response response = await authRepo.getUserData({
-    //   "code": code,
-    //   'client_id': AppConstants.CLIENT_ID,
-    //   'grant_type': 'authorization_code',
-    //   'redirect_uri': AppConstants.REDIRECT_URI,
-    //   'client_secret': AppConstants.CLIENT_SECRET,
-    //   'scope': 'openid profile',
-    // });
+
     ResponseModel responseModel;
     debugPrint(' Employee data API response===> ${response.body}');
     if (response.statusCode == 200) {
@@ -328,8 +324,15 @@ class AuthController extends GetxController {
           parameters: <String, dynamic>{'response': 200});
       debugPrint('===>User Profile data: ${response.body}');
       var resBody = json.decode(response.body);
+      String? accessToken = resBody['access_token'] ?? '';
       // saveToken('', resBody['access_token'] ?? '');
-      getEmployeeData(resBody['access_token'] ?? '');
+
+      if (accessToken != null) {
+        // showCustomSnackBar(accessToken);
+        getEmployeeData(accessToken);
+      } else {
+        Get.offAndToNamed(AppPages.somethingWentWrong);
+      }
       responseModel = ResponseModel(true, 'Success');
     } else if (response.statusCode == 401) {
       responseModel = ResponseModel(false, response.body);
@@ -348,24 +351,34 @@ class AuthController extends GetxController {
       update();
     });
     debugPrint(' Starting Employee Data===>');
-    Response response = await authRepo
-        .getEmployeeAuth({'access_token': accessToken}, token: accessToken);
+    http.Response response;
+    response = await http.post(
+      Uri.parse(AppConstants.BASE_URL + AppConstants.EMPLOYEE_AUTH),
+      headers: {
+        'Accept': 'application/json',
+        'X_AUTH_TOKEN': accessToken,
+        'Authorization': 'Bearer $accessToken',
+        'Ocp-Apim-Trace': true.toString(),
+        'Ocp-Apim-Subscription-Key': AppConstants.SUBSCRIPTION_KEY,
+        "grant_type": "refresh_token",
+      },
+      body: {'access_token': accessToken},
+    );
+    // Response response = await authRepo
+    //     .getEmployeeAuth({'access_token': accessToken}, token: accessToken);
     ResponseModel responseModel;
     debugPrint(' Employee data API response===> ${response.body}');
     if (response.statusCode == 200) {
       FirebaseCrashlytics.instance.log("Login : User Verified");
-      var resBody = response.body;
-
+      var resBody = json.decode(response.body);
       saveToken(resBody['token'], accessToken);
       updateUserName(resBody['user']['first_name']);
       updateUserEmail(resBody['user']['email']);
       updateUID(resBody['user']['id']);
-
       globals.token = await getUserToken();
       globals.name = await getUserName();
       globals.email = await getUserEmail();
       globals.uId = await getUID();
-
       var geo = await getGeo();
       var geoValue = await getGeoValue();
       debugPrint('===>Before Token check');
@@ -377,10 +390,10 @@ class AuthController extends GetxController {
       }
       responseModel = ResponseModel(false, 'Something went wrong');
     } else if (response.statusCode == 401) {
-      responseModel = ResponseModel(false, response.statusText ?? "");
-      logout();
+      responseModel = ResponseModel(false, response.body);
+      Get.offAndToNamed(AppPages.somethingWentWrong);
     } else {
-      responseModel = ResponseModel(false, response.statusText ?? "");
+      responseModel = ResponseModel(false, response.body);
     }
     _isLoading = false;
     update();

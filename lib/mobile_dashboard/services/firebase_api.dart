@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 Future<void> handleBackgroundMessage(RemoteMessage message) async {
@@ -23,6 +24,7 @@ class FirebaseApi {
         'This channel is used for important notifications.', // description
     importance: Importance.high,
   );
+
   final _localNotification = FlutterLocalNotificationsPlugin();
   void handleMessage(RemoteMessage? message) {
     if (message != null) {
@@ -102,7 +104,11 @@ class FirebaseApi {
                     channelDescription: _androidChannel.description,
                     icon: '@drawable/ic_launcher',
                   ),
-                  iOS: const DarwinNotificationDetails(presentAlert: true)),
+                  iOS: const DarwinNotificationDetails(
+                    presentAlert: true,
+                    presentBadge: true,
+                    presentSound: true,
+                  )),
               payload: jsonEncode(event.toMap()));
         }
       }

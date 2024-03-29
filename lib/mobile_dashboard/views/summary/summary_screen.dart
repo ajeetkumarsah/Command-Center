@@ -1177,22 +1177,26 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                                       color: ctlr.channelSales
                                                           ? AppColors.white
                                                           : AppColors.primary,
-                                                      gradient: !ctlr
-                                                              .channelSales
-                                                          ? const LinearGradient(
-                                                              begin: Alignment
-                                                                  .topCenter,
-                                                              end: Alignment
-                                                                  .bottomCenter,
-                                                              colors: [
-                                                                AppColors
-                                                                    .contentColorCyan,
-                                                                AppColors
-                                                                    .contentColorBlue,
-                                                                // AppColors.contentColorCyan.withOpacity(.6),
-                                                              ],
-                                                            )
-                                                          : null,
+                                                      gradient:
+                                                          !ctlr.channelSales
+                                                              ? LinearGradient(
+                                                                  begin: Alignment
+                                                                      .topCenter,
+                                                                  end: Alignment
+                                                                      .bottomCenter,
+                                                                  colors: [
+                                                                    AppColors
+                                                                        .contentColorCyan
+                                                                        .withOpacity(
+                                                                            .7),
+                                                                    AppColors
+                                                                        .contentColorBlue
+                                                                        .withOpacity(
+                                                                            .7),
+                                                                    // AppColors.contentColorCyan.withOpacity(.6),
+                                                                  ],
+                                                                )
+                                                              : null,
                                                       boxShadow: !ctlr
                                                               .channelSales
                                                           ? [
@@ -1627,26 +1631,37 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                       children: [
                                         Column(
                                           children: [
-                                            Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              children: [
-                                                Text(
-                                                  'GP P3M (in ${ctlr.summaryData.first.dgpCompliance?.gpAbs?.contains('MM') ?? false ? 'MM' : ctlr.summaryData.first.dgpCompliance?.gpAbs?.contains('M') ?? false ? 'M' : 'M'})',
-                                                  style: GoogleFonts.ptSans(
-                                                    fontSize: 16,
-                                                    fontWeight: FontWeight.w400,
+                                            if (ctlr.summaryData.first
+                                                        .dgpCompliance?.gpAbs !=
+                                                    null &&
+                                                ctlr
+                                                    .summaryData
+                                                    .first
+                                                    .dgpCompliance!
+                                                    .gpAbs!
+                                                    .isNotEmpty)
+                                              Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                children: [
+                                                  Text(
+                                                    'GP P3M (in ${ctlr.summaryData.first.dgpCompliance?.gpAbs?.contains('MM') ?? false ? 'MM' : ctlr.summaryData.first.dgpCompliance?.gpAbs?.contains('M') ?? false ? 'M' : 'M'})',
+                                                    style: GoogleFonts.ptSans(
+                                                      fontSize: 16,
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                    ),
                                                   ),
-                                                ),
-                                                Text(
-                                                  '${ctlr.summaryData.first.dgpCompliance?.gpAbs?.contains('MM') ?? false ? ctlr.summaryData.first.dgpCompliance?.gpAbs?.replaceAll('MM', '') : ctlr.summaryData.first.dgpCompliance?.gpAbs?.contains('M') ?? false ? ctlr.summaryData.first.dgpCompliance?.gpAbs?.replaceAll('M', '') : ctlr.summaryData.first.dgpCompliance?.gpAbs}',
-                                                  style: GoogleFonts.ptSans(
-                                                    fontSize: 40,
-                                                    fontWeight: FontWeight.w400,
-                                                  ),
-                                                )
-                                              ],
-                                            ),
+                                                  Text(
+                                                    '${ctlr.summaryData.first.dgpCompliance?.gpAbs?.contains('MM') ?? false ? ctlr.summaryData.first.dgpCompliance?.gpAbs?.replaceAll('MM', '') : ctlr.summaryData.first.dgpCompliance?.gpAbs?.contains('M') ?? false ? ctlr.summaryData.first.dgpCompliance?.gpAbs?.replaceAll('M', '') : ctlr.summaryData.first.dgpCompliance?.gpAbs}',
+                                                    style: GoogleFonts.ptSans(
+                                                      fontSize: 40,
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
                                             const SizedBox(height: 16),
                                             if (ctlr.summaryData.first
                                                         .dgpCompliance?.gpIya !=

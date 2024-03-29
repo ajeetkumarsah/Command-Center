@@ -432,14 +432,18 @@ class Ind {
 
   factory Ind.fromJson(Map<String, dynamic> json) => Ind(
         dataFound: json["dataFound"],
-        cyP3MIya: json["cyP3MIya"],
+        cyP3MIya: json["cyP3MIya"] != null ? json["cyP3MIya"].toString() : '',
         progressBarP3MIya: json["progressBarP3MIya"],
-        cmPySellout: json["cmPySellout"],
-        cmIya: json["cmIya"],
+        cmPySellout:
+            json["cmPySellout"] != null ? json["cmPySellout"].toString() : '',
+        cmIya: json["cmIya"] != null ? json["cmIya"].toString() : '',
         progressBarCmIya: json["progressBarCmIya"],
-        fyIya: json["fyIya"],
-        progressBarFyIya: json["progressBarFyIya"],
-        cmSaliance: json["cmSaliance"],
+        fyIya: json["fyIya"] != null ? json["fyIya"].toString() : '',
+        progressBarFyIya: json["progressBarFyIya"] != null
+            ? json["progressBarFyIya"].toString()
+            : '',
+        cmSaliance:
+            json["cmSaliance"] != null ? json["cmSaliance"].toString() : '',
         cmSellout: json["cmSellout"].toString(),
         channel: json["Channel"] == null
             ? []

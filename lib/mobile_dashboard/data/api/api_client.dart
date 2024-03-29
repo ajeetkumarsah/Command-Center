@@ -2,7 +2,6 @@ import 'dart:io';
 import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:path/path.dart';
-import 'package:logger/logger.dart';
 import 'package:http/http.dart' as Http;
 import 'package:flutter/foundation.dart';
 import 'package:http_parser/http_parser.dart';
