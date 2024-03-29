@@ -1521,6 +1521,7 @@ class HomeController extends GetxController {
   }
 
   Future<void> getInitValues({bool getOnlyShared = false}) async {
+    globals.navigate = true;
     FirebaseCrashlytics.instance.log("Init Values set");
     FirebaseAnalytics.instance.logEvent(
         name: 'logs',

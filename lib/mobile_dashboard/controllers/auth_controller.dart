@@ -39,7 +39,6 @@ class AuthController extends GetxController {
   void onInit() {
     super.onInit();
     getConfig();
-    getAllFilters();
   }
 
   void logout() {
@@ -382,6 +381,7 @@ class AuthController extends GetxController {
       var geo = await getGeo();
       var geoValue = await getGeoValue();
       debugPrint('===>Before Token check');
+      getAllFilters();
       if (geo.trim().isNotEmpty && geoValue.trim().isNotEmpty) {
         debugPrint('===>After Token check');
         Get.offAndToNamed(AppPages.INITIAL);
