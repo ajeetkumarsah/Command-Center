@@ -3,6 +3,7 @@ import 'package:lottie/lottie.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
+import 'package:command_centre/mobile_dashboard/utils/routes/app_pages.dart';
 import 'package:command_centre/mobile_dashboard/utils/global.dart' as globals;
 import 'package:command_centre/mobile_dashboard/controllers/auth_controller.dart';
 
@@ -61,7 +62,10 @@ class _SomethingWentWrongState extends State<SomethingWentWrong> {
                   GestureDetector(
                     onTap: () {
                       initCall();
-                      ctlr.logout();
+                      if (globals.navigate) {
+                        Get.offAndToNamed(AppPages.FED_AUTH_LOGIN_TEST);
+                        globals.navigate = false;
+                      }
                     },
                     child: Container(
                       // height: 40,

@@ -41,16 +41,6 @@ class AuthController extends GetxController {
     getConfig();
   }
 
-  void logout() {
-    //logout the current user
-    // authRepo.clearSharedData();
-    if (globals.navigate) {
-      Get.offAndToNamed(AppPages.FED_AUTH_LOGIN_TEST);
-      globals.navigate = false;
-    }
-    update();
-  }
-
 //
   // Future<ResponseModel> registration() async {
   //   _isLoading = true;
@@ -229,7 +219,10 @@ class AuthController extends GetxController {
       }
     } else if (response.statusCode == 401) {
       responseModel = ResponseModel(false, response.statusText ?? "");
-      logout();
+      if (globals.navigate) {
+        Get.offAndToNamed(AppPages.FED_AUTH_LOGIN_TEST);
+        globals.navigate = false;
+      }
     } else {
       responseModel = ResponseModel(false, response.statusText ?? "");
     }
@@ -275,7 +268,10 @@ class AuthController extends GetxController {
       }
     } else if (response.statusCode == 401) {
       responseModel = ResponseModel(false, response.statusText ?? "");
-      logout();
+      if (globals.navigate) {
+        Get.offAndToNamed(AppPages.FED_AUTH_LOGIN_TEST);
+        globals.navigate = false;
+      }
     } else {
       responseModel = ResponseModel(false, response.statusText ?? "");
     }
@@ -335,7 +331,10 @@ class AuthController extends GetxController {
       responseModel = ResponseModel(true, 'Success');
     } else if (response.statusCode == 401) {
       responseModel = ResponseModel(false, response.body);
-      logout();
+      if (globals.navigate) {
+        Get.offAndToNamed(AppPages.FED_AUTH_LOGIN_TEST);
+        globals.navigate = false;
+      }
     } else {
       responseModel = ResponseModel(false, response.body);
     }
