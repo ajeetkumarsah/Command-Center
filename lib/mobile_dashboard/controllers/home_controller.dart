@@ -3315,11 +3315,11 @@ class HomeController extends GetxController {
     _isSummaryPageLoading = true;
     summaryData = [];
     update();
-    var stopWatch = Stopwatch();
-    stopWatch.reset();
-    stopWatch.start();
-    Logger().log(Level.debug,
-        '===> Summary Data Start: ${stopWatch.elapsed.toString()}');
+    // var stopWatch = Stopwatch();
+    // stopWatch.reset();
+    // stopWatch.start();
+    // Logger().log(Level.debug,
+    //     '===> Summary Data Start: ${stopWatch.elapsed.toString()}');
     Response response = await homeRepo.getSummaryData({
       "date": _selectedTempMonth,
       //"${selectedMonth!.substring(0, 3)}-$selectedYear",
@@ -3349,10 +3349,10 @@ class HomeController extends GetxController {
     } else {
       responseModel = ResponseModel(false, response.statusText ?? "");
     }
-    Logger().log(
-        Level.debug, '===> Summary Data End: ${stopWatch.elapsed.toString()}');
-    stopWatch.stop();
-    stopWatch.reset();
+    // Logger().log(
+    //     Level.debug, '===> Summary Data End: ${stopWatch.elapsed.toString()}');
+    // stopWatch.stop();
+    // stopWatch.reset();
     _isSummaryPageLoading = false;
     update();
     return responseModel;
@@ -3371,6 +3371,7 @@ class HomeController extends GetxController {
     Logger().log(
         Level.debug, '===> Filter Data Start: ${stopWatch.elapsed.toString()}');
     Response response = await homeRepo.getFilters({"year": year});
+
     ResponseModel responseModel;
     if (response.statusCode == 200) {
       if (response.body["status"].toString().toLowerCase() == 'true') {
@@ -3629,7 +3630,9 @@ class HomeController extends GetxController {
                     ]
     };
     debugPrint('===>Body : $_body');
+
     Response response = await homeRepo.getRetailingData(_body);
+
     ResponseModel responseModel;
     if (response.statusCode == 200) {
       if (response.body["status"].toString().toLowerCase() == 'true') {

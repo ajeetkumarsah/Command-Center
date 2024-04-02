@@ -19,6 +19,7 @@ import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:command_centre/mobile_dashboard/utils/date_converter.dart';
 import 'package:command_centre/mobile_dashboard/utils/routes/app_pages.dart';
+import 'package:command_centre/mobile_dashboard/utils/global.dart' as globals;
 import 'package:command_centre/mobile_dashboard/controllers/home_controller.dart';
 import 'package:command_centre/mobile_dashboard/views/widgets/custom_shimmer.dart';
 import 'package:command_centre/mobile_dashboard/views/widgets/custom_snackbar.dart';
@@ -27,8 +28,8 @@ import 'package:command_centre/mobile_dashboard/views/summary/widgets/personaliz
 import 'package:command_centre/mobile_dashboard/views/summary/widgets/retailing_graph_widget.dart';
 import 'package:command_centre/mobile_dashboard/views/summary/widgets/retailing_table_widget.dart';
 import 'package:command_centre/mobile_dashboard/views/summary/widgets/personalize_bottomsheet.dart';
-// ignore_for_file: depend_on_referenced_packages
 
+// ignore_for_file: depend_on_referenced_packages
 class SummaryScreen extends StatefulWidget {
   const SummaryScreen({super.key});
 
@@ -56,6 +57,16 @@ class _SummaryScreenState extends State<SummaryScreen> {
     getBanner();
     initGuide();
     super.initState();
+  }
+
+  autoRefreshData(HomeController ctlr) {
+    if (globals.autoRefresh) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ctlr.getSummaryData();
+      });
+      globals.autoRefresh = false;
+      debugPrint('===>AutoData is Refreshing  ${globals.autoRefresh}');
+    }
   }
 
   String addSpaceBeforeCapitals(String input) {
@@ -138,6 +149,21 @@ class _SummaryScreenState extends State<SummaryScreen> {
               controller: sScrollController,
               child: Column(
                 children: [
+                  StreamBuilder(
+                    stream: FirebaseFirestore.instance
+                        .collection("auto_data_refresh")
+                        .snapshots(),
+                    builder: (context, snapshot) {
+                      if (snapshot.data?.docs.first.data() != null &&
+                          snapshot.data?.docs.first.data()['refresh_data'] !=
+                              null &&
+                          snapshot.data?.docs.first.data()['refresh_data']) {
+                        debugPrint('===>Data refresh');
+                        autoRefreshData(ctlr);
+                      }
+                      return const SizedBox();
+                    },
+                  ),
                   StreamBuilder(
                     stream: FirebaseFirestore.instance
                         .collection("data_refresh")

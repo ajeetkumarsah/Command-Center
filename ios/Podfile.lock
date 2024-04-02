@@ -815,7 +815,7 @@ PODS:
     - abseil/base/base_internal
     - abseil/base/config
     - abseil/meta/type_traits
-  - Alamofire (5.9.0)
+  - Alamofire (5.9.1)
   - BoringSSL-GRPC (0.0.32):
     - BoringSSL-GRPC/Implementation (= 0.0.32)
     - BoringSSL-GRPC/Interface (= 0.0.32)
@@ -1156,7 +1156,7 @@ PODS:
   - sqflite (0.0.3):
     - Flutter
     - FlutterMacOS
-  - SwiftyGif (5.4.4)
+  - SwiftyGif (5.4.5)
   - Tangram-es (0.17.1)
   - Toast (4.1.0)
   - url_launcher_ios (0.0.1):
@@ -1283,7 +1283,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   abseil: ebec4f56469dd7ce9ab08683c0319a68aa0ad86e
-  Alamofire: 02b772c9910e8eba1a079227c32fbd9e46c90a24
+  Alamofire: f36a35757af4587d8e4f4bfa223ad10be2422b8c
   BoringSSL-GRPC: 1e2348957acdbcad360b80a264a90799984b2ba6
   cloud_firestore: 800217bf456c0f55fcf3c5a2e5d44d4533aeb002
   device_info_plus: 7545d84d8d1b896cb16a4ff98c19f07ec4b298ea
@@ -1335,7 +1335,7 @@ SPEC CHECKSUMS:
   SDWebImage: 40b0b4053e36c660a764958bff99eed16610acbb
   shared_preferences_foundation: 5b919d13b803cadd15ed2dc053125c68730e5126
   sqflite: 673a0e54cc04b7d6dba8d24fb8095b31c3a99eec
-  SwiftyGif: 93a1cc87bf3a51916001cf8f3d63835fb64c819f
+  SwiftyGif: 706c60cf65fa2bc5ee0313beece843c8eb8194d4
   Tangram-es: 628b634f7fc09d2217469b9914de00d9de49ff9d
   Toast: ec33c32b8688982cecc6348adeae667c1b9938da
   url_launcher_ios: bbd758c6e7f9fd7b5b1d4cde34d2b95fcce5e812

@@ -17,3 +17,4 @@ String authorization = '';
 String FCMToken = '';
 String uId = '';
 bool navigate = true;
+bool autoRefresh = true;
