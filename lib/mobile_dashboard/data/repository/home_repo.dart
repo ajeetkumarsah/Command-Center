@@ -201,6 +201,10 @@ class HomeRepo {
     return await apiClient.postData(AppConstants.FILTERS, body, headers: {});
   }
 
+  Future<Response> updateFirebaseVar(Map<String, dynamic> body) async {
+    return await apiClient.postData(AppConstants.CONFIG, body, headers: {});
+  }
+
   Future<Response> getFeedback(Map<String, dynamic> body) async {
     return await apiClient
         .postData(AppConstants.CHANNELLIST, body, headers: {});

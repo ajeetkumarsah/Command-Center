@@ -62,7 +62,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
   autoRefreshData(HomeController ctlr) {
     if (globals.autoRefresh) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        ctlr.getSummaryData();
+        ctlr.getSummaryData(isAutoRefresh: true);
       });
       globals.autoRefresh = false;
       debugPrint('===>AutoData is Refreshing  ${globals.autoRefresh}');

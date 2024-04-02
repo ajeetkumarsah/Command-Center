@@ -51,6 +51,7 @@ class HomeController extends GetxController {
       _showFocusBrand = true,
       _isFilterLoading = false,
       _isSummaryLoading = false,
+      _isFirebaseVarLoading = false,
       _isRetailingGeoLoading = false,
       _isCoverageGeoLoading = false,
       _isGPGeoLoading = false,
@@ -73,6 +74,7 @@ class HomeController extends GetxController {
       _isDirectIndirectLoading = false,
       _isSummaryPageLoading = false,
       _isRetailingDeepDiveInd = true;
+  bool get isFirebaseVarLoading => _isFirebaseVarLoading;
   bool get isLoading => _isLoading;
   bool get isSummaryExpanded => _isSummaryExpanded;
   bool get isExpandedCategory => _isExpandedCategory;
@@ -275,6 +277,7 @@ class HomeController extends GetxController {
     } else {
       _isRetailingDeepDiveInd = true;
     }
+
     debugPrint('===> Calling Retailing Init');
     if (retailingGeoModel == null) {
       getRetailingData();
@@ -1565,588 +1568,586 @@ class HomeController extends GetxController {
       _fbTrendsValue = getGeoValue();
     }
     if (!getOnlyShared) {
-      await Future.wait([
-        getSummaryData().then((value) {
-          getMonthFilters().then(
-            (v) => getAllFilters().then((v) async {
-              categoryFilters = filtersModel?.category ?? [];
-              FirebaseCrashlytics.instance.log("Changed Filter for All");
-              onChangeFiltersAll(
-                  type: 'category', tabType: SummaryTypes.retailing.type);
-              onChangeFiltersAll(
-                  type: 'category', tabType: SummaryTypes.gp.type);
-              onChangeFiltersAll(
-                  type: 'category', tabType: SummaryTypes.fb.type);
-              //getting retailing saved filters and
+      // await Future.wait([
+      getSummaryData().then((value) {
+        getMonthFilters().then(
+          (v) => getAllFilters().then((v) async {
+            categoryFilters = filtersModel?.category ?? [];
+            FirebaseCrashlytics.instance.log("Changed Filter for All");
+            onChangeFiltersAll(
+                type: 'category', tabType: SummaryTypes.retailing.type);
+            onChangeFiltersAll(type: 'category', tabType: SummaryTypes.gp.type);
+            onChangeFiltersAll(type: 'category', tabType: SummaryTypes.fb.type);
+            //getting retailing saved filters and
 
-              final mapDecoded = jsonDecode(
-                  await storage.read(key: AppConstants.RETAILING_GEO) ?? '{}');
+            final mapDecoded = jsonDecode(
+                await storage.read(key: AppConstants.RETAILING_GEO) ?? '{}');
 
-              if (mapDecoded.isNotEmpty) {
-                Map<String, dynamic> _savedFilters = mapDecoded;
-                if (_savedFilters.containsKey('allIndia')) {
-                  selectedRetailingMultiAllIndia = List<String>.from(
-                      _savedFilters['allIndia'].map((v) => v));
-                  FirebaseAnalytics.instance.logEvent(
-                      name: 'deep_dive_retailing_allIndia',
-                      parameters: {
-                        "message":
-                            'Selected Multi Filter $selectedRetailingMultiAllIndia ${getUserName()}'
-                      });
-                }
-                if (_savedFilters.containsKey('division')) {
-                  selectedRetailingMultiDivisions = List<String>.from(
-                      _savedFilters['division'].map((v) => v));
-                  FirebaseAnalytics.instance.logEvent(
-                      name: 'deep_dive_retailing_division',
-                      parameters: {
-                        "message":
-                            'Selected Multi Filter $selectedRetailingMultiDivisions ${getUserName()}'
-                      });
-                }
-                if (_savedFilters.containsKey('branches')) {
-                  selectedRetailingMultiBranches = List<String>.from(
-                      _savedFilters['branches'].map((v) => v));
-                  FirebaseAnalytics.instance.logEvent(
-                      name: 'deep_dive_retailing_branches',
-                      parameters: {
-                        "message":
-                            'Selected Multi Filter $selectedRetailingMultiBranches ${getUserName()}'
-                      });
-                }
-                if (_savedFilters.containsKey('cluster')) {
-                  selectedRetailingMultiClusters =
-                      List<String>.from(_savedFilters['cluster'].map((v) => v));
-                  FirebaseAnalytics.instance.logEvent(
-                      name: 'deep_dive_retailing_cluster',
-                      parameters: {
-                        "message":
-                            'Selected Multi Filter $selectedRetailingMultiClusters ${getUserName()}'
-                      });
-                }
-                if (_savedFilters.containsKey('sites')) {
-                  selectedRetailingMultiSites =
-                      List<String>.from(_savedFilters['sites'].map((v) => v));
-                  FirebaseAnalytics.instance.logEvent(
-                      name: 'deep_dive_retailing_sites',
-                      parameters: {
-                        "message":
-                            'Selected Multi Filter $selectedRetailingMultiSites ${getUserName()}'
-                      });
-                }
+            if (mapDecoded.isNotEmpty) {
+              Map<String, dynamic> _savedFilters = mapDecoded;
+              if (_savedFilters.containsKey('allIndia')) {
+                selectedRetailingMultiAllIndia =
+                    List<String>.from(_savedFilters['allIndia'].map((v) => v));
+                FirebaseAnalytics.instance.logEvent(
+                    name: 'deep_dive_retailing_allIndia',
+                    parameters: {
+                      "message":
+                          'Selected Multi Filter $selectedRetailingMultiAllIndia ${getUserName()}'
+                    });
               }
+              if (_savedFilters.containsKey('division')) {
+                selectedRetailingMultiDivisions =
+                    List<String>.from(_savedFilters['division'].map((v) => v));
+                FirebaseAnalytics.instance.logEvent(
+                    name: 'deep_dive_retailing_division',
+                    parameters: {
+                      "message":
+                          'Selected Multi Filter $selectedRetailingMultiDivisions ${getUserName()}'
+                    });
+              }
+              if (_savedFilters.containsKey('branches')) {
+                selectedRetailingMultiBranches =
+                    List<String>.from(_savedFilters['branches'].map((v) => v));
+                FirebaseAnalytics.instance.logEvent(
+                    name: 'deep_dive_retailing_branches',
+                    parameters: {
+                      "message":
+                          'Selected Multi Filter $selectedRetailingMultiBranches ${getUserName()}'
+                    });
+              }
+              if (_savedFilters.containsKey('cluster')) {
+                selectedRetailingMultiClusters =
+                    List<String>.from(_savedFilters['cluster'].map((v) => v));
+                FirebaseAnalytics.instance
+                    .logEvent(name: 'deep_dive_retailing_cluster', parameters: {
+                  "message":
+                      'Selected Multi Filter $selectedRetailingMultiClusters ${getUserName()}'
+                });
+              }
+              if (_savedFilters.containsKey('sites')) {
+                selectedRetailingMultiSites =
+                    List<String>.from(_savedFilters['sites'].map((v) => v));
+                FirebaseAnalytics.instance.logEvent(
+                    name: 'deep_dive_retailing_sites',
+                    parameters: {
+                      "message":
+                          'Selected Multi Filter $selectedRetailingMultiSites ${getUserName()}'
+                    });
+              }
+            }
 
-              //for retailing category
-              final categoryMapDecoded = jsonDecode(
-                  await storage.read(key: AppConstants.RETAILING_CATEGORY) ??
-                      '{}');
-              if (categoryMapDecoded.isNotEmpty) {
-                Map<String, dynamic> _savedFilters = categoryMapDecoded;
+            //for retailing category
+            final categoryMapDecoded = jsonDecode(
+                await storage.read(key: AppConstants.RETAILING_CATEGORY) ??
+                    '{}');
+            if (categoryMapDecoded.isNotEmpty) {
+              Map<String, dynamic> _savedFilters = categoryMapDecoded;
+              FirebaseCrashlytics.instance.log("Category saved $_savedFilters");
+              debugPrint('====>Category saved $_savedFilters');
+              if (_savedFilters.containsKey('category')) {
+                selectedRetailingCategoryFilters =
+                    List<String>.from(_savedFilters['category'].map((v) => v));
+                FirebaseAnalytics.instance.logEvent(
+                    name: 'deep_dive_retailing_category',
+                    parameters: {
+                      "message":
+                          'Selected Multi Filter $selectedRetailingCategoryFilters ${getUserName()}'
+                    });
+              }
+              if (_savedFilters.containsKey('selected')) {
+                _selectedCategory = _savedFilters['selected'];
+              }
+            }
+            final channelMapDecoded = jsonDecode(
+                await storage.read(key: AppConstants.RETAILING_CHANNEL) ??
+                    '{}');
+            if (channelMapDecoded.isNotEmpty) {
+              Map<String, dynamic> _savedFilters = channelMapDecoded;
+              if (_savedFilters.containsKey('channel')) {
                 FirebaseCrashlytics.instance
-                    .log("Category saved $_savedFilters");
-                debugPrint('====>Category saved $_savedFilters');
-                if (_savedFilters.containsKey('category')) {
-                  selectedRetailingCategoryFilters = List<String>.from(
-                      _savedFilters['category'].map((v) => v));
-                  FirebaseAnalytics.instance.logEvent(
-                      name: 'deep_dive_retailing_category',
-                      parameters: {
-                        "message":
-                            'Selected Multi Filter $selectedRetailingCategoryFilters ${getUserName()}'
-                      });
-                }
-                if (_savedFilters.containsKey('selected')) {
-                  _selectedCategory = _savedFilters['selected'];
-                }
+                    .log("Channel saved $_savedFilters");
+                debugPrint('====>Channel saved $_savedFilters');
+                selectedRetailingChannelFilter =
+                    List<String>.from(_savedFilters['channel'].map((v) => v));
+                FirebaseAnalytics.instance
+                    .logEvent(name: 'deep_dive_retailing_channel', parameters: {
+                  "message":
+                      'Selected Multi Filter $selectedRetailingChannelFilter ${getUserName()}'
+                });
               }
-              final channelMapDecoded = jsonDecode(
-                  await storage.read(key: AppConstants.RETAILING_CHANNEL) ??
-                      '{}');
-              if (channelMapDecoded.isNotEmpty) {
-                Map<String, dynamic> _savedFilters = channelMapDecoded;
-                if (_savedFilters.containsKey('channel')) {
-                  FirebaseCrashlytics.instance
-                      .log("Channel saved $_savedFilters");
-                  debugPrint('====>Channel saved $_savedFilters');
-                  selectedRetailingChannelFilter =
-                      List<String>.from(_savedFilters['channel'].map((v) => v));
-                  FirebaseAnalytics.instance.logEvent(
-                      name: 'deep_dive_retailing_channel',
-                      parameters: {
-                        "message":
-                            'Selected Multi Filter $selectedRetailingChannelFilter ${getUserName()}'
-                      });
-                }
-                if (_savedFilters.containsKey('selected')) {
-                  _selectedRetailingChannel = _savedFilters['selected'];
-                }
-              } else {
-                selectedRetailingChannelFilter = filtersModel?.attr1 ?? [];
+              if (_savedFilters.containsKey('selected')) {
+                _selectedRetailingChannel = _savedFilters['selected'];
               }
-              // final trendMapDecoded = jsonDecode(
-              //     await storage.read(key: AppConstants.RETAILING_TRENDS) ?? '{}');
-              // if (trendMapDecoded.isNotEmpty) {
-              //   Map<String, dynamic> _savedFilters = trendMapDecoded;
-              //   if (_savedFilters.containsKey('trends')) {
-              //     if (_savedFilters.containsKey('category') &&
-              //         _savedFilters
-              //             .containsKey('category')
-              //             .toString()
-              //             .isNotEmpty) {
-              //       _selectedTrendsCategoryValue = _savedFilters['trends'];
-              //       _selectedTrendsCategory = _savedFilters['category'];
-              //       _selectedTrends = _selectedTrendsCategory;
-              //       _retailingTrendsValue = _selectedTrendsCategoryValue;
-              //     } else if (_savedFilters.containsKey('channel') &&
-              //         _savedFilters
-              //             .containsKey('channel')
-              //             .toString()
-              //             .isNotEmpty) {
-              //       _selectedTrendsChannelValue = _savedFilters['trends'];
-              //       _selectedChannel = _savedFilters['channel'];
-              //       _selectedTrends = _selectedChannel;
-              //       _retailingTrendsValue = _selectedTrendsChannelValue;
-              //     } else if (_savedFilters.containsKey('geo') &&
-              //         _savedFilters.containsKey('geo').toString().isNotEmpty) {
-              //       _selectedTrendsGeoValue = _savedFilters['trends'];
-              //       _selectedTrendsGeo = _savedFilters['geo'];
-              //       _selectedTrends = _selectedTrendsGeo;
-              //       _retailingTrendsValue = _selectedTrendsGeoValue;
-              //     }
-              // }
-              // }
+            } else {
+              selectedRetailingChannelFilter = filtersModel?.attr1 ?? [];
+            }
+            // final trendMapDecoded = jsonDecode(
+            //     await storage.read(key: AppConstants.RETAILING_TRENDS) ?? '{}');
+            // if (trendMapDecoded.isNotEmpty) {
+            //   Map<String, dynamic> _savedFilters = trendMapDecoded;
+            //   if (_savedFilters.containsKey('trends')) {
+            //     if (_savedFilters.containsKey('category') &&
+            //         _savedFilters
+            //             .containsKey('category')
+            //             .toString()
+            //             .isNotEmpty) {
+            //       _selectedTrendsCategoryValue = _savedFilters['trends'];
+            //       _selectedTrendsCategory = _savedFilters['category'];
+            //       _selectedTrends = _selectedTrendsCategory;
+            //       _retailingTrendsValue = _selectedTrendsCategoryValue;
+            //     } else if (_savedFilters.containsKey('channel') &&
+            //         _savedFilters
+            //             .containsKey('channel')
+            //             .toString()
+            //             .isNotEmpty) {
+            //       _selectedTrendsChannelValue = _savedFilters['trends'];
+            //       _selectedChannel = _savedFilters['channel'];
+            //       _selectedTrends = _selectedChannel;
+            //       _retailingTrendsValue = _selectedTrendsChannelValue;
+            //     } else if (_savedFilters.containsKey('geo') &&
+            //         _savedFilters.containsKey('geo').toString().isNotEmpty) {
+            //       _selectedTrendsGeoValue = _savedFilters['trends'];
+            //       _selectedTrendsGeo = _savedFilters['geo'];
+            //       _selectedTrends = _selectedTrendsGeo;
+            //       _retailingTrendsValue = _selectedTrendsGeoValue;
+            //     }
+            // }
+            // }
 
-              //coverage
-              //getting coverage saved filters and setting it's values to the variables
+            //coverage
+            //getting coverage saved filters and setting it's values to the variables
 
-              final coveragemapDecoded = jsonDecode(
-                  await storage.read(key: AppConstants.COVERAGE_GEO) ?? '{}');
+            final coveragemapDecoded = jsonDecode(
+                await storage.read(key: AppConstants.COVERAGE_GEO) ?? '{}');
 
-              if (coveragemapDecoded.isNotEmpty) {
-                Map<String, dynamic> _savedFilters = coveragemapDecoded;
-                if (_savedFilters.containsKey('allIndia')) {
-                  selectedCoverageMultiAllIndia = List<String>.from(
-                      _savedFilters['allIndia'].map((v) => v));
-                  FirebaseAnalytics.instance.logEvent(
-                      name: 'deep_dive_coverage_allIndia',
-                      parameters: {
-                        "message":
-                            'Selected Multi Filter $selectedCoverageMultiAllIndia ${getUserName()}'
-                      });
-                }
-                if (_savedFilters.containsKey('division')) {
-                  selectedCoverageMultiDivisions = List<String>.from(
-                      _savedFilters['division'].map((v) => v));
-                  FirebaseAnalytics.instance.logEvent(
-                      name: 'deep_dive_coverage_division',
-                      parameters: {
-                        "message":
-                            'Selected Multi Filter $selectedCoverageMultiDivisions ${getUserName()}'
-                      });
-                }
-                if (_savedFilters.containsKey('branches')) {
-                  selectedCoverageMultiBranches = List<String>.from(
-                      _savedFilters['branches'].map((v) => v));
-                  FirebaseAnalytics.instance.logEvent(
-                      name: 'deep_dive_coverage_branches',
-                      parameters: {
-                        "message":
-                            'Selected Multi Filter $selectedCoverageMultiBranches ${getUserName()}'
-                      });
-                }
-                if (_savedFilters.containsKey('cluster')) {
-                  selectedCoverageMultiClusters =
-                      List<String>.from(_savedFilters['cluster'].map((v) => v));
-                  FirebaseAnalytics.instance.logEvent(
-                      name: 'deep_dive_coverage_cluster',
-                      parameters: {
-                        "message":
-                            'Selected Multi Filter $selectedCoverageMultiClusters ${getUserName()}'
-                      });
-                }
-                if (_savedFilters.containsKey('sites')) {
-                  selectedCoverageMultiSites =
-                      List<String>.from(_savedFilters['sites'].map((v) => v));
-                  FirebaseAnalytics.instance.logEvent(
-                      name: 'deep_dive_coverage_sites',
-                      parameters: {
-                        "message":
-                            'Selected Multi Filter $selectedCoverageMultiSites ${getUserName()}'
-                      });
-                }
+            if (coveragemapDecoded.isNotEmpty) {
+              Map<String, dynamic> _savedFilters = coveragemapDecoded;
+              if (_savedFilters.containsKey('allIndia')) {
+                selectedCoverageMultiAllIndia =
+                    List<String>.from(_savedFilters['allIndia'].map((v) => v));
+                FirebaseAnalytics.instance
+                    .logEvent(name: 'deep_dive_coverage_allIndia', parameters: {
+                  "message":
+                      'Selected Multi Filter $selectedCoverageMultiAllIndia ${getUserName()}'
+                });
               }
+              if (_savedFilters.containsKey('division')) {
+                selectedCoverageMultiDivisions =
+                    List<String>.from(_savedFilters['division'].map((v) => v));
+                FirebaseAnalytics.instance
+                    .logEvent(name: 'deep_dive_coverage_division', parameters: {
+                  "message":
+                      'Selected Multi Filter $selectedCoverageMultiDivisions ${getUserName()}'
+                });
+              }
+              if (_savedFilters.containsKey('branches')) {
+                selectedCoverageMultiBranches =
+                    List<String>.from(_savedFilters['branches'].map((v) => v));
+                FirebaseAnalytics.instance
+                    .logEvent(name: 'deep_dive_coverage_branches', parameters: {
+                  "message":
+                      'Selected Multi Filter $selectedCoverageMultiBranches ${getUserName()}'
+                });
+              }
+              if (_savedFilters.containsKey('cluster')) {
+                selectedCoverageMultiClusters =
+                    List<String>.from(_savedFilters['cluster'].map((v) => v));
+                FirebaseAnalytics.instance
+                    .logEvent(name: 'deep_dive_coverage_cluster', parameters: {
+                  "message":
+                      'Selected Multi Filter $selectedCoverageMultiClusters ${getUserName()}'
+                });
+              }
+              if (_savedFilters.containsKey('sites')) {
+                selectedCoverageMultiSites =
+                    List<String>.from(_savedFilters['sites'].map((v) => v));
+                FirebaseAnalytics.instance.logEvent(
+                    name: 'deep_dive_coverage_sites',
+                    parameters: {
+                      "message":
+                          'Selected Multi Filter $selectedCoverageMultiSites ${getUserName()}'
+                    });
+              }
+            }
 
-              //for coverage category
+            //for coverage category
 
-              ///"category": selectedCoverageCategoryFilters,
-              // "selected": selectedCategory
-              //  "channel": selectedCoverageChannelFilter,
-              // "selected": selectedCoverageChannel
+            ///"category": selectedCoverageCategoryFilters,
+            // "selected": selectedCategory
+            //  "channel": selectedCoverageChannelFilter,
+            // "selected": selectedCoverageChannel
 
-              // final coverageCategoryMapDecoded = jsonDecode(
-              //     await storage.read(key: AppConstants.COVERAGE_CATEGORY) ??
-              //         '{}');
-              // if (coverageCategoryMapDecoded.isNotEmpty) {
-              //   Map<String, dynamic> _savedFilters = coverageCategoryMapDecoded;
-              //   debugPrint('====>Category saved $_savedFilters');
-              //   if (_savedFilters.containsKey('category')) {
-              //     selectedCoverageCategoryFilters =
-              //         List<String>.from(_savedFilters['category'].map((v) => v));
-              //   }
-              //   if (_savedFilters.containsKey('selected')) {
-              //     _selectedCategory = _savedFilters['selected'];
-              //   }
-              // }
-              final coverageChannelMapDecoded = jsonDecode(
-                  await storage.read(key: AppConstants.COVERAGE_CHANNEL) ??
-                      '{}');
-              if (coverageChannelMapDecoded.isNotEmpty) {
-                Map<String, dynamic> _savedFilters = coverageChannelMapDecoded;
-                if (_savedFilters.containsKey('channel')) {
-                  debugPrint('====>Channel saved $_savedFilters');
-                  selectedCoverageChannelFilter =
-                      List<String>.from(_savedFilters['channel'].map((v) => v));
-                  FirebaseAnalytics.instance.logEvent(
-                      name: 'deep_dive_coverage_channel',
-                      parameters: {
-                        "message":
-                            'Selected Multi Filter $selectedCoverageChannelFilter ${getUserName()}'
-                      });
-                }
-                if (_savedFilters.containsKey('selected')) {
-                  _selectedCoverageChannel = _savedFilters['selected'];
-                }
-              } else {
+            // final coverageCategoryMapDecoded = jsonDecode(
+            //     await storage.read(key: AppConstants.COVERAGE_CATEGORY) ??
+            //         '{}');
+            // if (coverageCategoryMapDecoded.isNotEmpty) {
+            //   Map<String, dynamic> _savedFilters = coverageCategoryMapDecoded;
+            //   debugPrint('====>Category saved $_savedFilters');
+            //   if (_savedFilters.containsKey('category')) {
+            //     selectedCoverageCategoryFilters =
+            //         List<String>.from(_savedFilters['category'].map((v) => v));
+            //   }
+            //   if (_savedFilters.containsKey('selected')) {
+            //     _selectedCategory = _savedFilters['selected'];
+            //   }
+            // }
+            final coverageChannelMapDecoded = jsonDecode(
+                await storage.read(key: AppConstants.COVERAGE_CHANNEL) ?? '{}');
+            if (coverageChannelMapDecoded.isNotEmpty) {
+              Map<String, dynamic> _savedFilters = coverageChannelMapDecoded;
+              if (_savedFilters.containsKey('channel')) {
+                debugPrint('====>Channel saved $_savedFilters');
                 selectedCoverageChannelFilter =
-                    filtersModel?.otherAttrs?.attr1 ?? [];
+                    List<String>.from(_savedFilters['channel'].map((v) => v));
+                FirebaseAnalytics.instance
+                    .logEvent(name: 'deep_dive_coverage_channel', parameters: {
+                  "message":
+                      'Selected Multi Filter $selectedCoverageChannelFilter ${getUserName()}'
+                });
               }
-              // final coverageTrendMapDecoded = jsonDecode(
-              //     await storage.read(key: AppConstants.RETAILING_TRENDS) ?? '{}');
-
-              // if (coverageTrendMapDecoded.isNotEmpty) {
-              //   Map<String, dynamic> _savedFilters = coverageTrendMapDecoded;
-              //   if (_savedFilters.containsKey('trends')) {
-              //     if (_savedFilters.containsKey('category') &&
-              //         _savedFilters
-              //             .containsKey('category')
-              //             .toString()
-              //             .isNotEmpty) {
-              //       _selectedTrendsCategoryValue = _savedFilters['trends'];
-              //       _selectedTrendsCategory = _savedFilters['category'];
-              //       _selectedCoverageTrends = _selectedTrendsCategory;
-              //       _coverageTrendsValue = _selectedTrendsCategoryValue;
-              //     } else if (_savedFilters.containsKey('channel') &&
-              //         _savedFilters
-              //             .containsKey('channel')
-              //             .toString()
-              //             .isNotEmpty) {
-              //       _selectedTrendsChannelValue = _savedFilters['trends'];
-              //       _selectedChannel = _savedFilters['channel'];
-              //       _selectedCoverageTrends = _selectedChannel;
-              //       _coverageTrendsValue = _selectedTrendsChannelValue;
-              //     } else if (_savedFilters.containsKey('geo') &&
-              //         _savedFilters.containsKey('geo').toString().isNotEmpty) {
-              //       _selectedTrendsGeoValue = _savedFilters['trends'];
-              //       _selectedTrendsGeo = _savedFilters['geo'];
-              //       _selectedCoverageTrends = _selectedTrendsGeo;
-              //       _coverageTrendsValue = _selectedTrendsGeoValue;
-              //     }
-              //   }
-              // }
-
-              ////////////////////
-              /// //getting gp saved filters and
-
-              final gpMapDecoded = jsonDecode(
-                  await storage.read(key: AppConstants.GP_GEO) ?? '{}');
-
-              if (gpMapDecoded.isNotEmpty) {
-                Map<String, dynamic> _savedFilters = gpMapDecoded;
-                if (_savedFilters.containsKey('allIndia')) {
-                  selectedGPMultiAllIndia = List<String>.from(
-                      _savedFilters['allIndia'].map((v) => v));
-                  FirebaseAnalytics.instance.logEvent(
-                      name: 'deep_dive_gp_allIndia',
-                      parameters: {
-                        "message":
-                            'Selected Multi Filter $selectedGPMultiAllIndia ${getUserName()}'
-                      });
-                }
-                if (_savedFilters.containsKey('division')) {
-                  selectedGPMultiDivisions = List<String>.from(
-                      _savedFilters['division'].map((v) => v));
-                  FirebaseAnalytics.instance.logEvent(
-                      name: 'deep_dive_gp_division',
-                      parameters: {
-                        "message":
-                            'Selected Multi Filter $selectedGPMultiDivisions ${getUserName()}'
-                      });
-                }
-                if (_savedFilters.containsKey('branches')) {
-                  selectedGPMultiBranches = List<String>.from(
-                      _savedFilters['branches'].map((v) => v));
-                  FirebaseAnalytics.instance.logEvent(
-                      name: 'deep_dive_gp_branches',
-                      parameters: {
-                        "message":
-                            'Selected Multi Filter $selectedGPMultiBranches ${getUserName()}'
-                      });
-                }
-                if (_savedFilters.containsKey('cluster')) {
-                  selectedGPMultiClusters =
-                      List<String>.from(_savedFilters['cluster'].map((v) => v));
-                  FirebaseAnalytics.instance.logEvent(
-                      name: 'deep_dive_gp_cluster',
-                      parameters: {
-                        "message":
-                            'Selected Multi Filter $selectedGPMultiClusters ${getUserName()}'
-                      });
-                }
-                if (_savedFilters.containsKey('sites')) {
-                  selectedGPMultiSites =
-                      List<String>.from(_savedFilters['sites'].map((v) => v));
-                  FirebaseAnalytics.instance.logEvent(
-                      name: 'deep_dive_gp_sites',
-                      parameters: {
-                        "message":
-                            'Selected Multi Filter $selectedGPMultiSites ${getUserName()}'
-                      });
-                }
+              if (_savedFilters.containsKey('selected')) {
+                _selectedCoverageChannel = _savedFilters['selected'];
               }
+            } else {
+              selectedCoverageChannelFilter =
+                  filtersModel?.otherAttrs?.attr1 ?? [];
+            }
+            // final coverageTrendMapDecoded = jsonDecode(
+            //     await storage.read(key: AppConstants.RETAILING_TRENDS) ?? '{}');
 
-              //for gp category
-              final gpCategoryMapDecoded = jsonDecode(
-                  await storage.read(key: AppConstants.GP_CATEGORY) ?? '{}');
-              if (gpCategoryMapDecoded.isNotEmpty) {
-                Map<String, dynamic> _savedFilters = gpCategoryMapDecoded;
-                debugPrint('====>Category saved $_savedFilters');
-                if (_savedFilters.containsKey('category')) {
-                  selectedGPCategoryFilters = List<String>.from(
-                      _savedFilters['category'].map((v) => v));
-                  FirebaseAnalytics.instance.logEvent(
-                      name: 'deep_dive_gp_category',
-                      parameters: {
-                        "message":
-                            'Selected Multi Filter $selectedGPCategoryFilters ${getUserName()}'
-                      });
-                }
-                if (_savedFilters.containsKey('selected')) {
-                  _selectedGPCategory = _savedFilters['selected'];
-                }
+            // if (coverageTrendMapDecoded.isNotEmpty) {
+            //   Map<String, dynamic> _savedFilters = coverageTrendMapDecoded;
+            //   if (_savedFilters.containsKey('trends')) {
+            //     if (_savedFilters.containsKey('category') &&
+            //         _savedFilters
+            //             .containsKey('category')
+            //             .toString()
+            //             .isNotEmpty) {
+            //       _selectedTrendsCategoryValue = _savedFilters['trends'];
+            //       _selectedTrendsCategory = _savedFilters['category'];
+            //       _selectedCoverageTrends = _selectedTrendsCategory;
+            //       _coverageTrendsValue = _selectedTrendsCategoryValue;
+            //     } else if (_savedFilters.containsKey('channel') &&
+            //         _savedFilters
+            //             .containsKey('channel')
+            //             .toString()
+            //             .isNotEmpty) {
+            //       _selectedTrendsChannelValue = _savedFilters['trends'];
+            //       _selectedChannel = _savedFilters['channel'];
+            //       _selectedCoverageTrends = _selectedChannel;
+            //       _coverageTrendsValue = _selectedTrendsChannelValue;
+            //     } else if (_savedFilters.containsKey('geo') &&
+            //         _savedFilters.containsKey('geo').toString().isNotEmpty) {
+            //       _selectedTrendsGeoValue = _savedFilters['trends'];
+            //       _selectedTrendsGeo = _savedFilters['geo'];
+            //       _selectedCoverageTrends = _selectedTrendsGeo;
+            //       _coverageTrendsValue = _selectedTrendsGeoValue;
+            //     }
+            //   }
+            // }
+
+            ////////////////////
+            /// //getting gp saved filters and
+
+            final gpMapDecoded = jsonDecode(
+                await storage.read(key: AppConstants.GP_GEO) ?? '{}');
+
+            if (gpMapDecoded.isNotEmpty) {
+              Map<String, dynamic> _savedFilters = gpMapDecoded;
+              if (_savedFilters.containsKey('allIndia')) {
+                selectedGPMultiAllIndia =
+                    List<String>.from(_savedFilters['allIndia'].map((v) => v));
+                FirebaseAnalytics.instance.logEvent(
+                    name: 'deep_dive_gp_allIndia',
+                    parameters: {
+                      "message":
+                          'Selected Multi Filter $selectedGPMultiAllIndia ${getUserName()}'
+                    });
               }
-              final gpChannelMapDecoded = jsonDecode(
-                  await storage.read(key: AppConstants.GP_CHANNEL) ?? '{}');
-              if (gpChannelMapDecoded.isNotEmpty) {
-                Map<String, dynamic> _savedFilters = gpChannelMapDecoded;
-                if (_savedFilters.containsKey('channel')) {
-                  debugPrint('====>Channel saved $_savedFilters');
-                  selectedGPChannelFilter =
-                      List<String>.from(_savedFilters['channel'].map((v) => v));
-                  FirebaseAnalytics.instance.logEvent(
-                      name: 'deep_dive_gp_channel',
-                      parameters: {
-                        "message":
-                            'Selected Multi Filter $selectedGPChannelFilter ${getUserName()}'
-                      });
-                }
-                if (_savedFilters.containsKey('selected')) {
-                  _selectedGPChannel = _savedFilters['selected'];
-                }
-              } else {
-                selectedGPChannelFilter = filtersModel?.attr1 ?? [];
+              if (_savedFilters.containsKey('division')) {
+                selectedGPMultiDivisions =
+                    List<String>.from(_savedFilters['division'].map((v) => v));
+                FirebaseAnalytics.instance.logEvent(
+                    name: 'deep_dive_gp_division',
+                    parameters: {
+                      "message":
+                          'Selected Multi Filter $selectedGPMultiDivisions ${getUserName()}'
+                    });
               }
-              // final gpTrendMapDecoded = jsonDecode(
-              //     await storage.read(key: AppConstants.GP_TRENDS) ?? '{}');
-              // if (gpTrendMapDecoded.isNotEmpty) {
-              //   Map<String, dynamic> _savedFilters = gpTrendMapDecoded;
-              //   if (_savedFilters.containsKey('trends')) {
-              //     if (_savedFilters.containsKey('category') &&
-              //         _savedFilters
-              //             .containsKey('category')
-              //             .toString()
-              //             .isNotEmpty) {
-              //       _selectedTrendsCategoryValue = _savedFilters['trends'];
-              //       _selectedTrendsCategory = _savedFilters['category'];
-              //       _selectedTrends = _selectedTrendsCategory;
-              //       _retailingTrendsValue = _selectedTrendsCategoryValue;
-              //     } else if (_savedFilters.containsKey('channel') &&
-              //         _savedFilters
-              //             .containsKey('channel')
-              //             .toString()
-              //             .isNotEmpty) {
-              //       _selectedTrendsChannelValue = _savedFilters['trends'];
-              //       _selectedChannel = _savedFilters['channel'];
-              //       _selectedTrends = _selectedChannel;
-              //       _retailingTrendsValue = _selectedTrendsChannelValue;
-              //     } else if (_savedFilters.containsKey('geo') &&
-              //         _savedFilters.containsKey('geo').toString().isNotEmpty) {
-              //       _selectedTrendsGeoValue = _savedFilters['trends'];
-              //       _selectedTrendsGeo = _savedFilters['geo'];
-              //       _selectedTrends = _selectedTrendsGeo;
-              //       _retailingTrendsValue = _selectedTrendsGeoValue;
-              //     }
-              //   }
-              // }
-
-              ////////////////////
-              /// //getting fb saved filters and
-
-              final fbMapDecoded = jsonDecode(
-                  await storage.read(key: AppConstants.FB_GEO) ?? '{}');
-
-              if (fbMapDecoded.isNotEmpty) {
-                Map<String, dynamic> _savedFilters = fbMapDecoded;
-                if (_savedFilters.containsKey('allIndia')) {
-                  selectedFBMultiAllIndia = List<String>.from(
-                      _savedFilters['allIndia'].map((v) => v));
-                  FirebaseAnalytics.instance.logEvent(
-                      name: 'deep_dive_fb_allIndia',
-                      parameters: {
-                        "message":
-                            'Selected Multi Filter $selectedFBMultiAllIndia ${getUserName()}'
-                      });
-                }
-                if (_savedFilters.containsKey('division')) {
-                  selectedFBMultiDivisions = List<String>.from(
-                      _savedFilters['division'].map((v) => v));
-                  FirebaseAnalytics.instance.logEvent(
-                      name: 'deep_dive_fb_division',
-                      parameters: {
-                        "message":
-                            'Selected Multi Filter $selectedFBMultiDivisions ${getUserName()}'
-                      });
-                }
-                if (_savedFilters.containsKey('branches')) {
-                  selectedFBMultiBranches = List<String>.from(
-                      _savedFilters['branches'].map((v) => v));
-                  FirebaseAnalytics.instance.logEvent(
-                      name: 'deep_dive_fb_branches',
-                      parameters: {
-                        "message":
-                            'Selected Multi Filter $selectedFBMultiBranches ${getUserName()}'
-                      });
-                }
-                if (_savedFilters.containsKey('cluster')) {
-                  selectedFBMultiClusters =
-                      List<String>.from(_savedFilters['cluster'].map((v) => v));
-                  FirebaseAnalytics.instance.logEvent(
-                      name: 'deep_dive_fb_cluster',
-                      parameters: {
-                        "message":
-                            'Selected Multi Filter $selectedFBMultiClusters ${getUserName()}'
-                      });
-                }
-                if (_savedFilters.containsKey('sites')) {
-                  selectedFBMultiSites =
-                      List<String>.from(_savedFilters['sites'].map((v) => v));
-                  FirebaseAnalytics.instance.logEvent(
-                      name: 'deep_dive_fb_sites',
-                      parameters: {
-                        "message":
-                            'Selected Multi Filter $selectedFBMultiSites ${getUserName()}'
-                      });
-                }
+              if (_savedFilters.containsKey('branches')) {
+                selectedGPMultiBranches =
+                    List<String>.from(_savedFilters['branches'].map((v) => v));
+                FirebaseAnalytics.instance.logEvent(
+                    name: 'deep_dive_gp_branches',
+                    parameters: {
+                      "message":
+                          'Selected Multi Filter $selectedGPMultiBranches ${getUserName()}'
+                    });
               }
-
-              //for fb category
-              final fbCategoryMapDecoded = jsonDecode(
-                  await storage.read(key: AppConstants.FB_CATEGORY) ?? '{}');
-              if (fbCategoryMapDecoded.isNotEmpty) {
-                Map<String, dynamic> _savedFilters = fbCategoryMapDecoded;
-                debugPrint('====>Category saved $_savedFilters');
-                if (_savedFilters.containsKey('category')) {
-                  selectedFBCategoryFilters = List<String>.from(
-                      _savedFilters['category'].map((v) => v));
-                  FirebaseAnalytics.instance.logEvent(
-                      name: 'deep_dive_fb_category',
-                      parameters: {
-                        "message":
-                            'Selected Multi Filter $selectedFBCategoryFilters ${getUserName()}'
-                      });
-                }
-                if (_savedFilters.containsKey('selected')) {
-                  _selectedFBCategory = _savedFilters['selected'];
-                }
+              if (_savedFilters.containsKey('cluster')) {
+                selectedGPMultiClusters =
+                    List<String>.from(_savedFilters['cluster'].map((v) => v));
+                FirebaseAnalytics.instance.logEvent(
+                    name: 'deep_dive_gp_cluster',
+                    parameters: {
+                      "message":
+                          'Selected Multi Filter $selectedGPMultiClusters ${getUserName()}'
+                    });
               }
-              final fbChannelMapDecoded = jsonDecode(
-                  await storage.read(key: AppConstants.FB_CHANNEL) ?? '{}');
-              if (fbChannelMapDecoded.isNotEmpty) {
-                Map<String, dynamic> _savedFilters = fbChannelMapDecoded;
-                if (_savedFilters.containsKey('channel')) {
-                  debugPrint('====>Channel saved $_savedFilters');
-                  selectedFBChannelFilter =
-                      List<String>.from(_savedFilters['channel'].map((v) => v));
-                  FirebaseAnalytics.instance.logEvent(
-                      name: 'deep_dive_fb_channel',
-                      parameters: {
-                        "message":
-                            'Selected Multi Filter $selectedFBChannelFilter ${getUserName()}'
-                      });
-                }
-                if (_savedFilters.containsKey('selected')) {
-                  _selectedFBChannel = _savedFilters['selected'];
-                }
-              } else {
-                selectedFBChannelFilter = filtersModel?.attr1 ?? [];
+              if (_savedFilters.containsKey('sites')) {
+                selectedGPMultiSites =
+                    List<String>.from(_savedFilters['sites'].map((v) => v));
+                FirebaseAnalytics.instance.logEvent(
+                    name: 'deep_dive_gp_sites',
+                    parameters: {
+                      "message":
+                          'Selected Multi Filter $selectedGPMultiSites ${getUserName()}'
+                    });
               }
-              // final fbTrendMapDecoded = jsonDecode(
-              //     await storage.read(key: AppConstants.GP_TRENDS) ?? '{}');
-              // if (fbTrendMapDecoded.isNotEmpty) {
-              //   Map<String, dynamic> _savedFilters = fbTrendMapDecoded;
-              //   if (_savedFilters.containsKey('trends')) {
-              //     if (_savedFilters.containsKey('category') &&
-              //         _savedFilters
-              //             .containsKey('category')
-              //             .toString()
-              //             .isNotEmpty) {
-              //       _selectedTrendsCategoryValue = _savedFilters['trends'];
-              //       _selectedTrendsCategory = _savedFilters['category'];
-              //       _selectedTrends = _selectedTrendsCategory;
-              //       _retailingTrendsValue = _selectedTrendsCategoryValue;
-              //     } else if (_savedFilters.containsKey('channel') &&
-              //         _savedFilters
-              //             .containsKey('channel')
-              //             .toString()
-              //             .isNotEmpty) {
-              //       _selectedTrendsChannelValue = _savedFilters['trends'];
-              //       _selectedChannel = _savedFilters['channel'];
-              //       _selectedTrends = _selectedChannel;
-              //       _retailingTrendsValue = _selectedTrendsChannelValue;
-              //     } else if (_savedFilters.containsKey('geo') &&
-              //         _savedFilters.containsKey('geo').toString().isNotEmpty) {
-              //       _selectedTrendsGeoValue = _savedFilters['trends'];
-              //       _selectedTrendsGeo = _savedFilters['geo'];
-              //       _selectedTrends = _selectedTrendsGeo;
-              //       _retailingTrendsValue = _selectedTrendsGeoValue;
-              //     }
-              //   }
-              // }
+            }
 
-              categoryTrendsFilters = filtersModel?.category ?? [];
-              channelFilter = filtersModel?.attr1 ?? [];
-              channelTrendsFilter = filtersModel?.attr1 ?? [];
-              getRetailingData();
-              getRetailingData(type: 'category', name: 'category');
-              getRetailingData(type: 'channel', name: 'geo');
-              getRetailingData(type: 'geo', name: 'trends');
-              //gp
-              getGPData();
-              getGPData(type: 'category', name: 'category');
-              getGPData(type: 'channel', name: 'geo');
-              getGPData(type: 'geo', name: 'trends');
-              //fb
-              getFocusBrandData();
-              getFocusBrandData(type: 'category', name: 'category');
-              getFocusBrandData(type: 'channel', name: 'geo');
-              getFocusBrandData(type: 'geo', name: 'trends');
-              //Coverage
-              getCoverageData();
-              getCoverageData(type: 'channel', name: 'geo');
-              getCoverageData(type: 'trends', name: 'trends');
-            }),
-          );
-        })
-      ]);
+            //for gp category
+            final gpCategoryMapDecoded = jsonDecode(
+                await storage.read(key: AppConstants.GP_CATEGORY) ?? '{}');
+            if (gpCategoryMapDecoded.isNotEmpty) {
+              Map<String, dynamic> _savedFilters = gpCategoryMapDecoded;
+              debugPrint('====>Category saved $_savedFilters');
+              if (_savedFilters.containsKey('category')) {
+                selectedGPCategoryFilters =
+                    List<String>.from(_savedFilters['category'].map((v) => v));
+                FirebaseAnalytics.instance.logEvent(
+                    name: 'deep_dive_gp_category',
+                    parameters: {
+                      "message":
+                          'Selected Multi Filter $selectedGPCategoryFilters ${getUserName()}'
+                    });
+              }
+              if (_savedFilters.containsKey('selected')) {
+                _selectedGPCategory = _savedFilters['selected'];
+              }
+            }
+            final gpChannelMapDecoded = jsonDecode(
+                await storage.read(key: AppConstants.GP_CHANNEL) ?? '{}');
+            if (gpChannelMapDecoded.isNotEmpty) {
+              Map<String, dynamic> _savedFilters = gpChannelMapDecoded;
+              if (_savedFilters.containsKey('channel')) {
+                debugPrint('====>Channel saved $_savedFilters');
+                selectedGPChannelFilter =
+                    List<String>.from(_savedFilters['channel'].map((v) => v));
+                FirebaseAnalytics.instance.logEvent(
+                    name: 'deep_dive_gp_channel',
+                    parameters: {
+                      "message":
+                          'Selected Multi Filter $selectedGPChannelFilter ${getUserName()}'
+                    });
+              }
+              if (_savedFilters.containsKey('selected')) {
+                _selectedGPChannel = _savedFilters['selected'];
+              }
+            } else {
+              selectedGPChannelFilter = filtersModel?.attr1 ?? [];
+            }
+            // final gpTrendMapDecoded = jsonDecode(
+            //     await storage.read(key: AppConstants.GP_TRENDS) ?? '{}');
+            // if (gpTrendMapDecoded.isNotEmpty) {
+            //   Map<String, dynamic> _savedFilters = gpTrendMapDecoded;
+            //   if (_savedFilters.containsKey('trends')) {
+            //     if (_savedFilters.containsKey('category') &&
+            //         _savedFilters
+            //             .containsKey('category')
+            //             .toString()
+            //             .isNotEmpty) {
+            //       _selectedTrendsCategoryValue = _savedFilters['trends'];
+            //       _selectedTrendsCategory = _savedFilters['category'];
+            //       _selectedTrends = _selectedTrendsCategory;
+            //       _retailingTrendsValue = _selectedTrendsCategoryValue;
+            //     } else if (_savedFilters.containsKey('channel') &&
+            //         _savedFilters
+            //             .containsKey('channel')
+            //             .toString()
+            //             .isNotEmpty) {
+            //       _selectedTrendsChannelValue = _savedFilters['trends'];
+            //       _selectedChannel = _savedFilters['channel'];
+            //       _selectedTrends = _selectedChannel;
+            //       _retailingTrendsValue = _selectedTrendsChannelValue;
+            //     } else if (_savedFilters.containsKey('geo') &&
+            //         _savedFilters.containsKey('geo').toString().isNotEmpty) {
+            //       _selectedTrendsGeoValue = _savedFilters['trends'];
+            //       _selectedTrendsGeo = _savedFilters['geo'];
+            //       _selectedTrends = _selectedTrendsGeo;
+            //       _retailingTrendsValue = _selectedTrendsGeoValue;
+            //     }
+            //   }
+            // }
+
+            ////////////////////
+            /// //getting fb saved filters and
+
+            final fbMapDecoded = jsonDecode(
+                await storage.read(key: AppConstants.FB_GEO) ?? '{}');
+
+            if (fbMapDecoded.isNotEmpty) {
+              Map<String, dynamic> _savedFilters = fbMapDecoded;
+              if (_savedFilters.containsKey('allIndia')) {
+                selectedFBMultiAllIndia =
+                    List<String>.from(_savedFilters['allIndia'].map((v) => v));
+                FirebaseAnalytics.instance.logEvent(
+                    name: 'deep_dive_fb_allIndia',
+                    parameters: {
+                      "message":
+                          'Selected Multi Filter $selectedFBMultiAllIndia ${getUserName()}'
+                    });
+              }
+              if (_savedFilters.containsKey('division')) {
+                selectedFBMultiDivisions =
+                    List<String>.from(_savedFilters['division'].map((v) => v));
+                FirebaseAnalytics.instance.logEvent(
+                    name: 'deep_dive_fb_division',
+                    parameters: {
+                      "message":
+                          'Selected Multi Filter $selectedFBMultiDivisions ${getUserName()}'
+                    });
+              }
+              if (_savedFilters.containsKey('branches')) {
+                selectedFBMultiBranches =
+                    List<String>.from(_savedFilters['branches'].map((v) => v));
+                FirebaseAnalytics.instance.logEvent(
+                    name: 'deep_dive_fb_branches',
+                    parameters: {
+                      "message":
+                          'Selected Multi Filter $selectedFBMultiBranches ${getUserName()}'
+                    });
+              }
+              if (_savedFilters.containsKey('cluster')) {
+                selectedFBMultiClusters =
+                    List<String>.from(_savedFilters['cluster'].map((v) => v));
+                FirebaseAnalytics.instance.logEvent(
+                    name: 'deep_dive_fb_cluster',
+                    parameters: {
+                      "message":
+                          'Selected Multi Filter $selectedFBMultiClusters ${getUserName()}'
+                    });
+              }
+              if (_savedFilters.containsKey('sites')) {
+                selectedFBMultiSites =
+                    List<String>.from(_savedFilters['sites'].map((v) => v));
+                FirebaseAnalytics.instance.logEvent(
+                    name: 'deep_dive_fb_sites',
+                    parameters: {
+                      "message":
+                          'Selected Multi Filter $selectedFBMultiSites ${getUserName()}'
+                    });
+              }
+            }
+
+            //for fb category
+            final fbCategoryMapDecoded = jsonDecode(
+                await storage.read(key: AppConstants.FB_CATEGORY) ?? '{}');
+            if (fbCategoryMapDecoded.isNotEmpty) {
+              Map<String, dynamic> _savedFilters = fbCategoryMapDecoded;
+              debugPrint('====>Category saved $_savedFilters');
+              if (_savedFilters.containsKey('category')) {
+                selectedFBCategoryFilters =
+                    List<String>.from(_savedFilters['category'].map((v) => v));
+                FirebaseAnalytics.instance.logEvent(
+                    name: 'deep_dive_fb_category',
+                    parameters: {
+                      "message":
+                          'Selected Multi Filter $selectedFBCategoryFilters ${getUserName()}'
+                    });
+              }
+              if (_savedFilters.containsKey('selected')) {
+                _selectedFBCategory = _savedFilters['selected'];
+              }
+            }
+            final fbChannelMapDecoded = jsonDecode(
+                await storage.read(key: AppConstants.FB_CHANNEL) ?? '{}');
+            if (fbChannelMapDecoded.isNotEmpty) {
+              Map<String, dynamic> _savedFilters = fbChannelMapDecoded;
+              if (_savedFilters.containsKey('channel')) {
+                debugPrint('====>Channel saved $_savedFilters');
+                selectedFBChannelFilter =
+                    List<String>.from(_savedFilters['channel'].map((v) => v));
+                FirebaseAnalytics.instance.logEvent(
+                    name: 'deep_dive_fb_channel',
+                    parameters: {
+                      "message":
+                          'Selected Multi Filter $selectedFBChannelFilter ${getUserName()}'
+                    });
+              }
+              if (_savedFilters.containsKey('selected')) {
+                _selectedFBChannel = _savedFilters['selected'];
+              }
+            } else {
+              selectedFBChannelFilter = filtersModel?.attr1 ?? [];
+            }
+            // final fbTrendMapDecoded = jsonDecode(
+            //     await storage.read(key: AppConstants.GP_TRENDS) ?? '{}');
+            // if (fbTrendMapDecoded.isNotEmpty) {
+            //   Map<String, dynamic> _savedFilters = fbTrendMapDecoded;
+            //   if (_savedFilters.containsKey('trends')) {
+            //     if (_savedFilters.containsKey('category') &&
+            //         _savedFilters
+            //             .containsKey('category')
+            //             .toString()
+            //             .isNotEmpty) {
+            //       _selectedTrendsCategoryValue = _savedFilters['trends'];
+            //       _selectedTrendsCategory = _savedFilters['category'];
+            //       _selectedTrends = _selectedTrendsCategory;
+            //       _retailingTrendsValue = _selectedTrendsCategoryValue;
+            //     } else if (_savedFilters.containsKey('channel') &&
+            //         _savedFilters
+            //             .containsKey('channel')
+            //             .toString()
+            //             .isNotEmpty) {
+            //       _selectedTrendsChannelValue = _savedFilters['trends'];
+            //       _selectedChannel = _savedFilters['channel'];
+            //       _selectedTrends = _selectedChannel;
+            //       _retailingTrendsValue = _selectedTrendsChannelValue;
+            //     } else if (_savedFilters.containsKey('geo') &&
+            //         _savedFilters.containsKey('geo').toString().isNotEmpty) {
+            //       _selectedTrendsGeoValue = _savedFilters['trends'];
+            //       _selectedTrendsGeo = _savedFilters['geo'];
+            //       _selectedTrends = _selectedTrendsGeo;
+            //       _retailingTrendsValue = _selectedTrendsGeoValue;
+            //     }
+            //   }
+            // }
+
+            categoryTrendsFilters = filtersModel?.category ?? [];
+            channelFilter = filtersModel?.attr1 ?? [];
+            channelTrendsFilter = filtersModel?.attr1 ?? [];
+            await Future.wait([
+              getRetailingData(),
+              getRetailingData(type: 'category', name: 'category'),
+              getRetailingData(type: 'channel', name: 'geo'),
+              getRetailingData(type: 'geo', name: 'trends'),
+            ]);
+
+            //gp
+            await Future.wait([
+              getGPData(),
+              getGPData(type: 'category', name: 'category'),
+              getGPData(type: 'channel', name: 'geo'),
+              getGPData(type: 'geo', name: 'trends'),
+            ]);
+            //fb
+            await Future.wait([
+              getFocusBrandData(),
+              getFocusBrandData(type: 'category', name: 'category'),
+              getFocusBrandData(type: 'channel', name: 'geo'),
+              getFocusBrandData(type: 'geo', name: 'trends'),
+            ]);
+            //Coverage
+            await Future.wait([
+              getCoverageData(),
+              getCoverageData(type: 'channel', name: 'geo'),
+              getCoverageData(type: 'trends', name: 'trends'),
+            ]);
+          }),
+        );
+      });
+      // ]);
     }
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -3308,7 +3309,7 @@ class HomeController extends GetxController {
   List<FBTrendsModel> trendsFBList = [];
   List<Map<String, dynamic>> geoFilters = [];
 
-  Future<ResponseModel> getSummaryData() async {
+  Future<ResponseModel> getSummaryData({bool isAutoRefresh = false}) async {
     FirebaseAnalytics.instance.logEvent(
         name: 'logs',
         parameters: {"message": 'Get Summary Data ${getUserName()}'});
@@ -3339,6 +3340,10 @@ class HomeController extends GetxController {
     if (response.statusCode == 200) {
       summaryData = summaryModelFromJson(response.bodyString.toString());
       responseModel = ResponseModel(true, 'Success');
+      if (isAutoRefresh) {
+        //call the api to false the firebase autorefresh var false
+        updateFirebaseVar();
+      }
     } else if (response.statusCode == 401) {
       responseModel = ResponseModel(false, response.statusText ?? "");
       if (globals.navigate) {
@@ -3354,6 +3359,35 @@ class HomeController extends GetxController {
     // stopWatch.stop();
     // stopWatch.reset();
     _isSummaryPageLoading = false;
+    update();
+    return responseModel;
+  }
+
+  Future<ResponseModel> updateFirebaseVar() async {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _isFirebaseVarLoading = true;
+      update();
+    });
+
+    Response response =
+        await homeRepo.updateFirebaseVar({"refresh_data": false});
+    ResponseModel responseModel;
+    if (response.statusCode == 200) {
+      debugPrint('====>Firebase auto refresh done ');
+      globals.autoRefresh = true;
+      responseModel = ResponseModel(false, response.statusText ?? "");
+    } else if (response.statusCode == 401) {
+      responseModel = ResponseModel(false, response.statusText ?? "");
+      if (globals.navigate) {
+        homeRepo.clearSharedData();
+        Get.offAndToNamed(AppPages.FED_AUTH_LOGIN_TEST);
+        globals.navigate = false;
+      }
+    } else {
+      responseModel = ResponseModel(false, response.statusText ?? "");
+    }
+
+    _isFirebaseVarLoading = false;
     update();
     return responseModel;
   }

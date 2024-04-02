@@ -30,6 +30,7 @@ class AppConstants {
   static const GP_DATA = 'appData/dgpComplianceTable';
   static const FOCUS_BRAND_DATA = 'appData/focusBrand';
   static const FILTERS = 'appData/branchlist';
+  static const FIREBASE_VAR_UPDATE = 'appData/firebase/autoRefresh';
   static const CHANNELLIST = 'appData/channellist';
   static const PERSONASELECT = 'appData/storeList';
   static const STORE_DATA = 'appData/focusBrandTable';
