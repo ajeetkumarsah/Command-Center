@@ -180,7 +180,7 @@ class MenuBottomsheet extends StatelessWidget {
             //     ),
             //   ),
             // ),
-            // SelectableText("${globals.FCMToken}"),
+            // SelectableText(globals.FCMToken),
             ListTile(
               onTap: () {
                 Get.back();
