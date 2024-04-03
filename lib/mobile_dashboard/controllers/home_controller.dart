@@ -1422,45 +1422,45 @@ class HomeController extends GetxController {
     if (tabType == SummaryTypes.retailing.type) {
       if (_selectedTempRetailingChannel != channel) {
         _selectedTempRetailingChannel = channel;
-        selectedRetailingChannelFilter.clear();
+        selectedRetailingChannelFilter = [];
       }
       if (eq(selectedRetailingChannelFilter, channelFilter)) {
-        selectedRetailingChannelFilter.clear();
+        selectedRetailingChannelFilter = [];
       } else {
-        selectedRetailingChannelFilter.clear();
+        selectedRetailingChannelFilter = [];
         selectedRetailingChannelFilter.addAll(channelFilter);
       }
     } else if (tabType == SummaryTypes.coverage.type) {
       if (_selectedTempCoverageChannel != channel) {
         _selectedTempCoverageChannel = channel;
-        selectedCoverageChannelFilter.clear();
+        selectedCoverageChannelFilter = [];
       }
       if (eq(selectedCoverageChannelFilter, channelFilter)) {
-        selectedCoverageChannelFilter.clear();
+        selectedCoverageChannelFilter = [];
       } else {
-        selectedCoverageChannelFilter.clear();
+        selectedCoverageChannelFilter = [];
         selectedCoverageChannelFilter.addAll(channelFilter);
       }
     } else if (tabType == SummaryTypes.gp.type) {
       if (_selectedTempGPChannel != channel) {
         _selectedTempGPChannel = channel;
-        selectedGPChannelFilter.clear();
+        selectedGPChannelFilter = [];
       }
       if (eq(selectedGPChannelFilter, channelFilter)) {
-        selectedGPChannelFilter.clear();
+        selectedGPChannelFilter = [];
       } else {
-        selectedGPChannelFilter.clear();
+        selectedGPChannelFilter = [];
         selectedGPChannelFilter.addAll(channelFilter);
       }
     } else if (tabType == SummaryTypes.fb.type) {
       if (_selectedTempRetailingChannel != channel) {
         _selectedTempRetailingChannel = channel;
-        selectedRetailingChannelFilter.clear();
+        selectedRetailingChannelFilter = [];
       }
       if (eq(selectedFBChannelFilter, channelFilter)) {
-        selectedFBChannelFilter.clear();
+        selectedFBChannelFilter = [];
       } else {
-        selectedFBChannelFilter.clear();
+        selectedFBChannelFilter = [];
         selectedFBChannelFilter.addAll(channelFilter);
       }
     }
@@ -1568,586 +1568,597 @@ class HomeController extends GetxController {
       _fbTrendsValue = getGeoValue();
     }
     if (!getOnlyShared) {
-      // await Future.wait([
-      getSummaryData().then((value) {
-        getMonthFilters().then(
-          (v) => getAllFilters().then((v) async {
-            categoryFilters = filtersModel?.category ?? [];
-            FirebaseCrashlytics.instance.log("Changed Filter for All");
-            onChangeFiltersAll(
-                type: 'category', tabType: SummaryTypes.retailing.type);
-            onChangeFiltersAll(type: 'category', tabType: SummaryTypes.gp.type);
-            onChangeFiltersAll(type: 'category', tabType: SummaryTypes.fb.type);
-            //getting retailing saved filters and
+      await Future.wait([
+        getSummaryData().then((value) {
+          getMonthFilters().then(
+            (v) => getAllFilters().then((v) async {
+              categoryFilters = filtersModel?.category ?? [];
+              FirebaseCrashlytics.instance.log("Changed Filter for All");
+              onChangeFiltersAll(
+                  type: 'category', tabType: SummaryTypes.retailing.type);
+              onChangeFiltersAll(
+                  type: 'category', tabType: SummaryTypes.gp.type);
+              onChangeFiltersAll(
+                  type: 'category', tabType: SummaryTypes.fb.type);
+              //getting retailing saved filters and
 
-            final mapDecoded = jsonDecode(
-                await storage.read(key: AppConstants.RETAILING_GEO) ?? '{}');
+              final mapDecoded = jsonDecode(
+                  await storage.read(key: AppConstants.RETAILING_GEO) ?? '{}');
 
-            if (mapDecoded.isNotEmpty) {
-              Map<String, dynamic> _savedFilters = mapDecoded;
-              if (_savedFilters.containsKey('allIndia')) {
-                selectedRetailingMultiAllIndia =
-                    List<String>.from(_savedFilters['allIndia'].map((v) => v));
-                FirebaseAnalytics.instance.logEvent(
-                    name: 'deep_dive_retailing_allIndia',
-                    parameters: {
-                      "message":
-                          'Selected Multi Filter $selectedRetailingMultiAllIndia ${getUserName()}'
-                    });
+              if (mapDecoded.isNotEmpty) {
+                Map<String, dynamic> _savedFilters = mapDecoded;
+                if (_savedFilters.containsKey('allIndia')) {
+                  selectedRetailingMultiAllIndia = List<String>.from(
+                      _savedFilters['allIndia'].map((v) => v));
+                  FirebaseAnalytics.instance.logEvent(
+                      name: 'deep_dive_retailing_allIndia',
+                      parameters: {
+                        "message":
+                            'Selected Multi Filter $selectedRetailingMultiAllIndia ${getUserName()}'
+                      });
+                }
+                if (_savedFilters.containsKey('division')) {
+                  selectedRetailingMultiDivisions = List<String>.from(
+                      _savedFilters['division'].map((v) => v));
+                  FirebaseAnalytics.instance.logEvent(
+                      name: 'deep_dive_retailing_division',
+                      parameters: {
+                        "message":
+                            'Selected Multi Filter $selectedRetailingMultiDivisions ${getUserName()}'
+                      });
+                }
+                if (_savedFilters.containsKey('branches')) {
+                  selectedRetailingMultiBranches = List<String>.from(
+                      _savedFilters['branches'].map((v) => v));
+                  FirebaseAnalytics.instance.logEvent(
+                      name: 'deep_dive_retailing_branches',
+                      parameters: {
+                        "message":
+                            'Selected Multi Filter $selectedRetailingMultiBranches ${getUserName()}'
+                      });
+                }
+                if (_savedFilters.containsKey('cluster')) {
+                  selectedRetailingMultiClusters =
+                      List<String>.from(_savedFilters['cluster'].map((v) => v));
+                  FirebaseAnalytics.instance.logEvent(
+                      name: 'deep_dive_retailing_cluster',
+                      parameters: {
+                        "message":
+                            'Selected Multi Filter $selectedRetailingMultiClusters ${getUserName()}'
+                      });
+                }
+                if (_savedFilters.containsKey('sites')) {
+                  selectedRetailingMultiSites =
+                      List<String>.from(_savedFilters['sites'].map((v) => v));
+                  FirebaseAnalytics.instance.logEvent(
+                      name: 'deep_dive_retailing_sites',
+                      parameters: {
+                        "message":
+                            'Selected Multi Filter $selectedRetailingMultiSites ${getUserName()}'
+                      });
+                }
               }
-              if (_savedFilters.containsKey('division')) {
-                selectedRetailingMultiDivisions =
-                    List<String>.from(_savedFilters['division'].map((v) => v));
-                FirebaseAnalytics.instance.logEvent(
-                    name: 'deep_dive_retailing_division',
-                    parameters: {
-                      "message":
-                          'Selected Multi Filter $selectedRetailingMultiDivisions ${getUserName()}'
-                    });
-              }
-              if (_savedFilters.containsKey('branches')) {
-                selectedRetailingMultiBranches =
-                    List<String>.from(_savedFilters['branches'].map((v) => v));
-                FirebaseAnalytics.instance.logEvent(
-                    name: 'deep_dive_retailing_branches',
-                    parameters: {
-                      "message":
-                          'Selected Multi Filter $selectedRetailingMultiBranches ${getUserName()}'
-                    });
-              }
-              if (_savedFilters.containsKey('cluster')) {
-                selectedRetailingMultiClusters =
-                    List<String>.from(_savedFilters['cluster'].map((v) => v));
-                FirebaseAnalytics.instance
-                    .logEvent(name: 'deep_dive_retailing_cluster', parameters: {
-                  "message":
-                      'Selected Multi Filter $selectedRetailingMultiClusters ${getUserName()}'
-                });
-              }
-              if (_savedFilters.containsKey('sites')) {
-                selectedRetailingMultiSites =
-                    List<String>.from(_savedFilters['sites'].map((v) => v));
-                FirebaseAnalytics.instance.logEvent(
-                    name: 'deep_dive_retailing_sites',
-                    parameters: {
-                      "message":
-                          'Selected Multi Filter $selectedRetailingMultiSites ${getUserName()}'
-                    });
-              }
-            }
 
-            //for retailing category
-            final categoryMapDecoded = jsonDecode(
-                await storage.read(key: AppConstants.RETAILING_CATEGORY) ??
-                    '{}');
-            if (categoryMapDecoded.isNotEmpty) {
-              Map<String, dynamic> _savedFilters = categoryMapDecoded;
-              FirebaseCrashlytics.instance.log("Category saved $_savedFilters");
-              debugPrint('====>Category saved $_savedFilters');
-              if (_savedFilters.containsKey('category')) {
-                selectedRetailingCategoryFilters =
-                    List<String>.from(_savedFilters['category'].map((v) => v));
-                FirebaseAnalytics.instance.logEvent(
-                    name: 'deep_dive_retailing_category',
-                    parameters: {
-                      "message":
-                          'Selected Multi Filter $selectedRetailingCategoryFilters ${getUserName()}'
-                    });
-              }
-              if (_savedFilters.containsKey('selected')) {
-                _selectedCategory = _savedFilters['selected'];
-              }
-            }
-            final channelMapDecoded = jsonDecode(
-                await storage.read(key: AppConstants.RETAILING_CHANNEL) ??
-                    '{}');
-            if (channelMapDecoded.isNotEmpty) {
-              Map<String, dynamic> _savedFilters = channelMapDecoded;
-              if (_savedFilters.containsKey('channel')) {
+              //for retailing category
+              final categoryMapDecoded = jsonDecode(
+                  await storage.read(key: AppConstants.RETAILING_CATEGORY) ??
+                      '{}');
+              if (categoryMapDecoded.isNotEmpty) {
+                Map<String, dynamic> _savedFilters = categoryMapDecoded;
                 FirebaseCrashlytics.instance
-                    .log("Channel saved $_savedFilters");
-                debugPrint('====>Channel saved $_savedFilters');
-                selectedRetailingChannelFilter =
-                    List<String>.from(_savedFilters['channel'].map((v) => v));
-                FirebaseAnalytics.instance
-                    .logEvent(name: 'deep_dive_retailing_channel', parameters: {
-                  "message":
-                      'Selected Multi Filter $selectedRetailingChannelFilter ${getUserName()}'
-                });
+                    .log("Category saved $_savedFilters");
+                debugPrint('====>Category saved $_savedFilters');
+                if (_savedFilters.containsKey('category')) {
+                  selectedRetailingCategoryFilters = List<String>.from(
+                      _savedFilters['category'].map((v) => v));
+                  FirebaseAnalytics.instance.logEvent(
+                      name: 'deep_dive_retailing_category',
+                      parameters: {
+                        "message":
+                            'Selected Multi Filter $selectedRetailingCategoryFilters ${getUserName()}'
+                      });
+                }
+                if (_savedFilters.containsKey('selected')) {
+                  _selectedCategory = _savedFilters['selected'];
+                }
               }
-              if (_savedFilters.containsKey('selected')) {
-                _selectedRetailingChannel = _savedFilters['selected'];
+              final channelMapDecoded = jsonDecode(
+                  await storage.read(key: AppConstants.RETAILING_CHANNEL) ??
+                      '{}');
+              if (channelMapDecoded.isNotEmpty) {
+                Map<String, dynamic> _savedFilters = channelMapDecoded;
+                if (_savedFilters.containsKey('channel')) {
+                  FirebaseCrashlytics.instance
+                      .log("Channel saved $_savedFilters");
+                  debugPrint('====>Channel saved $_savedFilters');
+                  selectedRetailingChannelFilter =
+                      List<String>.from(_savedFilters['channel'].map((v) => v));
+                  FirebaseAnalytics.instance.logEvent(
+                      name: 'deep_dive_retailing_channel',
+                      parameters: {
+                        "message":
+                            'Selected Multi Filter $selectedRetailingChannelFilter ${getUserName()}'
+                      });
+                }
+                if (_savedFilters.containsKey('selected')) {
+                  _selectedRetailingChannel = _savedFilters['selected'];
+                }
+              } else {
+                selectedRetailingChannelFilter = filtersModel?.attr1 ?? [];
               }
-            } else {
-              selectedRetailingChannelFilter = filtersModel?.attr1 ?? [];
-            }
-            // final trendMapDecoded = jsonDecode(
-            //     await storage.read(key: AppConstants.RETAILING_TRENDS) ?? '{}');
-            // if (trendMapDecoded.isNotEmpty) {
-            //   Map<String, dynamic> _savedFilters = trendMapDecoded;
-            //   if (_savedFilters.containsKey('trends')) {
-            //     if (_savedFilters.containsKey('category') &&
-            //         _savedFilters
-            //             .containsKey('category')
-            //             .toString()
-            //             .isNotEmpty) {
-            //       _selectedTrendsCategoryValue = _savedFilters['trends'];
-            //       _selectedTrendsCategory = _savedFilters['category'];
-            //       _selectedTrends = _selectedTrendsCategory;
-            //       _retailingTrendsValue = _selectedTrendsCategoryValue;
-            //     } else if (_savedFilters.containsKey('channel') &&
-            //         _savedFilters
-            //             .containsKey('channel')
-            //             .toString()
-            //             .isNotEmpty) {
-            //       _selectedTrendsChannelValue = _savedFilters['trends'];
-            //       _selectedChannel = _savedFilters['channel'];
-            //       _selectedTrends = _selectedChannel;
-            //       _retailingTrendsValue = _selectedTrendsChannelValue;
-            //     } else if (_savedFilters.containsKey('geo') &&
-            //         _savedFilters.containsKey('geo').toString().isNotEmpty) {
-            //       _selectedTrendsGeoValue = _savedFilters['trends'];
-            //       _selectedTrendsGeo = _savedFilters['geo'];
-            //       _selectedTrends = _selectedTrendsGeo;
-            //       _retailingTrendsValue = _selectedTrendsGeoValue;
-            //     }
-            // }
-            // }
+              // final trendMapDecoded = jsonDecode(
+              //     await storage.read(key: AppConstants.RETAILING_TRENDS) ?? '{}');
+              // if (trendMapDecoded.isNotEmpty) {
+              //   Map<String, dynamic> _savedFilters = trendMapDecoded;
+              //   if (_savedFilters.containsKey('trends')) {
+              //     if (_savedFilters.containsKey('category') &&
+              //         _savedFilters
+              //             .containsKey('category')
+              //             .toString()
+              //             .isNotEmpty) {
+              //       _selectedTrendsCategoryValue = _savedFilters['trends'];
+              //       _selectedTrendsCategory = _savedFilters['category'];
+              //       _selectedTrends = _selectedTrendsCategory;
+              //       _retailingTrendsValue = _selectedTrendsCategoryValue;
+              //     } else if (_savedFilters.containsKey('channel') &&
+              //         _savedFilters
+              //             .containsKey('channel')
+              //             .toString()
+              //             .isNotEmpty) {
+              //       _selectedTrendsChannelValue = _savedFilters['trends'];
+              //       _selectedChannel = _savedFilters['channel'];
+              //       _selectedTrends = _selectedChannel;
+              //       _retailingTrendsValue = _selectedTrendsChannelValue;
+              //     } else if (_savedFilters.containsKey('geo') &&
+              //         _savedFilters.containsKey('geo').toString().isNotEmpty) {
+              //       _selectedTrendsGeoValue = _savedFilters['trends'];
+              //       _selectedTrendsGeo = _savedFilters['geo'];
+              //       _selectedTrends = _selectedTrendsGeo;
+              //       _retailingTrendsValue = _selectedTrendsGeoValue;
+              //     }
+              // }
+              // }
 
-            //coverage
-            //getting coverage saved filters and setting it's values to the variables
+              //coverage
+              //getting coverage saved filters and setting it's values to the variables
 
-            final coveragemapDecoded = jsonDecode(
-                await storage.read(key: AppConstants.COVERAGE_GEO) ?? '{}');
+              final coveragemapDecoded = jsonDecode(
+                  await storage.read(key: AppConstants.COVERAGE_GEO) ?? '{}');
 
-            if (coveragemapDecoded.isNotEmpty) {
-              Map<String, dynamic> _savedFilters = coveragemapDecoded;
-              if (_savedFilters.containsKey('allIndia')) {
-                selectedCoverageMultiAllIndia =
-                    List<String>.from(_savedFilters['allIndia'].map((v) => v));
-                FirebaseAnalytics.instance
-                    .logEvent(name: 'deep_dive_coverage_allIndia', parameters: {
-                  "message":
-                      'Selected Multi Filter $selectedCoverageMultiAllIndia ${getUserName()}'
-                });
+              if (coveragemapDecoded.isNotEmpty) {
+                Map<String, dynamic> _savedFilters = coveragemapDecoded;
+                if (_savedFilters.containsKey('allIndia')) {
+                  selectedCoverageMultiAllIndia = List<String>.from(
+                      _savedFilters['allIndia'].map((v) => v));
+                  FirebaseAnalytics.instance.logEvent(
+                      name: 'deep_dive_coverage_allIndia',
+                      parameters: {
+                        "message":
+                            'Selected Multi Filter $selectedCoverageMultiAllIndia ${getUserName()}'
+                      });
+                }
+                if (_savedFilters.containsKey('division')) {
+                  selectedCoverageMultiDivisions = List<String>.from(
+                      _savedFilters['division'].map((v) => v));
+                  FirebaseAnalytics.instance.logEvent(
+                      name: 'deep_dive_coverage_division',
+                      parameters: {
+                        "message":
+                            'Selected Multi Filter $selectedCoverageMultiDivisions ${getUserName()}'
+                      });
+                }
+                if (_savedFilters.containsKey('branches')) {
+                  selectedCoverageMultiBranches = List<String>.from(
+                      _savedFilters['branches'].map((v) => v));
+                  FirebaseAnalytics.instance.logEvent(
+                      name: 'deep_dive_coverage_branches',
+                      parameters: {
+                        "message":
+                            'Selected Multi Filter $selectedCoverageMultiBranches ${getUserName()}'
+                      });
+                }
+                if (_savedFilters.containsKey('cluster')) {
+                  selectedCoverageMultiClusters =
+                      List<String>.from(_savedFilters['cluster'].map((v) => v));
+                  FirebaseAnalytics.instance.logEvent(
+                      name: 'deep_dive_coverage_cluster',
+                      parameters: {
+                        "message":
+                            'Selected Multi Filter $selectedCoverageMultiClusters ${getUserName()}'
+                      });
+                }
+                if (_savedFilters.containsKey('sites')) {
+                  selectedCoverageMultiSites =
+                      List<String>.from(_savedFilters['sites'].map((v) => v));
+                  FirebaseAnalytics.instance.logEvent(
+                      name: 'deep_dive_coverage_sites',
+                      parameters: {
+                        "message":
+                            'Selected Multi Filter $selectedCoverageMultiSites ${getUserName()}'
+                      });
+                }
               }
-              if (_savedFilters.containsKey('division')) {
-                selectedCoverageMultiDivisions =
-                    List<String>.from(_savedFilters['division'].map((v) => v));
-                FirebaseAnalytics.instance
-                    .logEvent(name: 'deep_dive_coverage_division', parameters: {
-                  "message":
-                      'Selected Multi Filter $selectedCoverageMultiDivisions ${getUserName()}'
-                });
-              }
-              if (_savedFilters.containsKey('branches')) {
-                selectedCoverageMultiBranches =
-                    List<String>.from(_savedFilters['branches'].map((v) => v));
-                FirebaseAnalytics.instance
-                    .logEvent(name: 'deep_dive_coverage_branches', parameters: {
-                  "message":
-                      'Selected Multi Filter $selectedCoverageMultiBranches ${getUserName()}'
-                });
-              }
-              if (_savedFilters.containsKey('cluster')) {
-                selectedCoverageMultiClusters =
-                    List<String>.from(_savedFilters['cluster'].map((v) => v));
-                FirebaseAnalytics.instance
-                    .logEvent(name: 'deep_dive_coverage_cluster', parameters: {
-                  "message":
-                      'Selected Multi Filter $selectedCoverageMultiClusters ${getUserName()}'
-                });
-              }
-              if (_savedFilters.containsKey('sites')) {
-                selectedCoverageMultiSites =
-                    List<String>.from(_savedFilters['sites'].map((v) => v));
-                FirebaseAnalytics.instance.logEvent(
-                    name: 'deep_dive_coverage_sites',
-                    parameters: {
-                      "message":
-                          'Selected Multi Filter $selectedCoverageMultiSites ${getUserName()}'
-                    });
-              }
-            }
 
-            //for coverage category
+              //for coverage category
 
-            ///"category": selectedCoverageCategoryFilters,
-            // "selected": selectedCategory
-            //  "channel": selectedCoverageChannelFilter,
-            // "selected": selectedCoverageChannel
+              ///"category": selectedCoverageCategoryFilters,
+              // "selected": selectedCategory
+              //  "channel": selectedCoverageChannelFilter,
+              // "selected": selectedCoverageChannel
 
-            // final coverageCategoryMapDecoded = jsonDecode(
-            //     await storage.read(key: AppConstants.COVERAGE_CATEGORY) ??
-            //         '{}');
-            // if (coverageCategoryMapDecoded.isNotEmpty) {
-            //   Map<String, dynamic> _savedFilters = coverageCategoryMapDecoded;
-            //   debugPrint('====>Category saved $_savedFilters');
-            //   if (_savedFilters.containsKey('category')) {
-            //     selectedCoverageCategoryFilters =
-            //         List<String>.from(_savedFilters['category'].map((v) => v));
-            //   }
-            //   if (_savedFilters.containsKey('selected')) {
-            //     _selectedCategory = _savedFilters['selected'];
-            //   }
-            // }
-            final coverageChannelMapDecoded = jsonDecode(
-                await storage.read(key: AppConstants.COVERAGE_CHANNEL) ?? '{}');
-            if (coverageChannelMapDecoded.isNotEmpty) {
-              Map<String, dynamic> _savedFilters = coverageChannelMapDecoded;
-              if (_savedFilters.containsKey('channel')) {
-                debugPrint('====>Channel saved $_savedFilters');
+              // final coverageCategoryMapDecoded = jsonDecode(
+              //     await storage.read(key: AppConstants.COVERAGE_CATEGORY) ??
+              //         '{}');
+              // if (coverageCategoryMapDecoded.isNotEmpty) {
+              //   Map<String, dynamic> _savedFilters = coverageCategoryMapDecoded;
+              //   debugPrint('====>Category saved $_savedFilters');
+              //   if (_savedFilters.containsKey('category')) {
+              //     selectedCoverageCategoryFilters =
+              //         List<String>.from(_savedFilters['category'].map((v) => v));
+              //   }
+              //   if (_savedFilters.containsKey('selected')) {
+              //     _selectedCategory = _savedFilters['selected'];
+              //   }
+              // }
+              final coverageChannelMapDecoded = jsonDecode(
+                  await storage.read(key: AppConstants.COVERAGE_CHANNEL) ??
+                      '{}');
+              if (coverageChannelMapDecoded.isNotEmpty) {
+                Map<String, dynamic> _savedFilters = coverageChannelMapDecoded;
+                if (_savedFilters.containsKey('channel')) {
+                  debugPrint('====>Channel saved $_savedFilters');
+                  selectedCoverageChannelFilter =
+                      List<String>.from(_savedFilters['channel'].map((v) => v));
+                  FirebaseAnalytics.instance.logEvent(
+                      name: 'deep_dive_coverage_channel',
+                      parameters: {
+                        "message":
+                            'Selected Multi Filter $selectedCoverageChannelFilter ${getUserName()}'
+                      });
+                }
+                if (_savedFilters.containsKey('selected')) {
+                  _selectedCoverageChannel = _savedFilters['selected'];
+                }
+              } else {
                 selectedCoverageChannelFilter =
-                    List<String>.from(_savedFilters['channel'].map((v) => v));
-                FirebaseAnalytics.instance
-                    .logEvent(name: 'deep_dive_coverage_channel', parameters: {
-                  "message":
-                      'Selected Multi Filter $selectedCoverageChannelFilter ${getUserName()}'
-                });
+                    filtersModel?.otherAttrs?.attr1 ?? [];
               }
-              if (_savedFilters.containsKey('selected')) {
-                _selectedCoverageChannel = _savedFilters['selected'];
-              }
-            } else {
-              selectedCoverageChannelFilter =
-                  filtersModel?.otherAttrs?.attr1 ?? [];
-            }
-            // final coverageTrendMapDecoded = jsonDecode(
-            //     await storage.read(key: AppConstants.RETAILING_TRENDS) ?? '{}');
+              // final coverageTrendMapDecoded = jsonDecode(
+              //     await storage.read(key: AppConstants.RETAILING_TRENDS) ?? '{}');
 
-            // if (coverageTrendMapDecoded.isNotEmpty) {
-            //   Map<String, dynamic> _savedFilters = coverageTrendMapDecoded;
-            //   if (_savedFilters.containsKey('trends')) {
-            //     if (_savedFilters.containsKey('category') &&
-            //         _savedFilters
-            //             .containsKey('category')
-            //             .toString()
-            //             .isNotEmpty) {
-            //       _selectedTrendsCategoryValue = _savedFilters['trends'];
-            //       _selectedTrendsCategory = _savedFilters['category'];
-            //       _selectedCoverageTrends = _selectedTrendsCategory;
-            //       _coverageTrendsValue = _selectedTrendsCategoryValue;
-            //     } else if (_savedFilters.containsKey('channel') &&
-            //         _savedFilters
-            //             .containsKey('channel')
-            //             .toString()
-            //             .isNotEmpty) {
-            //       _selectedTrendsChannelValue = _savedFilters['trends'];
-            //       _selectedChannel = _savedFilters['channel'];
-            //       _selectedCoverageTrends = _selectedChannel;
-            //       _coverageTrendsValue = _selectedTrendsChannelValue;
-            //     } else if (_savedFilters.containsKey('geo') &&
-            //         _savedFilters.containsKey('geo').toString().isNotEmpty) {
-            //       _selectedTrendsGeoValue = _savedFilters['trends'];
-            //       _selectedTrendsGeo = _savedFilters['geo'];
-            //       _selectedCoverageTrends = _selectedTrendsGeo;
-            //       _coverageTrendsValue = _selectedTrendsGeoValue;
-            //     }
-            //   }
-            // }
+              // if (coverageTrendMapDecoded.isNotEmpty) {
+              //   Map<String, dynamic> _savedFilters = coverageTrendMapDecoded;
+              //   if (_savedFilters.containsKey('trends')) {
+              //     if (_savedFilters.containsKey('category') &&
+              //         _savedFilters
+              //             .containsKey('category')
+              //             .toString()
+              //             .isNotEmpty) {
+              //       _selectedTrendsCategoryValue = _savedFilters['trends'];
+              //       _selectedTrendsCategory = _savedFilters['category'];
+              //       _selectedCoverageTrends = _selectedTrendsCategory;
+              //       _coverageTrendsValue = _selectedTrendsCategoryValue;
+              //     } else if (_savedFilters.containsKey('channel') &&
+              //         _savedFilters
+              //             .containsKey('channel')
+              //             .toString()
+              //             .isNotEmpty) {
+              //       _selectedTrendsChannelValue = _savedFilters['trends'];
+              //       _selectedChannel = _savedFilters['channel'];
+              //       _selectedCoverageTrends = _selectedChannel;
+              //       _coverageTrendsValue = _selectedTrendsChannelValue;
+              //     } else if (_savedFilters.containsKey('geo') &&
+              //         _savedFilters.containsKey('geo').toString().isNotEmpty) {
+              //       _selectedTrendsGeoValue = _savedFilters['trends'];
+              //       _selectedTrendsGeo = _savedFilters['geo'];
+              //       _selectedCoverageTrends = _selectedTrendsGeo;
+              //       _coverageTrendsValue = _selectedTrendsGeoValue;
+              //     }
+              //   }
+              // }
 
-            ////////////////////
-            /// //getting gp saved filters and
+              ////////////////////
+              /// //getting gp saved filters and
 
-            final gpMapDecoded = jsonDecode(
-                await storage.read(key: AppConstants.GP_GEO) ?? '{}');
+              final gpMapDecoded = jsonDecode(
+                  await storage.read(key: AppConstants.GP_GEO) ?? '{}');
 
-            if (gpMapDecoded.isNotEmpty) {
-              Map<String, dynamic> _savedFilters = gpMapDecoded;
-              if (_savedFilters.containsKey('allIndia')) {
-                selectedGPMultiAllIndia =
-                    List<String>.from(_savedFilters['allIndia'].map((v) => v));
-                FirebaseAnalytics.instance.logEvent(
-                    name: 'deep_dive_gp_allIndia',
-                    parameters: {
-                      "message":
-                          'Selected Multi Filter $selectedGPMultiAllIndia ${getUserName()}'
-                    });
+              if (gpMapDecoded.isNotEmpty) {
+                Map<String, dynamic> _savedFilters = gpMapDecoded;
+                if (_savedFilters.containsKey('allIndia')) {
+                  selectedGPMultiAllIndia = List<String>.from(
+                      _savedFilters['allIndia'].map((v) => v));
+                  FirebaseAnalytics.instance.logEvent(
+                      name: 'deep_dive_gp_allIndia',
+                      parameters: {
+                        "message":
+                            'Selected Multi Filter $selectedGPMultiAllIndia ${getUserName()}'
+                      });
+                }
+                if (_savedFilters.containsKey('division')) {
+                  selectedGPMultiDivisions = List<String>.from(
+                      _savedFilters['division'].map((v) => v));
+                  FirebaseAnalytics.instance.logEvent(
+                      name: 'deep_dive_gp_division',
+                      parameters: {
+                        "message":
+                            'Selected Multi Filter $selectedGPMultiDivisions ${getUserName()}'
+                      });
+                }
+                if (_savedFilters.containsKey('branches')) {
+                  selectedGPMultiBranches = List<String>.from(
+                      _savedFilters['branches'].map((v) => v));
+                  FirebaseAnalytics.instance.logEvent(
+                      name: 'deep_dive_gp_branches',
+                      parameters: {
+                        "message":
+                            'Selected Multi Filter $selectedGPMultiBranches ${getUserName()}'
+                      });
+                }
+                if (_savedFilters.containsKey('cluster')) {
+                  selectedGPMultiClusters =
+                      List<String>.from(_savedFilters['cluster'].map((v) => v));
+                  FirebaseAnalytics.instance.logEvent(
+                      name: 'deep_dive_gp_cluster',
+                      parameters: {
+                        "message":
+                            'Selected Multi Filter $selectedGPMultiClusters ${getUserName()}'
+                      });
+                }
+                if (_savedFilters.containsKey('sites')) {
+                  selectedGPMultiSites =
+                      List<String>.from(_savedFilters['sites'].map((v) => v));
+                  FirebaseAnalytics.instance.logEvent(
+                      name: 'deep_dive_gp_sites',
+                      parameters: {
+                        "message":
+                            'Selected Multi Filter $selectedGPMultiSites ${getUserName()}'
+                      });
+                }
               }
-              if (_savedFilters.containsKey('division')) {
-                selectedGPMultiDivisions =
-                    List<String>.from(_savedFilters['division'].map((v) => v));
-                FirebaseAnalytics.instance.logEvent(
-                    name: 'deep_dive_gp_division',
-                    parameters: {
-                      "message":
-                          'Selected Multi Filter $selectedGPMultiDivisions ${getUserName()}'
-                    });
-              }
-              if (_savedFilters.containsKey('branches')) {
-                selectedGPMultiBranches =
-                    List<String>.from(_savedFilters['branches'].map((v) => v));
-                FirebaseAnalytics.instance.logEvent(
-                    name: 'deep_dive_gp_branches',
-                    parameters: {
-                      "message":
-                          'Selected Multi Filter $selectedGPMultiBranches ${getUserName()}'
-                    });
-              }
-              if (_savedFilters.containsKey('cluster')) {
-                selectedGPMultiClusters =
-                    List<String>.from(_savedFilters['cluster'].map((v) => v));
-                FirebaseAnalytics.instance.logEvent(
-                    name: 'deep_dive_gp_cluster',
-                    parameters: {
-                      "message":
-                          'Selected Multi Filter $selectedGPMultiClusters ${getUserName()}'
-                    });
-              }
-              if (_savedFilters.containsKey('sites')) {
-                selectedGPMultiSites =
-                    List<String>.from(_savedFilters['sites'].map((v) => v));
-                FirebaseAnalytics.instance.logEvent(
-                    name: 'deep_dive_gp_sites',
-                    parameters: {
-                      "message":
-                          'Selected Multi Filter $selectedGPMultiSites ${getUserName()}'
-                    });
-              }
-            }
 
-            //for gp category
-            final gpCategoryMapDecoded = jsonDecode(
-                await storage.read(key: AppConstants.GP_CATEGORY) ?? '{}');
-            if (gpCategoryMapDecoded.isNotEmpty) {
-              Map<String, dynamic> _savedFilters = gpCategoryMapDecoded;
-              debugPrint('====>Category saved $_savedFilters');
-              if (_savedFilters.containsKey('category')) {
-                selectedGPCategoryFilters =
-                    List<String>.from(_savedFilters['category'].map((v) => v));
-                FirebaseAnalytics.instance.logEvent(
-                    name: 'deep_dive_gp_category',
-                    parameters: {
-                      "message":
-                          'Selected Multi Filter $selectedGPCategoryFilters ${getUserName()}'
-                    });
+              //for gp category
+              final gpCategoryMapDecoded = jsonDecode(
+                  await storage.read(key: AppConstants.GP_CATEGORY) ?? '{}');
+              if (gpCategoryMapDecoded.isNotEmpty) {
+                Map<String, dynamic> _savedFilters = gpCategoryMapDecoded;
+                debugPrint('====>Category saved $_savedFilters');
+                if (_savedFilters.containsKey('category')) {
+                  selectedGPCategoryFilters = List<String>.from(
+                      _savedFilters['category'].map((v) => v));
+                  FirebaseAnalytics.instance.logEvent(
+                      name: 'deep_dive_gp_category',
+                      parameters: {
+                        "message":
+                            'Selected Multi Filter $selectedGPCategoryFilters ${getUserName()}'
+                      });
+                }
+                if (_savedFilters.containsKey('selected')) {
+                  _selectedGPCategory = _savedFilters['selected'];
+                }
               }
-              if (_savedFilters.containsKey('selected')) {
-                _selectedGPCategory = _savedFilters['selected'];
+              final gpChannelMapDecoded = jsonDecode(
+                  await storage.read(key: AppConstants.GP_CHANNEL) ?? '{}');
+              if (gpChannelMapDecoded.isNotEmpty) {
+                Map<String, dynamic> _savedFilters = gpChannelMapDecoded;
+                if (_savedFilters.containsKey('channel')) {
+                  debugPrint('====>Channel saved $_savedFilters');
+                  selectedGPChannelFilter =
+                      List<String>.from(_savedFilters['channel'].map((v) => v));
+                  FirebaseAnalytics.instance.logEvent(
+                      name: 'deep_dive_gp_channel',
+                      parameters: {
+                        "message":
+                            'Selected Multi Filter $selectedGPChannelFilter ${getUserName()}'
+                      });
+                }
+                if (_savedFilters.containsKey('selected')) {
+                  _selectedGPChannel = _savedFilters['selected'];
+                }
+              } else {
+                selectedGPChannelFilter = filtersModel?.attr1 ?? [];
               }
-            }
-            final gpChannelMapDecoded = jsonDecode(
-                await storage.read(key: AppConstants.GP_CHANNEL) ?? '{}');
-            if (gpChannelMapDecoded.isNotEmpty) {
-              Map<String, dynamic> _savedFilters = gpChannelMapDecoded;
-              if (_savedFilters.containsKey('channel')) {
-                debugPrint('====>Channel saved $_savedFilters');
-                selectedGPChannelFilter =
-                    List<String>.from(_savedFilters['channel'].map((v) => v));
-                FirebaseAnalytics.instance.logEvent(
-                    name: 'deep_dive_gp_channel',
-                    parameters: {
-                      "message":
-                          'Selected Multi Filter $selectedGPChannelFilter ${getUserName()}'
-                    });
-              }
-              if (_savedFilters.containsKey('selected')) {
-                _selectedGPChannel = _savedFilters['selected'];
-              }
-            } else {
-              selectedGPChannelFilter = filtersModel?.attr1 ?? [];
-            }
-            // final gpTrendMapDecoded = jsonDecode(
-            //     await storage.read(key: AppConstants.GP_TRENDS) ?? '{}');
-            // if (gpTrendMapDecoded.isNotEmpty) {
-            //   Map<String, dynamic> _savedFilters = gpTrendMapDecoded;
-            //   if (_savedFilters.containsKey('trends')) {
-            //     if (_savedFilters.containsKey('category') &&
-            //         _savedFilters
-            //             .containsKey('category')
-            //             .toString()
-            //             .isNotEmpty) {
-            //       _selectedTrendsCategoryValue = _savedFilters['trends'];
-            //       _selectedTrendsCategory = _savedFilters['category'];
-            //       _selectedTrends = _selectedTrendsCategory;
-            //       _retailingTrendsValue = _selectedTrendsCategoryValue;
-            //     } else if (_savedFilters.containsKey('channel') &&
-            //         _savedFilters
-            //             .containsKey('channel')
-            //             .toString()
-            //             .isNotEmpty) {
-            //       _selectedTrendsChannelValue = _savedFilters['trends'];
-            //       _selectedChannel = _savedFilters['channel'];
-            //       _selectedTrends = _selectedChannel;
-            //       _retailingTrendsValue = _selectedTrendsChannelValue;
-            //     } else if (_savedFilters.containsKey('geo') &&
-            //         _savedFilters.containsKey('geo').toString().isNotEmpty) {
-            //       _selectedTrendsGeoValue = _savedFilters['trends'];
-            //       _selectedTrendsGeo = _savedFilters['geo'];
-            //       _selectedTrends = _selectedTrendsGeo;
-            //       _retailingTrendsValue = _selectedTrendsGeoValue;
-            //     }
-            //   }
-            // }
+              // final gpTrendMapDecoded = jsonDecode(
+              //     await storage.read(key: AppConstants.GP_TRENDS) ?? '{}');
+              // if (gpTrendMapDecoded.isNotEmpty) {
+              //   Map<String, dynamic> _savedFilters = gpTrendMapDecoded;
+              //   if (_savedFilters.containsKey('trends')) {
+              //     if (_savedFilters.containsKey('category') &&
+              //         _savedFilters
+              //             .containsKey('category')
+              //             .toString()
+              //             .isNotEmpty) {
+              //       _selectedTrendsCategoryValue = _savedFilters['trends'];
+              //       _selectedTrendsCategory = _savedFilters['category'];
+              //       _selectedTrends = _selectedTrendsCategory;
+              //       _retailingTrendsValue = _selectedTrendsCategoryValue;
+              //     } else if (_savedFilters.containsKey('channel') &&
+              //         _savedFilters
+              //             .containsKey('channel')
+              //             .toString()
+              //             .isNotEmpty) {
+              //       _selectedTrendsChannelValue = _savedFilters['trends'];
+              //       _selectedChannel = _savedFilters['channel'];
+              //       _selectedTrends = _selectedChannel;
+              //       _retailingTrendsValue = _selectedTrendsChannelValue;
+              //     } else if (_savedFilters.containsKey('geo') &&
+              //         _savedFilters.containsKey('geo').toString().isNotEmpty) {
+              //       _selectedTrendsGeoValue = _savedFilters['trends'];
+              //       _selectedTrendsGeo = _savedFilters['geo'];
+              //       _selectedTrends = _selectedTrendsGeo;
+              //       _retailingTrendsValue = _selectedTrendsGeoValue;
+              //     }
+              //   }
+              // }
 
-            ////////////////////
-            /// //getting fb saved filters and
+              ////////////////////
+              /// //getting fb saved filters and
 
-            final fbMapDecoded = jsonDecode(
-                await storage.read(key: AppConstants.FB_GEO) ?? '{}');
+              final fbMapDecoded = jsonDecode(
+                  await storage.read(key: AppConstants.FB_GEO) ?? '{}');
 
-            if (fbMapDecoded.isNotEmpty) {
-              Map<String, dynamic> _savedFilters = fbMapDecoded;
-              if (_savedFilters.containsKey('allIndia')) {
-                selectedFBMultiAllIndia =
-                    List<String>.from(_savedFilters['allIndia'].map((v) => v));
-                FirebaseAnalytics.instance.logEvent(
-                    name: 'deep_dive_fb_allIndia',
-                    parameters: {
-                      "message":
-                          'Selected Multi Filter $selectedFBMultiAllIndia ${getUserName()}'
-                    });
+              if (fbMapDecoded.isNotEmpty) {
+                Map<String, dynamic> _savedFilters = fbMapDecoded;
+                if (_savedFilters.containsKey('allIndia')) {
+                  selectedFBMultiAllIndia = List<String>.from(
+                      _savedFilters['allIndia'].map((v) => v));
+                  FirebaseAnalytics.instance.logEvent(
+                      name: 'deep_dive_fb_allIndia',
+                      parameters: {
+                        "message":
+                            'Selected Multi Filter $selectedFBMultiAllIndia ${getUserName()}'
+                      });
+                }
+                if (_savedFilters.containsKey('division')) {
+                  selectedFBMultiDivisions = List<String>.from(
+                      _savedFilters['division'].map((v) => v));
+                  FirebaseAnalytics.instance.logEvent(
+                      name: 'deep_dive_fb_division',
+                      parameters: {
+                        "message":
+                            'Selected Multi Filter $selectedFBMultiDivisions ${getUserName()}'
+                      });
+                }
+                if (_savedFilters.containsKey('branches')) {
+                  selectedFBMultiBranches = List<String>.from(
+                      _savedFilters['branches'].map((v) => v));
+                  FirebaseAnalytics.instance.logEvent(
+                      name: 'deep_dive_fb_branches',
+                      parameters: {
+                        "message":
+                            'Selected Multi Filter $selectedFBMultiBranches ${getUserName()}'
+                      });
+                }
+                if (_savedFilters.containsKey('cluster')) {
+                  selectedFBMultiClusters =
+                      List<String>.from(_savedFilters['cluster'].map((v) => v));
+                  FirebaseAnalytics.instance.logEvent(
+                      name: 'deep_dive_fb_cluster',
+                      parameters: {
+                        "message":
+                            'Selected Multi Filter $selectedFBMultiClusters ${getUserName()}'
+                      });
+                }
+                if (_savedFilters.containsKey('sites')) {
+                  selectedFBMultiSites =
+                      List<String>.from(_savedFilters['sites'].map((v) => v));
+                  FirebaseAnalytics.instance.logEvent(
+                      name: 'deep_dive_fb_sites',
+                      parameters: {
+                        "message":
+                            'Selected Multi Filter $selectedFBMultiSites ${getUserName()}'
+                      });
+                }
               }
-              if (_savedFilters.containsKey('division')) {
-                selectedFBMultiDivisions =
-                    List<String>.from(_savedFilters['division'].map((v) => v));
-                FirebaseAnalytics.instance.logEvent(
-                    name: 'deep_dive_fb_division',
-                    parameters: {
-                      "message":
-                          'Selected Multi Filter $selectedFBMultiDivisions ${getUserName()}'
-                    });
-              }
-              if (_savedFilters.containsKey('branches')) {
-                selectedFBMultiBranches =
-                    List<String>.from(_savedFilters['branches'].map((v) => v));
-                FirebaseAnalytics.instance.logEvent(
-                    name: 'deep_dive_fb_branches',
-                    parameters: {
-                      "message":
-                          'Selected Multi Filter $selectedFBMultiBranches ${getUserName()}'
-                    });
-              }
-              if (_savedFilters.containsKey('cluster')) {
-                selectedFBMultiClusters =
-                    List<String>.from(_savedFilters['cluster'].map((v) => v));
-                FirebaseAnalytics.instance.logEvent(
-                    name: 'deep_dive_fb_cluster',
-                    parameters: {
-                      "message":
-                          'Selected Multi Filter $selectedFBMultiClusters ${getUserName()}'
-                    });
-              }
-              if (_savedFilters.containsKey('sites')) {
-                selectedFBMultiSites =
-                    List<String>.from(_savedFilters['sites'].map((v) => v));
-                FirebaseAnalytics.instance.logEvent(
-                    name: 'deep_dive_fb_sites',
-                    parameters: {
-                      "message":
-                          'Selected Multi Filter $selectedFBMultiSites ${getUserName()}'
-                    });
-              }
-            }
 
-            //for fb category
-            final fbCategoryMapDecoded = jsonDecode(
-                await storage.read(key: AppConstants.FB_CATEGORY) ?? '{}');
-            if (fbCategoryMapDecoded.isNotEmpty) {
-              Map<String, dynamic> _savedFilters = fbCategoryMapDecoded;
-              debugPrint('====>Category saved $_savedFilters');
-              if (_savedFilters.containsKey('category')) {
-                selectedFBCategoryFilters =
-                    List<String>.from(_savedFilters['category'].map((v) => v));
-                FirebaseAnalytics.instance.logEvent(
-                    name: 'deep_dive_fb_category',
-                    parameters: {
-                      "message":
-                          'Selected Multi Filter $selectedFBCategoryFilters ${getUserName()}'
-                    });
+              //for fb category
+              final fbCategoryMapDecoded = jsonDecode(
+                  await storage.read(key: AppConstants.FB_CATEGORY) ?? '{}');
+              if (fbCategoryMapDecoded.isNotEmpty) {
+                Map<String, dynamic> _savedFilters = fbCategoryMapDecoded;
+                debugPrint('====>Category saved $_savedFilters');
+                if (_savedFilters.containsKey('category')) {
+                  selectedFBCategoryFilters = List<String>.from(
+                      _savedFilters['category'].map((v) => v));
+                  FirebaseAnalytics.instance.logEvent(
+                      name: 'deep_dive_fb_category',
+                      parameters: {
+                        "message":
+                            'Selected Multi Filter $selectedFBCategoryFilters ${getUserName()}'
+                      });
+                }
+                if (_savedFilters.containsKey('selected')) {
+                  _selectedFBCategory = _savedFilters['selected'];
+                }
               }
-              if (_savedFilters.containsKey('selected')) {
-                _selectedFBCategory = _savedFilters['selected'];
+              final fbChannelMapDecoded = jsonDecode(
+                  await storage.read(key: AppConstants.FB_CHANNEL) ?? '{}');
+              if (fbChannelMapDecoded.isNotEmpty) {
+                Map<String, dynamic> _savedFilters = fbChannelMapDecoded;
+                if (_savedFilters.containsKey('channel')) {
+                  debugPrint('====>Channel saved $_savedFilters');
+                  selectedFBChannelFilter =
+                      List<String>.from(_savedFilters['channel'].map((v) => v));
+                  FirebaseAnalytics.instance.logEvent(
+                      name: 'deep_dive_fb_channel',
+                      parameters: {
+                        "message":
+                            'Selected Multi Filter $selectedFBChannelFilter ${getUserName()}'
+                      });
+                }
+                if (_savedFilters.containsKey('selected')) {
+                  _selectedFBChannel = _savedFilters['selected'];
+                }
+              } else {
+                selectedFBChannelFilter = filtersModel?.attr1 ?? [];
               }
-            }
-            final fbChannelMapDecoded = jsonDecode(
-                await storage.read(key: AppConstants.FB_CHANNEL) ?? '{}');
-            if (fbChannelMapDecoded.isNotEmpty) {
-              Map<String, dynamic> _savedFilters = fbChannelMapDecoded;
-              if (_savedFilters.containsKey('channel')) {
-                debugPrint('====>Channel saved $_savedFilters');
-                selectedFBChannelFilter =
-                    List<String>.from(_savedFilters['channel'].map((v) => v));
-                FirebaseAnalytics.instance.logEvent(
-                    name: 'deep_dive_fb_channel',
-                    parameters: {
-                      "message":
-                          'Selected Multi Filter $selectedFBChannelFilter ${getUserName()}'
-                    });
-              }
-              if (_savedFilters.containsKey('selected')) {
-                _selectedFBChannel = _savedFilters['selected'];
-              }
-            } else {
-              selectedFBChannelFilter = filtersModel?.attr1 ?? [];
-            }
-            // final fbTrendMapDecoded = jsonDecode(
-            //     await storage.read(key: AppConstants.GP_TRENDS) ?? '{}');
-            // if (fbTrendMapDecoded.isNotEmpty) {
-            //   Map<String, dynamic> _savedFilters = fbTrendMapDecoded;
-            //   if (_savedFilters.containsKey('trends')) {
-            //     if (_savedFilters.containsKey('category') &&
-            //         _savedFilters
-            //             .containsKey('category')
-            //             .toString()
-            //             .isNotEmpty) {
-            //       _selectedTrendsCategoryValue = _savedFilters['trends'];
-            //       _selectedTrendsCategory = _savedFilters['category'];
-            //       _selectedTrends = _selectedTrendsCategory;
-            //       _retailingTrendsValue = _selectedTrendsCategoryValue;
-            //     } else if (_savedFilters.containsKey('channel') &&
-            //         _savedFilters
-            //             .containsKey('channel')
-            //             .toString()
-            //             .isNotEmpty) {
-            //       _selectedTrendsChannelValue = _savedFilters['trends'];
-            //       _selectedChannel = _savedFilters['channel'];
-            //       _selectedTrends = _selectedChannel;
-            //       _retailingTrendsValue = _selectedTrendsChannelValue;
-            //     } else if (_savedFilters.containsKey('geo') &&
-            //         _savedFilters.containsKey('geo').toString().isNotEmpty) {
-            //       _selectedTrendsGeoValue = _savedFilters['trends'];
-            //       _selectedTrendsGeo = _savedFilters['geo'];
-            //       _selectedTrends = _selectedTrendsGeo;
-            //       _retailingTrendsValue = _selectedTrendsGeoValue;
-            //     }
-            //   }
-            // }
+              // final fbTrendMapDecoded = jsonDecode(
+              //     await storage.read(key: AppConstants.GP_TRENDS) ?? '{}');
+              // if (fbTrendMapDecoded.isNotEmpty) {
+              //   Map<String, dynamic> _savedFilters = fbTrendMapDecoded;
+              //   if (_savedFilters.containsKey('trends')) {
+              //     if (_savedFilters.containsKey('category') &&
+              //         _savedFilters
+              //             .containsKey('category')
+              //             .toString()
+              //             .isNotEmpty) {
+              //       _selectedTrendsCategoryValue = _savedFilters['trends'];
+              //       _selectedTrendsCategory = _savedFilters['category'];
+              //       _selectedTrends = _selectedTrendsCategory;
+              //       _retailingTrendsValue = _selectedTrendsCategoryValue;
+              //     } else if (_savedFilters.containsKey('channel') &&
+              //         _savedFilters
+              //             .containsKey('channel')
+              //             .toString()
+              //             .isNotEmpty) {
+              //       _selectedTrendsChannelValue = _savedFilters['trends'];
+              //       _selectedChannel = _savedFilters['channel'];
+              //       _selectedTrends = _selectedChannel;
+              //       _retailingTrendsValue = _selectedTrendsChannelValue;
+              //     } else if (_savedFilters.containsKey('geo') &&
+              //         _savedFilters.containsKey('geo').toString().isNotEmpty) {
+              //       _selectedTrendsGeoValue = _savedFilters['trends'];
+              //       _selectedTrendsGeo = _savedFilters['geo'];
+              //       _selectedTrends = _selectedTrendsGeo;
+              //       _retailingTrendsValue = _selectedTrendsGeoValue;
+              //     }
+              //   }
+              // }
 
-            categoryTrendsFilters = filtersModel?.category ?? [];
-            channelFilter = filtersModel?.attr1 ?? [];
-            channelTrendsFilter = filtersModel?.attr1 ?? [];
-            await Future.wait([
-              getRetailingData(),
-              getRetailingData(type: 'category', name: 'category'),
-              getRetailingData(type: 'channel', name: 'geo'),
-              getRetailingData(type: 'geo', name: 'trends'),
-            ]);
+              categoryTrendsFilters = filtersModel?.category ?? [];
+              channelFilter = filtersModel?.attr1 ?? [];
+              channelTrendsFilter = filtersModel?.attr1 ?? [];
+              await Future.wait([
+                getRetailingData(),
+                getRetailingData(type: 'category', name: 'category'),
+                getRetailingData(type: 'channel', name: 'geo'),
+                getRetailingData(type: 'geo', name: 'trends'),
+              ]);
 
-            //gp
-            await Future.wait([
-              getGPData(),
-              getGPData(type: 'category', name: 'category'),
-              getGPData(type: 'channel', name: 'geo'),
-              getGPData(type: 'geo', name: 'trends'),
-            ]);
-            //fb
-            await Future.wait([
-              getFocusBrandData(),
-              getFocusBrandData(type: 'category', name: 'category'),
-              getFocusBrandData(type: 'channel', name: 'geo'),
-              getFocusBrandData(type: 'geo', name: 'trends'),
-            ]);
-            //Coverage
-            await Future.wait([
-              getCoverageData(),
-              getCoverageData(type: 'channel', name: 'geo'),
-              getCoverageData(type: 'trends', name: 'trends'),
-            ]);
-          }),
-        );
-      });
-      // ]);
+              //gp
+              await Future.wait([
+                getGPData(),
+                getGPData(type: 'category', name: 'category'),
+                getGPData(type: 'channel', name: 'geo'),
+                getGPData(type: 'geo', name: 'trends'),
+              ]);
+              //fb
+              await Future.wait([
+                getFocusBrandData(),
+                getFocusBrandData(type: 'category', name: 'category'),
+                getFocusBrandData(type: 'channel', name: 'geo'),
+                getFocusBrandData(type: 'geo', name: 'trends'),
+              ]);
+              //Coverage
+              await Future.wait([
+                getCoverageData(),
+                getCoverageData(type: 'channel', name: 'geo'),
+                getCoverageData(type: 'trends', name: 'trends'),
+              ]);
+            }),
+          );
+        }),
+      ]);
     }
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -3442,8 +3453,7 @@ class HomeController extends GetxController {
   Future<ResponseModel> getRetailingData(
       {String type = 'geo',
       String name = 'geo',
-      bool isTrendsFilter = false,
-      List<Map<String, dynamic>>? allFilter}) async {
+      bool isTrendsFilter = false}) async {
     var stopWatch = Stopwatch();
     stopWatch.reset();
     stopWatch.start();
@@ -3541,99 +3551,96 @@ class HomeController extends GetxController {
               },
             ]
           : type.startsWith('channel')
-              ? allFilter ??
-                  [
-                    {
-                      "date": _selectedTempMonth,
-                      _selectedGeo.startsWith('All India')
-                              ? "allIndia"
-                              : _selectedGeo.startsWith('Focus Area')
-                                  ? "site"
-                                  : _selectedGeo.startsWith('Cluster')
-                                      ? "district"
-                                      : _selectedGeo.toLowerCase():
-                          _selectedGeo.startsWith('All India')
-                              ? "allIndia"
-                              : _selectedGeoValue,
-                      if (selectedRetailingChannelFilter.isNotEmpty)
-                        selectedRetailingChannel.toLowerCase() == 'level 1'
-                                ? 'attr1'
-                                : selectedRetailingChannel.toLowerCase() ==
-                                        'level 2'
-                                    ? 'attr2'
-                                    : selectedRetailingChannel.toLowerCase() ==
-                                            'level 3'
-                                        ? 'attr3'
-                                        : selectedRetailingChannel
-                                                    .toLowerCase() ==
-                                                'level 4'
-                                            ? 'attr4'
-                                            : selectedRetailingChannel
-                                                        .toLowerCase() ==
-                                                    'level 5'
-                                                ? 'attr5'
-                                                : 'attr1':
-                            selectedRetailingChannelFilter,
-                      if (selectedRetailingChannelFilter.isEmpty) "attr1": [],
-                    }
-                  ]
+              ? [
+                  {
+                    "date": _selectedTempMonth,
+                    _selectedGeo.startsWith('All India')
+                            ? "allIndia"
+                            : _selectedGeo.startsWith('Focus Area')
+                                ? "site"
+                                : _selectedGeo.startsWith('Cluster')
+                                    ? "district"
+                                    : _selectedGeo.toLowerCase():
+                        _selectedGeo.startsWith('All India')
+                            ? "allIndia"
+                            : _selectedGeoValue,
+                    if (selectedRetailingChannelFilter.isNotEmpty)
+                      selectedRetailingChannel.toLowerCase() == 'level 1'
+                              ? 'attr1'
+                              : selectedRetailingChannel.toLowerCase() == 'level 2'
+                                  ? 'attr2'
+                                  : selectedRetailingChannel.toLowerCase() ==
+                                          'level 3'
+                                      ? 'attr3'
+                                      : selectedRetailingChannel
+                                                  .toLowerCase() ==
+                                              'level 4'
+                                          ? 'attr4'
+                                          : selectedRetailingChannel
+                                                      .toLowerCase() ==
+                                                  'level 5'
+                                              ? 'attr5'
+                                              : 'attr1':
+                          selectedRetailingChannelFilter,
+                    if (selectedRetailingChannelFilter.isEmpty) "attr1": [],
+                  }
+                ]
               : name.startsWith('geo')
-                  ? allFilter ??
-                      [
-                        {
-                          "date": selectedTempMonth,
-                          // "${selectedMonth!.substring(0, 3)}-$selectedYear",
-                          _selectedGeo.startsWith('All India')
-                                  ? "allIndia"
-                                  : _selectedGeo.startsWith('Focus Area')
-                                      ? "site"
-                                      : _selectedGeo.startsWith('Cluster')
-                                          ? "district"
-                                          : _selectedGeo.toLowerCase():
-                              _selectedGeoValue,
-                        },
-                        ...selectedRetailingMultiAllIndia
-                            .map((e) => {
-                                  "date": _selectedTempMonth,
-                                  "allIndia": e,
-                                })
-                            .toList(),
-                        ...selectedRetailingMultiDivisions
-                            .map((e) => {
-                                  "date": _selectedTempMonth,
-                                  //"${selectedMonth!.substring(0, 3)}-$selectedYear",
-                                  "division": e,
-                                })
-                            .toList(),
-                        ...selectedRetailingMultiClusters
-                            .map((e) => {
-                                  "date": _selectedTempMonth,
-                                  // "${selectedMonth!.substring(0, 3)}-$selectedYear",
-                                  "district": e,
-                                })
-                            .toList(),
-                        ...selectedRetailingMultiSites
-                            .map((e) => {
-                                  "date": selectedMonth,
-                                  //"${selectedMonth!.substring(0, 3)}-$selectedYear",
-                                  "site": e,
-                                })
-                            .toList(),
-                        ...selectedRetailingMultiBranches
-                            .map((e) => {
-                                  "date": selectedMonth,
-                                  //"${selectedMonth!.substring(0, 3)}-$selectedYear",
-                                  "branch": e,
-                                })
-                            .toList(),
-                        ...selectedMultiFilters
-                            .map((e) => {
-                                  "date": selectedMonth,
-                                  //"${selectedMonth!.substring(0, 3)}-$selectedYear",
-                                  "allIndia": e,
-                                })
-                            .toList(),
-                      ]
+                  ? [
+                      {
+                        "date": selectedTempMonth,
+                        // "${selectedMonth!.substring(0, 3)}-$selectedYear",
+                        _selectedGeo.startsWith('All India')
+                                ? "allIndia"
+                                : _selectedGeo.startsWith('Focus Area')
+                                    ? "site"
+                                    : _selectedGeo.startsWith('Cluster')
+                                        ? "district"
+                                        : _selectedGeo.toLowerCase():
+                            _selectedGeoValue,
+                      },
+                      ...selectedRetailingMultiAllIndia
+                          .map((e) => {
+                                "date": _selectedTempMonth,
+                                "allIndia": e,
+                              })
+                          .toList(),
+                      ...selectedRetailingMultiDivisions
+                          .map((e) => {
+                                "date": _selectedTempMonth,
+                                //"${selectedMonth!.substring(0, 3)}-$selectedYear",
+                                "division": e,
+                              })
+                          .toList(),
+                      ...selectedRetailingMultiClusters
+                          .map((e) => {
+                                "date": _selectedTempMonth,
+                                // "${selectedMonth!.substring(0, 3)}-$selectedYear",
+                                "district": e,
+                              })
+                          .toList(),
+                      ...selectedRetailingMultiSites
+                          .map((e) => {
+                                "date": selectedMonth,
+                                //"${selectedMonth!.substring(0, 3)}-$selectedYear",
+                                "site": e,
+                              })
+                          .toList(),
+                      ...selectedRetailingMultiBranches
+                          .map((e) => {
+                                "date": selectedMonth,
+                                //"${selectedMonth!.substring(0, 3)}-$selectedYear",
+                                "branch": e,
+                              })
+                          .toList(),
+                      ...selectedMultiFilters
+                          .map((e) => {
+                                "date": selectedMonth,
+                                //"${selectedMonth!.substring(0, 3)}-$selectedYear",
+                                "allIndia": e,
+                              })
+                          .toList(),
+                    ]
                   : [
                       {
                         "date": selectedMonth,
@@ -4158,8 +4165,7 @@ class HomeController extends GetxController {
   Future<ResponseModel> getGPData(
       {String type = 'geo',
       String name = 'geo',
-      bool isTrendsFilter = false,
-      List<Map<String, dynamic>>? allFilter}) async {
+      bool isTrendsFilter = false}) async {
     var stopWatch = Stopwatch();
     stopWatch.reset();
     stopWatch.start();
@@ -4266,101 +4272,99 @@ class HomeController extends GetxController {
                 },
               ]
             : type.startsWith('channel')
-                ? allFilter ??
-                    [
-                      {
-                        "date": selectedMonth,
-                        //"${selectedMonth!.substring(0, 3)}-$selectedYear",
-                        _selectedGeo.startsWith('All India')
-                                ? "allIndia"
-                                : _selectedGeo.startsWith('Focus Area')
-                                    ? "site"
-                                    : _selectedGeo.startsWith('Cluster')
-                                        ? "district"
-                                        : _selectedGeo.toLowerCase():
-                            _selectedGeo.startsWith('All India')
-                                ? "allIndia"
-                                : _selectedGeoValue,
+                ? [
+                    {
+                      "date": selectedMonth,
+                      //"${selectedMonth!.substring(0, 3)}-$selectedYear",
+                      _selectedGeo.startsWith('All India')
+                              ? "allIndia"
+                              : _selectedGeo.startsWith('Focus Area')
+                                  ? "site"
+                                  : _selectedGeo.startsWith('Cluster')
+                                      ? "district"
+                                      : _selectedGeo.toLowerCase():
+                          _selectedGeo.startsWith('All India')
+                              ? "allIndia"
+                              : _selectedGeoValue,
 
-                        if (selectedGPChannelFilter.isNotEmpty)
-                          selectedGPChannel.toLowerCase() == 'level 1'
-                              ? 'attr1'
-                              : selectedGPChannel.toLowerCase() == 'level 2'
-                                  ? 'attr2'
-                                  : selectedGPChannel.toLowerCase() == 'level 3'
-                                      ? 'attr3'
-                                      : selectedGPChannel.toLowerCase() ==
-                                              'level 4'
-                                          ? 'attr4'
-                                          : selectedGPChannel.toLowerCase() ==
-                                                  'level 5'
-                                              ? 'attr5'
-                                              : 'attr1': selectedGPChannelFilter,
-                        if (selectedGPChannelFilter.isEmpty) "attr1": [],
-                      }
-                    ]
+                      if (selectedGPChannelFilter.isNotEmpty)
+                        selectedGPChannel.toLowerCase() == 'level 1'
+                            ? 'attr1'
+                            : selectedGPChannel.toLowerCase() == 'level 2'
+                                ? 'attr2'
+                                : selectedGPChannel.toLowerCase() == 'level 3'
+                                    ? 'attr3'
+                                    : selectedGPChannel.toLowerCase() ==
+                                            'level 4'
+                                        ? 'attr4'
+                                        : selectedGPChannel.toLowerCase() ==
+                                                'level 5'
+                                            ? 'attr5'
+                                            : 'attr1': selectedGPChannelFilter,
+                      if (selectedGPChannelFilter.isEmpty) "attr1": [],
+                    }
+                  ]
                 : name.startsWith('geo')
-                    ? allFilter ??
-                        [
-                          {
-                            "date": selectedMonth,
-                            //"${selectedMonth!.substring(0, 3)}-$selectedYear",
-                            _selectedGeo.startsWith('All India')
-                                    ? "allIndia"
-                                    : _selectedGeo.startsWith('Focus Area')
-                                        ? "site"
-                                        : _selectedGeo.startsWith('Cluster')
-                                            ? "district"
-                                            : _selectedGeo.toLowerCase():
-                                _selectedGeoValue,
-                          },
-                          ...selectedGPMultiAllIndia
-                              .map((e) => {
-                                    "date": selectedMonth,
-                                    "allIndia": e,
-                                  })
-                              .toList(),
-                          ...selectedGPMultiDivisions
-                              .map((e) => {
-                                    "date": selectedMonth,
-                                    // "${selectedMonth!.substring(0, 3)}-$selectedYear",
-                                    "division": e,
-                                    "category": [],
-                                  })
-                              .toList(),
-                          ...selectedGPMultiClusters
-                              .map((e) => {
-                                    "date": selectedMonth,
-                                    // "${selectedMonth!.substring(0, 3)}-$selectedYear",
-                                    "district": e,
-                                    "category": [],
-                                  })
-                              .toList(),
-                          ...selectedGPMultiSites
-                              .map((e) => {
-                                    "date": selectedMonth,
-                                    // "${selectedMonth!.substring(0, 3)}-$selectedYear",
-                                    "site": e,
-                                    "category": [],
-                                  })
-                              .toList(),
-                          ...selectedGPMultiBranches
-                              .map((e) => {
-                                    "date": selectedMonth,
-                                    // "${selectedMonth!.substring(0, 3)}-$selectedYear",
-                                    "branch": e,
-                                    "category": [],
-                                  })
-                              .toList(),
-                          ...selectedMultiFilters
-                              .map((e) => {
-                                    "date": selectedMonth,
-                                    // "${selectedMonth!.substring(0, 3)}-$selectedYear",
-                                    "allIndia": e,
-                                    "category": [],
-                                  })
-                              .toList(),
-                        ]
+                    ? [
+                        {
+                          "date": selectedTempMonth,
+                          //"${selectedMonth!.substring(0, 3)}-$selectedYear",
+                          _selectedGeo.startsWith('All India')
+                                  ? "allIndia"
+                                  : _selectedGeo.startsWith('Focus Area')
+                                      ? "site"
+                                      : _selectedGeo.startsWith('Cluster')
+                                          ? "district"
+                                          : _selectedGeo.toLowerCase():
+                              _selectedGeoValue,
+                        },
+                        ...selectedGPMultiAllIndia
+                            .map((e) => {
+                                  "date": selectedMonth,
+                                  "allIndia": e,
+                                })
+                            .toList(),
+                        ...selectedGPMultiDivisions
+                            .map((e) => {
+                                  "date": selectedMonth,
+                                  // "${selectedMonth!.substring(0, 3)}-$selectedYear",
+                                  "division": e,
+                                  "category": [],
+                                })
+                            .toList(),
+                        ...selectedGPMultiClusters
+                            .map((e) => {
+                                  "date": selectedMonth,
+                                  // "${selectedMonth!.substring(0, 3)}-$selectedYear",
+                                  "district": e,
+                                  "category": [],
+                                })
+                            .toList(),
+                        ...selectedGPMultiSites
+                            .map((e) => {
+                                  "date": selectedMonth,
+                                  // "${selectedMonth!.substring(0, 3)}-$selectedYear",
+                                  "site": e,
+                                  "category": [],
+                                })
+                            .toList(),
+                        ...selectedGPMultiBranches
+                            .map((e) => {
+                                  "date": selectedMonth,
+                                  // "${selectedMonth!.substring(0, 3)}-$selectedYear",
+                                  "branch": e,
+                                  "category": [],
+                                })
+                            .toList(),
+                        ...selectedMultiFilters
+                            .map((e) => {
+                                  "date": selectedMonth,
+                                  // "${selectedMonth!.substring(0, 3)}-$selectedYear",
+                                  "allIndia": e,
+                                  "category": [],
+                                })
+                            .toList(),
+                      ]
                     : [
                         {
                           "date": selectedMonth,
