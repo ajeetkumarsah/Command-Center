@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 import '../utils/app_constants.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -17,6 +16,7 @@ import 'package:command_centre/mobile_dashboard/utils/date_converter.dart';
 import 'package:command_centre/mobile_dashboard/utils/routes/app_pages.dart';
 import 'package:command_centre/mobile_dashboard/utils/global.dart' as globals;
 import 'package:command_centre/mobile_dashboard/data/repository/home_repo.dart';
+import 'package:command_centre/mobile_dashboard/views/widgets/custom_snackbar.dart';
 import 'package:command_centre/mobile_dashboard/data/models/response/trends_model.dart';
 import 'package:command_centre/mobile_dashboard/data/models/response/filters_model.dart';
 import 'package:command_centre/mobile_dashboard/data/models/response/summary_model.dart';
@@ -2292,7 +2292,10 @@ class HomeController extends GetxController {
   }
 
   Future<void> onChangeMonthFilter(String value,
-      {required bool isLoadRetailing, required bool isSummary}) async {
+      {required bool isLoadRetailing,
+      required bool isSummary,
+      String priority = 'Retailing',
+      String tabType = 'All'}) async {
     debugPrint('====>Selected Month $value');
     FirebaseAnalytics.instance.logEvent(
         name: 'selected_month',
@@ -2302,11 +2305,50 @@ class HomeController extends GetxController {
       // _selectedTempMonth = null;
     } else {
       _selectedTempMonth = value;
-      onChangeDate(
-        isLoadRetailing: isLoadRetailing,
-        tabType: 'All',
-        isSummary: isSummary,
-      );
+      FirebaseAnalytics.instance.logEvent(
+          name: 'data_refreash',
+          parameters: {"message": 'Data Refreshing ${getUserName()}'});
+      _selectedMonth = _selectedTempMonth;
+      setMonth(_selectedTempMonth ?? '');
+      FirebaseAnalytics.instance.logEvent(name: 'data_refreash', parameters: {
+        "message": 'Selected Month $_selectedTempMonth ${getUserName()}'
+      });
+      if (isSummary) {
+        Logger().i('===>Summary Await is calling');
+        await getSummaryData();
+      }
+      if (isLoadRetailing) {
+        if (SummaryTypes.retailing.type == tabType) {
+          //retailing screen data
+
+          await Future.wait([
+            getRetailingData(),
+            getRetailingData(type: 'category', name: 'category'),
+            getRetailingData(type: 'channel', name: 'geo'),
+            getRetailingData(type: 'geo', name: 'trends'),
+          ]);
+        } else if (SummaryTypes.coverage.type == tabType) {
+          //Coverage screen data
+          getCoverageData();
+          // getCoverageData(type: 'category', name: 'category');
+          getCoverageData(type: 'channel', name: 'geo');
+          getCoverageData(type: 'trends', name: 'trends');
+        } else if (SummaryTypes.gp.type == tabType) {
+          //retailing screen data
+          getGPData();
+          getGPData(type: 'category', name: 'category');
+          getGPData(type: 'channel', name: 'geo');
+          getGPData(type: 'geo', name: 'trends');
+        } else if (SummaryTypes.fb.type == tabType) {
+          //retailing screen data
+          getFocusBrandData();
+          getFocusBrandData(type: 'category', name: 'category');
+          getFocusBrandData(type: 'channel', name: 'geo');
+          getFocusBrandData(type: 'geo', name: 'trends');
+        } else if (tabType == "All") {
+          reloadAllDeepDive(isSummary: isSummary, priority: priority);
+        }
+      }
     }
 
     update();
@@ -2329,55 +2371,58 @@ class HomeController extends GetxController {
     update();
   }
 
-  Future<void> onChangeDate(
-      {bool isLoadRetailing = false,
-      String tabType = 'Retailing',
-      bool isSummary = false}) async {
-    FirebaseAnalytics.instance.logEvent(
-        name: 'data_refreash',
-        parameters: {"message": 'Data Refreshing ${getUserName()}'});
-    _selectedMonth = _selectedTempMonth;
-    setMonth(_selectedTempMonth ?? '');
-    FirebaseAnalytics.instance.logEvent(name: 'data_refreash', parameters: {
-      "message": 'Selected Month $_selectedTempMonth ${getUserName()}'
-    });
-    if (isSummary) {
-      await getSummaryData();
-    } else {
-      getSummaryData();
-    }
-    if (isLoadRetailing) {
-      if (SummaryTypes.retailing.type == tabType) {
-        //retailing screen data
+  // Future<void> onChangeDate(
+  //     {bool isLoadRetailing = false,
+  //     String tabType = 'Retailing',
+  //     bool isSummary = false}) async {
+  //   FirebaseAnalytics.instance.logEvent(
+  //       name: 'data_refreash',
+  //       parameters: {"message": 'Data Refreshing ${getUserName()}'});
+  //   _selectedMonth = _selectedTempMonth;
+  //   setMonth(_selectedTempMonth ?? '');
+  //   FirebaseAnalytics.instance.logEvent(name: 'data_refreash', parameters: {
+  //     "message": 'Selected Month $_selectedTempMonth ${getUserName()}'
+  //   });
+  //   if (isSummary) {
+  //     await getSummaryData();
+  //   } else {
+  //     getSummaryData();
+  //   }
+  //   if (isLoadRetailing) {
+  //     if (SummaryTypes.retailing.type == tabType) {
+  //       //retailing screen data
 
-        getRetailingData();
-        getRetailingData(type: 'category', name: 'category');
-        getRetailingData(type: 'channel', name: 'geo');
-        getRetailingData(type: 'geo', name: 'trends');
-      } else if (SummaryTypes.coverage.type == tabType) {
-        //Coverage screen data
-        getCoverageData();
-        // getCoverageData(type: 'category', name: 'category');
-        getCoverageData(type: 'channel', name: 'geo');
-        getCoverageData(type: 'trends', name: 'trends');
-      } else if (SummaryTypes.gp.type == tabType) {
-        //retailing screen data
-        getGPData();
-        getGPData(type: 'category', name: 'category');
-        getGPData(type: 'channel', name: 'geo');
-        getGPData(type: 'geo', name: 'trends');
-      } else if (SummaryTypes.fb.type == tabType) {
-        //retailing screen data
-        getFocusBrandData();
-        getFocusBrandData(type: 'category', name: 'category');
-        getFocusBrandData(type: 'channel', name: 'geo');
-        getFocusBrandData(type: 'geo', name: 'trends');
-      } else if (tabType == "All") {
-        reloadAllDeepDive();
-      }
-    }
-    update();
-  }
+  //       await Future.wait([
+  //         getRetailingData(),
+  //         getRetailingData(type: 'category', name: 'category'),
+  //         getRetailingData(type: 'channel', name: 'geo'),
+  //         getRetailingData(type: 'geo', name: 'trends'),
+  //       ]);
+  //     } else if (SummaryTypes.coverage.type == tabType) {
+  //       //Coverage screen data
+  //       getCoverageData();
+  //       // getCoverageData(type: 'category', name: 'category');
+  //       getCoverageData(type: 'channel', name: 'geo');
+  //       getCoverageData(type: 'trends', name: 'trends');
+  //     } else if (SummaryTypes.gp.type == tabType) {
+  //       //retailing screen data
+  //       getGPData();
+  //       getGPData(type: 'category', name: 'category');
+  //       getGPData(type: 'channel', name: 'geo');
+  //       getGPData(type: 'geo', name: 'trends');
+  //     } else if (SummaryTypes.fb.type == tabType) {
+  //       //retailing screen data
+  //       getFocusBrandData();
+  //       getFocusBrandData(type: 'category', name: 'category');
+  //       getFocusBrandData(type: 'channel', name: 'geo');
+  //       getFocusBrandData(type: 'geo', name: 'trends');
+  //     } else if (tabType == "All") {
+  //       reloadAllDeepDive();
+  //     }
+  //   }
+
+  //   update();
+  // }
 
   void onMultiGeoChange(String value) {
     FirebaseAnalytics.instance.logEvent(
@@ -2601,8 +2646,6 @@ class HomeController extends GetxController {
 
     if (isSummary) {
       await getSummaryData();
-    } else {
-      getSummaryData();
     }
 
     if (isLoadRetailing) {
@@ -2640,36 +2683,96 @@ class HomeController extends GetxController {
       } else if (tabType == 'All') {
         debugPrint('====>Reloading all deep dive');
         //reload all deep dive
-        reloadAllDeepDive();
+        reloadAllDeepDive(isSummary: isSummary, priority: 'Retailing');
       }
     }
     update();
   }
 
-  void reloadAllDeepDive() {
+  Future<void> reloadAllDeepDive(
+      {required String priority, bool isSummary = false}) async {
     FirebaseAnalytics.instance.logEvent(
         name: 'logs',
         parameters: {"message": 'Data Reloaded ${getUserName()}'});
     //retailing screen data
-    getRetailingData();
-    getRetailingData(type: 'category', name: 'category');
-    getRetailingData(type: 'channel', name: 'geo');
-    getRetailingData(type: 'geo', name: 'trends');
-    //Coverage screen data
-    getCoverageData();
-    getCoverageData(type: 'channel', name: 'geo');
-    getCoverageData(type: 'trends', name: 'trends');
-    //golden points screen data
-    getGPData();
-    getGPData(type: 'category', name: 'category');
-    getGPData(type: 'channel', name: 'geo');
-    getGPData(type: 'geo', name: 'trends');
-    //focus brand screen data
-    getFocusBrandData();
-    getFocusBrandData(type: 'category', name: 'category');
-    getFocusBrandData(type: 'channel', name: 'geo');
-    getFocusBrandData(type: 'geo', name: 'trends');
+    if (priority == SummaryTypes.retailing.type) {
+      //call all the retaling deep dive APIs
+      await retailingDeepDive();
+      if (!isSummary) {
+        getSummaryData();
+      }
+      coverageDeepDive();
+      gpDeepDive();
+      fbDeepDive();
+    } else if (priority == SummaryTypes.coverage.type) {
+      //call all the coverage deep dive APIs
+      await coverageDeepDive();
+      if (!isSummary) {
+        getSummaryData();
+      }
+      retailingDeepDive();
+      gpDeepDive();
+      fbDeepDive();
+    } else if (priority == SummaryTypes.gp.type) {
+      //call all the gp deep dive APIs
+      await gpDeepDive();
+      if (!isSummary) {
+        getSummaryData();
+      }
+      retailingDeepDive();
+      coverageDeepDive();
+      fbDeepDive();
+    } else if (priority == SummaryTypes.fb.type) {
+      //call all the fb deep dive APIs
+      await fbDeepDive();
+
+      if (!isSummary) {
+        getSummaryData();
+      }
+      retailingDeepDive();
+      coverageDeepDive();
+      gpDeepDive();
+    }
+
     update();
+  }
+
+  Future<void> retailingDeepDive() async {
+    await Future.wait([
+      getRetailingData(),
+      getRetailingData(type: 'category', name: 'category'),
+      getRetailingData(type: 'channel', name: 'geo'),
+      getRetailingData(type: 'geo', name: 'trends'),
+    ]);
+  }
+
+  Future<void> coverageDeepDive() async {
+    await Future.wait([
+      //Coverage screen data
+      getCoverageData(),
+      getCoverageData(type: 'channel', name: 'geo'),
+      getCoverageData(type: 'trends', name: 'trends'),
+    ]);
+  }
+
+  Future<void> gpDeepDive() async {
+    await Future.wait([
+      //golden points screen data
+      getGPData(),
+      getGPData(type: 'category', name: 'category'),
+      getGPData(type: 'channel', name: 'geo'),
+      getGPData(type: 'geo', name: 'trends'),
+    ]);
+  }
+
+  Future<void> fbDeepDive() async {
+    await Future.wait([
+      //focus brand screen data
+      getFocusBrandData(),
+      getFocusBrandData(type: 'category', name: 'category'),
+      getFocusBrandData(type: 'channel', name: 'geo'),
+      getFocusBrandData(type: 'geo', name: 'trends'),
+    ]);
   }
 
   void onApplyMultiFilter(
@@ -4802,10 +4905,10 @@ class HomeController extends GetxController {
     ResponseModel responseModel;
     if (response.statusCode == 200) {
       if (response.body["successful"].toString().toLowerCase() == 'true') {
-        print('FeedBack ================= Success');
+        debugPrint('FeedBack ================= Success');
         responseModel = ResponseModel(true, 'Success');
       } else {
-        print('FeedBack ================= Something went wrong');
+        debugPrint('FeedBack ================= Something went wrong');
         responseModel = ResponseModel(false, 'Something went wrong');
       }
     } else if (response.statusCode == 401) {
@@ -4857,14 +4960,8 @@ class HomeController extends GetxController {
       if (response.body["successful"].toString().toLowerCase() == 'true') {
         print('Feedback ================= Success');
         responseModel = ResponseModel(true, 'Success');
-        Fluttertoast.showToast(
-            msg: "Thank you for your feedback.",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.BOTTOM,
-            timeInSecForIosWeb: 10,
-            backgroundColor: Colors.blue,
-            textColor: Colors.white,
-            fontSize: 16.0);
+        showCustomSnackBar("Thank you for your feedback.",
+            isError: false, isBlack: false);
       } else {
         print('Feedback ================= Something went wrong');
         responseModel = ResponseModel(false, 'Something went wrong');
@@ -4920,14 +5017,8 @@ class HomeController extends GetxController {
       if (response.body["successful"].toString().toLowerCase() == 'true') {
         print('Bug ================= Success');
         responseModel = ResponseModel(true, 'Success');
-        Fluttertoast.showToast(
-            msg: "Thank you for your feedback.",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.BOTTOM,
-            timeInSecForIosWeb: 10,
-            backgroundColor: Colors.blue,
-            textColor: Colors.white,
-            fontSize: 16.0);
+        showCustomSnackBar("Thank you for your feedback.",
+            isError: false, isBlack: false);
       } else {
         print('Bug ================= Something went wrong');
         responseModel = ResponseModel(false, 'Something went wrong');

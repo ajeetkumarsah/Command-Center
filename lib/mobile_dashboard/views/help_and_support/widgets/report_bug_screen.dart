@@ -2,13 +2,13 @@ import 'dart:io';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
 import 'package:command_centre/mobile_dashboard/utils/routes/app_pages.dart';
 import 'package:command_centre/mobile_dashboard/views/widgets/photo_gride.dart';
 import 'package:command_centre/mobile_dashboard/controllers/home_controller.dart';
+import 'package:command_centre/mobile_dashboard/views/widgets/custom_snackbar.dart';
 
 
 class ReportBugScreen extends StatefulWidget {
@@ -180,15 +180,9 @@ class _ReportBugScreenState extends State<ReportBugScreen> {
                       Get.back();
                     }else{
                       isLoading = true;
-                      Fluttertoast.showToast(
-                          msg: "Something went wrong",
-                          toastLength: Toast.LENGTH_SHORT,
-                          gravity: ToastGravity.BOTTOM,
-                          timeInSecForIosWeb: 10,
-                          backgroundColor: Colors.blue,
-                          textColor: Colors.white,
-                          fontSize: 16.0
-                      );
+                      showCustomSnackBar("Something went wrong",
+                          isError: false, isBlack: true);
+                      
                       isLoading = false;
                     }
                   },

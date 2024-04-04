@@ -2,12 +2,12 @@ import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:flutter/material.dart';
 import '../../../utils/app_constants.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:reviews_slider/reviews_slider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
 import 'package:command_centre/mobile_dashboard/controllers/home_controller.dart';
+import 'package:command_centre/mobile_dashboard/views/widgets/custom_snackbar.dart';
 
 class FeedbackScreen extends StatefulWidget {
   const FeedbackScreen({super.key});
@@ -133,14 +133,9 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                       Get.back();
                     } else {
                       isLoading = true;
-                      Fluttertoast.showToast(
-                          msg: "Something went wrong",
-                          toastLength: Toast.LENGTH_SHORT,
-                          gravity: ToastGravity.BOTTOM,
-                          timeInSecForIosWeb: 10,
-                          backgroundColor: Colors.blue,
-                          textColor: Colors.white,
-                          fontSize: 16.0);
+                      showCustomSnackBar("Something went wrong",
+                          isError: false, isBlack: true);
+
                       isLoading = false;
                     }
                   },

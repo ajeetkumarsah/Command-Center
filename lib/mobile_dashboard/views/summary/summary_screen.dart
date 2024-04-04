@@ -17,7 +17,6 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:command_centre/mobile_dashboard/utils/png_files.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:command_centre/mobile_dashboard/utils/date_converter.dart';
 import 'package:command_centre/mobile_dashboard/utils/routes/app_pages.dart';
 import 'package:command_centre/mobile_dashboard/utils/global.dart' as globals;
 import 'package:command_centre/mobile_dashboard/controllers/home_controller.dart';
@@ -54,7 +53,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
   @override
   void initState() {
     getInitValues();
-    getBanner();
+    getPopup();
     initGuide();
     super.initState();
   }
@@ -95,7 +94,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
     }
   }
 
-  Future<void> getBanner() async {
+  Future<void> getPopup() async {
     var firestore = FirebaseFirestore.instance;
     var querySnap = await firestore.collection("data_refresh").get();
     if (querySnap.docs[0]['showPopup'] ?? false) {
@@ -131,7 +130,6 @@ class _SummaryScreenState extends State<SummaryScreen> {
         // });
       },
       builder: (ctlr) {
-        // initCall(ctlr);
         return RefreshIndicator(
           onRefresh: () => ctlr.getSummaryData(),
           child: Container(
@@ -921,7 +919,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                             child: Column(
                                               children: [
                                                 Text(
-                                                  '${DateConverter().returnMonth(DateTime.now()).substring(0, 3).toLowerCase() == ctlr.selectedMonth?.substring(0, 3).toLowerCase() ? 'P3M' : 'FYTD'} \nIYA',
+                                                  'FYTD \nIYA',
                                                   style: GoogleFonts.ptSans(
                                                     fontSize: 16,
                                                     fontWeight: FontWeight.w400,
@@ -985,7 +983,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                             child: Column(
                                               children: [
                                                 Text(
-                                                  '${DateConverter().returnMonth(DateTime.now()).substring(0, 3).toLowerCase() == ctlr.selectedMonth?.substring(0, 3).toLowerCase() ? 'P3M' : 'FYTD'} \nIYA',
+                                                  '${'P3M'} \nIYA',
                                                   style: GoogleFonts.ptSans(
                                                     fontSize: 16,
                                                     fontWeight: FontWeight.w400,

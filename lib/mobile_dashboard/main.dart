@@ -1,11 +1,8 @@
 import 'dart:io';
-
-import 'package:command_centre/mobile_dashboard/push_notification.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:safe_device/safe_device.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -15,6 +12,7 @@ import 'package:command_centre/mobile_dashboard/push_notification.dart';
 import 'package:command_centre/mobile_dashboard/services/firebase_api.dart';
 import 'package:command_centre/mobile_dashboard/bindings/home_binding.dart';
 import 'package:command_centre/mobile_dashboard/utils/routes/app_pages.dart';
+import 'package:command_centre/mobile_dashboard/views/widgets/custom_snackbar.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -63,14 +61,16 @@ void main() async {
     // For simplicity, this example terminates the app.
     debugPrint(
         "Rooted device or emulator detected. The app cannot be installed.");
-    Fluttertoast.showToast(
-        msg: "Rooted device or emulator detected. The app cannot be installed.",
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.BOTTOM,
-        timeInSecForIosWeb: 10,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-        fontSize: 16.0);
+    // Fluttertoast.showToast(
+    //     msg: "Rooted device or emulator detected. The app cannot be installed.",
+    //     toastLength: Toast.LENGTH_LONG,
+    //     gravity: ToastGravity.BOTTOM,
+    //     timeInSecForIosWeb: 10,
+    //     backgroundColor: Colors.red,
+    //     textColor: Colors.white,
+    //     fontSize: 16.0);
+    showCustomSnackBar(
+        'Rooted device or emulator detected. The app cannot be installed.');
     exit(0);
   }
   runApp(

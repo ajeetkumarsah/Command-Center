@@ -100,6 +100,7 @@ class SelectMonthBottomsheet extends StatelessWidget {
                                                     month,
                                                     isLoadRetailing:
                                                         isLoadRetailing,
+                                                    priority: tabType,
                                                     isSummary: isSummary,
                                                   )
                                                   .then((value) => Get.back()),
@@ -117,6 +118,7 @@ class SelectMonthBottomsheet extends StatelessWidget {
                                                             month,
                                                             isLoadRetailing:
                                                                 isLoadRetailing,
+                                                            priority: tabType,
                                                             isSummary:
                                                                 isSummary,
                                                           )
