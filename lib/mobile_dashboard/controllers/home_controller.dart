@@ -4432,7 +4432,6 @@ class HomeController extends GetxController {
                                   "date": selectedMonth,
                                   // "${selectedMonth!.substring(0, 3)}-$selectedYear",
                                   "division": e,
-                                  "category": [],
                                 })
                             .toList(),
                         ...selectedGPMultiClusters
@@ -4440,7 +4439,6 @@ class HomeController extends GetxController {
                                   "date": selectedMonth,
                                   // "${selectedMonth!.substring(0, 3)}-$selectedYear",
                                   "district": e,
-                                  "category": [],
                                 })
                             .toList(),
                         ...selectedGPMultiSites
@@ -4448,7 +4446,6 @@ class HomeController extends GetxController {
                                   "date": selectedMonth,
                                   // "${selectedMonth!.substring(0, 3)}-$selectedYear",
                                   "site": e,
-                                  "category": [],
                                 })
                             .toList(),
                         ...selectedGPMultiBranches
@@ -4456,7 +4453,6 @@ class HomeController extends GetxController {
                                   "date": selectedMonth,
                                   // "${selectedMonth!.substring(0, 3)}-$selectedYear",
                                   "branch": e,
-                                  "category": [],
                                 })
                             .toList(),
                         ...selectedMultiFilters
@@ -4464,7 +4460,6 @@ class HomeController extends GetxController {
                                   "date": selectedMonth,
                                   // "${selectedMonth!.substring(0, 3)}-$selectedYear",
                                   "allIndia": e,
-                                  "category": [],
                                 })
                             .toList(),
                       ]

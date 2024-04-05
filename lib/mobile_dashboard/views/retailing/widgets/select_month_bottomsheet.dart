@@ -95,15 +95,16 @@ class SelectMonthBottomsheet extends StatelessWidget {
                                       ...ctlr.monthFilters
                                           .map(
                                             (month) => InkWell(
-                                              onTap: () => ctlr
-                                                  .onChangeMonthFilter(
-                                                    month,
-                                                    isLoadRetailing:
-                                                        isLoadRetailing,
-                                                    priority: tabType,
-                                                    isSummary: isSummary,
-                                                  )
-                                                  .then((value) => Get.back()),
+                                              onTap: () {
+                                                ctlr.onChangeMonthFilter(
+                                                  month,
+                                                  isLoadRetailing:
+                                                      isLoadRetailing,
+                                                  priority: tabType,
+                                                  isSummary: isSummary,
+                                                );
+                                                Get.back();
+                                              },
                                               child: Row(
                                                 children: [
                                                   Transform.scale(
@@ -113,17 +114,16 @@ class SelectMonthBottomsheet extends StatelessWidget {
                                                               .selectedTempMonth
                                                               ?.toLowerCase() ==
                                                           month.toLowerCase(),
-                                                      onChanged: (v) => ctlr
-                                                          .onChangeMonthFilter(
-                                                            month,
-                                                            isLoadRetailing:
-                                                                isLoadRetailing,
-                                                            priority: tabType,
-                                                            isSummary:
-                                                                isSummary,
-                                                          )
-                                                          .then((value) =>
-                                                              Get.back()),
+                                                      onChanged: (v) {
+                                                        ctlr.onChangeMonthFilter(
+                                                          month,
+                                                          isLoadRetailing:
+                                                              isLoadRetailing,
+                                                          priority: tabType,
+                                                          isSummary: isSummary,
+                                                        );
+                                                        Get.back();
+                                                      },
                                                     ),
                                                   ),
                                                   Flexible(
