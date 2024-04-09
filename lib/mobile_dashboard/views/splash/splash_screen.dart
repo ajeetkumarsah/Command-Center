@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:command_centre/mobile_dashboard/utils/sec_helper/obfuscation.dart';
 import 'package:get/get.dart';
 import 'dart:io' show Platform;
 import 'package:lottie/lottie.dart';
@@ -120,7 +121,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 ),
           ),
           // InkWell(onTap: (){
-          //   debugPrint('base fed ${Obfuscation.encodeString('https://fedauth.pg.com/as/authorization.oauth2?client_id=Command%20Center&response_type=code&scope=openid%20profile&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fcallback&pfidpadapterid=Oauth&rememberChoice=true&response_mode=query')}');
+          //   debugPrint('base fed ${Obfuscation.encodeString('')}');
           // }, child: Padding(
           //   padding: const EdgeInsets.all(80.0),
           //   child: Container(height: 100,width: 100,color: Colors.black,),
