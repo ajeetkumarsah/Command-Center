@@ -7,6 +7,7 @@ import 'package:marquee/marquee.dart';
 import 'package:text_3d/text_3d.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../retailing/widgets/geography_bottomsheet.dart';
@@ -14,6 +15,7 @@ import 'package:percent_indicator/percent_indicator.dart';
 import '../retailing/widgets/select_month_bottomsheet.dart';
 import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:command_centre/mobile_dashboard/utils/svg_files.dart';
 import 'package:command_centre/mobile_dashboard/utils/png_files.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -304,16 +306,18 @@ class _SummaryScreenState extends State<SummaryScreen> {
                           ),
                         ),
                         IconButton(
-                          onPressed: () => Get.bottomSheet(
-                            MenuBottomsheet(version: ctlr.appVersion),
-                            isScrollControlled: true,
-                          ),
-                          // () => Get.to(const UpdateScreen()),
-                          icon: const Icon(
-                            Icons.menu,
-                            color: Colors.white,
-                          ),
-                        ),
+                            onPressed: () => Get.bottomSheet(
+                                  MenuBottomsheet(version: ctlr.appVersion),
+                                  isScrollControlled: true,
+                                ),
+                            // () => Get.to(const UpdateScreen()),
+                            icon: SvgPicture.asset(SvgFiles.menu)
+
+                            //  const Icon(
+                            //   Icons.menu,
+                            //   color: Colors.white,
+                            // ),
+                            ),
                       ],
                     ),
                   ),
@@ -1487,6 +1491,47 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                         ),
                                         Expanded(
                                           child: Column(
+                                            children: [
+                                              Text(
+                                                '${ctlr.selectedMonth?.substring(0, 3)}${ctlr.selectedMonth?.substring(6, 8)} Billing %',
+                                                style: GoogleFonts.ptSans(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w400,
+                                                ),
+                                              ),
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Flexible(
+                                                    child: Text(
+                                                      '${ctlr.summaryData.first.coverage?.billing?.contains('') ?? false ? ctlr.summaryData.first.coverage?.billing?.replaceAll('%', '') : ctlr.summaryData.first.coverage?.billing}',
+                                                      style: GoogleFonts.ptSans(
+                                                        fontSize: 40,
+                                                        fontWeight:
+                                                            FontWeight.w400,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 12.0, vertical: 12),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Expanded(
+                                          child: Column(
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.center,
                                             children: [
@@ -1516,78 +1561,6 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                             ],
                                           ),
                                         ),
-                                        // Expanded(
-                                        //   child: Column(
-                                        //     children: [
-                                        //       // Text(
-                                        //       //   '${ctlr.selectedMonth?.substring(0, 3)}${ctlr.selectedMonth?.substring(6, 8)} Billing %',
-                                        //       //   style: GoogleFonts.ptSans(
-                                        //       //     fontSize: 16,
-                                        //       //     fontWeight: FontWeight.w400,
-                                        //       //   ),
-                                        //       // ),
-                                        //       Row(
-                                        //         mainAxisAlignment:
-                                        //             MainAxisAlignment.center,
-                                        //         children: [
-                                        //           Flexible(
-                                        //             child: Text(
-                                        //               '${ctlr.summaryData.first.coverage?.billing?.contains('') ?? false ? ctlr.summaryData.first.coverage?.billing?.replaceAll('%', '') : ctlr.summaryData.first.coverage?.billing}',
-                                        //               style: GoogleFonts.ptSans(
-                                        //                 fontSize: 40,
-                                        //                 fontWeight:
-                                        //                     FontWeight.w400,
-                                        //               ),
-                                        //             ),
-                                        //           ),
-                                        //         ],
-                                        //       )
-                                        //     ],
-                                        //   ),
-                                        // ),
-                                      ],
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 12.0, vertical: 12),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        // Expanded(
-                                        //   child: Column(
-                                        //     crossAxisAlignment:
-                                        //         CrossAxisAlignment.center,
-                                        //     children: [
-                                        //       Text(
-                                        //         'Call Hit Rate %',
-                                        //         style: GoogleFonts.ptSans(
-                                        //           fontSize: 16,
-                                        //           fontWeight: FontWeight.w400,
-                                        //         ),
-                                        //       ),
-                                        //       Row(
-                                        //         mainAxisAlignment:
-                                        //             MainAxisAlignment.center,
-                                        //         children: [
-                                        //           Flexible(
-                                        //             child: Text(
-                                        //               '${ctlr.summaryData.first.coverage?.ccCurrentMonth}',
-                                        //               style: GoogleFonts.ptSans(
-                                        //                 fontSize: 40,
-                                        //                 fontWeight:
-                                        //                     FontWeight.w400,
-                                        //               ),
-                                        //             ),
-                                        //           ),
-                                        //         ],
-                                        //       )
-                                        //     ],
-                                        //   ),
-                                        // ),
                                         Expanded(
                                           child: Column(
                                             children: [

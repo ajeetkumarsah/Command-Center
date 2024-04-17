@@ -291,7 +291,7 @@ class AuthController extends GetxController {
       _isLoading = true;
       update();
     });
-    debugPrint(' Employee data API response===> ');
+    debugPrint(' User data API response===> ${AppConstants.FED_AUTH_TOKEN}');
     http.Response response;
     response = await http.post(
       Uri.parse(AppConstants.FED_AUTH_TOKEN),
@@ -311,7 +311,7 @@ class AuthController extends GetxController {
     );
 
     ResponseModel responseModel;
-    debugPrint(' Employee data API response===> ${response.body}');
+    debugPrint(' User data API response===> ${response.body}');
     if (response.statusCode == 200) {
       FirebaseCrashlytics.instance.log("Login : Token Verified");
       FirebaseAnalytics.instance.logEvent(
@@ -348,7 +348,8 @@ class AuthController extends GetxController {
       _isLoading = true;
       update();
     });
-    debugPrint(' Starting Employee Data===>');
+    debugPrint(
+        ' Starting Employee Data===> url ${AppConstants.BASE_URL + AppConstants.EMPLOYEE_AUTH}');
     http.Response response;
     response = await http.post(
       Uri.parse(AppConstants.BASE_URL + AppConstants.EMPLOYEE_AUTH),
@@ -365,7 +366,8 @@ class AuthController extends GetxController {
     // Response response = await authRepo
     //     .getEmployeeAuth({'access_token': accessToken}, token: accessToken);
     ResponseModel responseModel;
-    debugPrint(' Employee data API response===> ${response.body}');
+    debugPrint(
+        ' Employee data API response===>Status : ${response.statusCode} ${response.body}');
     if (response.statusCode == 200) {
       FirebaseCrashlytics.instance.log("Login : User Verified");
       var resBody = json.decode(response.body);
