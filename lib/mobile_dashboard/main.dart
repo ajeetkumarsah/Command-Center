@@ -56,19 +56,11 @@ void main() async {
 
   bool isSecure = await securityCheck();
 
-  if (isSecure) {
+  if (!isSecure) {
     // You can show an error message, log the event, or simply terminate the app.
     // For simplicity, this example terminates the app.
     debugPrint(
         "Rooted device or emulator detected. The app cannot be installed.");
-    // Fluttertoast.showToast(
-    //     msg: "Rooted device or emulator detected. The app cannot be installed.",
-    //     toastLength: Toast.LENGTH_LONG,
-    //     gravity: ToastGravity.BOTTOM,
-    //     timeInSecForIosWeb: 10,
-    //     backgroundColor: Colors.red,
-    //     textColor: Colors.white,
-    //     fontSize: 16.0);
     showCustomSnackBar(
         'Rooted device or emulator detected. The app cannot be installed.');
     exit(0);
