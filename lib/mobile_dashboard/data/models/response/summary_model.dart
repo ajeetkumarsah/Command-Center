@@ -149,7 +149,7 @@ class Coverage {
 
   factory Coverage.fromJson(Map<String, dynamic> json) => Coverage(
         cmCoverage: json["cmCoverage"],
-        billing: json["billing"],
+        billing: json["billing"] ?? '',
         ccCurrentMonth: json["ccCurrentMonth"],
         progressBarCcCurrentMonth: json["progressBarCcCurrentMonth"],
         progressBarBillingIya: json["progressBarBillingIYA"],
