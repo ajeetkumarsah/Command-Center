@@ -54,17 +54,17 @@ void main() async {
     return true;
   }
 
-  bool isSecure = await securityCheck();
+  // bool isSecure = await securityCheck();
 
-  if (!isSecure) {
-    // You can show an error message, log the event, or simply terminate the app.
-    // For simplicity, this example terminates the app.
-    debugPrint(
-        "Rooted device or emulator detected. The app cannot be installed.");
-    showCustomSnackBar(
-        'Rooted device or emulator detected. The app cannot be installed.');
-    exit(0);
-  }
+  // if (!isSecure) {
+  //   // You can show an error message, log the event, or simply terminate the app.
+  //   // For simplicity, this example terminates the app.
+  //   debugPrint(
+  //       "Rooted device or emulator detected. The app cannot be installed.");
+  //   showCustomSnackBar(
+  //       'Rooted device or emulator detected. The app cannot be installed.');
+  //   exit(0);
+  // }
   runApp(
     GetMaterialApp(
       title: "Command Center",

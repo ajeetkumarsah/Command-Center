@@ -3,12 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
 import 'package:command_centre/mobile_dashboard/utils/routes/app_pages.dart';
-<<<<<<< HEAD
-import 'package:command_centre/mobile_dashboard/views/store_fingertips/onboarding_screen.dart';
-// import 'package:command_centre/mobile_dashboard/utils/global.dart' as globals;
-=======
 import 'package:command_centre/mobile_dashboard/utils/global.dart' as globals;
->>>>>>> 50b5ad562a99ae655e6a3fbf11aa7d2ede65e9e4
 
 class MenuBottomsheet extends StatelessWidget {
   final String version;

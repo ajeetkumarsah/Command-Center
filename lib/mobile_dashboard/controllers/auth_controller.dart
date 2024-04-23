@@ -242,16 +242,20 @@ class AuthController extends GetxController {
     Logger().log(
         Level.debug, '===> Persona Start: ${stopWatch.elapsed.toString()}');
     SharedPreferences session = await SharedPreferences.getInstance();
-    Response response = await authRepo.getPersonaSelect({
+
+    Map<String, dynamic> _body = {
       "endPoint": "appPersona",
       "query": {
         "uid": session.getString(AppConstants.UID),
         "token": globals.FCMToken,
         "persona": "Sales Team",
         "geo": "allIndia",
-        "module": "Business Overview"
+        "module": "Business Overview",
+        "env": AppConstants.ENV
       }
-    });
+    };
+    debugPrint("=====> Persona Body :$_body");
+    Response response = await authRepo.getPersonaSelect(_body);
     ResponseModel responseModel;
     if (response.statusCode == 200) {
       if (response.body["successful"].toString().toLowerCase() == 'true') {
@@ -259,11 +263,11 @@ class AuthController extends GetxController {
         // if (data != null) {
         //   monthFilters = List<String>.from(data!.map((x) => x));
         // }
-        print('Persona ================= Success');
+        debugPrint('Persona ================= Success');
         responseModel = ResponseModel(true, 'Success');
       } else {
         // showCustomSnackBar(response.body["message"] ?? '');
-        print('Persona ================= Something went wrong');
+        debugPrint('Persona ================= Something went wrong');
         responseModel = ResponseModel(false, 'Something went wrong');
       }
     } else if (response.statusCode == 401) {
