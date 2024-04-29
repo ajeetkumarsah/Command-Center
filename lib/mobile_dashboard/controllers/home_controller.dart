@@ -50,6 +50,7 @@ class HomeController extends GetxController {
       _showGoldenPoints = true,
       _showFocusBrand = true,
       _isFilterLoading = false,
+      _isMonthLoading = false,
       _isSummaryLoading = false,
       _isFirebaseVarLoading = false,
       _isRetailingGeoLoading = false,
@@ -94,7 +95,7 @@ class HomeController extends GetxController {
   bool get isCoverageCategoryLoading => _isCoverageCategoryLoading;
   bool get isGPCategoryLoading => _isGPCategoryLoading;
   bool get isFBCategoryLoading => _isFBCategoryLoading;
-
+  bool get isMonthLoading => _isMonthLoading;
   bool get isRetailingChannelLoading => _isRetailingChannelLoading;
   bool get isCoverageChannelLoading => _isCoverageChannelLoading;
   bool get isGPChannelLoading => _isGPChannelLoading;
@@ -180,11 +181,11 @@ class HomeController extends GetxController {
   String _selectedGeoValue = 'All India';
   String get selectedGeoValue => _selectedGeoValue;
 
-  String? _selectedMonth =
-      '${DateConverter().returnMonth(DateTime.now()).substring(0, 3)}-${DateTime.now().year}';
-  String? get selectedMonth => _selectedMonth;
-  String? _selectedYear = '2023';
-  String? get selectedYear => _selectedYear;
+  String _selectedMonth =
+      DateConverter().returnMonth(DateTime.now()).substring(0, 3);
+  String get selectedMonth => _selectedMonth;
+  String _selectedYear = DateTime.now().year.toString();
+  String get selectedYear => _selectedYear;
   String? _selectedTempMonth =
       '${DateConverter().returnMonth(DateTime.now()).substring(0, 3)}-${DateTime.now().year}';
   String? get selectedTempMonth => _selectedTempMonth;
@@ -1498,7 +1499,7 @@ class HomeController extends GetxController {
     multiFilters = ['All India'];
     geoFilters = [
       {
-        "date": selectedMonth,
+        "date": "${selectedMonth.substring(0, 3)}-$selectedYear",
         //"${selectedMonth!.substring(0, 3)}-$selectedYear",
         _selectedGeo.startsWith('All India')
             ? "allIndia"
@@ -1536,7 +1537,7 @@ class HomeController extends GetxController {
     }
     if (getYear().trim().isNotEmpty) {
       _selectedYear = getYear();
-      // _selectedTempYear = getYear();
+      _selectedTempYear = getYear();
     }
     if (getGeo().trim().isNotEmpty) {
       _selectedTempGeo = getGeo();
@@ -2291,63 +2292,63 @@ class HomeController extends GetxController {
     update();
   }
 
-  Future<void> onChangeMonthFilter(String value,
+  Future<void> onChangeMonthFilter(String value, String year,
       {required bool isLoadRetailing,
       required bool isSummary,
       String priority = 'Retailing',
       String tabType = 'All'}) async {
-    debugPrint('====>Selected Month $value');
+    debugPrint('====>Selected Month $value $year');
     FirebaseAnalytics.instance.logEvent(
         name: 'selected_month',
         parameters: {"message": 'Selected Month Changed ${getUserName()}'});
-    if (selectedTempMonth != null &&
-        value.trim().toLowerCase() == selectedTempMonth!.trim().toLowerCase()) {
-      // _selectedTempMonth = null;
-    } else {
-      _selectedTempMonth = value;
-      FirebaseAnalytics.instance.logEvent(
-          name: 'data_refreash',
-          parameters: {"message": 'Data Refreshing ${getUserName()}'});
-      _selectedMonth = _selectedTempMonth;
-      setMonth(_selectedTempMonth ?? '');
-      FirebaseAnalytics.instance.logEvent(name: 'data_refreash', parameters: {
-        "message": 'Selected Month $_selectedTempMonth ${getUserName()}'
-      });
-      if (isSummary) {
-        Logger().i('===>Summary Await is calling');
-        await getSummaryData();
-      }
-      if (isLoadRetailing) {
-        if (SummaryTypes.retailing.type == tabType) {
-          //retailing screen data
 
-          await Future.wait([
-            getRetailingData(),
-            getRetailingData(type: 'category', name: 'category'),
-            getRetailingData(type: 'channel', name: 'geo'),
-            getRetailingData(type: 'geo', name: 'trends'),
-          ]);
-        } else if (SummaryTypes.coverage.type == tabType) {
-          //Coverage screen data
-          getCoverageData();
-          // getCoverageData(type: 'category', name: 'category');
-          getCoverageData(type: 'channel', name: 'geo');
-          getCoverageData(type: 'trends', name: 'trends');
-        } else if (SummaryTypes.gp.type == tabType) {
-          //retailing screen data
-          getGPData();
-          getGPData(type: 'category', name: 'category');
-          getGPData(type: 'channel', name: 'geo');
-          getGPData(type: 'geo', name: 'trends');
-        } else if (SummaryTypes.fb.type == tabType) {
-          //retailing screen data
-          getFocusBrandData();
-          getFocusBrandData(type: 'category', name: 'category');
-          getFocusBrandData(type: 'channel', name: 'geo');
-          getFocusBrandData(type: 'geo', name: 'trends');
-        } else if (tabType == "All") {
-          reloadAllDeepDive(isSummary: isSummary, priority: priority);
-        }
+    _selectedTempMonth = value;
+    _selectedMonth = value;
+    _selectedYear = year;
+    FirebaseAnalytics.instance.logEvent(
+        name: 'data_refreash',
+        parameters: {"message": 'Data Refreshing ${getUserName()}'});
+    // _selectedMonth = _selectedTempMonth ?? '';
+    setMonth(_selectedMonth);
+    setYear(year);
+    FirebaseAnalytics.instance.logEvent(name: 'data_refreash', parameters: {
+      "message": 'Selected Month $_selectedTempMonth ${getUserName()}'
+    });
+    if (isSummary) {
+      Logger().i('===>Summary Await is calling');
+      await getSummaryData();
+    }
+    if (isLoadRetailing) {
+      if (SummaryTypes.retailing.type == tabType) {
+        //retailing screen data
+
+        await Future.wait([
+          getRetailingData(),
+          getRetailingData(type: 'category', name: 'category'),
+          getRetailingData(type: 'channel', name: 'geo'),
+          getRetailingData(type: 'geo', name: 'trends'),
+        ]);
+      } else if (SummaryTypes.coverage.type == tabType) {
+        //Coverage screen data
+        getCoverageData();
+        // getCoverageData(type: 'category', name: 'category');
+        getCoverageData(type: 'channel', name: 'geo');
+        getCoverageData(type: 'trends', name: 'trends');
+      } else if (SummaryTypes.gp.type == tabType) {
+        //retailing screen data
+        getGPData();
+        getGPData(type: 'category', name: 'category');
+        getGPData(type: 'channel', name: 'geo');
+        getGPData(type: 'geo', name: 'trends');
+      } else if (SummaryTypes.fb.type == tabType) {
+        //retailing screen data
+        getFocusBrandData();
+        getFocusBrandData(type: 'category', name: 'category');
+        getFocusBrandData(type: 'channel', name: 'geo');
+        getFocusBrandData(type: 'geo', name: 'trends');
+      } else if (tabType == "All") {
+        debugPrint('==>Reloading all');
+        reloadAllDeepDive(isSummary: isSummary, priority: priority);
       }
     }
 
@@ -3416,7 +3417,7 @@ class HomeController extends GetxController {
       channelGPList = [],
       channelFBList = [];
   List<String> filters = [], multiFilters = [], trendsFilter = [];
-  List<String> monthFilters = [];
+  List<String> monthFilters = [], yearFilter = [];
   List<TrendsModel> trendsList = [];
   List<CoverageTrendsModel> trendsCoverageList = [];
   List<GPTrendsModel> trendsGPList = [];
@@ -3436,7 +3437,7 @@ class HomeController extends GetxController {
     // Logger().log(Level.debug,
     //     '===> Summary Data Start: ${stopWatch.elapsed.toString()}');
     Response response = await homeRepo.getSummaryData({
-      "date": _selectedTempMonth,
+      "date": "${selectedMonth.substring(0, 3)}-$selectedYear",
       //"${selectedMonth!.substring(0, 3)}-$selectedYear",
       _selectedGeo.startsWith('All India')
               ? "allIndia"
@@ -3506,11 +3507,16 @@ class HomeController extends GetxController {
     return responseModel;
   }
 
-  Future<ResponseModel> getMonthFilters({String year = '2023'}) async {
+  Future<ResponseModel> getMonthFilters(
+      {String year = '2023', bool monthLoading = false}) async {
     FirebaseAnalytics.instance.logEvent(
         name: 'logs', parameters: {"message": 'Month Data ${getUserName()}'});
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _isFilterLoading = true;
+      if (monthLoading) {
+        _isMonthLoading = true;
+      } else {
+        _isFilterLoading = true;
+      }
       update();
     });
     var stopWatch = Stopwatch();
@@ -3523,9 +3529,15 @@ class HomeController extends GetxController {
     ResponseModel responseModel;
     if (response.statusCode == 200) {
       if (response.body["status"].toString().toLowerCase() == 'true') {
-        final data = response.body["data"];
-        if (data != null) {
-          monthFilters = List<String>.from(data!.map((x) => x));
+        if (response.body["data"].isNotEmpty) {
+          final data = response.body["data"][0]["months"];
+          final _years = response.body["data"][0]["year"];
+          if (data != null) {
+            monthFilters = List<String>.from(data!.map((x) => x));
+          }
+          if (_years != null) {
+            yearFilter = List<String>.from(_years!.map((x) => x));
+          }
         }
         responseModel = ResponseModel(true, 'Success');
       } else {
@@ -3548,7 +3560,12 @@ class HomeController extends GetxController {
     stopWatch.stop();
     stopWatch.reset();
     //
-    _isFilterLoading = false;
+    if (monthLoading) {
+      _isMonthLoading = false;
+    } else {
+      _isFilterLoading = false;
+    }
+
     update();
     return responseModel;
   }
@@ -3601,7 +3618,7 @@ class HomeController extends GetxController {
       "query": name.toLowerCase().startsWith('trend')
           ? [
               {
-                "date": _selectedTempMonth,
+                "date": "${selectedMonth.substring(0, 3)}-$selectedYear",
                 if (isTrendsFilter && _selectedTrendsGeoValue.isEmpty)
                   _selectedTrendsGeo.startsWith('All India')
                           ? "allIndia"
@@ -3656,7 +3673,7 @@ class HomeController extends GetxController {
           : type.startsWith('channel')
               ? [
                   {
-                    "date": _selectedTempMonth,
+                    "date": "${selectedMonth.substring(0, 3)}-$selectedYear",
                     _selectedGeo.startsWith('All India')
                             ? "allIndia"
                             : _selectedGeo.startsWith('Focus Area')
@@ -3691,8 +3708,8 @@ class HomeController extends GetxController {
               : name.startsWith('geo')
                   ? [
                       {
-                        "date": selectedTempMonth,
-                        // "${selectedMonth!.substring(0, 3)}-$selectedYear",
+                        "date":
+                            "${selectedMonth.substring(0, 3)}-$selectedYear",
                         _selectedGeo.startsWith('All India')
                                 ? "allIndia"
                                 : _selectedGeo.startsWith('Focus Area')
@@ -3704,50 +3721,51 @@ class HomeController extends GetxController {
                       },
                       ...selectedRetailingMultiAllIndia
                           .map((e) => {
-                                "date": _selectedTempMonth,
+                                "date":
+                                    "${selectedMonth.substring(0, 3)}-$selectedYear",
                                 "allIndia": e,
                               })
                           .toList(),
                       ...selectedRetailingMultiDivisions
                           .map((e) => {
-                                "date": _selectedTempMonth,
-                                //"${selectedMonth!.substring(0, 3)}-$selectedYear",
+                                "date":
+                                    "${selectedMonth.substring(0, 3)}-$selectedYear",
                                 "division": e,
                               })
                           .toList(),
                       ...selectedRetailingMultiClusters
                           .map((e) => {
-                                "date": _selectedTempMonth,
-                                // "${selectedMonth!.substring(0, 3)}-$selectedYear",
+                                "date":
+                                    "${selectedMonth.substring(0, 3)}-$selectedYear",
                                 "district": e,
                               })
                           .toList(),
                       ...selectedRetailingMultiSites
                           .map((e) => {
-                                "date": selectedMonth,
-                                //"${selectedMonth!.substring(0, 3)}-$selectedYear",
+                                "date":
+                                    "${selectedMonth.substring(0, 3)}-$selectedYear",
                                 "site": e,
                               })
                           .toList(),
                       ...selectedRetailingMultiBranches
                           .map((e) => {
-                                "date": selectedMonth,
-                                //"${selectedMonth!.substring(0, 3)}-$selectedYear",
+                                "date":
+                                    "${selectedMonth.substring(0, 3)}-$selectedYear",
                                 "branch": e,
                               })
                           .toList(),
                       ...selectedMultiFilters
                           .map((e) => {
-                                "date": selectedMonth,
-                                //"${selectedMonth!.substring(0, 3)}-$selectedYear",
+                                "date":
+                                    "${selectedMonth.substring(0, 3)}-$selectedYear",
                                 "allIndia": e,
                               })
                           .toList(),
                     ]
                   : [
                       {
-                        "date": selectedMonth,
-                        // "${selectedMonth!.substring(0, 3)}-$selectedYear",
+                        "date":
+                            "${selectedMonth.substring(0, 3)}-$selectedYear",
                         _selectedGeo.startsWith('All India')
                                 ? "allIndia"
                                 : _selectedGeo.startsWith('Focus Area')
@@ -3767,7 +3785,6 @@ class HomeController extends GetxController {
                                       ? 'brandForm'
                                       : selectedCategory.toLowerCase():
                               selectedRetailingCategoryFilters,
-
                         if (selectedRetailingCategoryFilters.isEmpty)
                           "category": [],
                       },
@@ -4014,7 +4031,7 @@ class HomeController extends GetxController {
       "query": name.toLowerCase().startsWith('trend')
           ? [
               {
-                "date": selectedMonth,
+                "date": "${selectedMonth.substring(0, 3)}-$selectedYear",
                 if (isTrendsFilter && _selectedTrendsGeoValue.isEmpty)
                   _selectedTrendsGeo.startsWith('All India')
                           ? "allIndia"
@@ -4067,8 +4084,7 @@ class HomeController extends GetxController {
               ? allFilter ??
                   [
                     {
-                      "date": selectedMonth,
-                      //"${selectedMonth!.substring(0, 3)}-$selectedYear",
+                      "date": "${selectedMonth.substring(0, 3)}-$selectedYear",
                       _selectedGeo.startsWith('All India')
                               ? "allIndia"
                               : _selectedGeo.startsWith('Focus Area')
@@ -4104,8 +4120,8 @@ class HomeController extends GetxController {
                   ? allFilter ??
                       [
                         {
-                          "date": selectedMonth,
-                          //"${selectedMonth!.substring(0, 3)}-$selectedYear",
+                          "date":
+                              "${selectedMonth.substring(0, 3)}-$selectedYear",
                           _selectedGeo.startsWith('All India')
                                   ? "allIndia"
                                   : _selectedGeo.startsWith('Focus Area')
@@ -4117,50 +4133,51 @@ class HomeController extends GetxController {
                         },
                         ...selectedCoverageMultiAllIndia
                             .map((e) => {
-                                  "date": _selectedTempMonth,
+                                  "date":
+                                      "${selectedMonth.substring(0, 3)}-$selectedYear",
                                   "allIndia": e,
                                 })
                             .toList(),
                         ...selectedCoverageMultiDivisions
                             .map((e) => {
-                                  "date": selectedMonth,
-                                  // "${selectedMonth!.substring(0, 3)}-$selectedYear",
+                                  "date":
+                                      "${selectedMonth.substring(0, 3)}-$selectedYear",
                                   "division": e,
                                 })
                             .toList(),
                         ...selectedCoverageMultiClusters
                             .map((e) => {
-                                  "date": selectedMonth,
-                                  // "${selectedMonth!.substring(0, 3)}-$selectedYear",
+                                  "date":
+                                      "${selectedMonth.substring(0, 3)}-$selectedYear",
                                   "district": e,
                                 })
                             .toList(),
                         ...selectedCoverageMultiSites
                             .map((e) => {
-                                  "date": selectedMonth,
-                                  //"${selectedMonth!.substring(0, 3)}-$selectedYear",
+                                  "date":
+                                      "${selectedMonth.substring(0, 3)}-$selectedYear",
                                   "site": e,
                                 })
                             .toList(),
                         ...selectedCoverageMultiBranches
                             .map((e) => {
-                                  "date": selectedMonth,
-                                  //"${selectedMonth!.substring(0, 3)}-$selectedYear",
+                                  "date":
+                                      "${selectedMonth.substring(0, 3)}-$selectedYear",
                                   "branch": e,
                                 })
                             .toList(),
                         ...selectedMultiFilters
                             .map((e) => {
-                                  "date": selectedMonth,
-                                  // "${selectedMonth!.substring(0, 3)}-$selectedYear",
+                                  "date":
+                                      "${selectedMonth.substring(0, 3)}-$selectedYear",
                                   "allIndia": e,
                                 })
                             .toList(),
                       ]
                   : [
                       {
-                        "date": selectedMonth,
-                        // "${selectedMonth!.substring(0, 3)}-$selectedYear",
+                        "date":
+                            "${selectedMonth.substring(0, 3)}-$selectedYear",
                         _selectedGeo.startsWith('All India')
                                 ? "allIndia"
                                 : _selectedGeo.startsWith('Focus Area')
@@ -4310,7 +4327,7 @@ class HomeController extends GetxController {
         "query": name.toLowerCase().startsWith('trend')
             ? [
                 {
-                  "date": selectedMonth,
+                  "date": "${selectedMonth.substring(0, 3)}-$selectedYear",
 
                   if (!isTrendsFilter)
                     _selectedGeo.startsWith('All India')
@@ -4377,8 +4394,7 @@ class HomeController extends GetxController {
             : type.startsWith('channel')
                 ? [
                     {
-                      "date": selectedMonth,
-                      //"${selectedMonth!.substring(0, 3)}-$selectedYear",
+                      "date": "${selectedMonth.substring(0, 3)}-$selectedYear",
                       _selectedGeo.startsWith('All India')
                               ? "allIndia"
                               : _selectedGeo.startsWith('Focus Area')
@@ -4389,7 +4405,6 @@ class HomeController extends GetxController {
                           _selectedGeo.startsWith('All India')
                               ? "allIndia"
                               : _selectedGeoValue,
-
                       if (selectedGPChannelFilter.isNotEmpty)
                         selectedGPChannel.toLowerCase() == 'level 1'
                             ? 'attr1'
@@ -4410,8 +4425,8 @@ class HomeController extends GetxController {
                 : name.startsWith('geo')
                     ? [
                         {
-                          "date": selectedTempMonth,
-                          //"${selectedMonth!.substring(0, 3)}-$selectedYear",
+                          "date":
+                              "${selectedMonth.substring(0, 3)}-$selectedYear",
                           _selectedGeo.startsWith('All India')
                                   ? "allIndia"
                                   : _selectedGeo.startsWith('Focus Area')
@@ -4423,50 +4438,51 @@ class HomeController extends GetxController {
                         },
                         ...selectedGPMultiAllIndia
                             .map((e) => {
-                                  "date": selectedMonth,
+                                  "date":
+                                      "${selectedMonth.substring(0, 3)}-$selectedYear",
                                   "allIndia": e,
                                 })
                             .toList(),
                         ...selectedGPMultiDivisions
                             .map((e) => {
-                                  "date": selectedMonth,
-                                  // "${selectedMonth!.substring(0, 3)}-$selectedYear",
+                                  "date":
+                                      "${selectedMonth.substring(0, 3)}-$selectedYear",
                                   "division": e,
                                 })
                             .toList(),
                         ...selectedGPMultiClusters
                             .map((e) => {
-                                  "date": selectedMonth,
-                                  // "${selectedMonth!.substring(0, 3)}-$selectedYear",
+                                  "date":
+                                      "${selectedMonth.substring(0, 3)}-$selectedYear",
                                   "district": e,
                                 })
                             .toList(),
                         ...selectedGPMultiSites
                             .map((e) => {
-                                  "date": selectedMonth,
-                                  // "${selectedMonth!.substring(0, 3)}-$selectedYear",
+                                  "date":
+                                      "${selectedMonth.substring(0, 3)}-$selectedYear",
                                   "site": e,
                                 })
                             .toList(),
                         ...selectedGPMultiBranches
                             .map((e) => {
-                                  "date": selectedMonth,
-                                  // "${selectedMonth!.substring(0, 3)}-$selectedYear",
+                                  "date":
+                                      "${selectedMonth.substring(0, 3)}-$selectedYear",
                                   "branch": e,
                                 })
                             .toList(),
                         ...selectedMultiFilters
                             .map((e) => {
-                                  "date": selectedMonth,
-                                  // "${selectedMonth!.substring(0, 3)}-$selectedYear",
+                                  "date":
+                                      "${selectedMonth.substring(0, 3)}-$selectedYear",
                                   "allIndia": e,
                                 })
                             .toList(),
                       ]
                     : [
                         {
-                          "date": selectedMonth,
-                          // "${selectedMonth!.substring(0, 3)}-$selectedYear",
+                          "date":
+                              "${selectedMonth.substring(0, 3)}-$selectedYear",
                           _selectedGeo.startsWith('All India')
                                   ? "allIndia"
                                   : _selectedGeo.startsWith('Focus Area')
@@ -4623,7 +4639,7 @@ class HomeController extends GetxController {
       "query": name.toLowerCase().startsWith('trend')
           ? [
               {
-                "date": selectedMonth,
+                "date": "${selectedMonth.substring(0, 3)}-$selectedYear",
                 if (isTrendsFilter && _selectedTrendsGeoValue.isEmpty)
                   _selectedTrendsGeo.startsWith('All India')
                           ? "allIndia"
@@ -4679,8 +4695,7 @@ class HomeController extends GetxController {
               ? allFilter ??
                   [
                     {
-                      "date": selectedMonth,
-                      // "${selectedMonth!.substring(0, 3)}-$selectedYear",
+                      "date": "${selectedMonth.substring(0, 3)}-$selectedYear",
                       _selectedGeo.startsWith('All India')
                               ? "allIndia"
                               : _selectedGeo.startsWith('Focus Area')
@@ -4712,8 +4727,8 @@ class HomeController extends GetxController {
                   ? allFilter ??
                       [
                         {
-                          "date": selectedMonth,
-                          //"${selectedMonth!.substring(0, 3)}-$selectedYear",
+                          "date":
+                              "${selectedMonth.substring(0, 3)}-$selectedYear",
                           _selectedGeo.startsWith('All India')
                                   ? "allIndia"
                                   : _selectedGeo.startsWith('Focus Area')
@@ -4725,44 +4740,51 @@ class HomeController extends GetxController {
                         },
                         ...selectedFBMultiAllIndia
                             .map((e) => {
-                                  "date": selectedMonth,
+                                  "date":
+                                      "${selectedMonth.substring(0, 3)}-$selectedYear",
                                   "allIndia": e,
                                 })
                             .toList(),
                         ...selectedFBMultiDivisions
                             .map((e) => {
-                                  "date": selectedMonth,
+                                  "date":
+                                      "${selectedMonth.substring(0, 3)}-$selectedYear",
                                   "division": e,
                                 })
                             .toList(),
                         ...selectedFBMultiClusters
                             .map((e) => {
-                                  "date": selectedMonth,
+                                  "date":
+                                      "${selectedMonth.substring(0, 3)}-$selectedYear",
                                   "district": e,
                                 })
                             .toList(),
                         ...selectedFBMultiSites
                             .map((e) => {
-                                  "date": selectedMonth,
+                                  "date":
+                                      "${selectedMonth.substring(0, 3)}-$selectedYear",
                                   "site": e,
                                 })
                             .toList(),
                         ...selectedFBMultiBranches
                             .map((e) => {
-                                  "date": selectedMonth,
+                                  "date":
+                                      "${selectedMonth.substring(0, 3)}-$selectedYear",
                                   "branch": e,
                                 })
                             .toList(),
                         ...selectedMultiFilters
                             .map((e) => {
-                                  "date": selectedMonth,
+                                  "date":
+                                      "${selectedMonth.substring(0, 3)}-$selectedYear",
                                   "allIndia": e,
                                 })
                             .toList(),
                       ]
                   : [
                       {
-                        "date": selectedMonth,
+                        "date":
+                            "${selectedMonth.substring(0, 3)}-$selectedYear",
                         _selectedGeo.startsWith('All India')
                                 ? "allIndia"
                                 : _selectedGeo.startsWith('Focus Area')

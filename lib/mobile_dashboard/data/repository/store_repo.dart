@@ -5,7 +5,6 @@ import 'package:command_centre/mobile_dashboard/utils/app_constants.dart';
 import 'package:command_centre/mobile_dashboard/data/api/api_client.dart';
 // ignore_for_file: no_leading_underscores_for_local_identifiers
 
-
 class StoreRepo {
   final ApiClient apiClient;
   final SharedPreferences sharedPreferences;
@@ -88,10 +87,17 @@ class StoreRepo {
   // }
 
   Future<Response> getFilters(Map<String, dynamic> body) async {
-    return await apiClient.postData(AppConstants.CHANNELLIST, body, headers: {});
+    return await apiClient
+        .postData(AppConstants.CHANNELLIST, body, headers: {});
   }
 
   Future<Response> postStoreData(Map<String, dynamic> body) async {
-    return await apiClient.postData(AppConstants.CHANNELLIST, body, headers: {});
+    return await apiClient
+        .postData(AppConstants.CHANNELLIST, body, headers: {});
+  }
+
+  Future<Response> postStoreHomeData(Map<String, dynamic> body) async {
+    return await apiClient
+        .postData(AppConstants.STORE_HOMEPAGE, body, headers: {});
   }
 }

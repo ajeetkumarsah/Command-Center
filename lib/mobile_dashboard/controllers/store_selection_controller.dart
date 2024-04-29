@@ -7,10 +7,11 @@ import 'package:command_centre/mobile_dashboard/utils/routes/app_pages.dart';
 import 'package:command_centre/mobile_dashboard/data/repository/store_repo.dart';
 import 'package:command_centre/mobile_dashboard/data/models/response/map_data_model.dart';
 import 'package:command_centre/mobile_dashboard/data/models/response/response_model.dart';
+import 'package:command_centre/mobile_dashboard/data/repository/store_selection_repo.dart';
 import 'package:command_centre/mobile_dashboard/data/models/response/store_intro_model.dart';
 
 class StoreSelectionController extends GetxController {
-  final StoreRepo storeRepo;
+  final StoreSelectionRepo storeRepo;
   StoreSelectionController({required this.storeRepo});
   //
   bool _isLoading = false,
@@ -69,41 +70,15 @@ class StoreSelectionController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    initData();
+    
 
     getAllFilters('');
     mapStoreData();
   }
 
-  void initData() {
-    if (getMonth().trim().isNotEmpty) {
-      _selectedMonth = getMonth();
-    }
-    if (getYear().trim().isNotEmpty) {
-      _selectedYear = getYear();
-    }
-    update();
-  }
+  
 
-  String getYear() {
-    return storeRepo.getYear();
-  }
-
-  String getMonth() {
-    return storeRepo.getMonth();
-  }
-
-  Future<bool> saveStore(String store) async {
-    return await storeRepo.saveStore(store);
-  }
-
-  Future<bool> saveFBTarget(String target) async {
-    return await storeRepo.saveFBTarget(target);
-  }
-
-  Future<bool> saveFBAchieved(String achieved) async {
-    return await storeRepo.saveFBAchieved(achieved);
-  }
+  
 
   Future<ResponseModel> getAllFilters(String query,
       {String type = 'distributor'}) async {
@@ -220,56 +195,56 @@ class StoreSelectionController extends GetxController {
     update();
   }
 
-  Future<ResponseModel> postStoreData() async {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _isLoading = true;
-      update();
-    });
-    Response response = await storeRepo.postStoreData({
-      "endPoint": "storeWithFilter",
-      "query": {
-        "distributor": selectedDistributor ?? '',
-        "branch": selectedBranch ?? '',
-        "channel": selectedChannel ?? ''
-      }
-    }
-        //     {
-        //   "date": "Aug-$selectedYear",
-        //   "distributor": selectedDistributor ?? '',
-        //   "branch": selectedBranch ?? '',
-        //   "channel": selectedChannel ?? '',
-        // }
-        );
-    ResponseModel responseModel;
-    if (response.statusCode == 200) {
-      if (response.body["successful"].toString().toLowerCase() == 'true') {
-        final data = response.body["data"];
-        if (data != null && data.isNotEmpty) {
-          //
-          _storeIntroModel = List<StoreIntroModel>.from(
-              data!.map((x) => StoreIntroModel.fromJson(x)));
-          // if (_storeIntroModel.isNotEmpty) {
-          //   //
-          //   // saveStore(selectedChannel ?? '');
-          //   // saveFBTarget(_storeIntroModel?.Lat ?? '');
-          //   // saveFBAchieved(_storeIntroModel?.Long ?? '');
-          // }
-        }
-        responseModel = ResponseModel(true, 'Success');
-      } else {
-        // showCustomSnackBar(response.body["message"] ?? '');
-        responseModel = ResponseModel(false, 'Something went wrong');
-      }
-    } else if (response.statusCode == 401) {
-      Get.offAndToNamed(AppPages.FED_AUTH_LOGIN_TEST);
-      responseModel = ResponseModel(false, response.statusText ?? "");
-    } else {
-      responseModel = ResponseModel(false, response.statusText ?? "");
-    }
-    _isLoading = false;
-    update();
-    return responseModel;
-  }
+  // Future<ResponseModel> postStoreData() async {
+  //   WidgetsBinding.instance.addPostFrameCallback((_) {
+  //     _isLoading = true;
+  //     update();
+  //   });
+  //   Response response = await storeRepo.postStoreData({
+  //     "endPoint": "storeWithFilter",
+  //     "query": {
+  //       "distributor": selectedDistributor ?? '',
+  //       "branch": selectedBranch ?? '',
+  //       "channel": selectedChannel ?? ''
+  //     }
+  //   }
+  //       //     {
+  //       //   "date": "Aug-$selectedYear",
+  //       //   "distributor": selectedDistributor ?? '',
+  //       //   "branch": selectedBranch ?? '',
+  //       //   "channel": selectedChannel ?? '',
+  //       // }
+  //       );
+  //   ResponseModel responseModel;
+  //   if (response.statusCode == 200) {
+  //     if (response.body["successful"].toString().toLowerCase() == 'true') {
+  //       final data = response.body["data"];
+  //       if (data != null && data.isNotEmpty) {
+  //         //
+  //         _storeIntroModel = List<StoreIntroModel>.from(
+  //             data!.map((x) => StoreIntroModel.fromJson(x)));
+  //         // if (_storeIntroModel.isNotEmpty) {
+  //         //   //
+  //         //   // saveStore(selectedChannel ?? '');
+  //         //   // saveFBTarget(_storeIntroModel?.Lat ?? '');
+  //         //   // saveFBAchieved(_storeIntroModel?.Long ?? '');
+  //         // }
+  //       }
+  //       responseModel = ResponseModel(true, 'Success');
+  //     } else {
+  //       // showCustomSnackBar(response.body["message"] ?? '');
+  //       responseModel = ResponseModel(false, 'Something went wrong');
+  //     }
+  //   } else if (response.statusCode == 401) {
+  //     Get.offAndToNamed(AppPages.FED_AUTH_LOGIN_TEST);
+  //     responseModel = ResponseModel(false, response.statusText ?? "");
+  //   } else {
+  //     responseModel = ResponseModel(false, response.statusText ?? "");
+  //   }
+  //   _isLoading = false;
+  //   update();
+  //   return responseModel;
+  // }
 
   Future<ResponseModel> mapStoreData() async {
     Position position = await Geolocator.getCurrentPosition(

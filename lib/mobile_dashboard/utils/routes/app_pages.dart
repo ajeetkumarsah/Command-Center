@@ -173,11 +173,11 @@ class AppPages {
       page: () => const SelectGeoScreen(),
       binding: HomeBinding(),
     ),
-    GetPage(
-      name: _Paths.STORE_FINGERTIPS_SCREEN,
-      page: () => const StoreFingertipsScreen(),
-      binding: HomeBinding(),
-    ),
+    // GetPage(
+    //   name: _Paths.STORE_FINGERTIPS_SCREEN,
+    //   page: () => const StoreFingertipsScreen(),
+    //   binding: HomeBinding(),
+    // ),
     GetPage(
       name: _Paths.FB_DEEP_DIVE,
       page: () => const FBDeepDiveScreen(),

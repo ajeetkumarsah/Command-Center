@@ -1,27 +1,27 @@
 import 'dart:async';
-
-import 'package:command_centre/mobile_dashboard/bindings/home_binding.dart';
-import 'package:command_centre/mobile_dashboard/controllers/home_controller.dart';
-import 'package:command_centre/mobile_dashboard/views/store_fingertips/widgets/pop_up_window.dart';
-import 'package:command_centre/mobile_dashboard/views/summary/widgets/menu_bottomsheet.dart';
-import 'package:command_centre/utils/colors/colors.dart';
-import 'package:command_centre/utils/style/text_style.dart';
-import 'package:flutter_map/flutter_map.dart';
-import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
-import 'package:flutter_map_marker_popup/flutter_map_marker_popup.dart';
-import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:latlong2/latlong.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:another_stepper/another_stepper.dart';
+import 'package:command_centre/utils/colors/colors.dart';
+import 'package:command_centre/utils/style/text_style.dart';
+import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:command_centre/mobile_dashboard/utils/png_files.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
+import 'package:flutter_map_marker_popup/flutter_map_marker_popup.dart';
+import 'package:command_centre/mobile_dashboard/bindings/home_binding.dart';
 import 'package:command_centre/mobile_dashboard/utils/routes/app_pages.dart';
+import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
+import 'package:command_centre/mobile_dashboard/controllers/home_controller.dart';
 import 'package:command_centre/mobile_dashboard/views/widgets/custom_loader.dart';
 import 'package:command_centre/mobile_dashboard/views/widgets/custom_shimmer.dart';
 import 'package:command_centre/mobile_dashboard/views/widgets/custom_snackbar.dart';
+import 'package:command_centre/mobile_dashboard/views/summary/widgets/menu_bottomsheet.dart';
 import 'package:command_centre/mobile_dashboard/controllers/store_selection_controller.dart';
-import 'package:latlong2/latlong.dart';
+import 'package:command_centre/mobile_dashboard/views/store_fingertips/widgets/pop_up_window.dart';
+import 'package:command_centre/mobile_dashboard/views/store_fingertips/store_fingertips_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -48,7 +48,6 @@ class _OnboardingScreenState extends State<OnboardingScreen>
   int _activeIndex = 0;
 
   int get activeIndex => _activeIndex;
-
 
   /// Used to trigger showing/hiding of popups.
   final PopupController _popupLayerController = PopupController();
@@ -92,8 +91,8 @@ class _OnboardingScreenState extends State<OnboardingScreen>
   }
 
   void onChangePageIndex(int value) {
-    Future.delayed(const Duration(seconds: 2))
-        .then((value) => Get.toNamed(AppPages.STORE_FINGERTIPS_SCREEN));
+    // Future.delayed(const Duration(seconds: 2))
+    //     .then((value) => Get.toNamed(AppPages.STORE_FINGERTIPS_SCREEN));
     if (activeIndex < 1) {
       if (value < 1) {
         _activeIndex = value;
@@ -316,7 +315,8 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                                               width: size.width,
                                               decoration: BoxDecoration(
                                                 color:
-                                                ctlr.isSelectedManually == false
+                                                    ctlr.isSelectedManually ==
+                                                            false
                                                         ? MyColors.primary
                                                         : MyColors.whiteColor,
                                                 borderRadius:
@@ -328,7 +328,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                                                   maxLines: 2,
                                                   style: TextStyle(
                                                       color:
-                                                      ctlr.isSelectedManually ==
+                                                          ctlr.isSelectedManually ==
                                                                   false
                                                               ? MyColors
                                                                   .whiteColor
@@ -358,7 +358,8 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                                               width: size.width,
                                               decoration: BoxDecoration(
                                                 color:
-                                                ctlr.isSelectedManually == true
+                                                    ctlr.isSelectedManually ==
+                                                            true
                                                         ? MyColors.primary
                                                         : MyColors.whiteColor,
                                                 borderRadius:
@@ -370,7 +371,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                                                   maxLines: 2,
                                                   style: TextStyle(
                                                       color:
-                                                      ctlr.isSelectedManually ==
+                                                          ctlr.isSelectedManually ==
                                                                   true
                                                               ? MyColors
                                                                   .whiteColor
@@ -654,8 +655,18 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                                 if (ctlr.selectedDistributor != null &&
                                     ctlr.selectedBranch != null &&
                                     ctlr.selectedChannel != null) {
-                                  Get.offAndToNamed(
-                                      AppPages.STORE_FINGERTIPS_SCREEN);
+                                  //store ctlr
+
+                                  Get.offAll(
+                                    StoreFingertipsScreen(
+                                      selectedDistributor:
+                                          ctlr.selectedDistributor ?? '',
+                                      selectedChannel:
+                                          ctlr.selectedChannel ?? '',
+                                      selectedBranch: ctlr.selectedBranch ?? '',
+                                      selectedStore: ctlr.selectedStore ?? '',
+                                    ),
+                                  );
                                 } else {
                                   showCustomSnackBar(
                                       'Please Select the required fields.');
@@ -716,7 +727,8 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                                           options: MapOptions(
                                             initialZoom: 15.0,
                                             initialCenter: LatLng(
-                                                ctlr.lat ?? 26.8678668, ctlr.lang ??81.0073842),
+                                                ctlr.lat ?? 26.8678668,
+                                                ctlr.lang ?? 81.0073842),
                                             onTap: (_, __) =>
                                                 _popupLayerController
                                                     .hideAllPopups(),
@@ -732,7 +744,6 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                                                 );
                                               }
                                             },
-
                                           ),
                                           children: [
                                             TileLayer(

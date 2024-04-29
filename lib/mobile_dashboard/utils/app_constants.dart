@@ -57,6 +57,10 @@ class AppConstants {
   static const CONFIG = 'appData/inventory';
   static const EMPLOYEE_AUTH = 'appData/employeeAuthentication';
 
+  //store@FT
+
+  static const String STORE_HOMEPAGE = 'appData/mtdRetailing';
+
   //sharedPreferences
   static const String USER_ID = 'userId';
   static const String RETAILING = 'retailing';

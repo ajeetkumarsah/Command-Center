@@ -3,14 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
 import 'package:command_centre/mobile_dashboard/controllers/store_controller.dart';
-import 'package:command_centre/mobile_dashboard/views/store_fingertips/widgets/new_appbar.dart';
 import 'package:command_centre/mobile_dashboard/views/store_fingertips/fb/fb_deep_dive.dart';
+import 'package:command_centre/mobile_dashboard/views/store_fingertips/widgets/new_appbar.dart';
 import 'package:command_centre/mobile_dashboard/views/store_fingertips/gp/gp_deep_dive_screen.dart';
 import 'package:command_centre/mobile_dashboard/views/store_fingertips/widgets/tab_item_widget.dart';
 import 'package:command_centre/mobile_dashboard/views/store_fingertips/coverage/coverage_deep_dive.dart';
 import 'package:command_centre/mobile_dashboard/views/store_fingertips/sales/sales_deep_dive_screen.dart';
 
 class DeepDiveLandingScreen extends StatelessWidget {
+  
   const DeepDiveLandingScreen({super.key});
 
   @override
@@ -28,7 +29,7 @@ class DeepDiveLandingScreen extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.max,
                 children: [
-                  const NewAppBar(),
+                   NewAppBar(title: ctlr.selectedStore ?? '',),
                   TabBar(
                     isScrollable: true,
                     unselectedLabelColor: const Color(0xff747474),

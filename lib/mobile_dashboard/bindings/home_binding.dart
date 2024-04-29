@@ -7,6 +7,7 @@ import 'package:command_centre/mobile_dashboard/data/repository/home_repo.dart';
 import 'package:command_centre/mobile_dashboard/data/repository/store_repo.dart';
 import 'package:command_centre/mobile_dashboard/controllers/auth_controller.dart';
 import 'package:command_centre/mobile_dashboard/controllers/store_controller.dart';
+import 'package:command_centre/mobile_dashboard/data/repository/store_selection_repo.dart';
 import 'package:command_centre/mobile_dashboard/controllers/store_selection_controller.dart';
 
 class HomeBinding extends Bindings {
@@ -30,6 +31,10 @@ class HomeBinding extends Bindings {
         HomeRepo(sharedPreferences: sharedPreferences, apiClient: Get.find()));
     Get.lazyPut<StoreRepo>(
         () => StoreRepo(
+            sharedPreferences: sharedPreferences, apiClient: Get.find()),
+        fenix: true);
+    Get.lazyPut<StoreSelectionRepo>(
+        () => StoreSelectionRepo(
             sharedPreferences: sharedPreferences, apiClient: Get.find()),
         fenix: true);
 //Controllers

@@ -169,6 +169,8 @@ class _SummaryScreenState extends State<SummaryScreen> {
                         .collection("data_refresh")
                         .snapshots(),
                     builder: (context, snapshot) {
+                      debugPrint(
+                          '====>Firebase Refresh data ${snapshot.data?.docs.first.data()}');
                       return AnimatedSwitcher(
                         duration: const Duration(milliseconds: 300),
                         child: snapshot.data?.docs.first.data() != null &&
@@ -462,9 +464,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                 children: [
                                   Flexible(
                                     child: Text(
-                                      ctlr.selectedMonth != null
-                                          ? '${ctlr.selectedMonth}'
-                                          : '',
+                                      '${ctlr.selectedMonth}-${ctlr.selectedYear}',
                                       maxLines: 1,
                                       overflow: TextOverflow.fade,
                                       style: GoogleFonts.ptSans(
@@ -856,7 +856,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                                   CrossAxisAlignment.center,
                                               children: [
                                                 Text(
-                                                  '${ctlr.selectedMonth?.substring(0, 3)}${ctlr.selectedMonth?.substring(6, 8)} \nIYA',
+                                                  '${ctlr.selectedMonth.substring(0, 3)}${ctlr.selectedYear.substring(2, 4)} \nIYA',
                                                   style: GoogleFonts.ptSans(
                                                     fontSize: 16,
                                                     fontWeight: FontWeight.w400,
@@ -1493,7 +1493,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
                                           child: Column(
                                             children: [
                                               Text(
-                                                '${ctlr.selectedMonth?.substring(0, 3)}${ctlr.selectedMonth?.substring(6, 8)} Billing %',
+                                                '${ctlr.selectedMonth.substring(0, 3)} ${ctlr.selectedYear.substring(2, 4)} Billing %',
                                                 style: GoogleFonts.ptSans(
                                                   fontSize: 16,
                                                   fontWeight: FontWeight.w400,
