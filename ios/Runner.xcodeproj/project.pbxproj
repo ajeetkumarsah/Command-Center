@@ -406,7 +406,7 @@
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "arm64 i386";
-				FLUTTER_BUILD_NAME = 1.0.24;
+				FLUTTER_BUILD_NAME = 1.0.19;
 				FLUTTER_BUILD_NUMBER = 108;
 				FLUTTER_TARGET = lib/mobile_dashboard/main.dart;
 				INFOPLIST_FILE = Runner/Info.plist;
@@ -560,7 +560,7 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "arm64 i386";
-				FLUTTER_BUILD_NAME = 1.0.24;
+				FLUTTER_BUILD_NAME = 1.0.19;
 				FLUTTER_BUILD_NUMBER = 108;
 				FLUTTER_TARGET = lib/mobile_dashboard/main.dart;
 				INFOPLIST_FILE = Runner/Info.plist;
@@ -597,7 +597,7 @@
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "arm64 i386";
-				FLUTTER_BUILD_NAME = 1.0.24;
+				FLUTTER_BUILD_NAME = 1.0.19;
 				FLUTTER_BUILD_NUMBER = 108;
 				FLUTTER_TARGET = lib/mobile_dashboard/main.dart;
 				INFOPLIST_FILE = Runner/Info.plist;

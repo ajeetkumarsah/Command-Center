@@ -46,7 +46,7 @@ class _SelectMonthBottomsheetState extends State<SelectMonthBottomsheet> {
 
   void onChangeYearinit(String value) {
     _selectedYear = value;
-
+    _selectedMonth = '';
     setState(() {});
   }
 
