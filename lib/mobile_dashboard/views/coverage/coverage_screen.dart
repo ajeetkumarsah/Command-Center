@@ -33,7 +33,7 @@ class _CoverageScreenState extends State<CoverageScreen> {
 
   @override
   Widget build(BuildContext context) {
-    List<String> coverageFilter = ['Billing %', 'Prod %', 'Call Hit Rate %'];
+    List<String> coverageFilter = ['Billing %','Prod %', 'Call Hit Rate %'];
     return GetBuilder<HomeController>(
       init: HomeController(homeRepo: Get.find()),
       initState: (_) {
