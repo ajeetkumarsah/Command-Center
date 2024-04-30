@@ -85,7 +85,9 @@ class _CoverageScreenState extends State<CoverageScreen> {
                       ),
               geo: ctlr.selectedGeo,
               geoValue: ctlr.selectedGeoValue,
-              date: ctlr.selectedMonth != null ? '${ctlr.selectedMonth}' : '',
+              date: ctlr.selectedMonth.isNotEmpty
+                  ? '${ctlr.selectedMonth}-${ctlr.selectedYear}'
+                  : '',
             ),
             body: ctlr.isLoading
                 ? const CustomLoader()

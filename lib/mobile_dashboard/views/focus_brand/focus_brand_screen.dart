@@ -89,7 +89,9 @@ class _FocusBrandScreenState extends State<FocusBrandScreen> {
                       ),
               geo: ctlr.selectedGeo,
               geoValue: ctlr.selectedGeoValue,
-              date: ctlr.selectedMonth != null ? '${ctlr.selectedMonth}' : '',
+              date: ctlr.selectedMonth.isNotEmpty
+                  ? '${ctlr.selectedMonth}-${ctlr.selectedYear}'
+                  : '',
             ),
             body: ctlr.isLoading
                 ? const CustomLoader()
