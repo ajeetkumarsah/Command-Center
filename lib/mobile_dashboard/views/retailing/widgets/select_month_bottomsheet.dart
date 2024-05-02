@@ -22,45 +22,12 @@ class SelectMonthBottomsheet extends StatefulWidget {
 
 class _SelectMonthBottomsheetState extends State<SelectMonthBottomsheet> {
   List<String> yearsList = ['Year', 'Month']; //Date
-
-  String _selectedYear = '';
-  String get selectedYear => _selectedYear;
-  String _selectedMonth = '';
-  String get selectedMonth => _selectedMonth;
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
   bool isFirst = true;
-  void setInit(HomeController ctlr) {
+  void initCall(HomeController ctlr) {
     if (isFirst) {
       isFirst = false;
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        onChangeYearinit(ctlr.selectedYear);
-        onChangeMonth(ctlr.selectedMonth);
-      });
+      ctlr.selectedMonthInit();
     }
-  }
-
-  void onChangeYearinit(String value) {
-    _selectedYear = value;
-    _selectedMonth = '';
-    setState(() {});
-  }
-
-  void onChangeYear(String value, HomeController ctlr) {
-    _selectedYear = value;
-    ctlr.getMonthFilters(year: value, monthLoading: true).then((value) {
-      _selectedMonth = ctlr.monthFilters.first;
-    });
-    setState(() {});
-  }
-
-  void onChangeMonth(String value) {
-    _selectedMonth = value;
-    setState(() {});
   }
 
   @override
@@ -69,7 +36,9 @@ class _SelectMonthBottomsheetState extends State<SelectMonthBottomsheet> {
       init: HomeController(homeRepo: Get.find()),
       // initState: (_) {},
       builder: (ctlr) {
-        setInit(ctlr);
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          initCall(ctlr);
+        });
         return StatefulBuilder(builder: (context, setState) {
           return Container(
             decoration: const BoxDecoration(
@@ -153,7 +122,7 @@ class _SelectMonthBottomsheetState extends State<SelectMonthBottomsheet> {
                                             borderRadius:
                                                 BorderRadius.circular(8)),
                                         child: DropdownButton<String>(
-                                          value: selectedYear,
+                                          value: ctlr.selectedTempYear,
                                           underline: const SizedBox(),
                                           isExpanded: true,
                                           icon: const Icon(
@@ -168,7 +137,7 @@ class _SelectMonthBottomsheetState extends State<SelectMonthBottomsheet> {
                                             );
                                           }).toList(),
                                           onChanged: (v) =>
-                                              onChangeYear(v ?? '', ctlr),
+                                              ctlr.onChangeTempYear(v ?? ''),
                                         ),
                                       ),
                                       ctlr.isMonthLoading
@@ -192,7 +161,7 @@ class _SelectMonthBottomsheetState extends State<SelectMonthBottomsheet> {
                                                   borderRadius:
                                                       BorderRadius.circular(8)),
                                               child: DropdownButton<String>(
-                                                value: selectedMonth,
+                                                value: ctlr.selectedTempMonth,
                                                 underline: const SizedBox(),
                                                 isExpanded: true,
                                                 icon: const Icon(
@@ -207,8 +176,8 @@ class _SelectMonthBottomsheetState extends State<SelectMonthBottomsheet> {
                                                     child: Text(value),
                                                   );
                                                 }).toList(),
-                                                onChanged: (v) =>
-                                                    onChangeMonth(v ?? ''),
+                                                onChanged: (v) => ctlr
+                                                    .onChangeTempMonth(v ?? ''),
                                               ),
                                             ),
                                       // ...ctlr.monthFilters
@@ -277,8 +246,8 @@ class _SelectMonthBottomsheetState extends State<SelectMonthBottomsheet> {
                           //     isSummary: isSummary,
                           //   );
                           ctlr.onChangeMonthFilter(
-                            selectedMonth,
-                            selectedYear,
+                            ctlr.selectedTempMonth ?? '',
+                            ctlr.selectedTempYear ?? '',
                             isLoadRetailing: widget.isLoadRetailing,
                             priority: widget.tabType,
                             isSummary: widget.isSummary,

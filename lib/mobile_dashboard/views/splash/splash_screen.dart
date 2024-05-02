@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:command_centre/mobile_dashboard/utils/sec_helper/obfuscation.dart';
 import 'package:get/get.dart';
 import 'dart:io' show Platform;
 import 'package:lottie/lottie.dart';
@@ -38,12 +37,14 @@ class _SplashScreenState extends State<SplashScreen> {
     Timer(const Duration(seconds: 3), () {
       if (token.isNotEmpty && accessToken.isNotEmpty) {
         FirebaseCrashlytics.instance.log("Splash Token Check");
-        debugPrint('===>Firebase Carsh Analytics');
+        debugPrint('===>Firebase Crash Analytics$seen');
         if (seen) {
           if (controller.configModel != null) {
+            debugPrint('===>Config Model is not null');
             if (controller.configModel?.onMaintenance ?? false) {
               Get.offAndToNamed(AppPages.maintenanceScreen);
             } else {
+              debugPrint('===>Maintenance mode is off');
               if ((Platform.isAndroid
                       ? controller.configModel?.apkVersion ?? ''
                       : controller.configModel?.apkVersion ?? '') !=

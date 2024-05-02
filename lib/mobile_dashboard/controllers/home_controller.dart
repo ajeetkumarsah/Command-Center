@@ -189,7 +189,7 @@ class HomeController extends GetxController {
   String? _selectedTempMonth =
       '${DateConverter().returnMonth(DateTime.now()).substring(0, 3)}-${DateTime.now().year}';
   String? get selectedTempMonth => _selectedTempMonth;
-  String? _selectedTempYear = 'Date';
+  String? _selectedTempYear = DateTime.now().year.toString();
   String? get selectedTempYear => _selectedTempYear;
   String _selectedTempGeo = 'All India';
   String get selectedTempGeo => _selectedTempGeo;
@@ -1571,7 +1571,7 @@ class HomeController extends GetxController {
     if (!getOnlyShared) {
       await Future.wait([
         getSummaryData().then((value) {
-          getMonthFilters().then(
+          getMonthFilters(year: DateTime.now().year.toString()).then(
             (v) => getAllFilters().then((v) async {
               categoryFilters = filtersModel?.category ?? [];
               FirebaseCrashlytics.instance.log("Changed Filter for All");
@@ -2318,16 +2318,15 @@ class HomeController extends GetxController {
       Logger().i('===>Summary Await is calling');
       await getSummaryData();
     }
+    debugPrint('====>Before Calling Retailing $isLoadRetailing');
     if (isLoadRetailing) {
       if (SummaryTypes.retailing.type == tabType) {
         //retailing screen data
-
-        await Future.wait([
-          getRetailingData(),
-          getRetailingData(type: 'category', name: 'category'),
-          getRetailingData(type: 'channel', name: 'geo'),
-          getRetailingData(type: 'geo', name: 'trends'),
-        ]);
+        debugPrint('====>Calling Retailing data');
+        getRetailingData();
+        getRetailingData(type: 'category', name: 'category');
+        getRetailingData(type: 'channel', name: 'geo');
+        getRetailingData(type: 'geo', name: 'trends');
       } else if (SummaryTypes.coverage.type == tabType) {
         //Coverage screen data
         getCoverageData();
@@ -2358,6 +2357,27 @@ class HomeController extends GetxController {
   void onChangeYearFilter(String value) {
     // _selectedTempYear = value;
     getMonthFilters(year: value);
+    update();
+  }
+
+  void onChangeTempYear(String value, {bool isFirst = false}) {
+    _selectedTempYear = value;
+    if (isFirst) {
+      getMonthFilters(year: value, monthLoading: true).then((value) {
+        _selectedTempMonth = monthFilters.first;
+      });
+    }
+    update();
+  }
+
+  void onChangeTempMonth(String value) {
+    _selectedTempMonth = value;
+    update();
+  }
+
+  void selectedMonthInit() {
+    onChangeTempYear(selectedYear, isFirst: true);
+    onChangeTempMonth(selectedMonth);
     update();
   }
 
@@ -2696,6 +2716,7 @@ class HomeController extends GetxController {
         name: 'logs',
         parameters: {"message": 'Data Reloaded ${getUserName()}'});
     //retailing screen data
+    debugPrint('====>Reload All Deep Dive Calling $priority');
     if (priority == SummaryTypes.retailing.type) {
       //call all the retaling deep dive APIs
       await retailingDeepDive();
@@ -2733,18 +2754,24 @@ class HomeController extends GetxController {
       retailingDeepDive();
       coverageDeepDive();
       gpDeepDive();
+    } else {
+      //Reloading all the data
+      await getSummaryData();
+      retailingDeepDive();
+      coverageDeepDive();
+      gpDeepDive();
+      fbDeepDive();
     }
 
     update();
   }
 
   Future<void> retailingDeepDive() async {
-    await Future.wait([
-      getRetailingData(),
-      getRetailingData(type: 'category', name: 'category'),
-      getRetailingData(type: 'channel', name: 'geo'),
-      getRetailingData(type: 'geo', name: 'trends'),
-    ]);
+    debugPrint('====>Retailing Deep Dive Loading');
+    getRetailingData();
+    getRetailingData(type: 'category', name: 'category');
+    getRetailingData(type: 'channel', name: 'geo');
+    getRetailingData(type: 'geo', name: 'trends');
   }
 
   Future<void> coverageDeepDive() async {
@@ -3508,7 +3535,7 @@ class HomeController extends GetxController {
   }
 
   Future<ResponseModel> getMonthFilters(
-      {String year = '2023', bool monthLoading = false}) async {
+      {String year = '2024', bool monthLoading = false}) async {
     FirebaseAnalytics.instance.logEvent(
         name: 'logs', parameters: {"message": 'Month Data ${getUserName()}'});
     WidgetsBinding.instance.addPostFrameCallback((_) {

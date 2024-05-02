@@ -4,7 +4,6 @@ import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:command_centre/mobile_dashboard/utils/routes/app_pages.dart';
-import 'package:command_centre/mobile_dashboard/data/repository/store_repo.dart';
 import 'package:command_centre/mobile_dashboard/data/models/response/map_data_model.dart';
 import 'package:command_centre/mobile_dashboard/data/models/response/response_model.dart';
 import 'package:command_centre/mobile_dashboard/data/repository/store_selection_repo.dart';
@@ -70,15 +69,10 @@ class StoreSelectionController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    
 
     getAllFilters('');
     mapStoreData();
   }
-
-  
-
-  
 
   Future<ResponseModel> getAllFilters(String query,
       {String type = 'distributor'}) async {
@@ -138,6 +132,9 @@ class StoreSelectionController extends GetxController {
           } else if (type.contains('storeWithFilter')) {
             store = List<String>.from(
                 data!.map((x) => x['storeName'].toString()).toList());
+            // if(store.isNotEmpty){
+            //   store.
+            // }
           }
         }
         responseModel = ResponseModel(true, 'Success');

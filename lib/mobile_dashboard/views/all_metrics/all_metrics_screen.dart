@@ -364,7 +364,7 @@ class AllMetricsScreen extends StatelessWidget {
                                                             .center,
                                                     children: [
                                                       Text(
-                                                        '${ctlr.selectedMonth?.substring(0, 3)}${ctlr.selectedMonth?.substring(6, 8)} IYA',
+                                                        '${ctlr.selectedMonth.substring(0, 3)}${ctlr.selectedMonth.substring(6, 8)} IYA',
                                                         style:
                                                             GoogleFonts.ptSans(
                                                           fontSize: 16,
@@ -917,7 +917,7 @@ class AllMetricsScreen extends StatelessWidget {
                                                   child: Column(
                                                     children: [
                                                       Text(
-                                                        '${ctlr.selectedMonth?.substring(0, 3)}${ctlr.selectedMonth?.substring(6, 8)} Billing %',
+                                                        '${ctlr.selectedMonth.substring(0, 3)}${ctlr.selectedMonth.substring(6, 8)} Billing %',
                                                         style:
                                                             GoogleFonts.ptSans(
                                                           fontSize: 16,

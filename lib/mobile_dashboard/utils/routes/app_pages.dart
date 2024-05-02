@@ -26,8 +26,8 @@ import 'package:command_centre/mobile_dashboard/views/store_fingertips/onboardin
 import 'package:command_centre/mobile_dashboard/views/store_fingertips/gp/gp_deep_dive_screen.dart';
 import 'package:command_centre/mobile_dashboard/views/store_fingertips/deepdive_landing_screen.dart';
 import 'package:command_centre/mobile_dashboard/views/help_and_support/help_and_support_screen.dart';
-import 'package:command_centre/mobile_dashboard/views/store_fingertips/store_fingertips_screen.dart';
 import 'package:command_centre/mobile_dashboard/views/store_fingertips/coverage/coverage_deep_dive.dart';
+// import 'package:command_centre/mobile_dashboard/views/store_fingertips/store_fingertips_screen.dart';
 // ignore_for_file: constant_identifier_names
 
 part 'app_routes.dart';
