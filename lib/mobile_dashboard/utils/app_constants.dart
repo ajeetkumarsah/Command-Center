@@ -96,6 +96,8 @@ class AppConstants {
   static const String FB_TARGET = 'fbTarget';
   static const String FB_ACHIEVED = 'fbAchieved';
 
+  // local storage keys :)
+  static const String RETAILING_GEO = 'retailing-geo';
   static const String RETAILING_CATEGORY = 'retailing-category';
   static const String RETAILING_CHANNEL = 'retailing-channel';
   static const String RETAILING_TRENDS = 'retailing-trends';
