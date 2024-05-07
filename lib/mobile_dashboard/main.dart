@@ -32,7 +32,7 @@ void main() async {
   // const AndroidInitializationSettings('@mipmap/ic_launcher');
   Future<bool> securityCheck() async {
     bool isJailBroken = await SafeDevice.isJailBroken;
-    bool isCanMockLocation = await SafeDevice.canMockLocation;
+    bool isCanMockLocation = await SafeDevice.isMockLocation;
     bool isRealDevice = await SafeDevice.isRealDevice;
     bool isSafeDevice = await SafeDevice.isSafeDevice;
 
