@@ -2747,7 +2747,6 @@ class HomeController extends GetxController {
     } else if (priority == SummaryTypes.fb.type) {
       //call all the fb deep dive APIs
       await fbDeepDive();
-
       if (!isSummary) {
         getSummaryData();
       }

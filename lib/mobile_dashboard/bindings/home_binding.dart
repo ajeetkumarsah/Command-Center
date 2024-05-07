@@ -7,6 +7,10 @@ import 'package:command_centre/mobile_dashboard/data/repository/home_repo.dart';
 import 'package:command_centre/mobile_dashboard/data/repository/store_repo.dart';
 import 'package:command_centre/mobile_dashboard/controllers/auth_controller.dart';
 import 'package:command_centre/mobile_dashboard/controllers/store_controller.dart';
+import 'package:command_centre/mobile_dashboard/data/repository/store_gp_repo.dart';
+import 'package:command_centre/mobile_dashboard/data/repository/store_fb_repo.dart';
+import 'package:command_centre/mobile_dashboard/controllers/store_gp_controller.dart';
+import 'package:command_centre/mobile_dashboard/controllers/store_fb_controller.dart';
 import 'package:command_centre/mobile_dashboard/data/repository/store_selection_repo.dart';
 import 'package:command_centre/mobile_dashboard/controllers/store_selection_controller.dart';
 
@@ -33,6 +37,14 @@ class HomeBinding extends Bindings {
         () => StoreRepo(
             sharedPreferences: sharedPreferences, apiClient: Get.find()),
         fenix: true);
+    Get.lazyPut<StoreFBRepo>(
+        () => StoreFBRepo(
+            sharedPreferences: sharedPreferences, apiClient: Get.find()),
+        fenix: true);
+    Get.lazyPut<StoreGPRepo>(
+        () => StoreGPRepo(
+            sharedPreferences: sharedPreferences, apiClient: Get.find()),
+        fenix: true);
     Get.lazyPut<StoreSelectionRepo>(
         () => StoreSelectionRepo(
             sharedPreferences: sharedPreferences, apiClient: Get.find()),
@@ -44,5 +56,9 @@ class HomeBinding extends Bindings {
         () => StoreSelectionController(storeRepo: Get.find()));
     Get.lazyPut<AuthController>(() => AuthController(authRepo: Get.find()));
     Get.lazyPut<StoreController>(() => StoreController(storeRepo: Get.find()));
+    Get.lazyPut<StoreFBController>(
+        () => StoreFBController(storeFBRepo: Get.find()));
+    Get.lazyPut<StoreGPController>(
+        () => StoreGPController(storeGPRepo: Get.find()));
   }
 }

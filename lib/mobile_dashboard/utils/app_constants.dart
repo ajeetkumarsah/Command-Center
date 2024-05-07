@@ -1,4 +1,4 @@
-// import 'package:command_centre/mobile_dashboard/utils/sec_helper/obfuscation.dart';
+import 'package:command_centre/mobile_dashboard/utils/sec_helper/obfuscation.dart';
 // ignore_for_file: non_constant_identifier_names
 
 // ignore_for_file: constant_identifier_names
@@ -62,6 +62,8 @@ class AppConstants {
   //store@FT
 
   static const String STORE_HOMEPAGE = 'appData/mtdRetailing';
+  static const String STORE_FB = 'appData/focusBrandTable';
+  static const String STORE_GP = 'appData/dgpCompliance';
 
   //sharedPreferences
   static const String USER_ID = 'userId';

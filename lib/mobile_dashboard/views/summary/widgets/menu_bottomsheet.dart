@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
 import 'package:command_centre/mobile_dashboard/utils/routes/app_pages.dart';
 import 'package:command_centre/mobile_dashboard/views/store_fingertips/onboarding_screen.dart';
+import 'package:command_centre/mobile_dashboard/views/store_fingertips/deepdive_landing_screen.dart';
 // import 'package:command_centre/mobile_dashboard/utils/global.dart' as globals;
 
 class MenuBottomsheet extends StatelessWidget {
@@ -29,44 +30,46 @@ class MenuBottomsheet extends StatelessWidget {
         child: Column(
           children: [
             const SizedBox(height: 20),
-            // ListTile(
-            //   title: Text(
-            //     '  Account',
-            //     style: GoogleFonts.ptSans(
-            //       fontSize: 16,
-            //       fontWeight: FontWeight.w700,
-            //     ),
-            //   ),
-            //   trailing: TextButton(
-            //     onPressed: () {},
-            //     child: const Icon(
-            //       Icons.arrow_outward_rounded,
-            //       color: AppColors.primary,
-            //       size: 18,
-            //     ),
-            //   ),
-            // ),
-            // Container(
-            //   height: 1,
-            //   width: double.infinity,
-            //   color: AppColors.borderColor,
-            // ),
-            // const SizedBox(height: 10),
-            // Row(
-            //   mainAxisAlignment: MainAxisAlignment.start,
-            //   children: [
-            //     const SizedBox(width: 16),
-            //     Flexible(
-            //       child: Text(
-            //         'Switch Mode',
-            //         style: GoogleFonts.ptSans(
-            //           fontSize: 16,
-            //           fontWeight: FontWeight.w700,
-            //         ),
-            //       ),
-            //     ),
-            //   ],
-            // ),
+            ListTile(
+              title: Text(
+                '  Account',
+                style: GoogleFonts.ptSans(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              trailing: TextButton(
+                onPressed: () {
+                  Get.to(DeepDiveLandingScreen());
+                },
+                child: const Icon(
+                  Icons.arrow_outward_rounded,
+                  color: AppColors.primary,
+                  size: 18,
+                ),
+              ),
+            ),
+            Container(
+              height: 1,
+              width: double.infinity,
+              color: AppColors.borderColor,
+            ),
+            const SizedBox(height: 10),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                const SizedBox(width: 16),
+                Flexible(
+                  child: Text(
+                    'Switch Mode',
+                    style: GoogleFonts.ptSans(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+              ],
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [

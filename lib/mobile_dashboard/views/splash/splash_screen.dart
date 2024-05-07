@@ -55,8 +55,6 @@ class _SplashScreenState extends State<SplashScreen> {
                   FirebaseCrashlytics.instance.log("Splash Geo Check");
                   debugPrint('===>Splash Geo $geo Value $geoValue');
                   // Get.to(const OnboardingScreen());
-                  // Get.offAndToNamed(AppPages.INITIAL);
-
                   Get.offAndToNamed(AppPages.INITIAL);
                   // Get.offAndToNamed(AppPages.PERSONA_SCREEN);
                 } else {

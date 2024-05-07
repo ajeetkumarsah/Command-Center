@@ -23,15 +23,15 @@ import 'package:command_centre/mobile_dashboard/controllers/store_selection_cont
 import 'package:command_centre/mobile_dashboard/views/store_fingertips/widgets/pop_up_window.dart';
 import 'package:command_centre/mobile_dashboard/views/store_fingertips/store_fingertips_screen.dart';
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await HomeBinding().dependencies();
-  runApp(GetMaterialApp(
-    home: const OnboardingScreen(),
-    getPages: AppPages.routes,
-    // debugShowCheckedModeBanner: false,
-  ));
-}
+// void main() async {
+//   WidgetsFlutterBinding.ensureInitialized();
+//   await HomeBinding().dependencies();
+//   runApp(GetMaterialApp(
+//     home: const OnboardingScreen(),
+//     getPages: AppPages.routes,
+//     // debugShowCheckedModeBanner: false,
+//   ));
+// }
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
