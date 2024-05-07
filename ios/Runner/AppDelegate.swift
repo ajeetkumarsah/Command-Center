@@ -1,12 +1,16 @@
 import UIKit
 import Flutter
+<<<<<<< HEAD
 import FirebaseCore
+=======
+>>>>>>> main
 
 @UIApplicationMain
 @objc class AppDelegate: FlutterAppDelegate {
   override func application(
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
+<<<<<<< HEAD
     
   ) -> Bool {
       FirebaseApp.configure()
@@ -30,4 +34,10 @@ import FirebaseCore
     ) {
       self.window.isHidden = false;
     }
+=======
+  ) -> Bool {
+    GeneratedPluginRegistrant.register(with: self)
+    return super.application(application, didFinishLaunchingWithOptions: launchOptions)
+  }
+>>>>>>> main
 }

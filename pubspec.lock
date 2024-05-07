@@ -977,6 +977,7 @@ packages:
     dependency: transitive
     description:
       name: meta
+<<<<<<< HEAD
       sha256: d584fa6707a52763a52446f02cc621b077888fb63b93bbcb1143a7be5a0c0c04
       url: "https://pub.dev"
     source: hosted
@@ -989,6 +990,12 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.0"
+=======
+      sha256: a6e590c838b18133bb482a2745ad77c5bb7715fb0451209e1a7567d416678b8e
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.10.0"
+>>>>>>> main
   mime:
     dependency: transitive
     description:
@@ -1466,6 +1473,7 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.6.1"
+<<<<<<< HEAD
   text_3d:
     dependency: "direct main"
     description:
@@ -1482,6 +1490,8 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.9.2"
+=======
+>>>>>>> main
   trust_location:
     dependency: transitive
     description:
@@ -1707,5 +1717,10 @@ packages:
     source: hosted
     version: "6.3.0"
 sdks:
+<<<<<<< HEAD
   dart: ">=3.2.3 <4.0.0"
   flutter: ">=3.16.6"
+=======
+  dart: ">=3.2.0-194.0.dev <4.0.0"
+  flutter: ">=3.13.0"
+>>>>>>> main

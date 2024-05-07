@@ -47,10 +47,14 @@
 		97C146FD1CF9000F007C117D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		97C147001CF9000F007C117D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		97C147021CF9000F007C117D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+<<<<<<< HEAD
 		B0B0E5D7A8AA5AB6404B77D7 /* Pods-Runner.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.profile.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.profile.xcconfig"; sourceTree = "<group>"; };
 		FE5D01272B837E6A00F8F475 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		FE708D2A2B6935BA007C73D3 /* Runner copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Runner copy-Info.plist"; path = "/Users/tranzitasystems/StudioProjects/AMA-SMO-IN-Command-Center-Frontend/ios/Runner copy-Info.plist"; sourceTree = "<absolute>"; };
 		FEE7B04A2B44128B00B5FE43 /* Runner.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Runner.entitlements; sourceTree = "<group>"; };
+=======
+		FEC113412B3D442B008CA0A1 /* Runner.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Runner.entitlements; sourceTree = "<group>"; };
+>>>>>>> main
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -117,8 +121,12 @@
 		97C146F01CF9000F007C117D /* Runner */ = {
 			isa = PBXGroup;
 			children = (
+<<<<<<< HEAD
 				FE5D01272B837E6A00F8F475 /* GoogleService-Info.plist */,
 				FEE7B04A2B44128B00B5FE43 /* Runner.entitlements */,
+=======
+				FEC113412B3D442B008CA0A1 /* Runner.entitlements */,
+>>>>>>> main
 				97C146FA1CF9000F007C117D /* Main.storyboard */,
 				97C146FD1CF9000F007C117D /* Assets.xcassets */,
 				97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */,
@@ -406,9 +414,14 @@
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "arm64 i386";
+<<<<<<< HEAD
 				FLUTTER_BUILD_NAME = 1.0.25;
 				FLUTTER_BUILD_NUMBER = 1;
 				FLUTTER_TARGET = lib/mobile_dashboard/main.dart;
+=======
+				FLUTTER_BUILD_NAME = 1.0.13;
+				FLUTTER_BUILD_NUMBER = 14;
+>>>>>>> main
 				INFOPLIST_FILE = Runner/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "P&G Command Center";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
@@ -560,9 +573,14 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "arm64 i386";
+<<<<<<< HEAD
 				FLUTTER_BUILD_NAME = 1.0.25;
 				FLUTTER_BUILD_NUMBER = 1;
 				FLUTTER_TARGET = lib/mobile_dashboard/main.dart;
+=======
+				FLUTTER_BUILD_NAME = 1.0.13;
+				FLUTTER_BUILD_NUMBER = 14;
+>>>>>>> main
 				INFOPLIST_FILE = Runner/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "P&G Command Center";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
@@ -597,9 +615,14 @@
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "arm64 i386";
+<<<<<<< HEAD
 				FLUTTER_BUILD_NAME = 1.0.25;
 				FLUTTER_BUILD_NUMBER = 1;
 				FLUTTER_TARGET = lib/mobile_dashboard/main.dart;
+=======
+				FLUTTER_BUILD_NAME = 1.0.13;
+				FLUTTER_BUILD_NUMBER = 14;
+>>>>>>> main
 				INFOPLIST_FILE = Runner/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "P&G Command Center";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;

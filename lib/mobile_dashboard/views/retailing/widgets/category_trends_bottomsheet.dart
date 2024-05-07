@@ -46,7 +46,10 @@ class _CategoryTrendsFilterBottomsheetState
         onFilterChange(ctlr.selectedTrendsCategory);
 
         onFilterChangeValue(ctlr.selectedTrendsCategoryValue);
-        FirebaseAnalytics.instance.logEvent(name: 'data_refreash', parameters: {"message": 'Selected Trends Category ${ctlr.selectedTrendsCategoryValue} ${ctlr.getUserName()}'});
+        FirebaseAnalytics.instance.logEvent(name: 'data_refreash', parameters: {
+          "message":
+              'Selected Trends Category ${ctlr.selectedTrendsCategoryValue} ${ctlr.getUserName()}'
+        });
         setState(() {});
       });
     }
@@ -189,7 +192,12 @@ class _CategoryTrendsFilterBottomsheetState
                     ),
                     TextButton(
                       onPressed: () {
-                        FirebaseAnalytics.instance.logEvent(name: 'deep_dive_selected_category', parameters: {"message": 'Added Selected Category ${ctlr.getUserName()}'});
+                        FirebaseAnalytics.instance.logEvent(
+                            name: 'deep_dive_selected_category',
+                            parameters: {
+                              "message":
+                                  'Added Selected Category ${ctlr.getUserName()}'
+                            });
                         ctlr.onTrendsFilterSelect(widget.type, widget.tabType);
                         ctlr.onChangeTrendsChannelValue(
                             _selectedTrendsCategoryValue, widget.tabType,
