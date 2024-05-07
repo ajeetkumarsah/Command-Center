@@ -85,7 +85,7 @@ class _BusinessOnboardingScreenState extends State<BusinessOnboardingScreen> {
           "Track all India Retailing, Coverage, Golden Points and Focus Brand across channels and categories",
     ),
     OnboardingContents(
-      title: "Stay updated with the data everyday.",
+      title: "Stay updated with data everyday.",
       image: "assets/svg/on1.svg",
       desc: "Stay updated with latest data till D-1 everyday",
     ),
