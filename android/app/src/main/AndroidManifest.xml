@@ -1,16 +1,16 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="tranzita.commandcentre.command_centre">
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    package="com.commandcentre.command_centre">
+    <uses-permission android:name="android.permission.INTERNET"/>
+
    <application
-        android:label="command_centre"
+        android:label="Command Center"
         android:name="${applicationName}"
-        android:usesCleartextTraffic="true"
+        android:usesCleartextTraffic="false"
         android:icon="@mipmap/ic_launcher">
 
         <activity
+            android:usesCleartextTraffic="true"
             android:name=".MainActivity"
             android:exported="true"
             android:launchMode="singleTop"

@@ -71,22 +71,12 @@ class _FedAuthLoginPageState extends State<FedAuthLoginPage> {
       ..setNavigationDelegate(
         NavigationDelegate(
           onProgress: (int progress) {
-            logger.v('WebView is loading (progress : $progress%)');
           },
           onPageStarted: (String url) {
-            logger.v('Page started loading: $url');
           },
           onPageFinished: (String url) {
-            logger.v('Page finished loading: $url');
           },
           onWebResourceError: (WebResourceError error) {
-            logger.v('''
-              Page resource error:
-                code: ${error.errorCode}
-                description: ${error.description}
-                errorType: ${error.errorType}
-                isForMainFrame: ${error.isForMainFrame}
-                ''');
           },
           onNavigationRequest: (NavigationRequest request) {
             if (request.url.contains("http://localhost:3000/callback?code=")) {

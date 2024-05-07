@@ -49,7 +49,7 @@ class _DistributionWebContainerState extends State<DistributionWebContainer> {
     //       return Center(child: Text('Error: ${snapshot.error}'));
     //     } else {
     //       final appData = snapshot.data;
-    //       print("FB : $appData");
+    //
     //       return Retailing(
     //         site: "110",
     //         tgtSite: "111",

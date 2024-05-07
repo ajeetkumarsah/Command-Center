@@ -5,29 +5,53 @@ import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
 import 'package:command_centre/mobile_dashboard/controllers/home_controller.dart';
 import 'package:command_centre/mobile_dashboard/views/widgets/custom_loader.dart';
 
-class GeographyBottomsheet extends StatelessWidget {
+class GeographyBottomsheet extends StatefulWidget {
   final Function(Map<String, dynamic>)? onApplyFilter;
   final bool isLoadRetailing;
   final String tabType;
+  final bool isSummary;
   const GeographyBottomsheet(
       {super.key,
       this.onApplyFilter,
       this.isLoadRetailing = false,
+      required this.isSummary,
       required this.tabType});
 
   @override
+  State<GeographyBottomsheet> createState() => _GeographyBottomsheetState();
+}
+
+class _GeographyBottomsheetState extends State<GeographyBottomsheet> {
+  List<String> geoList = [
+    'All India',
+    'Division',
+    'Cluster',
+    'Focus Area',
+    'Branch'
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  bool _isFirst = true;
+  void geoInit(HomeController ctlr) {
+    if (_isFirst) {
+      _isFirst = false;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ctlr.geoFilterInit();
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    List<String> geoList = [
-      'All India',
-      'Division',
-      'Cluster',
-      'Site',
-      'Branch'
-    ];
     return GetBuilder<HomeController>(
       init: HomeController(homeRepo: Get.find()),
       initState: (_) {},
       builder: (ctlr) {
+        geoInit(ctlr);
         return Container(
           decoration: const BoxDecoration(
             borderRadius: BorderRadius.only(
@@ -81,7 +105,10 @@ class GeographyBottomsheet extends StatelessWidget {
                                       onTap: () => ctlr.onGeoChange(e),
                                       visualDensity: const VisualDensity(
                                           horizontal: 0, vertical: -3),
-                                      title: Text(e),
+                                      title: Text(
+                                        e,
+                                        style: GoogleFonts.ptSans(),
+                                      ),
                                     ),
                                   ))
                               .toList(),
@@ -147,7 +174,16 @@ class GeographyBottomsheet extends StatelessWidget {
                                                         (e) => InkWell(
                                                           onTap: () => ctlr
                                                               .onChangeFilters(
-                                                                  e),
+                                                                e,
+                                                                isLoadRetailing:
+                                                                    widget
+                                                                        .isLoadRetailing,
+                                                                tabType: 'All',
+                                                                isSummary: widget
+                                                                    .isSummary,
+                                                              )
+                                                              .then((value) =>
+                                                                  Get.back()),
                                                           child: Row(
                                                             children: [
                                                               Transform.scale(
@@ -160,14 +196,25 @@ class GeographyBottomsheet extends StatelessWidget {
                                                                       e
                                                                           .trim()
                                                                           .toLowerCase(),
-                                                                  onChanged:
-                                                                      (v) => ctlr
-                                                                          .onChangeFilters(
-                                                                              e),
+                                                                  onChanged: (v) => ctlr
+                                                                      .onChangeFilters(
+                                                                        e,
+                                                                        isLoadRetailing:
+                                                                            widget.isLoadRetailing,
+                                                                        tabType:
+                                                                            'All',
+                                                                        isSummary:
+                                                                            widget.isSummary,
+                                                                      )
+                                                                      .then((value) => Get.back()),
                                                                 ),
                                                               ),
                                                               Flexible(
-                                                                child: Text(e),
+                                                                child: Text(
+                                                                  e,
+                                                                  style: GoogleFonts
+                                                                      .ptSans(),
+                                                                ),
                                                               ),
                                                             ],
                                                           ),
@@ -193,7 +240,16 @@ class GeographyBottomsheet extends StatelessWidget {
                                                   .map(
                                                     (e) => InkWell(
                                                       onTap: () => ctlr
-                                                          .onChangeFilters(e),
+                                                          .onChangeFilters(
+                                                            e,
+                                                            isLoadRetailing: widget
+                                                                .isLoadRetailing,
+                                                            tabType: 'All',
+                                                            isSummary: widget
+                                                                .isSummary,
+                                                          )
+                                                          .then((value) =>
+                                                              Get.back()),
                                                       child: Row(
                                                         children: [
                                                           Transform.scale(
@@ -207,12 +263,26 @@ class GeographyBottomsheet extends StatelessWidget {
                                                                       .trim()
                                                                       .toLowerCase(),
                                                               onChanged: (v) =>
-                                                                  ctlr.onChangeFilters(
-                                                                      e),
+                                                                  ctlr
+                                                                      .onChangeFilters(
+                                                                        e,
+                                                                        isLoadRetailing:
+                                                                            widget.isLoadRetailing,
+                                                                        tabType:
+                                                                            'All',
+                                                                        isSummary:
+                                                                            widget.isSummary,
+                                                                      )
+                                                                      .then((value) =>
+                                                                          Get.back()),
                                                             ),
                                                           ),
                                                           Flexible(
-                                                            child: Text(e),
+                                                            child: Text(
+                                                              e,
+                                                              style: GoogleFonts
+                                                                  .ptSans(),
+                                                            ),
                                                           ),
                                                         ],
                                                       ),
@@ -229,45 +299,56 @@ class GeographyBottomsheet extends StatelessWidget {
                     ),
                   ],
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    TextButton(
-                      onPressed: () => Get.back(),
-                      style: ButtonStyle(
-                        overlayColor:
-                            MaterialStateProperty.all(Colors.transparent),
-                      ),
-                      child: Text(
-                        'Clear',
-                        style: GoogleFonts.ptSans(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w400,
-                          color: Colors.grey,
-                        ),
-                      ),
-                    ),
-                    TextButton(
-                      onPressed: () async {
-                        ctlr.onApplyFilter(
-                            isLoadRetailing: isLoadRetailing, tabType: tabType);
-                        Navigator.pop(context);
-                      },
-                      style: ButtonStyle(
-                        overlayColor:
-                            MaterialStateProperty.all(Colors.transparent),
-                      ),
-                      child: Text(
-                        'Apply Changes',
-                        style: GoogleFonts.ptSans(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.primary,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+                // Row(
+                //   mainAxisAlignment: MainAxisAlignment.spaceAround,
+                //   children: [
+                //     // TextButton(
+                //     //   onPressed: () => Get.back(),
+                //     //   style: ButtonStyle(
+                //     //     overlayColor:
+                //     //         MaterialStateProperty.all(Colors.transparent),
+                //     //   ),
+                //     //   child: Text(
+                //     //     'Clear',
+                //     //     style: GoogleFonts.ptSans(
+                //     //       fontSize: 16,
+                //     //       fontWeight: FontWeight.w400,
+                //     //       color: Colors.grey,
+                //     //     ),
+                //     //   ),
+                //     // ),
+                //     // TextButton(
+                //     //   onPressed: () {
+                //     //     LoggerUtils.firebaseAnalytics(
+                //     //         AnalyticsEvent.deep_dive_selected_geo, "Added Selected Geo ${ctlr.getUserName()}");
+                //     //     if (ctlr.selectedTempGeoValue.isNotEmpty) {
+                //     //       ctlr.onApplyFilter(
+                //     //         isLoadRetailing: isLoadRetailing,
+                //     //         tabType: 'All',
+                //     //         isSummary: isSummary,
+                //     //       );
+                //     //       Navigator.pop(context);
+                //     //     } else {
+                //     //       showCustomSnackBar('Please select a geo!');
+                //     //     }
+                //     //   },
+                //     //   style: ButtonStyle(
+                //     //     overlayColor:
+                //     //         MaterialStateProperty.all(Colors.transparent),
+                //     //   ),
+                //     //   child: Text(
+                //     //     'Apply Changes',
+                //     //     style: GoogleFonts.ptSans(
+                //     //       fontSize: 16,
+                //     //       fontWeight: FontWeight.w700,
+                //     //       color: ctlr.selectedTempGeoValue.isNotEmpty
+                //     //           ? AppColors.primary
+                //     //           : Colors.grey,
+                //     //     ),
+                //     //   ),
+                //     // ),
+                //   ],
+                // ),
                 const SizedBox(height: 8),
               ],
             ),

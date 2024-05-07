@@ -215,7 +215,7 @@ class _LineChartSampleState extends State<LineChartSample> {
                   sideTitles: SideTitles(
                       showTitles: true,
                       getTitlesWidget: (value, TitleMeta) {
-                        // print(value);
+
                         if (value.toInt() >= 0 &&
                             value.toInt() <
                                 provider.graphDataList![0]['data'].length) {

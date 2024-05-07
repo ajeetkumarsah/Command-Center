@@ -6,7 +6,6 @@ import 'package:command_centre/mobile_dashboard/utils/app_constants.dart';
 import 'package:command_centre/mobile_dashboard/data/api/api_client.dart';
 // ignore_for_file: no_leading_underscores_for_local_identifiers
 
-
 class AuthRepo {
   final ApiClient apiClient;
   final SharedPreferences sharedPreferences;
@@ -30,7 +29,7 @@ class AuthRepo {
     return await sharedPreferences.setString(AppConstants.TOKEN, token);
   }
 
-  Future<bool> saveUserXToken(String xToken) async {
+  Future<bool> saveUserAccessToken(String xToken) async {
     String _token = '';
     if (xToken.isNotEmpty) {
       _token = xToken;
@@ -61,8 +60,36 @@ class AuthRepo {
     return await sharedPreferences.setString(AppConstants.USER_ID, id);
   }
 
+  Future<bool> saveUserName(String name) async {
+    return await sharedPreferences.setString(AppConstants.NAME, name);
+  }
+
+  Future<bool> saveUserEmail(String email) async {
+    return await sharedPreferences.setString(AppConstants.EMAIL, email);
+  }
+
+  Future<bool> saveUserUID(String uid) async {
+    return await sharedPreferences.setString(AppConstants.UID, uid);
+  }
+
   String getUserToken() {
     return sharedPreferences.getString(AppConstants.TOKEN) ?? "";
+  }
+
+  String getUserAccessToken() {
+    return sharedPreferences.getString(AppConstants.ACCESS_TOKEN) ?? "";
+  }
+
+  String getUserName() {
+    return sharedPreferences.getString(AppConstants.NAME) ?? "";
+  }
+
+  String getUserEmail() {
+    return sharedPreferences.getString(AppConstants.EMAIL) ?? "";
+  }
+
+  String getUID() {
+    return sharedPreferences.getString(AppConstants.UID) ?? "";
   }
 
   String getPingCode() {
@@ -97,7 +124,8 @@ class AuthRepo {
   bool clearSharedData() {
     sharedPreferences.remove(AppConstants.TOKEN);
     sharedPreferences.remove(AppConstants.ACCESS_TOKEN);
-    sharedPreferences.clear();
+    // sharedPreferences.remove(AppConstants.FCMToken);
+    // sharedPreferences.clear();
     apiClient.token = null;
     return true;
   }
@@ -117,5 +145,44 @@ class AuthRepo {
 
   Future<Response> getFilters(Map<String, dynamic> body) async {
     return await apiClient.postData(AppConstants.FILTERS, body, headers: {});
+  }
+
+  Future<Response> getConfig(Map<String, dynamic> body) async {
+    return await apiClient.postData(AppConstants.CONFIG, body, headers: {});
+  }
+
+  Future<Response> getPersonaSelect(Map<String, dynamic> body) async {
+    return await apiClient
+        .postData(AppConstants.PERSONASELECT, body, headers: {});
+  }
+
+  Future<Response> getUserData(Map<String, dynamic> body) async {
+    return await apiClient.postData(
+      AppConstants.FED_AUTH_TOKEN,
+      body,
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Cookie': 'PF=gAvY5cL83UUST7sxealWO2',
+      },
+      withBaseUrl: true,
+      changeHeader: false,
+    );
+  }
+
+  Future<Response> getEmployeeAuth(Map<String, dynamic> body,
+      {required String? token}) async {
+    return await apiClient.postData(
+      AppConstants.EMPLOYEE_AUTH,
+      body,
+      headers: {
+        'Accept': '*/*',
+        'X_AUTH_TOKEN': token ?? '',
+        'Authorization': 'Bearer $token',
+        'Ocp-Apim-Trace': true.toString(),
+        'Ocp-Apim-Subscription-Key': AppConstants.SUBSCRIPTION_KEY,
+        'grant_type': 'refresh_token'
+      },
+    );
   }
 }

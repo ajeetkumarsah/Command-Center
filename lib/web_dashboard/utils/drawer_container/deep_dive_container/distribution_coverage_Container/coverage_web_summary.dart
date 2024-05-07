@@ -361,7 +361,7 @@ class _CoverageWebSummaryState extends State<CoverageWebSummary> {
                                       itemBuilder: (context, outerIndex) {
                                         selectedChannel = widget
                                             .dataList[selectedIndexLocation][0]['channel'];
-                                        print("Selected $selectedChannel");
+
                                         sheetProvider.selectedChannelSite =
                                         widget
                                             .dataList[selectedIndexLocation][0]['filter_key'];
@@ -381,8 +381,8 @@ class _CoverageWebSummaryState extends State<CoverageWebSummary> {
                                             selectedMonth;
                                         sheetProvider.selectedChannelIndex =
                                             selectedIndexLocation;
-                                        print("${widget.dataList.length} Ye");
-                                        // print(widget.dataList[selectedIndexLocation]);
+
+
                                         return TabsBodyTable(
                                           onTap: () {
                                             setState(() {
@@ -1449,7 +1449,7 @@ class _CoverageWebSummaryState extends State<CoverageWebSummary> {
                   ) :
                   Container(),
                   ExcelImportButton(onClickExcel: () async{
-                    print('hello');
+
                     setState(() {});
                     await postRequest(context);
                   },),

@@ -41,7 +41,7 @@ class RemovePopup extends StatelessWidget {
                 ElevatedButton(
                   onPressed: onLogout,
                   style: ElevatedButton.styleFrom(
-                    primary: Colors.redAccent, // Changed color to green
+                    backgroundColor: Colors.redAccent, // Changed color to green
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(5.0),
                     ),
@@ -57,7 +57,7 @@ class RemovePopup extends StatelessWidget {
                     Navigator.pop(context);
                   },
                   style: ElevatedButton.styleFrom(
-                    primary: Colors.green, // Changed color to green
+                    backgroundColor: Colors.green, // Changed color to green
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(5.0),
                     ),

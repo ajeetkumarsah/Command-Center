@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 
 class AppColors {
   static const Color primary = Color(0xff3669CB); //7992D2  0B4983
+  static const Color sfPrimary = Color(0xff6C7EF1); //7992D2  0B4983
   static const Color storeTextColor = Color(0xff0B4983);
   static const Color blueLight = Color(0xff7992D2); //#EBEFF8
   static const Color blueLighter = Color(0xffEBEFF8); //#
   static const Color lightBlue = Color(0xff6bbdd6); //#
   static const Color lightGrey = Color(0xffE7E7E7); //#
   static const Color storeTextLightColor = Color(0xff5984AB); //#
+  static const Color tableBorder = Color(0xffC5C5C5); //#
+  static const Color greyTextColor = Color(0xff8E8E8E); //#
 
   static const Color primaryDark = Color(0xff444444);
   static const Color filterColor = Color(0xffB8C6D1);
@@ -19,6 +22,8 @@ class AppColors {
   static const Color green = Color(0xff56C568);
   static const Color greenDark = Color(0xff1ACABE);
   static const Color storeBgColor = Color(0xffF2F6FD);
+  // static const Color storeBgColor = Color(0xffF2F6FD);
+  static const Color storeTableRowColor = Color(0xffF5F8FE);
 
   // chart color
   //static const Color primary = contentColorCyan;

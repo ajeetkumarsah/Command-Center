@@ -14,3 +14,7 @@ String? pingCode;
 String? msGraphToken;
 bool isLoggedIn = false;
 String authorization = '';
+String FCMToken = '';
+String uId = '';
+bool navigate = true;
+bool autoRefresh = true;

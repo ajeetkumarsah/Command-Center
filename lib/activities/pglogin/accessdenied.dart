@@ -94,8 +94,7 @@ class _AccessDeniedState extends State<AccessDenied> {
                     // ),
                     textStyle: const TextStyle(
                         // color: kPrimaryColor
-                        ),
-                    primary: Colors.white,
+                        ), backgroundColor: Colors.white,
                     // color: kPrimaryColor,
                     // textColor: Colors.white,
                   ),

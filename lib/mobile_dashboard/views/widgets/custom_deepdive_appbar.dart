@@ -10,6 +10,7 @@ class CustomDeepDiveAppBar extends StatelessWidget
   final String? geo;
   final String? geoValue;
   final String? date;
+  final Widget? trailing;
   final void Function()? onDivisionTap;
   final void Function()? onMonthTap;
 
@@ -20,6 +21,7 @@ class CustomDeepDiveAppBar extends StatelessWidget
       this.onMonthTap,
       this.geo,
       this.geoValue,
+      this.trailing,
       this.date});
 
   @override
@@ -65,7 +67,7 @@ class CustomDeepDiveAppBar extends StatelessWidget
                     ),
                   ),
                 ),
-                const SizedBox(width: 40),
+                trailing ?? const SizedBox(width: 40),
               ],
             ),
             Padding(
@@ -79,7 +81,7 @@ class CustomDeepDiveAppBar extends StatelessWidget
                       height: 50,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(25),
-                        color: AppColors.filterColor,
+                        color: AppColors.white,
                       ),
                       child: Row(
                         children: [
@@ -143,7 +145,7 @@ class CustomDeepDiveAppBar extends StatelessWidget
                         padding: const EdgeInsets.symmetric(horizontal: 4),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(25),
-                          color: AppColors.filterColor,
+                          color: AppColors.white,
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -152,7 +154,9 @@ class CustomDeepDiveAppBar extends StatelessWidget
                               child: Text(
                                 date ?? 'Dec 2023',
                                 style: GoogleFonts.ptSans(
-                                    fontSize: 16, fontWeight: FontWeight.w400),
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w400,
+                                ),
                               ),
                             ),
                             const Icon(Icons.arrow_drop_down),

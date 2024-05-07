@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-
 import '../../../utils/style/text_style.dart';
+
 
 class PercentageWid extends StatefulWidget {
   final String title;
@@ -50,7 +50,7 @@ class _PercentageWidState extends State<PercentageWid> {
                     ),
                   ),
                   Icon(
-                   widget.check!
+                   widget.check
                         ? Icons.arrow_drop_down
                         : Icons.arrow_drop_up,
                     color: widget.check ? Colors.green : Colors.red,

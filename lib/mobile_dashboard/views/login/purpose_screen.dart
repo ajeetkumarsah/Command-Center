@@ -1,9 +1,11 @@
-import 'login_screen.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../../utils/comman/login_appbar.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
 import 'package:command_centre/mobile_dashboard/utils/routes/app_pages.dart';
+
+
 
 
 const double margin = 20.0;
@@ -199,7 +201,8 @@ class _PurposeScreenState extends State<PurposeScreen>
                 height: 56,
                 width: size.width,
                 child: ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async{
+                    // await PushNotifications.init();
                     Get.toNamed(AppPages.SELECT_GEO_SCREEN);
                     if (selectedContainerIndex == 1) {
                       //business visit

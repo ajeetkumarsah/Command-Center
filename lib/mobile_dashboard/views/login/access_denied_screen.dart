@@ -1,9 +1,7 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:command_centre/mobile_dashboard/utils/png_files.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
 import 'package:command_centre/mobile_dashboard/utils/routes/app_pages.dart';
 
@@ -23,12 +21,17 @@ class AccessDeniedScreen extends StatefulWidget {
 }
 
 class _AccessDeniedState extends State<AccessDeniedScreen> {
-  AccessDeniedBody args = Get.arguments;
+  // AccessDeniedBody args = Get.arguments;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        color: const Color(0xff6F81E6),
+        // color: const Color(0xff6F81E6),
+        decoration: const BoxDecoration(
+            gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [AppColors.primary, AppColors.blueLighter])),
         child: Padding(
           padding: const EdgeInsets.all(10),
           child: Column(
@@ -40,11 +43,11 @@ class _AccessDeniedState extends State<AccessDeniedScreen> {
                   mainAxisSize: MainAxisSize.max,
                   children: <Widget>[
                     ClipRRect(
-                      borderRadius: BorderRadius.circular(8.0),
+                      borderRadius: BorderRadius.circular(20.0),
                       child: Image.asset(
-                        PngFiles.pgLogo,
-                        width: 200,
-                        height: 200,
+                        'assets/icon/img_cc.png',
+                        width: 150,
+                        height: 150,
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -54,28 +57,43 @@ class _AccessDeniedState extends State<AccessDeniedScreen> {
               const SizedBox(
                 height: 30,
               ),
-              const Text(
-                "Access Denied!",
-                style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white),
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(30, 20, 30, 10),
+              const Padding(
+                padding: EdgeInsets.all(8.0),
                 child: Text(
-                  "You do not have access to this service. Reason Code ${args.reason} \n Please contact your Administrator.",
+                  "Hi User, \nYou don't seem to have access to the Command Center.",
+                  // "Access Denied!",
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
+                  style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                       color: Colors.white),
                 ),
               ),
               const Padding(
+                padding: EdgeInsets.fromLTRB(30, 20, 30, 10),
+                child: Text(
+                  "Please find the SOP below \n",
+                  // "You do not have access to this service. Reason Code {args.reason} \n Please contact the below.",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white),
+                ),
+              ),
+              const Text(
+                "For queries contact below",
+                // "You do not have access to this service. Reason Code {args.reason} \n Please contact the below.",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white),
+              ),
+              const Padding(
                 padding: EdgeInsets.only(top: 8.0),
                 child: Text(
-                  "DV, Nithin Balaa Ji (dv.nb@pg.com)\nTranzita Systems (support@tranzita.com)",
+                  "Nithin Balaaji (dv.nb@pg.com)",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       fontSize: 16,
@@ -101,7 +119,7 @@ class _AccessDeniedState extends State<AccessDeniedScreen> {
                     textStyle: const TextStyle(
                         // color: kPrimaryColor
                         ),
-                    primary: Colors.white,
+                    backgroundColor: Colors.white,
                     // color: kPrimaryColor,
                     // textColor: Colors.white,
                   ),
@@ -172,7 +190,8 @@ class _AccessDeniedState extends State<AccessDeniedScreen> {
     await session.remove("token");
     await session.remove("name");
     await session.remove("email");
-    Get.offAndToNamed(AppPages.FED_AUTH_LOGIN);
+    await session.remove("FCMToken");
+    Get.offAndToNamed(AppPages.FED_AUTH_LOGIN_TEST);
     // Navigator.of(context).pushAndRemoveUntil(
     //   // the new route
     //   MaterialPageRoute(
@@ -183,22 +202,22 @@ class _AccessDeniedState extends State<AccessDeniedScreen> {
   }
 
   void _onClearCookies(BuildContext context) async {
-    final WebViewCookieManager cookieManager = WebViewCookieManager();
-    final bool hadCookies = await cookieManager.clearCookies();
-    String message = 'There were cookies. Now, they are gone!';
-    if (!hadCookies) {
-      message = 'There are no cookies.';
-    }
+    // final WebViewCookieManager cookieManager = WebViewCookieManager();
+    // final bool hadCookies = await cookieManager.clearCookies();
+    // String message = 'There were cookies. Now, they are gone!';
+    // if (!hadCookies) {
+    //   message = 'There are no cookies.';
+    // }
   }
 
-  void _showToast(BuildContext context, int statusCode) {
-    final scaffold = ScaffoldMessenger.of(context);
-    scaffold.showSnackBar(
-      SnackBar(
-        content: Text("$statusCode"),
-        action: SnackBarAction(
-            label: 'UNDO', onPressed: scaffold.hideCurrentSnackBar),
-      ),
-    );
-  }
+  // void _showToast(BuildContext context, int statusCode) {
+  //   final scaffold = ScaffoldMessenger.of(context);
+  //   scaffold.showSnackBar(
+  //     SnackBar(
+  //       content: Text("$statusCode"),
+  //       action: SnackBarAction(
+  //           label: 'UNDO', onPressed: scaffold.hideCurrentSnackBar),
+  //     ),
+  //   );
+  // }
 }

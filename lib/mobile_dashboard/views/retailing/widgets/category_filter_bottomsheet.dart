@@ -1,29 +1,64 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
+import 'package:collection/collection.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
 import 'package:command_centre/mobile_dashboard/utils/summary_types.dart';
 import 'package:command_centre/mobile_dashboard/controllers/home_controller.dart';
-import 'package:command_centre/mobile_dashboard/views/widgets/custom_loader.dart';
 
-class CategoryFilterBottomsheet extends StatelessWidget {
+class CategoryFilterBottomsheet extends StatefulWidget {
   final bool isTrends;
   final String tabType;
   const CategoryFilterBottomsheet(
       {super.key, this.isTrends = false, required this.tabType});
 
   @override
+  State<CategoryFilterBottomsheet> createState() =>
+      _CategoryFilterBottomsheetState();
+}
+
+class _CategoryFilterBottomsheetState extends State<CategoryFilterBottomsheet> {
+  Function eq = const ListEquality().equals;
+  String _selectedCategory = 'Category';
+  String get selectedCategory => _selectedCategory;
+  void onFilterChange(String value) {
+    _selectedCategory = value;
+    setState(() {});
+  }
+
+  bool _isFirst = true;
+  void catInit(HomeController ctlr, {required String tabType}) {
+    if (_isFirst) {
+      _isFirst = false;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ctlr.categoryFilterInit(tabType);
+      });
+      if (tabType == SummaryTypes.retailing.type) {
+        _selectedCategory = ctlr.selectedCategory;
+      } else if (tabType == SummaryTypes.gp.type) {
+        _selectedCategory = ctlr.selectedGPCategory;
+      } else if (tabType == SummaryTypes.fb.type) {
+        _selectedCategory = ctlr.selectedFBCategory;
+      }
+      ctlr.onChangeCategory(_selectedCategory, _selectedCategory, isInit: true);
+    }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {});
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    List<String> categoryList = [
-      'Category',
-      'Brand',
-      'Brand form',
-      'Sub-brand form'
-    ];
+    List<String> categoryList = ['Category', 'Brand', 'Brand form'];
+    if (widget.tabType == SummaryTypes.fb.type) {
+      categoryList = ['Category', 'Brand'];
+    }
+
     return GetBuilder<HomeController>(
       init: HomeController(homeRepo: Get.find()),
       builder: (ctlr) {
+        catInit(ctlr, tabType: widget.tabType);
         return Container(
           decoration: const BoxDecoration(
             borderRadius: BorderRadius.only(
@@ -71,11 +106,15 @@ class CategoryFilterBottomsheet extends StatelessWidget {
                           ...categoryList
                               .map(
                                 (e) => Container(
-                                  color: e == ctlr.selectedCategory
+                                  color: e == selectedCategory
                                       ? AppColors.white
                                       : null,
                                   child: ListTile(
-                                    onTap: () => ctlr.onChangeCategory(e),
+                                    onTap: () {
+                                      onFilterChange(e);
+                                      ctlr.onChangeCategory(
+                                          e, _selectedCategory);
+                                    },
                                     visualDensity: const VisualDensity(
                                         horizontal: 0, vertical: -3),
                                     title: Text(e),
@@ -92,167 +131,138 @@ class CategoryFilterBottomsheet extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            ctlr.selectedCategory.trim().toLowerCase() ==
-                                    'Sub-brand form'.trim().toLowerCase()
-                                ? TextFormField(
-                                    onChanged: (v) => ctlr.getCategorySearch(
-                                        tabType == SummaryTypes.gp.type
-                                            ? 'subBrandGroup'
-                                            : 'subBrandForm',
-                                        query: v),
-                                    decoration: const InputDecoration(
-                                      hintText: 'Search ',
-                                      prefixIcon: Icon(
-                                        Icons.search,
-                                        color: Colors.grey,
-                                      ),
-                                      border: UnderlineInputBorder(
-                                        borderSide: BorderSide(
-                                          width: .5,
-                                          color: Colors.grey,
-                                        ),
-                                      ),
-                                      enabledBorder: UnderlineInputBorder(
-                                        borderSide: BorderSide(
-                                          width: .5,
-                                          color: Colors.grey,
-                                        ),
-                                      ),
-                                      focusedBorder: UnderlineInputBorder(
-                                        borderSide: BorderSide(
-                                          width: .5,
-                                          color: Colors.grey,
-                                        ),
-                                      ),
-                                    ),
-                                  )
-                                : const SizedBox(),
                             SizedBox(
-                              height:
-                                  ctlr.selectedCategory.trim().toLowerCase() ==
-                                          "Sub-brand form".toLowerCase()
-                                      ? 250
-                                      : 300,
-                              child: ctlr.selectedCategory
-                                          .trim()
-                                          .toLowerCase() ==
-                                      "Sub-brand form".toLowerCase()
-                                  ? ctlr.isFilterLoading
-                                      ? const CustomLoader()
-                                      : ctlr.subBrandForm.isNotEmpty
-                                          ? SingleChildScrollView(
-                                              child: Column(
-                                                children: [
-                                                  ...ctlr.subBrandForm
-                                                      .map(
-                                                        (e) => InkWell(
-                                                          onTap: () => ctlr
-                                                              .onChangeCategoryValue(
-                                                                  e),
-                                                          child: Row(
-                                                            children: [
-                                                              Transform.scale(
-                                                                scale: .9,
-                                                                child: Checkbox(
-                                                                  value: ctlr
-                                                                      .selectedCategoryFilters
-                                                                      .contains(
-                                                                          e),
-                                                                  onChanged:
-                                                                      (v) => ctlr
-                                                                          .onChangeCategoryValue(
-                                                                              e),
-                                                                ),
-                                                              ),
-                                                              Flexible(
-                                                                child: Text(e),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      )
-                                                      .toList(),
-                                                ],
-                                              ),
-                                            )
-                                          : Center(
-                                              child: Text(
-                                                'Search for Sub brand form',
-                                                style:
-                                                    GoogleFonts.ptSansCaption(),
-                                              ),
-                                            )
-                                  : SingleChildScrollView(
-                                      child: Column(
-                                        children: [
-                                          ctlr.selectedCategory
-                                                          .trim()
-                                                          .toLowerCase() ==
-                                                      "Category"
-                                                          .toLowerCase() ||
-                                                  ctlr.selectedCategory
-                                                          .trim()
-                                                          .toLowerCase() ==
-                                                      "Brand".toLowerCase() ||
-                                                  ctlr.selectedCategory
-                                                          .trim()
-                                                          .toLowerCase() ==
-                                                      "Brand form".toLowerCase()
-                                              ? InkWell(
-                                                  onTap: () =>
-                                                      ctlr.onChangeFiltersAll(
-                                                          type: 'category'),
-                                                  child: Row(
-                                                    children: [
-                                                      Transform.scale(
-                                                        scale: .9,
-                                                        child: Checkbox(
-                                                          value: listEquals(
-                                                              ctlr.selectedCategoryFilters,
-                                                              ctlr.categoryFilters),
-                                                          onChanged: (v) => ctlr
-                                                              .onChangeFiltersAll(
-                                                                  type:
-                                                                      'category'),
-                                                        ),
-                                                      ),
-                                                      const Flexible(
-                                                        child:
-                                                            Text('Select all'),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                )
-                                              : const SizedBox(),
-                                          ...ctlr.categoryFilters
-                                              .map(
-                                                (cat) => GestureDetector(
-                                                  onTap: () => ctlr
-                                                      .onChangeCategoryValue(
-                                                          cat),
-                                                  child: Row(
-                                                    children: [
-                                                      Transform.scale(
-                                                        scale: .9,
-                                                        child: Checkbox(
-                                                          value: ctlr
-                                                              .selectedCategoryFilters
-                                                              .contains(cat),
-                                                          onChanged: (v) => ctlr
-                                                              .onChangeCategoryValue(
-                                                                  cat),
-                                                        ),
-                                                      ),
-                                                      Flexible(
-                                                          child: Text(cat)),
-                                                    ],
+                              height: 300,
+                              child: SingleChildScrollView(
+                                child: Column(
+                                  children: [
+                                    ctlr.selectedCategory
+                                                    .trim()
+                                                    .toLowerCase() ==
+                                                "Category".toLowerCase() ||
+                                            ctlr.selectedCategory
+                                                    .trim()
+                                                    .toLowerCase() ==
+                                                "Brand".toLowerCase() ||
+                                            ctlr.selectedCategory
+                                                    .trim()
+                                                    .toLowerCase() ==
+                                                "Brand form".toLowerCase()
+                                        ? InkWell(
+                                            onTap: () =>
+                                                ctlr.onChangeFiltersAll(
+                                                    type: 'category',
+                                                    tabType: widget.tabType),
+                                            child: Row(
+                                              children: [
+                                                Transform.scale(
+                                                  scale: .9,
+                                                  child: Checkbox(
+                                                    value: widget.tabType ==
+                                                            SummaryTypes
+                                                                .retailing.type
+                                                        ? eq(
+                                                            ctlr
+                                                                .selectedRetailingCategoryFilters,
+                                                            ctlr
+                                                                .categoryFilters)
+                                                        : widget.tabType ==
+                                                                SummaryTypes
+                                                                    .coverage
+                                                                    .type
+                                                            ? eq(
+                                                                ctlr
+                                                                    .selectedCoverageCategoryFilters,
+                                                                ctlr
+                                                                    .categoryFilters)
+                                                            : widget.tabType ==
+                                                                    SummaryTypes
+                                                                        .gp.type
+                                                                ? eq(
+                                                                    ctlr
+                                                                        .selectedGPCategoryFilters,
+                                                                    ctlr
+                                                                        .categoryFilters)
+                                                                : widget.tabType ==
+                                                                        SummaryTypes
+                                                                            .fb
+                                                                            .type
+                                                                    ? eq(
+                                                                        ctlr.selectedFBCategoryFilters,
+                                                                        ctlr.categoryFilters)
+                                                                    : false,
+                                                    onChanged: (v) =>
+                                                        ctlr.onChangeFiltersAll(
+                                                            type: 'category',
+                                                            tabType:
+                                                                widget.tabType),
                                                   ),
                                                 ),
-                                              )
-                                              .toList(),
-                                        ],
-                                      ),
-                                    ),
+                                                const Flexible(
+                                                  child: Text('Select all'),
+                                                ),
+                                              ],
+                                            ),
+                                          )
+                                        : const SizedBox(),
+                                    ...ctlr.categoryFilters
+                                        .map(
+                                          (cat) => GestureDetector(
+                                            onTap: () =>
+                                                ctlr.onChangeCategoryValue(
+                                                    cat,
+                                                    _selectedCategory,
+                                                    widget.tabType),
+                                            child: Row(
+                                              children: [
+                                                Transform.scale(
+                                                  scale: .9,
+                                                  child: Checkbox(
+                                                    value: widget.tabType ==
+                                                            SummaryTypes
+                                                                .retailing.type
+                                                        ? ctlr
+                                                            .selectedRetailingCategoryFilters
+                                                            .contains(cat)
+                                                        : widget.tabType ==
+                                                                SummaryTypes
+                                                                    .coverage
+                                                                    .type
+                                                            ? ctlr
+                                                                .selectedCoverageCategoryFilters
+                                                                .contains(cat)
+                                                            : widget.tabType ==
+                                                                    SummaryTypes
+                                                                        .gp.type
+                                                                ? ctlr
+                                                                    .selectedGPCategoryFilters
+                                                                    .contains(
+                                                                        cat)
+                                                                : widget.tabType ==
+                                                                        SummaryTypes
+                                                                            .fb
+                                                                            .type
+                                                                    ? ctlr
+                                                                        .selectedFBCategoryFilters
+                                                                        .contains(
+                                                                            cat)
+                                                                    : false,
+                                                    onChanged: (v) => ctlr
+                                                        .onChangeCategoryValue(
+                                                            cat,
+                                                            _selectedCategory,
+                                                            widget.tabType),
+                                                  ),
+                                                ),
+                                                Flexible(child: Text(cat)),
+                                              ],
+                                            ),
+                                          ),
+                                        )
+                                        .toList(),
+                                  ],
+                                ),
+                              ),
                             ),
                           ],
                         ),
@@ -279,17 +289,24 @@ class CategoryFilterBottomsheet extends StatelessWidget {
                       ),
                     ),
                     TextButton(
-                      onPressed: () {
-                        if (isTrends) {
-                          ctlr.onApplyMultiFilter('trends', 'geo',
-                              tabType: tabType);
-                        } else {
-                          ctlr.onApplyMultiFilter('category', 'category',
-                              tabType: tabType);
-                        }
-
-                        Navigator.pop(context);
-                      },
+                      onPressed: widget.tabType == SummaryTypes.retailing.type
+                          ? ctlr.selectedRetailingCategoryFilters.isNotEmpty
+                              ? () => onApplyFilter(ctlr)
+                              : null
+                          : widget.tabType == SummaryTypes.coverage.type
+                              ? ctlr.selectedCoverageCategoryFilters.isNotEmpty
+                                  ? () => onApplyFilter(ctlr)
+                                  : null
+                              : widget.tabType == SummaryTypes.gp.type
+                                  ? ctlr.selectedGPCategoryFilters.isNotEmpty
+                                      ? () => onApplyFilter(ctlr)
+                                      : null
+                                  : widget.tabType == SummaryTypes.fb.type
+                                      ? ctlr.selectedFBCategoryFilters
+                                              .isNotEmpty
+                                          ? () => onApplyFilter(ctlr)
+                                          : null
+                                      : () => onApplyFilter(ctlr),
                       style: ButtonStyle(
                         overlayColor:
                             MaterialStateProperty.all(Colors.transparent),
@@ -299,7 +316,20 @@ class CategoryFilterBottomsheet extends StatelessWidget {
                         style: GoogleFonts.ptSans(
                           fontSize: 16,
                           fontWeight: FontWeight.w700,
-                          color: AppColors.primary,
+                          color: widget.tabType == SummaryTypes.retailing.type
+                              ? ctlr.selectedRetailingCategoryFilters.isNotEmpty
+                                  ? AppColors.primary
+                                  : Colors.grey
+                              : widget.tabType == SummaryTypes.gp.type
+                                  ? ctlr.selectedGPCategoryFilters.isNotEmpty
+                                      ? AppColors.primary
+                                      : Colors.grey
+                                  : widget.tabType == SummaryTypes.fb.type
+                                      ? ctlr.selectedFBCategoryFilters
+                                              .isNotEmpty
+                                          ? AppColors.primary
+                                          : Colors.grey
+                                      : Colors.grey,
                         ),
                       ),
                     ),
@@ -312,5 +342,23 @@ class CategoryFilterBottomsheet extends StatelessWidget {
         );
       },
     );
+  }
+
+  void onApplyFilter(HomeController ctlr) {
+    FirebaseAnalytics.instance.logEvent(
+        name: 'deep_dive_selected_channel',
+        parameters: {
+          "message": 'Added Selected Category ${ctlr.getUserName()}'
+        });
+    ctlr.onChangeCategory1(_selectedCategory, tabType: widget.tabType);
+    if (widget.isTrends) {
+      ctlr.onApplyMultiFilter('trends', 'geo',
+          tabType: widget.tabType, subType: 'category');
+    } else {
+      ctlr.onApplyMultiFilter('category', 'category',
+          tabType: widget.tabType, subType: 'category');
+    }
+
+    Navigator.pop(context);
   }
 }

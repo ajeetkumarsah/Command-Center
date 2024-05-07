@@ -77,13 +77,13 @@ class DrawerSheet extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'Switch Mode',
-                      style: TextStyle(
-                          fontFamily: fontFamily,
-                          fontSize: 16,
-                          color: MyColors.textHeaderColor),
-                    ),
+                    // const Text(
+                    //   'Switch Mode',
+                    //   style: TextStyle(
+                    //       fontFamily: fontFamily,
+                    //       fontSize: 16,
+                    //       color: MyColors.textHeaderColor),
+                    // ),
                     const SizedBox(
                       height: 10,
                     ),

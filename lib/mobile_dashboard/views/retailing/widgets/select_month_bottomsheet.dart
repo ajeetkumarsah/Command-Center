@@ -4,22 +4,41 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
 import 'package:command_centre/mobile_dashboard/controllers/home_controller.dart';
 import 'package:command_centre/mobile_dashboard/views/widgets/custom_loader.dart';
-import 'package:command_centre/mobile_dashboard/views/widgets/custom_snackbar.dart';
+import 'package:command_centre/mobile_dashboard/views/widgets/custom_shimmer.dart';
 
-class SelectMonthBottomsheet extends StatelessWidget {
+class SelectMonthBottomsheet extends StatefulWidget {
   final bool isLoadRetailing;
   final String tabType;
+  final bool isSummary;
   const SelectMonthBottomsheet(
-      {super.key, this.isLoadRetailing = false, required this.tabType});
+      {super.key,
+      this.isLoadRetailing = false,
+      required this.tabType,
+      this.isSummary = false});
+
+  @override
+  State<SelectMonthBottomsheet> createState() => _SelectMonthBottomsheetState();
+}
+
+class _SelectMonthBottomsheetState extends State<SelectMonthBottomsheet> {
+  List<String> yearsList = ['Year', 'Month']; //Date
+  bool isFirst = true;
+  void initCall(HomeController ctlr) {
+    if (isFirst) {
+      isFirst = false;
+      ctlr.selectedMonthInit();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    List<String> yearsList = ['2023', '2022', '2021', '2020', '2019'];
-
     return GetBuilder<HomeController>(
       init: HomeController(homeRepo: Get.find()),
       // initState: (_) {},
       builder: (ctlr) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          initCall(ctlr);
+        });
         return StatefulBuilder(builder: (context, setState) {
           return Container(
             decoration: const BoxDecoration(
@@ -31,6 +50,7 @@ class SelectMonthBottomsheet extends StatelessWidget {
             ),
             child: SingleChildScrollView(
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   const SizedBox(height: 12),
                   Row(
@@ -39,6 +59,7 @@ class SelectMonthBottomsheet extends StatelessWidget {
                       Expanded(
                         child: Text(
                           'Select Date',
+                          textAlign: TextAlign.center,
                           style: GoogleFonts.ptSans(
                             fontSize: 16,
                             fontWeight: FontWeight.w700,
@@ -66,17 +87,17 @@ class SelectMonthBottomsheet extends StatelessWidget {
                         child: Column(
                           children: [
                             ...yearsList
-                                .map((e) => Container(
-                                      color: e == ctlr.selectedTempYear
-                                          ? AppColors.white
-                                          : null,
-                                      child: ListTile(
-                                        onTap: () => ctlr.onChangeYearFilter(e),
-                                        visualDensity: const VisualDensity(
-                                            horizontal: 0, vertical: -3),
-                                        title: Text(e),
-                                      ),
-                                    ))
+                                .map(
+                                  (e) => Container(
+                                    color: AppColors.bgLight,
+                                    child: ListTile(
+                                      // onTap: () => ctlr.onChangeYearFilter(e),
+                                      visualDensity: const VisualDensity(
+                                          horizontal: 0, vertical: -3),
+                                      title: Text(e),
+                                    ),
+                                  ),
+                                )
                                 .toList(),
                           ],
                         ),
@@ -89,35 +110,120 @@ class SelectMonthBottomsheet extends StatelessWidget {
                               : SingleChildScrollView(
                                   child: Column(
                                     children: [
-                                      ...ctlr.monthFilters
-                                          .map(
-                                            (month) => InkWell(
-                                              onTap: () => ctlr
-                                                  .onChangeMonthFilter(month),
-                                              child: Row(
-                                                children: [
-                                                  Transform.scale(
-                                                    scale: .9,
-                                                    child: Checkbox(
-                                                      value: ctlr
-                                                              .selectedTempMonth
-                                                              ?.toLowerCase() ==
-                                                          month.toLowerCase(),
-                                                      onChanged: (v) => ctlr
-                                                          .onChangeMonthFilter(
-                                                              month),
-                                                    ),
+                                      Container(
+                                        height: 40,
+                                        padding: const EdgeInsets.only(
+                                            left: 12, right: 6),
+                                        decoration: BoxDecoration(
+                                            border: Border.all(
+                                              width: 1,
+                                              color: AppColors.lightGrey,
+                                            ),
+                                            borderRadius:
+                                                BorderRadius.circular(8)),
+                                        child: DropdownButton<String>(
+                                          value: ctlr.selectedTempYear,
+                                          underline: const SizedBox(),
+                                          isExpanded: true,
+                                          icon: const Icon(
+                                            Icons.arrow_drop_down_rounded,
+                                            size: 24,
+                                          ),
+                                          items: ctlr.yearFilter
+                                              .map((String value) {
+                                            return DropdownMenuItem<String>(
+                                              value: value,
+                                              child: Text(value),
+                                            );
+                                          }).toList(),
+                                          onChanged: (v) =>
+                                              ctlr.onChangeTempYear(v ?? ''),
+                                        ),
+                                      ),
+                                      ctlr.isMonthLoading
+                                          ? CustomShimmer(
+                                              height: 40,
+                                              width: double.infinity,
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                            )
+                                          : Container(
+                                              height: 40,
+                                              margin:
+                                                  const EdgeInsets.only(top: 8),
+                                              padding: const EdgeInsets.only(
+                                                  left: 12, right: 6),
+                                              decoration: BoxDecoration(
+                                                  border: Border.all(
+                                                    width: 1,
+                                                    color: AppColors.lightGrey,
                                                   ),
-                                                  Flexible(
-                                                    child: Text(
-                                                      month,
-                                                    ),
-                                                  ),
-                                                ],
+                                                  borderRadius:
+                                                      BorderRadius.circular(8)),
+                                              child: DropdownButton<String>(
+                                                value: ctlr.selectedTempMonth,
+                                                underline: const SizedBox(),
+                                                isExpanded: true,
+                                                icon: const Icon(
+                                                  Icons.arrow_drop_down_rounded,
+                                                  size: 24,
+                                                ),
+                                                items: ctlr.monthFilters
+                                                    .map((String value) {
+                                                  return DropdownMenuItem<
+                                                      String>(
+                                                    value: value,
+                                                    child: Text(value),
+                                                  );
+                                                }).toList(),
+                                                onChanged: (v) => ctlr
+                                                    .onChangeTempMonth(v ?? ''),
                                               ),
                                             ),
-                                          )
-                                          .toList(),
+                                      // ...ctlr.monthFilters
+                                      //     .map(
+                                      //       (month) => InkWell(
+                                      //         onTap: () {
+                                      //           ctlr.onChangeMonthFilter(
+                                      //             month,
+                                      //             isLoadRetailing:
+                                      //                 isLoadRetailing,
+                                      //             priority: tabType,
+                                      //             isSummary: isSummary,
+                                      //           );
+                                      //           Get.back();
+                                      //         },
+                                      //         child: Row(
+                                      //           children: [
+                                      //             Transform.scale(
+                                      //               scale: .9,
+                                      //               child: Checkbox(
+                                      //                 value: ctlr
+                                      //                         .selectedTempMonth
+                                      //                         ?.toLowerCase() ==
+                                      //                     month.toLowerCase(),
+                                      //                 onChanged: (v) {
+                                      //                   ctlr.onChangeMonthFilter(
+                                      //                     month,
+                                      //                     isLoadRetailing:
+                                      //                         isLoadRetailing,
+                                      //                     priority: tabType,
+                                      //                     isSummary: isSummary,
+                                      //                   );
+                                      //                   Get.back();
+                                      //                 },
+                                      //               ),
+                                      //             ),
+                                      //             Flexible(
+                                      //               child: Text(
+                                      //                 month,
+                                      //               ),
+                                      //             ),
+                                      //           ],
+                                      //         ),
+                                      //       ),
+                                      //     )
+                                      //     .toList(),
                                     ],
                                   ),
                                 ),
@@ -126,36 +232,31 @@ class SelectMonthBottomsheet extends StatelessWidget {
                     ],
                   ),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       TextButton(
-                        onPressed: () => Get.back(),
-                        style: ButtonStyle(
-                          overlayColor:
-                              MaterialStateProperty.all(Colors.transparent),
-                        ),
-                        child: Text(
-                          'Clear',
-                          style: GoogleFonts.ptSans(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w400,
-                            color: Colors.grey,
-                          ),
-                        ),
-                      ),
-                      TextButton(
                         onPressed: () {
-                          if (ctlr.selectedTempYear != null &&
-                              ctlr.selectedTempMonth != null) {
-                            ctlr.onChangeDate(
-                              isLoadRetailing: isLoadRetailing,
-                              tabType: tabType,
-                            );
-                            Navigator.pop(context);
-                          } else {
-                            showCustomSnackBar('Please select the month.',
-                                isError: false, isBlack: true);
-                          }
+                          // LoggerUtils.firebaseAnalytics(
+                          //     AnalyticsEvent.selected_month,
+                          //     "Selected Month ${ctlr.getUserName()}");
+                          // if (ctlr.selectedTempMonth != null) {
+                          //   ctlr.onChangeDate(
+                          //     isLoadRetailing: isLoadRetailing,
+                          //     tabType: 'All',
+                          //     isSummary: isSummary,
+                          //   );
+                          ctlr.onChangeMonthFilter(
+                            ctlr.selectedTempMonth ?? '',
+                            ctlr.selectedTempYear ?? '',
+                            isLoadRetailing: widget.isLoadRetailing,
+                            priority: widget.tabType,
+                            isSummary: widget.isSummary,
+                          );
+                          Navigator.pop(context);
+                          // } else {
+                          //   showCustomSnackBar('Please select the month.',
+                          //       isError: false, isBlack: true);
+                          // }
                         },
                         style: ButtonStyle(
                           overlayColor:

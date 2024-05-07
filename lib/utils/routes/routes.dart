@@ -5,6 +5,7 @@ import 'package:command_centre/activities/login_screen.dart';
 import 'package:command_centre/activities/marketvisit_screen.dart';
 import 'package:command_centre/activities/purpose_screen.dart';
 import 'package:command_centre/activities/splash_screen.dart';
+import 'package:command_centre/mobile_dashboard/views/login/testing.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'routes_name.dart';
@@ -28,6 +29,8 @@ class Routes{
         return MaterialPageRoute(builder: (BuildContext context)=> MarketVisit());
       case RoutesName.home:
         return MaterialPageRoute(builder: (BuildContext context)=> HomePage());
+      case RoutesName.loginTest:
+        return MaterialPageRoute(builder: (BuildContext context)=> WebViewExample());
       default:
         return MaterialPageRoute(builder: (_){
           return const Scaffold(

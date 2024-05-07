@@ -1,15 +1,12 @@
-import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:command_centre/utils/comman/login_appbar.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
-import 'package:command_centre/mobile_dashboard/utils/app_constants.dart';
 import 'package:command_centre/mobile_dashboard/utils/routes/app_pages.dart';
-import 'package:command_centre/mobile_dashboard/views/login/login_screen.dart';
 import 'package:command_centre/mobile_dashboard/controllers/auth_controller.dart';
-import 'package:command_centre/mobile_dashboard/controllers/home_controller.dart';
 import 'package:command_centre/mobile_dashboard/views/widgets/custom_shimmer.dart';
 import 'package:command_centre/mobile_dashboard/views/widgets/custom_snackbar.dart';
 
@@ -64,7 +61,7 @@ class _SelectGeoScreenState extends State<SelectGeoScreen>
   @override
   void initState() {
     super.initState();
-
+    FirebaseCrashlytics.instance.log("Select Geo Started");
     _animationController =
         AnimationController(duration: const Duration(seconds: 1), vsync: this);
 
@@ -307,7 +304,7 @@ class _SelectGeoScreenState extends State<SelectGeoScreen>
                                 child: Align(
                                   alignment: Alignment.center,
                                   child: Text(
-                                    'Site',
+                                    'Focus Area',
                                     // textAlign: TextAlign.start,
                                     style: GoogleFonts.ptSansCaption(
                                       fontSize: 18,
@@ -379,7 +376,7 @@ class _SelectGeoScreenState extends State<SelectGeoScreen>
                                               : selectedContainerIndex == 3
                                                   ? 'Select Cluster'
                                                   : selectedContainerIndex == 4
-                                                      ? 'Select Site'
+                                                      ? 'Select Focus Area'
                                                       : '',
                                           dropDownItem:
                                               selectedContainerIndex == 2
@@ -393,8 +390,8 @@ class _SelectGeoScreenState extends State<SelectGeoScreen>
                                                           ))
                                                       .toList()
                                                   : selectedContainerIndex == 3
-                                                      ? ctlr
-                                                          .filtersModel!.cluster
+                                                      ? ctlr.filtersModel!
+                                                          .district
                                                           .map((value) =>
                                                               DropdownMenuItem(
                                                                 value: value
@@ -424,17 +421,17 @@ class _SelectGeoScreenState extends State<SelectGeoScreen>
                     width: size.width,
                     child: ElevatedButton(
                       onPressed: () async {
+                        await ctlr.postPersonaSelected();
+                        FirebaseCrashlytics.instance.log("Select Geo Selected");
                         ctlr.savePurpose('business');
                         if (selectedContainerIndex == 1) {
                           ctlr.onChangeGeo('All India', 'All India');
-
-                          Get.offAndToNamed(AppPages.INITIAL);
+                          Get.offAndToNamed(AppPages.SPLASH_SCREEN);
                         } else if (selectedContainerIndex == 2) {
                           if (selectedDivisionValue != null) {
                             ctlr.onChangeGeo(
                                 'Division', selectedDivisionValue ?? '');
-
-                            Get.offAndToNamed(AppPages.INITIAL);
+                            Get.offAndToNamed(AppPages.SPLASH_SCREEN);
                           } else {
                             showCustomSnackBar('Please select a division.');
                           }
@@ -442,23 +439,21 @@ class _SelectGeoScreenState extends State<SelectGeoScreen>
                           if (selectedClusterValue != null) {
                             ctlr.onChangeGeo(
                                 'Cluster', selectedClusterValue ?? '');
-
-                            Get.offAndToNamed(AppPages.INITIAL);
+                            Get.offAndToNamed(AppPages.SPLASH_SCREEN);
                           } else {
                             showCustomSnackBar('Please select a cluster.');
                           }
                         } else if (selectedContainerIndex == 4) {
                           if (selectedSiteValue != null) {
-                            ctlr.onChangeGeo('Site', selectedSiteValue ?? '');
-
-                            Get.offAndToNamed(AppPages.INITIAL);
+                            ctlr.onChangeGeo(
+                                'Focus Area', selectedSiteValue ?? '');
+                            Get.offAndToNamed(AppPages.SPLASH_SCREEN);
                           } else {
                             showCustomSnackBar('Please select a site.');
                           }
                         } else {
                           ctlr.onChangeGeo('All India', 'All India');
-
-                          Get.offAndToNamed(AppPages.INITIAL);
+                          Get.offAndToNamed(AppPages.SPLASH_SCREEN);
                         }
                       },
                       style: ElevatedButton.styleFrom(
@@ -472,6 +467,7 @@ class _SelectGeoScreenState extends State<SelectGeoScreen>
                               style: GoogleFonts.ptSansCaption(
                                   fontWeight: FontWeight.w700,
                                   fontSize: 18,
+                                  color: Colors.white,
                                   letterSpacing: 0.6)),
                         ],
                       ),

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "966656788419",
+    "project_id": "comandc-99a4a",
+    "storage_bucket": "comandc-99a4a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:966656788419:android:045e731bcc7b42961c5f76",
+        "android_client_info": {
+          "package_name": "com.commandcentre.command_centre"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC27DopIenlyV-E_BD7g1Lgk8mEJQaoUgE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

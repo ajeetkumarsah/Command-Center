@@ -2,7 +2,6 @@ import 'dart:io';
 import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:path/path.dart';
-import 'package:logger/logger.dart';
 import 'package:http/http.dart' as Http;
 import 'package:flutter/foundation.dart';
 import 'package:http_parser/http_parser.dart';
@@ -138,11 +137,14 @@ class ApiClient extends GetxService {
   }
 
   Future<Response> postData(String uri, dynamic body,
-      {Map<String, String>? headers, bool isRefresh = false}) async {
+      {Map<String, String>? headers,
+      bool isRefresh = false,
+      bool changeHeader = true,
+      bool withBaseUrl = false}) async {
     final SharedPreferences sharedPreferences =
         await SharedPreferences.getInstance();
 
-    if (headers != null) {
+    if (headers != null && changeHeader) {
       debugPrint(
           '===>TOKEN:${sharedPreferences.getString(AppConstants.ACCESS_TOKEN)}');
       headers['Authorization'] =
@@ -156,16 +158,16 @@ class ApiClient extends GetxService {
       headers['Ocp-Apim-Trace'] = true.toString();
       headers['Ocp-Apim-Subscription-Key'] = AppConstants.SUBSCRIPTION_KEY;
     }
-
     _mainHeaders = {'Content-Type': 'application/json'};
     try {
-      debugPrint('==>Final URL: ${Uri.parse(appBaseUrl + uri)}');
+      debugPrint(
+          '==>Final URL: ${Uri.parse(withBaseUrl ? uri : appBaseUrl + uri)}');
       debugPrint('==>Body : ${jsonEncode(body)}');
 
-      Logger().log(Level.info, '==>Header: ${headers ?? _mainHeaders}');
+      // Logger().log(Level.info, '==>Header: ${headers ?? _mainHeaders}');
       debugPrint('==>Header: ${headers ?? _mainHeaders}');
       Http.Response _response = await Http.post(
-        Uri.parse(appBaseUrl + uri),
+        Uri.parse(withBaseUrl ? uri : appBaseUrl + uri),
         body: jsonEncode(body),
         headers: headers ?? _mainHeaders,
       ).timeout(const Duration(seconds: 60));
@@ -253,12 +255,20 @@ class ApiClient extends GetxService {
         debugPrint('====> API Body: $body');
       }
       if (headers != null) {
-        headers['Authorization'] =
-            'Bearer ${sharedPreferences.getString(AppConstants.TOKEN)}';
         debugPrint(
-            '===>TOKEN:${sharedPreferences.getString(AppConstants.TOKEN)}');
+            '===>TOKEN:${sharedPreferences.getString(AppConstants.ACCESS_TOKEN)}');
+        headers['Authorization'] =
+            'Bearer ${sharedPreferences.getString(AppConstants.ACCESS_TOKEN)}';
         headers['Content-Type'] = 'application/json';
+        headers['Accept'] = '*/*';
+        headers['X_AUTH_TOKEN'] =
+            sharedPreferences.getString(AppConstants.ACCESS_TOKEN) ?? '';
+        headers['x-access-token'] =
+            sharedPreferences.getString(AppConstants.TOKEN) ?? '';
+        headers['Ocp-Apim-Trace'] = true.toString();
+        headers['Ocp-Apim-Subscription-Key'] = AppConstants.SUBSCRIPTION_KEY;
       }
+
       _mainHeaders = {'Content-Type': 'application/json'};
       Http.MultipartRequest _request =
           Http.MultipartRequest('POST', Uri.parse(appBaseUrl + uri));

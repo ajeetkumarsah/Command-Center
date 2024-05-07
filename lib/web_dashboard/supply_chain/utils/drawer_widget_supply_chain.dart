@@ -58,12 +58,12 @@ class _DrawerWidgetState extends State<DrawerWidgetSupplyChain> {
       "name": provider.selectedGraph,
       "physicalYear": ""
     });
-    print("Body Retailing Tab 1 $body");
+
     var response = await http.post(Uri.parse(url), headers: {"Content-Type": "application/json"}, body: body);
     if (response.statusCode == 200) {
       setState(() {
         graphData = jsonDecode(response.body);
-        print('data : $graphData');
+
         provider.setGraphDataList(graphData);
       });
     } else {

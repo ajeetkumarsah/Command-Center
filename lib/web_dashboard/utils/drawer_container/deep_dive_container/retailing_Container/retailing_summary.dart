@@ -200,7 +200,7 @@ class _RetailingWebSummaryState extends State<RetailingWebSummary> {
       var jsonResponse = await json.decode(response.body);
       setState(() {
         clusterCount = jsonResponse["data"];
-        // print(clusterCount);
+
       });
     } else {
       print('Request failed with status: ${response.statusCode}.');

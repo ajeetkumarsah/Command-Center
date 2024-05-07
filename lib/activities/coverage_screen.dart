@@ -1,15 +1,15 @@
+import '../utils/colors/colors.dart';
+import '../utils/comman/app_bar.dart';
+import 'package:flutter/material.dart';
+import '../model/data_table_model.dart';
+import '../utils/const/header_text.dart';
+import '../utils/comman/coverage/coverage_channel.dart';
+import '../utils/comman/coverage/coverage_category.dart';
 import 'package:command_centre/activities/retailing_screen.dart';
 import 'package:command_centre/utils/comman/coverage/coverage_table.dart';
 import 'package:command_centre/utils/comman/coverage/coverage_trends.dart';
-import 'package:flutter/material.dart';
-
-import '../model/data_table_model.dart';
-import '../utils/colors/colors.dart';
-import '../utils/comman/app_bar.dart';
-import '../utils/comman/coverage/coverage_category.dart';
-import '../utils/comman/coverage/coverage_channel.dart';
 import '../utils/comman/coverage/coverage_utils/coverage_table_sheet.dart';
-import '../utils/const/header_text.dart';
+
 
 
 class CityData {
@@ -57,7 +57,7 @@ class _CoverageScreenState extends State<CoverageScreen> {
   late Color signInColor;
   List<ChartData>? chartData;
   var isExpanded = false;
-  List rowsItems = ['Billing', 'Coverage', 'Productive Calls'];
+  List rowsItems = [ 'Coverage', 'Productive Calls'];
   String selectedDivision = '';
 
   @override

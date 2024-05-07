@@ -96,7 +96,7 @@ class _CoverageDistributionContainerDrawerState
         divisionCount = jsonResponse;
       });
     } else {
-      print('Request failed with status: ${response.statusCode}.');
+
     }
     return '';
   }
@@ -114,7 +114,7 @@ class _CoverageDistributionContainerDrawerState
         clusterCount = jsonResponse;
       });
     } else {
-      print('Request failed with status: ${response.statusCode}.');
+
     }
     return '';
   }
@@ -132,7 +132,7 @@ class _CoverageDistributionContainerDrawerState
         siteCount = jsonResponse;
       });
     } else {
-      print('Request failed with status: ${response.statusCode}.');
+
     }
     return '';
   }
@@ -147,16 +147,16 @@ class _CoverageDistributionContainerDrawerState
             {"allIndia": "allIndia", "date": "May-2023", "channel": []}
           ]
         : flattenedList);
-    print("Consolidated View $body");
+
     var response = await http.post(Uri.parse(url),
         headers: {"Content-Type": "application/json"}, body: body);
     if (response.statusCode == 200) {
       setState(() {
         dataListCoverage = jsonDecode(response.body);
-        // print("Response Body ==> $dataListCoverage");
+
       });
     } else {
-      print("Else");
+
       setState(() {
         provider.setCoverageErrorMsg([response.body]);
       });
@@ -176,16 +176,16 @@ class _CoverageDistributionContainerDrawerState
             {"allIndia": "allIndia", "date": "May-2023", "channel": []}
           ]
         : flattenedListCC);
-    print(body);
+
     var response = await http.post(Uri.parse(url),
         headers: {"Content-Type": "application/json"}, body: body);
     if (response.statusCode == 200) {
       setState(() {
         dataListCoverageCCTabs = jsonDecode(response.body);
-        print("Coverage Call Hit Rate! ${response.statusCode}");
+
       });
     } else {
-      print("Else");
+
       setState(() {
         provider.setCoverage1ErrorMsg([response.body]);
       });
@@ -204,16 +204,16 @@ class _CoverageDistributionContainerDrawerState
             {"allIndia": "allIndia", "date": "Jun-2023", "channel": []}
           ]
         : flattenedListProd);
-    print("Coverage 3 tap $body");
+
     var response = await http.post(Uri.parse(url),
         headers: {"Content-Type": "application/json"}, body: body);
     if (response.statusCode == 200) {
       setState(() {
         dataListCoverageProdTabs = jsonDecode(response.body);
-        print("Coverage Productivity! ${response.statusCode}");
+
       });
     } else {
-      print("Else");
+
       setState(() {
         provider.setCoverage2ErrorMsg([response.body]);
       });
@@ -231,16 +231,16 @@ class _CoverageDistributionContainerDrawerState
             {"allIndia": "allIndia", "date": "Jun-2023", "channel": []}
           ]
         : flattenedListBilling);
-    print("Coverage 4 tap $body");
+
     var response = await http.post(Uri.parse(url),
         headers: {"Content-Type": "application/json"}, body: body);
     if (response.statusCode == 200) {
       setState(() {
         dataListCoverageBillingTabs = jsonDecode(response.body);
-        print("Coverage PxM Billing! ${response.statusCode}");
+
       });
     } else {
-      print("Else");
+
       setState(() {
         provider.setCoverage3ErrorMsg([response.body]);
       });
@@ -271,7 +271,7 @@ class _CoverageDistributionContainerDrawerState
       {"filter_key": "productivity", "query": []}
     ]
         : listRetailingData);
-    print("Summary Body ${json.encode(listRetailingData)}");
+
     var response = await http.post(Uri.parse(url),
         headers: {"Content-Type": "application/json"}, body: body);
     if (response.statusCode == 200) {
@@ -456,7 +456,7 @@ class _CoverageDistributionContainerDrawerState
             if (!flattenedListCC.contains(jsonToAdd[0])) {
               flattenedListCC.add(jsonToAdd[0]);
             } else {
-              print("Value already exists in flattenedListCC");
+
             }
           }
         }
@@ -511,7 +511,7 @@ class _CoverageDistributionContainerDrawerState
             if (!flattenedListProd.contains(jsonToAdd[0])) {
               flattenedListProd.add(jsonToAdd[0]);
             } else {
-              print("Value already exists in flattenedListCC");
+
             }
           }
         }
@@ -566,7 +566,7 @@ class _CoverageDistributionContainerDrawerState
             if (!flattenedListBilling.contains(jsonToAdd[0])) {
               flattenedListBilling.add(jsonToAdd[0]);
             } else {
-              print("Value already exists in flattenedListCC");
+
             }
           }
         }
@@ -584,7 +584,7 @@ class _CoverageDistributionContainerDrawerState
         });
         saveDataCoverageAll();
       } catch (e) {
-        print("Error: $e");
+
       }
     }
   }

@@ -1,9 +1,9 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:command_centre/utils/comman/login_appbar.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
 import 'package:command_centre/mobile_dashboard/utils/routes/app_pages.dart';
-import 'package:command_centre/mobile_dashboard/views/login/login_screen.dart';
 
 class SelectProfile extends StatefulWidget {
   const SelectProfile({super.key});
@@ -14,7 +14,7 @@ class SelectProfile extends StatefulWidget {
 
 class _SelectProfileState extends State<SelectProfile> {
   var itemList = ['Sales', 'Finance', 'Supply Chain'];
-  int _selected = -1;
+  // int _selected = -1;
   int selectedContainerIndex = 0;
   void selectContainer(int index) {
     setState(() {
@@ -263,7 +263,8 @@ class _SelectProfileState extends State<SelectProfile> {
                     width: MediaQuery.of(context).size.width,
                     child: ElevatedButton(
                       onPressed: () {
-                        Get.toNamed(AppPages.PURPOSE_SCREEN);
+                        Get.offAndToNamed(AppPages.INITIAL);
+                        // Get.toNamed(AppPages.PURPOSE_SCREEN);
                         // SharedPreferencesUtils.setString('selectedProfile',
                         //     itemList[selectedContainerIndex]);
                         // Navigator.push(
@@ -286,7 +287,7 @@ class _SelectProfileState extends State<SelectProfile> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            'Select Geography',
+                            'Continue',
                             style: GoogleFonts.ptSans(
                                 fontWeight: FontWeight.w700,
                                 fontSize: 18,

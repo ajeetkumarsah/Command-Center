@@ -1,15 +1,43 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
+import 'package:command_centre/mobile_dashboard/utils/summary_types.dart';
 import 'package:command_centre/mobile_dashboard/controllers/home_controller.dart';
 import 'package:command_centre/mobile_dashboard/views/widgets/custom_loader.dart';
 
-class GeographyMultiSelectBottomsheet extends StatelessWidget {
+class GeographyMultiSelectBottomsheet extends StatefulWidget {
   final bool isTrends;
   final String tabType;
   const GeographyMultiSelectBottomsheet(
       {super.key, this.isTrends = false, required this.tabType});
+
+  @override
+  State<GeographyMultiSelectBottomsheet> createState() =>
+      _GeographyMultiSelectBottomsheetState();
+}
+
+class _GeographyMultiSelectBottomsheetState
+    extends State<GeographyMultiSelectBottomsheet> {
+  String _selectedFilter = '';
+  String get selectedFilter => _selectedFilter;
+
+  void onChangeFilter(String value) {
+    _selectedFilter = value;
+    setState(() {});
+  }
+
+  bool isFirst = true;
+  void initCall(String value, HomeController ctlr) {
+    if (isFirst) {
+      isFirst = false;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        onChangeFilter(value);
+        ctlr.onGeoChange(_selectedFilter, isMultiSelect: true);
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -17,13 +45,14 @@ class GeographyMultiSelectBottomsheet extends StatelessWidget {
       'All India',
       'Division',
       'Cluster',
-      'Site',
+      'Focus Area',
       'Branch'
     ];
     return GetBuilder<HomeController>(
       init: HomeController(homeRepo: Get.find()),
       initState: (_) {},
       builder: (ctlr) {
+        initCall(ctlr.selectedMultiGeo, ctlr);
         return Container(
           decoration: const BoxDecoration(
             borderRadius: BorderRadius.only(
@@ -41,7 +70,7 @@ class GeographyMultiSelectBottomsheet extends StatelessWidget {
                     const SizedBox(width: 16),
                     Expanded(
                       child: Text(
-                        'Select Geography ${ctlr.selectedMultiGeo}',
+                        'Select Geography ',
                         style: GoogleFonts.ptSans(
                           fontSize: 16,
                           fontWeight: FontWeight.w700,
@@ -71,12 +100,15 @@ class GeographyMultiSelectBottomsheet extends StatelessWidget {
                           ...geoList
                               .map(
                                 (e) => Container(
-                                  color: e == ctlr.selectedMultiGeo
+                                  color: e == selectedFilter
                                       ? AppColors.white
                                       : null,
                                   child: ListTile(
-                                    onTap: () => ctlr.onGeoChange(e,
-                                        isMultiSelect: true),
+                                    onTap: () {
+                                      onChangeFilter(e);
+                                      ctlr.onGeoChange(_selectedFilter,
+                                          isMultiSelect: true);
+                                    },
                                     visualDensity: const VisualDensity(
                                         horizontal: 0, vertical: -3),
                                     title: Text(e),
@@ -93,7 +125,7 @@ class GeographyMultiSelectBottomsheet extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            ctlr.selectedMultiGeo.trim().toLowerCase() ==
+                            _selectedFilter.trim().toLowerCase() ==
                                     "Branch".toLowerCase()
                                 ? TextFormField(
                                     onChanged: (v) => ctlr
@@ -126,110 +158,62 @@ class GeographyMultiSelectBottomsheet extends StatelessWidget {
                                   )
                                 : const SizedBox(),
                             SizedBox(
-                              height:
-                                  ctlr.selectedMultiGeo.trim().toLowerCase() ==
-                                          "Branch".toLowerCase()
-                                      ? 250
-                                      : 300,
-                              child:
-                                  ctlr.selectedMultiGeo.trim().toLowerCase() ==
-                                          "Branch".toLowerCase()
-                                      ? ctlr.isFilterLoading
-                                          ? const CustomLoader()
-                                          : ctlr.branchFilter.isNotEmpty
-                                              ? SingleChildScrollView(
-                                                  child: Column(
-                                                    children: [
-                                                      ...ctlr.branchFilter
-                                                          .map(
-                                                            (e) => InkWell(
-                                                              onTap: () => ctlr
-                                                                  .onChangeMultiFilters(
-                                                                      e),
-                                                              child: Row(
-                                                                children: [
-                                                                  Transform
-                                                                      .scale(
-                                                                    scale: .9,
-                                                                    child:
-                                                                        Checkbox(
-                                                                      value: ctlr.selectedMultiGeo.toLowerCase() ==
-                                                                              'Branch'
-                                                                                  .toLowerCase()
-                                                                          ? ctlr.selectedMultiBranches.contains(
-                                                                              e)
-                                                                          : ctlr
-                                                                              .selectedMultiFilters
-                                                                              .contains(e),
-                                                                      onChanged:
-                                                                          (v) =>
-                                                                              ctlr.onChangeMultiFilters(e),
-                                                                    ),
-                                                                  ),
-                                                                  Flexible(
-                                                                    child:
-                                                                        Text(e),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                          )
-                                                          .toList(),
-                                                    ],
-                                                  ),
-                                                )
-                                              : Center(
-                                                  child: Text(
-                                                    'Search for branch',
-                                                    style: GoogleFonts
-                                                        .ptSansCaption(),
-                                                  ),
-                                                )
-                                      : ctlr.isFilterLoading
-                                          ? const CustomLoader()
-                                          : SingleChildScrollView(
+                              height: _selectedFilter.trim().toLowerCase() ==
+                                      "Branch".toLowerCase()
+                                  ? 250
+                                  : 300,
+                              child: _selectedFilter.trim().toLowerCase() ==
+                                      "Branch".toLowerCase()
+                                  ? ctlr.isFilterLoading
+                                      ? const CustomLoader()
+                                      : ctlr.branchFilter.isNotEmpty
+                                          ? SingleChildScrollView(
                                               child: Column(
                                                 children: [
-                                                  ...ctlr.multiFilters
+                                                  ...ctlr.branchFilter
                                                       .map(
                                                         (e) => InkWell(
-                                                          onTap: () => ctlr
-                                                              .onChangeMultiFilters(
-                                                                  e),
+                                                          onTap: () {
+                                                            ctlr.onChangeMultiFilters(
+                                                                e,
+                                                                tabType: widget
+                                                                    .tabType,
+                                                                selectedMultiGeoFilter:
+                                                                    _selectedFilter);
+                                                          },
                                                           child: Row(
                                                             children: [
                                                               Transform.scale(
                                                                 scale: .9,
                                                                 child: Checkbox(
-                                                                  value: ctlr.selectedMultiGeo
-                                                                              .trim()
+                                                                  value: selectedFilter
                                                                               .toLowerCase() ==
-                                                                          'Division'
-                                                                              .trim()
+                                                                          'Branch'
                                                                               .toLowerCase()
-                                                                      ? ctlr
-                                                                          .selectedMultiDivisions
-                                                                          .contains(
-                                                                              e)
-                                                                      : ctlr.selectedMultiGeo.toLowerCase() ==
-                                                                              'Cluster'
-                                                                                  .toLowerCase()
+                                                                      ? widget.tabType ==
+                                                                              SummaryTypes
+                                                                                  .retailing.type
                                                                           ? ctlr
-                                                                              .selectedMultiClusters
+                                                                              .selectedRetailingMultiBranches
                                                                               .contains(e)
-                                                                          : ctlr.selectedMultiGeo.toLowerCase() == 'Site'.toLowerCase()
-                                                                              ? ctlr.selectedMultiSites.contains(e)
-                                                                              : ctlr.selectedMultiGeo.toLowerCase() == 'Branch'.toLowerCase()
-                                                                                  ? ctlr.selectedMultiBranches.contains(e)
-                                                                                  : ctlr.selectedMultiFilters.contains(e),
-
-                                                                  //  ctlr
-                                                                  //     .selectedMultiFilters
-                                                                  //     .contains(e),
+                                                                          : widget.tabType == SummaryTypes.coverage.type
+                                                                              ? ctlr.selectedCoverageMultiBranches.contains(e)
+                                                                              : widget.tabType == SummaryTypes.gp.type
+                                                                                  ? ctlr.selectedGPMultiBranches.contains(e)
+                                                                                  : widget.tabType == SummaryTypes.fb.type
+                                                                                      ? ctlr.selectedFBMultiBranches.contains(e)
+                                                                                      : false
+                                                                      : ctlr.selectedMultiFilters.contains(e),
                                                                   onChanged:
-                                                                      (v) => ctlr
-                                                                          .onChangeMultiFilters(
-                                                                              e),
+                                                                      (v) {
+                                                                    ctlr.onChangeMultiFilters(
+                                                                        e,
+                                                                        tabType:
+                                                                            widget
+                                                                                .tabType,
+                                                                        selectedMultiGeoFilter:
+                                                                            _selectedFilter);
+                                                                  },
                                                                 ),
                                                               ),
                                                               Flexible(
@@ -242,7 +226,116 @@ class GeographyMultiSelectBottomsheet extends StatelessWidget {
                                                       .toList(),
                                                 ],
                                               ),
-                                            ),
+                                            )
+                                          : Center(
+                                              child: Text(
+                                                'Search for branch',
+                                                style:
+                                                    GoogleFonts.ptSansCaption(),
+                                              ),
+                                            )
+                                  : ctlr.isFilterLoading
+                                      ? const CustomLoader()
+                                      : SingleChildScrollView(
+                                          child: Column(
+                                            children: [
+                                              ...ctlr.multiFilters
+                                                  .map(
+                                                    (e) => InkWell(
+                                                      onTap: () {
+                                                        ctlr.onChangeMultiFilters(
+                                                            e,
+                                                            tabType:
+                                                                widget.tabType,
+                                                            selectedMultiGeoFilter:
+                                                                _selectedFilter);
+                                                      },
+                                                      child: Row(
+                                                        children: [
+                                                          Transform.scale(
+                                                            scale: .9,
+                                                            child: Checkbox(
+                                                              value: widget
+                                                                          .tabType ==
+                                                                      SummaryTypes
+                                                                          .retailing
+                                                                          .type
+                                                                  ? selectedFilter ==
+                                                                          'All India'
+                                                                      ? ctlr
+                                                                          .selectedRetailingMultiAllIndia
+                                                                          .contains(
+                                                                              e)
+                                                                      : selectedFilter.trim().toLowerCase() ==
+                                                                              'Division'.trim().toLowerCase()
+                                                                          ? ctlr.selectedRetailingMultiDivisions.contains(e)
+                                                                          : selectedFilter.toLowerCase() == 'Cluster'.toLowerCase()
+                                                                              ? ctlr.selectedRetailingMultiClusters.contains(e)
+                                                                              : selectedFilter.toLowerCase() == 'Focus Area'.toLowerCase()
+                                                                                  ? ctlr.selectedRetailingMultiSites.contains(e)
+                                                                                  : selectedFilter.toLowerCase() == 'Branch'.toLowerCase()
+                                                                                      ? ctlr.selectedRetailingMultiBranches.contains(e)
+                                                                                      : ctlr.selectedMultiFilters.contains(e)
+                                                                  : widget.tabType == SummaryTypes.coverage.type
+                                                                      ? selectedFilter == 'All India'
+                                                                          ? ctlr.selectedCoverageMultiAllIndia.contains(e)
+                                                                          : selectedFilter.trim().toLowerCase() == 'Division'.trim().toLowerCase()
+                                                                              ? ctlr.selectedCoverageMultiDivisions.contains(e)
+                                                                              : selectedFilter.toLowerCase() == 'Cluster'.toLowerCase()
+                                                                                  ? ctlr.selectedCoverageMultiClusters.contains(e)
+                                                                                  : selectedFilter.toLowerCase() == 'Focus Area'.toLowerCase()
+                                                                                      ? ctlr.selectedCoverageMultiSites.contains(e)
+                                                                                      : selectedFilter.toLowerCase() == 'Branch'.toLowerCase()
+                                                                                          ? ctlr.selectedCoverageMultiBranches.contains(e)
+                                                                                          : ctlr.selectedMultiFilters.contains(e)
+                                                                      : widget.tabType == SummaryTypes.gp.type
+                                                                          ? selectedFilter == 'All India'
+                                                                              ? ctlr.selectedGPMultiAllIndia.contains(e)
+                                                                              : selectedFilter.trim().toLowerCase() == 'Division'.trim().toLowerCase()
+                                                                                  ? ctlr.selectedGPMultiDivisions.contains(e)
+                                                                                  : selectedFilter.toLowerCase() == 'Cluster'.toLowerCase()
+                                                                                      ? ctlr.selectedGPMultiClusters.contains(e)
+                                                                                      : selectedFilter.toLowerCase() == 'Focus Area'.toLowerCase()
+                                                                                          ? ctlr.selectedGPMultiSites.contains(e)
+                                                                                          : selectedFilter.toLowerCase() == 'Branch'.toLowerCase()
+                                                                                              ? ctlr.selectedGPMultiBranches.contains(e)
+                                                                                              : ctlr.selectedMultiFilters.contains(e)
+                                                                          : widget.tabType == SummaryTypes.fb.type
+                                                                              ? selectedFilter == 'All India'
+                                                                                  ? ctlr.selectedFBMultiAllIndia.contains(e)
+                                                                                  : selectedFilter.trim().toLowerCase() == 'Division'.trim().toLowerCase()
+                                                                                      ? ctlr.selectedFBMultiDivisions.contains(e)
+                                                                                      : selectedFilter.toLowerCase() == 'Cluster'.toLowerCase()
+                                                                                          ? ctlr.selectedFBMultiClusters.contains(e)
+                                                                                          : selectedFilter.toLowerCase() == 'Focus Area'.toLowerCase()
+                                                                                              ? ctlr.selectedFBMultiSites.contains(e)
+                                                                                              : selectedFilter.toLowerCase() == 'Branch'.toLowerCase()
+                                                                                                  ? ctlr.selectedFBMultiBranches.contains(e)
+                                                                                                  : ctlr.selectedMultiFilters.contains(e)
+                                                                              : false,
+                                                              // ctlr.selectedMultiFilters
+                                                              //     .contains(
+                                                              //         e),
+                                                              onChanged: (v) {
+                                                                ctlr.onChangeMultiFilters(
+                                                                    e,
+                                                                    tabType: widget
+                                                                        .tabType,
+                                                                    selectedMultiGeoFilter:
+                                                                        _selectedFilter);
+                                                              },
+                                                            ),
+                                                          ),
+                                                          Flexible(
+                                                              child: Text(e)),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  )
+                                                  .toList(),
+                                            ],
+                                          ),
+                                        ),
                             ),
                           ],
                         ),
@@ -254,7 +347,17 @@ class GeographyMultiSelectBottomsheet extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     TextButton(
-                      onPressed: () => Get.back(),
+                      onPressed: () {
+                        Get.back();
+                        // ctlr.clearMultiFilter();
+                        if (widget.isTrends) {
+                          ctlr.clearMultiFilter('trends', 'geo',
+                              tabType: widget.tabType);
+                        } else {
+                          ctlr.clearMultiFilter('geo', 'geo',
+                              tabType: widget.tabType);
+                        }
+                      },
                       style: ButtonStyle(
                         overlayColor:
                             MaterialStateProperty.all(Colors.transparent),
@@ -269,16 +372,53 @@ class GeographyMultiSelectBottomsheet extends StatelessWidget {
                       ),
                     ),
                     TextButton(
-                      onPressed: () async {
-                        if (isTrends) {
-                          ctlr.onApplyMultiFilter('trends', 'geo',
-                              tabType: tabType);
-                        } else {
-                          ctlr.onApplyMultiFilter('geo', 'geo',
-                              tabType: tabType);
-                        }
-                        Navigator.pop(context);
-                      },
+                      onPressed: widget.tabType == SummaryTypes.retailing.type
+                          ? ctlr.selectedRetailingMultiAllIndia.isNotEmpty ||
+                                  ctlr.selectedRetailingMultiDivisions
+                                      .isNotEmpty ||
+                                  ctlr.selectedRetailingMultiClusters
+                                      .isNotEmpty ||
+                                  ctlr.selectedRetailingMultiSites.isNotEmpty ||
+                                  ctlr.selectedRetailingMultiBranches.isNotEmpty
+                              ? () => onApplyFilter(ctlr)
+                              : null
+                          : widget.tabType == SummaryTypes.coverage.type
+                              ? ctlr.selectedCoverageMultiAllIndia.isNotEmpty ||
+                                      ctlr.selectedCoverageMultiDivisions
+                                          .isNotEmpty ||
+                                      ctlr.selectedCoverageMultiClusters
+                                          .isNotEmpty ||
+                                      ctlr.selectedCoverageMultiSites
+                                          .isNotEmpty ||
+                                      ctlr.selectedCoverageMultiBranches
+                                          .isNotEmpty
+                                  ? () => onApplyFilter(ctlr)
+                                  : null
+                              : widget.tabType == SummaryTypes.gp.type
+                                  ? ctlr.selectedGPMultiAllIndia.isNotEmpty ||
+                                          ctlr.selectedGPMultiDivisions
+                                              .isNotEmpty ||
+                                          ctlr.selectedGPMultiClusters
+                                              .isNotEmpty ||
+                                          ctlr.selectedGPMultiSites
+                                              .isNotEmpty ||
+                                          ctlr.selectedGPMultiBranches
+                                              .isNotEmpty
+                                      ? () => onApplyFilter(ctlr)
+                                      : null
+                                  : widget.tabType == SummaryTypes.fb.type
+                                      ? ctlr.selectedFBMultiAllIndia.isNotEmpty ||
+                                              ctlr.selectedFBMultiDivisions
+                                                  .isNotEmpty ||
+                                              ctlr.selectedFBMultiClusters
+                                                  .isNotEmpty ||
+                                              ctlr.selectedFBMultiSites
+                                                  .isNotEmpty ||
+                                              ctlr.selectedFBMultiBranches
+                                                  .isNotEmpty
+                                          ? () => onApplyFilter(ctlr)
+                                          : null
+                                      : () => onApplyFilter(ctlr),
                       style: ButtonStyle(
                         overlayColor:
                             MaterialStateProperty.all(Colors.transparent),
@@ -288,7 +428,55 @@ class GeographyMultiSelectBottomsheet extends StatelessWidget {
                         style: GoogleFonts.ptSans(
                           fontSize: 16,
                           fontWeight: FontWeight.w700,
-                          color: AppColors.primary,
+                          color: widget.tabType == SummaryTypes.retailing.type
+                              ? ctlr.selectedRetailingMultiAllIndia.isNotEmpty ||
+                                      ctlr.selectedRetailingMultiDivisions
+                                          .isNotEmpty ||
+                                      ctlr.selectedRetailingMultiClusters
+                                          .isNotEmpty ||
+                                      ctlr.selectedRetailingMultiSites
+                                          .isNotEmpty ||
+                                      ctlr.selectedRetailingMultiBranches
+                                          .isNotEmpty
+                                  ? AppColors.primary
+                                  : Colors.grey
+                              : widget.tabType == SummaryTypes.coverage.type
+                                  ? ctlr.selectedCoverageMultiAllIndia.isNotEmpty ||
+                                          ctlr.selectedCoverageMultiDivisions
+                                              .isNotEmpty ||
+                                          ctlr.selectedCoverageMultiClusters
+                                              .isNotEmpty ||
+                                          ctlr.selectedCoverageMultiSites
+                                              .isNotEmpty ||
+                                          ctlr.selectedCoverageMultiBranches
+                                              .isNotEmpty
+                                      ? AppColors.primary
+                                      : Colors.grey
+                                  : widget.tabType == SummaryTypes.gp.type
+                                      ? ctlr.selectedGPMultiAllIndia.isNotEmpty ||
+                                              ctlr.selectedGPMultiDivisions
+                                                  .isNotEmpty ||
+                                              ctlr.selectedGPMultiClusters
+                                                  .isNotEmpty ||
+                                              ctlr.selectedGPMultiSites
+                                                  .isNotEmpty ||
+                                              ctlr.selectedGPMultiBranches
+                                                  .isNotEmpty
+                                          ? AppColors.primary
+                                          : Colors.grey
+                                      : widget.tabType == SummaryTypes.fb.type
+                                          ? ctlr.selectedFBMultiAllIndia.isNotEmpty ||
+                                                  ctlr.selectedFBMultiDivisions
+                                                      .isNotEmpty ||
+                                                  ctlr.selectedFBMultiClusters
+                                                      .isNotEmpty ||
+                                                  ctlr.selectedFBMultiSites
+                                                      .isNotEmpty ||
+                                                  ctlr.selectedFBMultiBranches
+                                                      .isNotEmpty
+                                              ? AppColors.primary
+                                              : Colors.grey
+                                          : Colors.grey,
                         ),
                       ),
                     ),
@@ -301,5 +489,21 @@ class GeographyMultiSelectBottomsheet extends StatelessWidget {
         );
       },
     );
+  }
+
+  void onApplyFilter(HomeController ctlr) {
+    FirebaseAnalytics.instance.logEvent(
+        name: 'deep_dive_selected_geo',
+        parameters: {"message": 'Added Selected Geo ${ctlr.getUserName()}'});
+    ctlr.onMultiGeoChange(_selectedFilter);
+
+    if (widget.isTrends) {
+      ctlr.onApplyMultiFilter('trends', 'geo',
+          tabType: widget.tabType, isTrendsFilter: true, subType: 'geo');
+    } else {
+      ctlr.onApplyMultiFilter('geo', 'geo',
+          tabType: widget.tabType, subType: 'geo');
+    }
+    Navigator.pop(context, true);
   }
 }

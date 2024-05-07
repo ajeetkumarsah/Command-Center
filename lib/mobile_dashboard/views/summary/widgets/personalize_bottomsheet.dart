@@ -8,7 +8,6 @@ import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
 import 'package:command_centre/mobile_dashboard/controllers/home_controller.dart';
 import 'package:command_centre/mobile_dashboard/data/models/body/personalized_body.dart';
 
-
 class PersonalizeBottomsheet extends StatefulWidget {
   const PersonalizeBottomsheet({super.key});
 
@@ -26,7 +25,7 @@ class _PersonalizeBottomsheetState extends State<PersonalizeBottomsheet> {
         'Golden Points',
         'Focus Brand'
       ],
-      moreMetrics = ['Shipment', 'Inventory'];
+      moreMetrics = []; //'Inventory''Shipment (TBD)'
   List<PesonalizedHeaderBody> allLists(List<String> includedMetrics,
           List<String> moreMet, Function(bool, String, bool) onChange) =>
       [
@@ -99,6 +98,7 @@ class _PersonalizeBottomsheetState extends State<PersonalizeBottomsheet> {
   }
 
   DragAndDropList buildList(PesonalizedHeaderBody list) => DragAndDropList(
+        contentsWhenEmpty: Text('More metrics'),
         header: Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
           child: Text(
@@ -186,9 +186,12 @@ class _PersonalizeBottomsheetState extends State<PersonalizeBottomsheet> {
                     contentsWhenEmpty: const SizedBox(
                       height: 50,
                       child: Center(
-                        child: SizedBox(),
+                        child: SizedBox(
+                          child: Text('More metrics'),
+                        ),
                       ),
                     ),
+                    listTarget: const SizedBox(height: 40),
                     listPadding: const EdgeInsets.symmetric(vertical: 4),
                     listInnerDecoration:
                         const BoxDecoration(color: Colors.transparent),

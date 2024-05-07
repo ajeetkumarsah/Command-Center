@@ -6,7 +6,7 @@ import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
 import 'package:command_centre/mobile_dashboard/utils/summary_types.dart';
 import 'package:command_centre/mobile_dashboard/controllers/home_controller.dart';
 import 'package:command_centre/mobile_dashboard/data/models/response/trends_model.dart';
-// import 'package:syncfusion_flutter_charts/sparkcharts.dart';
+import 'package:command_centre/mobile_dashboard/data/models/response/fb_trends_model.dart';
 // import 'package:syncfusion_flutter_charts/charts.dart';
 
 class CustomExpandedChartWidget extends StatefulWidget {
@@ -14,7 +14,7 @@ class CustomExpandedChartWidget extends StatefulWidget {
   final void Function()? onFilterTap;
   final bool isExpanded;
   final String title;
-  final List<TrendsModel> trendsList;
+  final TrendsModel? trendsList;
   final String summaryType;
   final Widget? coverageWidget;
   const CustomExpandedChartWidget(
@@ -68,7 +68,7 @@ class _CustomExpandedChartWidgetState extends State<CustomExpandedChartWidget> {
                             Hero(
                               tag: widget.title,
                               child: const Icon(
-                                Icons.keyboard_double_arrow_down_rounded,
+                                Icons.keyboard_double_arrow_up_rounded,
                                 color: AppColors.primary,
                               ),
                             ),
@@ -102,7 +102,7 @@ class _CustomExpandedChartWidgetState extends State<CustomExpandedChartWidget> {
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: SizedBox(
-                          height: 300,
+                          height: 400,
                           child: Column(
                             children: [
                               Padding(
@@ -110,328 +110,395 @@ class _CustomExpandedChartWidgetState extends State<CustomExpandedChartWidget> {
                                     horizontal: 20, vertical: 8.0),
                                 child: Row(
                                   children: [
-                                    GestureDetector(
-                                      onTap: widget.onFilterTap,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(4.0),
-                                        child: Text(
-                                          ctlr.selectedTrends,
-                                          overflow: TextOverflow.ellipsis,
-                                          maxLines: 1,
-                                          style: GoogleFonts.ptSans(
-                                            fontSize: 16,
-                                            color: AppColors.primary,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    GestureDetector(
-                                      onTap: widget.onFilterTap,
-                                      child: const Padding(
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal: 2, vertical: 4.0),
-                                        child: Icon(
-                                          Icons.edit,
-                                          size: 16,
-                                          color: AppColors.primary,
-                                        ),
-                                      ),
-                                    ),
                                     Expanded(
-                                      child: Row(
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
                                         children: [
-                                          const Spacer(),
-                                          widget.coverageWidget ??
-                                              Container(
-                                                // height: 26,
-                                                decoration: BoxDecoration(
-                                                    border: Border.all(
-                                                      width: 1,
-                                                      color:
-                                                          AppColors.lightGrey,
+                                          Row(
+                                            children: [
+                                              GestureDetector(
+                                                onTap: widget.onFilterTap,
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(4.0),
+                                                  child: Text(
+                                                    ctlr.selectedTrends,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    maxLines: 1,
+                                                    style: GoogleFonts.ptSans(
+                                                      fontSize: 14,
+                                                      color: AppColors.primary,
                                                     ),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            100)),
-                                                child: Row(
-                                                  children: [
-                                                    GestureDetector(
-                                                      onTap: () => ctlr
-                                                          .onChannelSalesChange(
-                                                              true),
-                                                      child: Container(
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          color: ctlr
-                                                                  .channelSales
-                                                              ? AppColors
-                                                                  .primary
-                                                              : AppColors.white,
-                                                          border: Border.all(
-                                                            width: 1,
-                                                            color:
-                                                                ctlr.channelSales
-                                                                    ? AppColors
-                                                                        .primary
-                                                                    : AppColors
-                                                                        .white,
-                                                          ),
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                                      100),
-                                                        ),
-                                                        padding:
-                                                            const EdgeInsets
-                                                                    .symmetric(
-                                                                horizontal: 10,
-                                                                vertical: 4),
-                                                        child: Text(
-                                                          widget.summaryType ==
-                                                                  SummaryTypes
-                                                                      .retailing
-                                                                      .type
-                                                              ? 'Sales Value'
-                                                              : widget.summaryType ==
-                                                                      SummaryTypes
-                                                                          .gp
-                                                                          .type
-                                                                  ? 'GP Abs. P3M'
-                                                                  : widget.summaryType ==
-                                                                          SummaryTypes
-                                                                              .fb
-                                                                              .type
-                                                                      ? 'FB Abs.'
-                                                                      : '',
-                                                          style: GoogleFonts
-                                                              .ptSansCaption(
-                                                            color: ctlr
-                                                                    .channelSales
-                                                                ? Colors.white
-                                                                : Colors.grey,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    GestureDetector(
-                                                      onTap: () => ctlr
-                                                          .onChannelSalesChange(
-                                                              false),
-                                                      child: Container(
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          color: ctlr
-                                                                  .channelSales
-                                                              ? AppColors.white
-                                                              : AppColors
-                                                                  .primary,
-                                                          border:
-                                                              ctlr.channelSales
-                                                                  ? null
-                                                                  : Border.all(
-                                                                      width: 1,
-                                                                      color: !ctlr.channelSales
-                                                                          ? AppColors
-                                                                              .primary
-                                                                          : AppColors
-                                                                              .white,
-                                                                    ),
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                                      100),
-                                                        ),
-                                                        padding:
-                                                            const EdgeInsets
-                                                                    .symmetric(
-                                                                horizontal: 10,
-                                                                vertical: 4),
-                                                        child: Text(
-                                                          '  IYA  ',
-                                                          style: GoogleFonts
-                                                              .ptSansCaption(
-                                                            color: !ctlr
-                                                                    .channelSales
-                                                                ? Colors.white
-                                                                : Colors.grey,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    )
-                                                  ],
+                                                  ),
                                                 ),
                                               ),
+                                              GestureDetector(
+                                                onTap: widget.onFilterTap,
+                                                child: const Padding(
+                                                  padding: EdgeInsets.symmetric(
+                                                      horizontal: 2,
+                                                      vertical: 4.0),
+                                                  child: Icon(
+                                                    Icons.edit,
+                                                    size: 16,
+                                                    color: AppColors.primary,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          Row(
+                                            children: [
+                                              Expanded(
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                    left: 4.0,
+                                                    right: 4,
+                                                    bottom: 4,
+                                                  ),
+                                                  child: Text(
+                                                    ctlr.retailingTrendsValue,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    maxLines: 3,
+                                                    style: GoogleFonts
+                                                        .ptSansCaption(
+                                                            fontSize: 12),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                         ],
                                       ),
                                     ),
+                                    widget.coverageWidget ??
+                                        Container(
+                                          // height: 26,
+                                          decoration: BoxDecoration(
+                                              border: Border.all(
+                                                width: 1,
+                                                color: AppColors.lightGrey,
+                                              ),
+                                              borderRadius:
+                                                  BorderRadius.circular(100)),
+                                          child: Row(
+                                            children: [
+                                              GestureDetector(
+                                                onTap: () => ctlr
+                                                    .onChannelSalesChange(true),
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                    color: ctlr.channelSales
+                                                        ? AppColors.primary
+                                                        : AppColors.white,
+                                                    border: Border.all(
+                                                      width: 1,
+                                                      color: ctlr.channelSales
+                                                          ? AppColors.primary
+                                                          : AppColors.white,
+                                                    ),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            100),
+                                                  ),
+                                                  padding: const EdgeInsets
+                                                      .symmetric(
+                                                      horizontal: 10,
+                                                      vertical: 4),
+                                                  child: Text(
+                                                    widget.summaryType ==
+                                                            SummaryTypes
+                                                                .retailing.type
+                                                        ? 'Sales Value'
+                                                        : widget.summaryType ==
+                                                                SummaryTypes
+                                                                    .gp.type
+                                                            ? 'GP Abs. P3M'
+                                                            : widget.summaryType ==
+                                                                    SummaryTypes
+                                                                        .fb.type
+                                                                ? 'FB Abs.'
+                                                                : '',
+                                                    style: GoogleFonts
+                                                        .ptSansCaption(
+                                                      color: ctlr.channelSales
+                                                          ? Colors.white
+                                                          : Colors.grey,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                              GestureDetector(
+                                                onTap: () =>
+                                                    ctlr.onChannelSalesChange(
+                                                        false),
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                    color: ctlr.channelSales
+                                                        ? AppColors.white
+                                                        : AppColors.primary,
+                                                    border: ctlr.channelSales
+                                                        ? null
+                                                        : Border.all(
+                                                            width: 1,
+                                                            color: !ctlr
+                                                                    .channelSales
+                                                                ? AppColors
+                                                                    .primary
+                                                                : AppColors
+                                                                    .white,
+                                                          ),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            100),
+                                                  ),
+                                                  padding: const EdgeInsets
+                                                      .symmetric(
+                                                      horizontal: 10,
+                                                      vertical: 4),
+                                                  child: Text(
+                                                    '  IYA  ',
+                                                    style: GoogleFonts
+                                                        .ptSansCaption(
+                                                      color: !ctlr.channelSales
+                                                          ? Colors.white
+                                                          : Colors.grey,
+                                                    ),
+                                                  ),
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                    // GestureDetector(
+                                    //   onTap: widget.onFilterTap,
+                                    //   child: Padding(
+                                    //     padding: const EdgeInsets.all(4.0),
+                                    //     child: Text(
+                                    //       ctlr.selectedTrends,
+                                    //       overflow: TextOverflow.ellipsis,
+                                    //       maxLines: 1,
+                                    //       style: GoogleFonts.ptSans(
+                                    //         fontSize: 16,
+                                    //         color: AppColors.primary,
+                                    //       ),
+                                    //     ),
+                                    //   ),
+                                    // ),
+                                    // GestureDetector(
+                                    //   onTap: widget.onFilterTap,
+                                    //   child: const Padding(
+                                    //     padding: EdgeInsets.symmetric(
+                                    //         horizontal: 2, vertical: 4.0),
+                                    //     child: Icon(
+                                    //       Icons.edit,
+                                    //       size: 16,
+                                    //       color: AppColors.primary,
+                                    //     ),
+                                    //   ),
+                                    // ),
                                   ],
                                 ),
                               ),
+                              const SizedBox(height: 12),
                               Expanded(
-                                child: //
-
-                                    LineChart(
-                                  LineChartData(
-                                    lineBarsData: [
-                                      LineChartBarData(
-                                        spots: widget.trendsList[0].data!
-                                            .asMap()
-                                            .map(
-                                              (i, point) => MapEntry(
-                                                i,
-                                                FlSpot(
-                                                  i.toDouble(),
-                                                  widget.summaryType ==
-                                                          SummaryTypes
-                                                              .retailing.type
-                                                      ? double.tryParse(ctlr
-                                                                  .channelSales
-                                                              ? (point.cyRt ??
-                                                                  '0.0')
-                                                              : (point.iya ??
-                                                                  '0.0')) ??
-                                                          0.0
-                                                      : widget.summaryType ==
-                                                              SummaryTypes
-                                                                  .coverage.type
-                                                          ? double.tryParse(
-                                                                  (point.billingPer ??
-                                                                      '0.0')) ??
-                                                              0.0
-                                                          : double.tryParse(ctlr
-                                                                      .channelSales
-                                                                  ? (point.cyRt ??
-                                                                      '0.0')
-                                                                  : (point.iya ??
-                                                                      '0.0')) ??
-                                                              0.0,
-                                                ),
+                                child: widget.trendsList?.data != null
+                                    ? LineChart(
+                                        LineChartData(
+                                          maxX: 13,
+                                          minX: 0,
+                                          maxY: ctlr.channelSales
+                                              ? widget.trendsList?.yMax
+                                              : widget.trendsList?.yPerMax,
+                                          minY: ctlr.channelSales
+                                              ? widget.trendsList?.yMin
+                                              : widget.trendsList?.yPerMin,
+                                          baselineX: 1,
+                                          lineBarsData: [
+                                            LineChartBarData(
+                                              spots: widget.trendsList!.data!
+                                                  .asMap()
+                                                  .map(
+                                                    (i, point) => MapEntry(
+                                                      i,
+                                                      FlSpot(
+                                                        i.toDouble(),
+                                                        (double.tryParse(ctlr
+                                                                            .channelSales
+                                                                        ? (point.cyRt ??
+                                                                            '0.0')
+                                                                        : (point.iya ??
+                                                                            '0.0')) ??
+                                                                    0.0) >
+                                                                0
+                                                            ? (double.tryParse(ctlr
+                                                                        .channelSales
+                                                                    ? (point.cyRt ??
+                                                                        '0.0')
+                                                                    : (point.iya ??
+                                                                        '0.0')) ??
+                                                                0.0)
+                                                            : 0,
+                                                      ),
+                                                    ),
+                                                  )
+                                                  .values
+                                                  .toList(),
+                                              isCurved: false,
+                                              dotData: FlDotData(
+                                                show: true,
+                                                getDotPainter: (spot, percent,
+                                                    barData, index) {
+                                                  return FlDotCirclePainter(
+                                                    radius: 4,
+                                                    strokeColor:
+                                                        AppColors.primary,
+                                                    color: Colors.white,
+                                                    strokeWidth: 1.5,
+                                                  );
+                                                },
                                               ),
-                                            )
-                                            .values
-                                            .toList(),
-                                        isCurved: false,
-                                        dotData: FlDotData(
-                                          show: true,
-                                          getDotPainter:
-                                              (spot, percent, barData, index) {
-                                            return FlDotCirclePainter(
-                                              radius: 4,
-                                              strokeColor: AppColors.primary,
-                                              color: Colors.white,
-                                              strokeWidth: 1.5,
-                                            );
-                                          },
-                                        ),
-                                        color: AppColors.primary,
-                                      ),
-                                    ],
-                                    lineTouchData: LineTouchData(
-                                        enabled: true,
-                                        touchCallback: (FlTouchEvent event,
-                                            LineTouchResponse?
-                                                touchResponse) {},
-                                        touchTooltipData: LineTouchTooltipData(
-                                          tooltipBgColor: AppColors.primaryDark,
-                                          tooltipRoundedRadius: 20.0,
-                                          showOnTopOfTheChartBoxArea: false,
-                                          fitInsideHorizontally: true,
-                                          fitInsideVertically: true,
-                                          tooltipMargin: 40,
-                                          tooltipHorizontalAlignment:
-                                              FLHorizontalAlignment.center,
-                                          getTooltipItems: (touchedSpots) {
-                                            return touchedSpots.map(
-                                              (LineBarSpot touchedSpot) {
-                                                const textStyle = TextStyle(
-                                                  fontSize: 10,
-                                                  fontWeight: FontWeight.w700,
-                                                  color: Colors.white,
-                                                );
-                                                return LineTooltipItem(
-                                                  widget.summaryType ==
-                                                          SummaryTypes
-                                                              .retailing.type
-                                                      ? double.tryParse(ctlr
-                                                                      .channelSales
-                                                                  ? (widget.trendsList[0].data![touchedSpot.spotIndex].cyRt ??
-                                                                      '0.0')
-                                                                  : (widget.trendsList[0].data![touchedSpot.spotIndex].iya ??
-                                                                      '0.0'))
-                                                              ?.toStringAsFixed(
-                                                                  2) ??
-                                                          "0.0"
-                                                      : widget.summaryType ==
-                                                              SummaryTypes
-                                                                  .coverage.type
-                                                          ? double.tryParse((widget.trendsList[0].data![touchedSpot.spotIndex].billingPer ?? '0.0'))
-                                                                  ?.toStringAsFixed(
-                                                                      2) ??
-                                                              '0.0'
-                                                          : double.tryParse(ctlr.channelSales ? (widget.trendsList[0].data![touchedSpot.spotIndex].cyRt ?? '0.0') : (widget.trendsList[0].data![touchedSpot.spotIndex].iya ?? '0.0'))
-                                                                  ?.toStringAsFixed(
-                                                                      2) ??
-                                                              '0.0',
-                                                  textStyle,
-                                                );
+                                              color: AppColors.primary,
+                                            ),
+                                          ],
+                                          lineTouchData: LineTouchData(
+                                              enabled: true,
+                                              touchCallback: (event, response) {
+                                                if (event is FlTapUpEvent) {
+                                                  if (response != null &&
+                                                      response.lineBarSpots !=
+                                                          null) {}
+                                                }
                                               },
-                                            ).toList();
-                                          },
-                                        ),
-                                        getTouchedSpotIndicator:
-                                            (LineChartBarData barData,
-                                                List<int> indicators) {
-                                          return indicators.map(
-                                            (int index) {
-                                              final line = FlLine(
-                                                  color: Colors.grey,
-                                                  strokeWidth: 1,
-                                                  dashArray: [2, 4]);
-                                              return TouchedSpotIndicatorData(
-                                                line,
-                                                FlDotData(
-                                                  show: false,
-                                                  getDotPainter: (spot, percent,
-                                                      barData, index) {
-                                                    return FlDotCirclePainter(
-                                                      radius: 4,
-                                                      strokeColor:
-                                                          AppColors.primary,
-                                                      color: Colors.white,
-                                                      strokeWidth: 1.5,
+                                              touchTooltipData:
+                                                  LineTouchTooltipData(
+                                                tooltipBgColor:
+                                                    AppColors.primaryDark,
+                                                tooltipRoundedRadius: 20.0,
+                                                showOnTopOfTheChartBoxArea:
+                                                    false,
+                                                fitInsideHorizontally: true,
+                                                fitInsideVertically: true,
+                                                tooltipMargin: 40,
+                                                tooltipHorizontalAlignment:
+                                                    FLHorizontalAlignment.right,
+                                                getTooltipItems:
+                                                    (touchedSpots) {
+                                                  return touchedSpots.map(
+                                                    (LineBarSpot touchedSpot) {
+                                                      const textStyle =
+                                                          TextStyle(
+                                                        fontSize: 10,
+                                                        fontWeight:
+                                                            FontWeight.w700,
+                                                        color: Colors.white,
+                                                      );
+                                                      return LineTooltipItem(
+                                                        '${widget.trendsList?.data![touchedSpot.spotIndex].month}\n${ctlr.channelSales ? (widget.trendsList?.data![touchedSpot.spotIndex].cyRtRv ?? '0.0') : double.tryParse((widget.trendsList?.data![touchedSpot.spotIndex].iya ?? '0.0'))?.toStringAsFixed(0) ?? "0.0"}',
+                                                        textStyle,
+                                                      );
+                                                    },
+                                                  ).toList();
+                                                },
+                                              ),
+                                              getTouchedSpotIndicator:
+                                                  (LineChartBarData barData,
+                                                      List<int> indicators) {
+                                                return indicators.map(
+                                                  (int index) {
+                                                    const line = FlLine(
+                                                        color: Colors.grey,
+                                                        strokeWidth: 1,
+                                                        dashArray: [2, 4]);
+                                                    return TouchedSpotIndicatorData(
+                                                      line,
+                                                      FlDotData(
+                                                        show: false,
+                                                        getDotPainter: (spot,
+                                                            percent,
+                                                            barData,
+                                                            index) {
+                                                          return FlDotCirclePainter(
+                                                            radius: 4,
+                                                            strokeColor:
+                                                                AppColors
+                                                                    .primary,
+                                                            color: Colors.white,
+                                                            strokeWidth: 1.5,
+                                                          );
+                                                        },
+                                                      ),
                                                     );
                                                   },
-                                                ),
-                                              );
-                                            },
-                                          ).toList();
-                                        },
-                                        getTouchLineEnd: (_, __) =>
-                                            double.infinity),
-                                    borderData: FlBorderData(
-                                        border: const Border(
-                                            bottom: BorderSide(width: .5),
-                                            left: BorderSide(width: .5))),
-                                    gridData: FlGridData(show: false),
-                                    titlesData: FlTitlesData(
-                                      // leftTitles: _leftTitles,
-                                      bottomTitles: AxisTitles(
-                                        sideTitles: _bottomTitles,
-                                        // drawBehindEverything: true,
+                                                ).toList();
+                                              },
+                                              getTouchLineEnd: (_, __) =>
+                                                  double.infinity),
+                                          borderData: FlBorderData(
+                                              border: const Border(
+                                                  bottom: BorderSide(width: .5),
+                                                  left: BorderSide(width: .5))),
+                                          gridData:
+                                              const FlGridData(show: false),
+                                          titlesData: FlTitlesData(
+                                            // leftTitles: _leftTitles,
+                                            bottomTitles: AxisTitles(
+                                              sideTitles: _bottomTitles(
+                                                  widget.trendsList!),
+                                            ),
+                                            leftTitles: AxisTitles(
+                                              sideTitles: SideTitles(
+                                                showTitles: true,
+                                                reservedSize: 46,
+                                                interval: ctlr.channelSales
+                                                    ? widget.trendsList
+                                                                ?.yInterval !=
+                                                            0
+                                                        ? widget.trendsList
+                                                            ?.yInterval
+                                                        : 1
+                                                    : widget.trendsList
+                                                                ?.yPerInterval !=
+                                                            0
+                                                        ? widget.trendsList
+                                                            ?.yPerInterval
+                                                        : 1,
+                                                getTitlesWidget: (value,
+                                                        meta) =>
+                                                    getLeftTitles(
+                                                        value,
+                                                        meta,
+                                                        ctlr.channelSales
+                                                            ? widget.trendsList
+                                                                    ?.yAxisData ??
+                                                                []
+                                                            : widget.trendsList
+                                                                    ?.yAxisDataPer ??
+                                                                []),
+                                              ),
+                                            ),
+                                            topTitles: const AxisTitles(
+                                                sideTitles: SideTitles(
+                                                    showTitles: false)),
+                                            rightTitles: AxisTitles(
+                                              sideTitles: SideTitles(
+                                                showTitles: false,
+                                                reservedSize: 15,
+                                                getTitlesWidget: (d, w) =>
+                                                    const SizedBox(width: 12),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                    : const SizedBox(
+                                        child: Center(
+                                          child: Text('No Data Found!'),
+                                        ),
                                       ),
-                                      leftTitles: AxisTitles(
-                                        sideTitles: _leftTitles,
-                                        // drawBehindEverything: true,
-                                      ),
-                                      topTitles: AxisTitles(
-                                          sideTitles:
-                                              SideTitles(showTitles: false)),
-                                      rightTitles: AxisTitles(
-                                          sideTitles:
-                                              SideTitles(showTitles: false)),
-                                    ),
-                                  ),
-                                ),
                               ),
                             ],
                           ),
@@ -488,69 +555,55 @@ class _CustomExpandedChartWidgetState extends State<CustomExpandedChartWidget> {
     );
   }
 
-  SideTitles get _bottomTitles => SideTitles(
+  SideTitles _bottomTitles(TrendsModel trendsList) => SideTitles(
         showTitles: true,
-        reservedSize: 40,
+        reservedSize: 60,
+        interval: 1,
         getTitlesWidget: (value, meta) {
           String text = '';
-          switch (value.toInt()) {
-            case 0:
-              text = 'Jan';
-              break;
-            case 1:
-              text = 'Feb';
-              break;
-            case 2:
-              text = 'Mar';
-              break;
-            case 3:
-              text = 'Apr';
-              break;
-            case 4:
-              text = 'May';
-              break;
-            case 5:
-              text = 'Jun';
-              break;
-            case 6:
-              text = 'Jul';
-              break;
-            case 7:
-              text = 'Aug';
-              break;
-            case 8:
-              text = 'Sep';
-              break;
-            case 9:
-              text = 'Oct';
-              break;
-            case 10:
-              text = 'Nov';
-              break;
-            case 11:
-              text = 'Dec';
-              break;
+          for (var v in trendsList.data!) {
+            if (value.toInt() == v.index) {
+              text = v.month ?? '';
+            }
           }
-          return Padding(
-            padding: const EdgeInsets.only(bottom: 8.0),
-            child: RotatedBox(
-              quarterTurns: 3,
-              child: Text(
-                text,
-                style: GoogleFonts.ptSansCaption(color: Colors.black),
+          return SideTitleWidget(
+            axisSide: meta.axisSide,
+            // space: 8,
+            angle: 35,
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 8.0),
+              child: RotatedBox(
+                quarterTurns: 1,
+                child: Text(
+                  text,
+                  style: GoogleFonts.ptSansCaption(
+                    color: Colors.black,
+                    fontSize: 12,
+                  ),
+                ),
               ),
             ),
           );
         },
       );
-  SideTitles get _leftTitles => SideTitles(
-        showTitles: true,
-        reservedSize: 40,
-        getTitlesWidget: (value, meta) {
-          return Text(
-            meta.formattedValue,
-            style: GoogleFonts.ptSansCaption(color: Colors.black),
-          );
-        },
-      );
+  Widget getLeftTitles(
+      double value, TitleMeta meta, List<YAxisData> yaxisData) {
+    final style = GoogleFonts.ptSans(
+      color: AppColors.black,
+      fontWeight: FontWeight.w300,
+      fontSize: 12,
+    );
+    String text = '';
+    for (var v in yaxisData) {
+      if (value == v.yAbs) {
+        text = v.yRv ?? '';
+      }
+    }
+    return SideTitleWidget(
+      axisSide: meta.axisSide,
+      space: 4,
+      // angle: 30,
+      child: Text(text, style: style),
+    );
+  }
 }

@@ -563,13 +563,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             if (ctlr.selectedDistributor != null &&
                                 ctlr.selectedBranch != null &&
                                 ctlr.selectedChannel != null) {
-                              ctlr.postStoreData().then((v) {
-                                if (ctlr.storeIntroModel != null) {
-                                  onChangePage();
-                                } else {
-                                  showCustomSnackBar('Something went wrong!');
-                                }
-                              });
+                              // ctlr.postStoreData().then((v) {
+                              //   if (ctlr.storeIntroModel != null) {
+                              //     onChangePage();
+                              //   } else {
+                              //     showCustomSnackBar('Something went wrong!');
+                              //   }
+                              // });
                             } else {
                               showCustomSnackBar(
                                   'Please Select the required fields.');

@@ -13,7 +13,6 @@ import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_constants.dart';
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 import 'package:command_centre/mobile_dashboard/utils/routes/app_pages.dart';
-import 'package:command_centre/mobile_dashboard/utils/global.dart' as globals;
 import 'package:command_centre/mobile_dashboard/views/login/access_denied_screen.dart';
 
 class FedAuthScreen extends StatefulWidget {
@@ -24,8 +23,6 @@ class FedAuthScreen extends StatefulWidget {
 }
 
 class _FedAuthScreenState extends State<FedAuthScreen> {
-  final Completer<WebViewController> _controller =
-      Completer<WebViewController>();
   late final WebViewController _controller1;
   late final WebViewCookieManager cookieManager = WebViewCookieManager();
 
@@ -65,16 +62,16 @@ class _FedAuthScreenState extends State<FedAuthScreen> {
       ..setNavigationDelegate(
         NavigationDelegate(
           onProgress: (int progress) {
-            logger.v('WebView is loading (progress : $progress%)');
+            logger.i('WebView is loading (progress : $progress%)');
           },
           onPageStarted: (String url) {
-            logger.v('Page started loading: $url');
+            logger.i('Page started loading: $url');
           },
           onPageFinished: (String url) {
-            logger.v('Page finished loading: $url');
+            logger.i('Page finished loading: $url');
           },
           onWebResourceError: (WebResourceError error) {
-            logger.v('''
+            logger.i('''
               Page resource error:
                 code: ${error.errorCode}
                 description: ${error.description}
@@ -173,13 +170,13 @@ class _FedAuthScreenState extends State<FedAuthScreen> {
 
         await session.setString(
             AppConstants.ACCESS_TOKEN, mapResponse['access_token']);
-        globals.authorization = session.getString(AppConstants.ACCESS_TOKEN)!;
+
         employeeAuthentication(mapResponse['access_token']);
       } else {
-        _onClearCookies(context);
+        _onClearCookies();
       }
     } on SocketException {
-      _showToast(context);
+      _showToast();
     } catch (e) {
       Get.offAndToNamed(AppPages.RETRY_ACCESS_DENIED);
       // Navigator.pushReplacement(
@@ -197,8 +194,6 @@ class _FedAuthScreenState extends State<FedAuthScreen> {
   }
 
   Future employeeAuthentication(authorization) async {
-    debugPrint(
-        '==>Employee Authentication Complete URL:${AppConstants.BASE_URL}appData/employeeAuthentication');
     try {
       http.Response response;
       response = await http.post(
@@ -213,8 +208,8 @@ class _FedAuthScreenState extends State<FedAuthScreen> {
             'Ocp-Apim-Trace': true.toString(),
             'Ocp-Apim-Subscription-Key': AppConstants.SUBSCRIPTION_KEY,
           });
-      debugPrint('==>Employee Response ${response.body}');
-      logger.i(response.body.toString());
+      // debugPrint('==>Employee Response ${response.body}');
+      logger.i('====>Employee Response:${response.body}');
       if (response.statusCode == 200) {
         var mapResponse = json.decode(response.body);
         SharedPreferences session = await SharedPreferences.getInstance();
@@ -223,53 +218,42 @@ class _FedAuthScreenState extends State<FedAuthScreen> {
             AppConstants.EMAIL, mapResponse['user']['email']);
         await session.setString(
             AppConstants.NAME, mapResponse['user']['first_name']);
-        globals.token = session.getString(AppConstants.TOKEN) ?? '';
-        globals.name = session.getString(AppConstants.NAME) ?? '';
-        globals.email = session.getString(AppConstants.EMAIL) ?? '';
+
+        debugPrint('===>Before Token check');
         if (session.getString(AppConstants.DEFAULT_GEO) != null &&
-            session.getString(AppConstants.DEFAULT_GEO)!.isNotEmpty &&
+            session.getString(AppConstants.DEFAULT_GEO)!.trim().isNotEmpty &&
             session.getString(AppConstants.DEFAULT_GEO_VALUE) != null &&
-            session.getString(AppConstants.DEFAULT_GEO_VALUE)!.isNotEmpty) {
+            session
+                .getString(AppConstants.DEFAULT_GEO_VALUE)!
+                .trim()
+                .isNotEmpty) {
+          debugPrint('===>After Token check');
+          _onClearCookies();
           Get.offAndToNamed(AppPages.INITIAL);
+          // Get.offAndToNamed(AppPages.PERSONA_SCREEN);
         } else {
-          Get.offAndToNamed(AppPages.SELECT_PROFILE);
+          _onClearCookies();
+          Get.offAndToNamed(AppPages.businessOnboarding);
         }
-        // Navigator.pushReplacement(
-        //     context,
-        //     MaterialPageRoute(
-        //       builder: (context) => const SelectProfile(),
-        //     ));
       } else if (response.statusCode == 401) {
-        Get.offAndToNamed(AppPages.FED_AUTH_LOGIN);
-        // Navigator.pushReplacement(context,
-        //     MaterialPageRoute(builder: (context) => FedAuthLoginPage()));
+        _onClearCookies();
+        Get.offAndToNamed(AppPages.FED_AUTH_LOGIN_TEST);
       } else if (response.statusCode == 403) {
-        _onClearCookies(context);
+        _onClearCookies();
         Get.offAndToNamed(AppPages.ACCESS_DENIED,
             arguments: AccessDeniedBody(
                 statusCode: response.statusCode,
                 reason: "ACCESS_DENIED_BY_BACKEND"));
-        // Navigator.pushReplacement(
-        //     context,
-        //     MaterialPageRoute(
-        //         builder: (context) => AccessDenied(
-        //             statusCode: response.statusCode,
-        //             reason: "ACCESS_DENIED_BY_BACKEND")));
       } else {
-        _onClearCookies(context);
+        _onClearCookies();
         Get.offAndToNamed(AppPages.RETRY_ACCESS_DENIED);
-        // Navigator.pushReplacement(
-        //     context,
-        //     MaterialPageRoute(
-        //       builder: (context) => const RetryAccessDenied(),
-        //     ));
       }
     } catch (e) {
-      _onClearCookies(context);
+      _onClearCookies();
     }
   }
 
-  void _showToast(BuildContext context) {
+  void _showToast() {
     final scaffold = ScaffoldMessenger.of(context);
     scaffold.showSnackBar(
       SnackBar(
@@ -280,16 +264,21 @@ class _FedAuthScreenState extends State<FedAuthScreen> {
     );
   }
 
-  void _onClearCookies(BuildContext context) async {
-    final WebViewCookieManager cookieManager = WebViewCookieManager();
-    final bool hadCookies = await cookieManager.clearCookies();
-    String message = 'There were cookies. Now, they are gone!';
-    if (!hadCookies) {
-      message = 'There are no cookies.';
-    }
-    // ignore: deprecated_member_use
-    // Scaffold.of(context).showSnackBar(SnackBar(
-    //   content: Text(message),
-    // ));
+  // void _onClearCookies(BuildContext context) async {
+  //   final WebViewCookieManager cookieManager = WebViewCookieManager();
+  //   final bool hadCookies = await cookieManager.clearCookies();
+  //   String message = 'There were cookies. Now, they are gone!';
+  //   if (!hadCookies) {
+  //     message = 'There are no cookies.';
+  //   }
+  // }
+
+  void _onClearCookies() async {
+    // final WebViewCookieManager cookieManager = WebViewCookieManager();
+    // final bool hadCookies = await cookieManager.clearCookies();
+    // String message = 'There were cookies. Now, they are gone!';
+    // if (!hadCookies) {
+    //   message = 'There are no cookies.';
+    // }
   }
 }

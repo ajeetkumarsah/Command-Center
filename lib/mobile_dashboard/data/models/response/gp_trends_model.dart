@@ -1,9 +1,16 @@
+import 'package:command_centre/mobile_dashboard/data/models/response/fb_trends_model.dart';
+
 class GPTrendsModel {
-  final int? yMin;
-  final int? yMax;
-  final int? yRange;
-  final int? yInterval;
+  final double? yMin;
+  final double? yMax;
+  final double? yRange;
+  final double? yPerMin;
+  final double? yPerMax;
+  final double? yPerInterval;
+  final double? yInterval;
   final List<GPTrendsDataModel>? data;
+  final List<YAxisData>? yAxisData;
+  final List<YAxisData>? yAxisDataPer;
 
   GPTrendsModel({
     this.yMin,
@@ -11,13 +18,29 @@ class GPTrendsModel {
     this.yRange,
     this.yInterval,
     this.data,
+    this.yAxisData,
+    this.yPerMin,
+    this.yPerMax,
+    this.yPerInterval,
+    this.yAxisDataPer,
   });
 
   factory GPTrendsModel.fromJson(Map<String, dynamic> json) => GPTrendsModel(
-        yMin: json["yMin"],
-        yMax: json["yMax"],
-        yRange: json["yRange"],
-        yInterval: json["yInterval"],
+        yMin: json["yMin"]?.toDouble(),
+        yMax: json["yMax"]?.toDouble(),
+        yRange: json["yRange"]?.toDouble(),
+        yInterval: json["yInterval"]?.toDouble(),
+        yPerMin: json["yPerMin"]?.toDouble() ?? 0,
+        yPerMax: json["yPerMax"]?.toDouble() ?? 1,
+        yPerInterval: json["yPerInterval"]?.toDouble() ?? 1,
+        yAxisDataPer: json["y_axis_data_per"] == null
+            ? []
+            : List<YAxisData>.from(
+                json["y_axis_data_per"]!.map((x) => YAxisData.fromJson(x))),
+        yAxisData: json["y_axis_data"] == null
+            ? []
+            : List<YAxisData>.from(
+                json["y_axis_data"]!.map((x) => YAxisData.fromJson(x))),
         data: json["data"] == null
             ? []
             : List<GPTrendsDataModel>.from(
@@ -38,11 +61,10 @@ class GPTrendsModel {
 class GPTrendsDataModel {
   final String? month;
   final String? cyGp;
-  final int? pyGp;
+  final String? pyGp;
   final String? gpIya;
   final String? cyGpRv;
   final String? pyGpRv;
-
   final int? index;
 
   GPTrendsDataModel({
@@ -59,8 +81,8 @@ class GPTrendsDataModel {
       GPTrendsDataModel(
         month: json["month"],
         cyGp: json["CY GP"]?.toString(),
-        pyGp: json["PY GP"],
-        gpIya: json["GP IYA"],
+        pyGp: json["PY GP"].toString(),
+        gpIya: json["IYA"],
         cyGpRv: json["CY GP RV"].toString(),
         pyGpRv: json["PY GP RV"].toString(),
         index: json["index"],
