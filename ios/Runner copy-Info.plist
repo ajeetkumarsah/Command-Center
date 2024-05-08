@@ -26,21 +26,21 @@
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-<<<<<<<< HEAD:ios/Runner/Info.plist
+
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>We need access to your location for better app functionality.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>We need access to your library for better app functionality.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>We need access to your photo library to upload and share photos with friends.</string>
-========
+
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>Your location is required for accurate data for you.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>This app requires access to the photo library.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>This app requires access to the photo library.</string>
->>>>>>>> af76110fefd5820a6609b078dabbb5fc0f9c76ca:ios/Runner copy-Info.plist
+
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
