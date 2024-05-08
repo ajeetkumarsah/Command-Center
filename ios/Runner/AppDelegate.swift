@@ -1,43 +1,13 @@
 import UIKit
 import Flutter
-<<<<<<< HEAD
-import FirebaseCore
-=======
->>>>>>> main
 
 @UIApplicationMain
 @objc class AppDelegate: FlutterAppDelegate {
   override func application(
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
-<<<<<<< HEAD
-    
-  ) -> Bool {
-      FirebaseApp.configure()
-       if #available(iOS 10.0, *) {
-      UNUserNotificationCenter.current().delegate = self as UNUserNotificationCenterDelegate
-    }
-    GeneratedPluginRegistrant.register(with: self)
-    
-    return super.application(application, didFinishLaunchingWithOptions: launchOptions)
-  }
-
-   // <Add>
-    override func applicationWillResignActive(
-      _ application: UIApplication
-    ) {
-      window?.rootViewController?.view.endEditing(true)
-      self.window.isHidden = true;
-    }
-    override func applicationDidBecomeActive(
-      _ application: UIApplication
-    ) {
-      self.window.isHidden = false;
-    }
-=======
   ) -> Bool {
     GeneratedPluginRegistrant.register(with: self)
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
->>>>>>> main
 }
