@@ -91,7 +91,7 @@ class FBTrendsDataModel {
         fbTargetSum: json["fb_target_sum"],
         fbTargetBaseSum: json["fb_target_base_sum"],
         calendarMonth: json["Calendar Month"],
-        fb: json["FB %"],
+        fb: json["FB %"].toString(),
         fbAchieveSumRv: json["fb_achieve_sum_rv"].toString(),
         fbTargetSumRv: json["fb_target_sum_rv"].toString(),
         fbTargetBaseSumRv: json["fb_target_base_sum_rv"].toString(),
