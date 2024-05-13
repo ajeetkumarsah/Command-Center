@@ -8,6 +8,7 @@ import 'package:command_centre/mobile_dashboard/utils/png_files.dart';
 import 'package:command_centre/mobile_dashboard/utils/svg_files.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
 import 'package:command_centre/mobile_dashboard/controllers/store_controller.dart';
+import 'package:command_centre/mobile_dashboard/controllers/store_gp_controller.dart';
 import 'package:command_centre/mobile_dashboard/store_fingertips/fb/fb_deep_dive.dart';
 import 'package:command_centre/mobile_dashboard/store_fingertips/widgets/category_bottomsheet.dart';
 
@@ -90,8 +91,8 @@ class GPDeepDiveScreen extends StatelessWidget {
     ];
 
     return SafeArea(
-      child: GetBuilder<StoreController>(
-        init: StoreController(storeRepo: Get.find()),
+      child: GetBuilder<StoreGPController>(
+        init: StoreGPController(storeGPRepo: Get.find()),
         builder: (ctlr) {
           return Scaffold(
             backgroundColor: AppColors.bgLight,
@@ -185,9 +186,10 @@ class GPDeepDiveScreen extends StatelessWidget {
                               ),
                               child: Center(
                                 child: Text(
-                                  index == 0
-                                      ? '${ctlr.getFBTarget()}%'
-                                      : '${ctlr.getFBAchieved()}%',
+                                  '',
+                                  // index == 0
+                                  //     ? '${ctlr.getFBTarget()}%'
+                                  //     : '${ctlr.getFBAchieved()}%',
                                   style: GoogleFonts.inter(
                                     color: AppColors.white,
                                     fontSize: 18,

@@ -44,6 +44,14 @@ class StoreFBController extends GetxController {
     return await storeFBRepo.saveStore(store);
   }
 
+  String getFBTarget() {
+    return storeFBRepo.getFBTarget();
+  }
+
+  String getFBAchieved() {
+    return storeFBRepo.getFBAchieved();
+  }
+
   Future<ResponseModel> getFBData(
       {String type = 'category',
       required String distributor,

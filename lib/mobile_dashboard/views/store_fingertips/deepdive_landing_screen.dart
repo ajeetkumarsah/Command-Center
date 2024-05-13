@@ -11,7 +11,6 @@ import 'package:command_centre/mobile_dashboard/views/store_fingertips/coverage/
 import 'package:command_centre/mobile_dashboard/views/store_fingertips/sales/sales_deep_dive_screen.dart';
 
 class DeepDiveLandingScreen extends StatelessWidget {
-  
   const DeepDiveLandingScreen({super.key});
 
   @override
@@ -29,7 +28,9 @@ class DeepDiveLandingScreen extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.max,
                 children: [
-                   NewAppBar(title: ctlr.selectedStore ?? '',),
+                  NewAppBar(
+                    title: ctlr.selectedStore ?? '',
+                  ),
                   TabBar(
                     isScrollable: true,
                     unselectedLabelColor: const Color(0xff747474),
@@ -49,9 +50,10 @@ class DeepDiveLandingScreen extends StatelessWidget {
                       TabItemWidget(title: 'FB', isLast: true),
                     ],
                   ),
-                  const Expanded(
-                    child: TabBarView(
-                      children: [
+                  Expanded(
+                    child: IndexedStack(
+                      index: ctlr.selectedTab,
+                      children: const [
                         SalesDeepDiveScreen(),
                         CoverageDeepDiveScreen(),
                         GPDeepDiveScreen(),

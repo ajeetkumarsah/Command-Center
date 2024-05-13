@@ -43,6 +43,14 @@ class StoreFBRepo {
     return sharedPreferences.getString(AppConstants.DEFAULT_GEO_VALUE) ?? '';
   }
 
+  String getFBAchieved() {
+    return sharedPreferences.getString(AppConstants.FB_ACHIEVED) ?? "";
+  }
+
+  String getFBTarget() {
+    return sharedPreferences.getString(AppConstants.FB_TARGET) ?? "";
+  }
+
   bool clearSharedData() {
     sharedPreferences.remove(AppConstants.TOKEN);
     sharedPreferences.remove(AppConstants.ACCESS_TOKEN);

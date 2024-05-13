@@ -16,7 +16,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
       name: 'comandc-99a4a', options: DefaultFirebaseOptions.currentPlatform);
-  await Future.delayed(const Duration(seconds: 2));
+  await Future.delayed(const Duration(seconds: 1));
   await FirebaseApi().initNotifications();
   await HomeBinding().dependencies();
   await PushNotifications.init();
