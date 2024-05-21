@@ -62,6 +62,7 @@ class StoreFBController extends GetxController {
       _isLoading = true;
       update();
     });
+
     Response response = await storeFBRepo.postFBData({
       "type": type,
       "date": "Apr-2024",
@@ -72,16 +73,18 @@ class StoreFBController extends GetxController {
 
     ResponseModel responseModel;
     if (response.statusCode == 200) {
-      if (response.body["successful"].toString().toLowerCase() == 'true') {
+      if (response.body["status"].toString().toLowerCase() == 'true') {
         final data = response.body["data"];
         if (data != null && data.isNotEmpty) {
           //
           if (type.toLowerCase().startsWith('category')) {
             //fb category data
+            debugPrint('===>FB category Data$data');
             storeFBCategoryModel = List<StoreFBCategoryModel>.from(
                 data.map((x) => StoreFBCategoryModel.fromJson(x)));
           } else if (type.toLowerCase().startsWith('trend')) {
             //fb trends data
+            debugPrint('===>FB Trends Data$data');
             _storeFBTrendsModel = StoreFBTrendsModel.fromJson(data);
           }
         }

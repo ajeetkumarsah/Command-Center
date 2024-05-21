@@ -3,16 +3,16 @@ class StoreFBTrendsModel {
   final int? yMax;
   final int? yRange;
   final double? yInterval;
-  final List<YAxisDataModel>? yAxisData;
-  final List<FBTrendsModel>? data;
+  final List<YAxisDataModel> yAxisData;
+  final List<FBTrendsModel> data;
 
   StoreFBTrendsModel({
     this.yMin,
     this.yMax,
     this.yRange,
     this.yInterval,
-    this.yAxisData,
-    this.data,
+    required this.yAxisData,
+    required this.data,
   });
 
   factory StoreFBTrendsModel.fromJson(Map<String, dynamic> json) =>
@@ -36,12 +36,8 @@ class StoreFBTrendsModel {
         "yMax": yMax,
         "yRange": yRange,
         "yInterval": yInterval,
-        "y_axis_data": yAxisData == null
-            ? []
-            : List<dynamic>.from(yAxisData!.map((x) => x.toJson())),
-        "data": data == null
-            ? []
-            : List<dynamic>.from(data!.map((x) => x.toJson())),
+        "y_axis_data": List<dynamic>.from(yAxisData.map((x) => x.toJson())),
+        "data": List<dynamic>.from(data.map((x) => x.toJson())),
       };
 }
 
