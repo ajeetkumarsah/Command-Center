@@ -76,6 +76,10 @@ class AuthRepo {
     return sharedPreferences.getString(AppConstants.TOKEN) ?? "";
   }
 
+  bool getDateFilterCheck() {
+    return sharedPreferences.getBool(AppConstants.DATE_FILTER_CHECK) ?? false;
+  }
+
   String getUserAccessToken() {
     return sharedPreferences.getString(AppConstants.ACCESS_TOKEN) ?? "";
   }
@@ -125,7 +129,9 @@ class AuthRepo {
     sharedPreferences.remove(AppConstants.TOKEN);
     sharedPreferences.remove(AppConstants.ACCESS_TOKEN);
     // sharedPreferences.remove(AppConstants.FCMToken);
-    // sharedPreferences.clear();
+    sharedPreferences.remove(AppConstants.MONTH);
+    sharedPreferences.remove(AppConstants.YEAR);
+    sharedPreferences.clear();
     apiClient.token = null;
     return true;
   }

@@ -72,6 +72,7 @@ class AppConstants {
   static const String GOLDEN_POINTS = 'goldenPoints';
   static const String FOCUS_BRAND = 'focusBrand';
   static const String TOKEN = 'token';
+  static const String DATE_FILTER_CHECK = 'dateFilterCheck';
   static const String EMAIL = 'email';
   static const String NAME = 'name';
   static const String USER_GUIDE = 'userGuide';
