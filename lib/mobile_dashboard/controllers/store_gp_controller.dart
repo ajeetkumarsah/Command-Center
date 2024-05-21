@@ -2,7 +2,9 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:command_centre/mobile_dashboard/data/repository/store_gp_repo.dart';
 import 'package:command_centre/mobile_dashboard/data/models/response/response_model.dart';
+import 'package:command_centre/mobile_dashboard/data/models/response/store_gp_base_model.dart';
 import 'package:command_centre/mobile_dashboard/data/models/response/store_gp_trends_model.dart';
+import 'package:command_centre/mobile_dashboard/data/models/response/store_gp_category_model.dart';
 import 'package:command_centre/mobile_dashboard/data/models/response/store_fb_category_model.dart';
 
 class StoreGPController extends GetxController {
@@ -12,16 +14,19 @@ class StoreGPController extends GetxController {
   bool _isLoading = false;
   bool get isLoading => _isLoading;
 
-  //
+  //Models
   StoreGPTrendsModel? _storeGPTrendsModel;
   StoreGPTrendsModel? get storeGPTrendsModel => _storeGPTrendsModel;
+
+  StoreGPBaseModel? _storeGPBaseModel;
+  StoreGPBaseModel? get storeGPBaseModel => _storeGPBaseModel;
 
   //Strings
   String? _selectedStore;
   String? get selectedStore => _selectedStore;
 
   //List
-  List<StoreFBCategoryModel> storeFBCategoryModel = [];
+  List<StoreGPCategoryModel> storeGPCategoryModel = [];
 
   @override
   void onInit() {
@@ -54,27 +59,43 @@ class StoreGPController extends GetxController {
       _isLoading = true;
       update();
     });
-    Response response = await storeGPRepo.postGPData({
-      "type": type,
-      "date": "Apr-2024",
-      "distributor": "AMAZON DISTRIBUTORS Pvt.LTD.",
-      "branch": "HUBLI",
-      "store": "Viney Cosmatics"
-    });
+    Response response = await storeGPRepo.postGPData(type.startsWith('geo')
+        ? {
+            "type": "geo",
+            "date": "Apr-2024",
+            "distributor": "A.M. AGENCIES",
+            "branch": "Jammu",
+            "store": "Viney Cosmatics",
+            "channel": "New Beauty"
+          }
+        : {
+            "type": type,
+            "date": "Apr-2024",
+            "distributor": "AMAZON DISTRIBUTORS Pvt.LTD.",
+            "branch": "HUBLI",
+            "store": "Viney Cosmatics"
+          });
 
     ResponseModel responseModel;
     if (response.statusCode == 200) {
-      if (response.body["successful"].toString().toLowerCase() == 'true') {
+      if (type.startsWith('geo')) {
+        debugPrint('===>GP Base Data ${response.body}');
+      }
+      if (response.body["status"].toString().toLowerCase() == 'true') {
         final data = response.body["data"];
         if (data != null && data.isNotEmpty) {
           //
           if (type.toLowerCase().startsWith('category')) {
             //fb category data
-            storeFBCategoryModel = List<StoreFBCategoryModel>.from(
-                data.map((x) => StoreFBCategoryModel.fromJson(x)));
+            storeGPCategoryModel = List<StoreGPCategoryModel>.from(
+                data.map((x) => StoreGPCategoryModel.fromJson(x)));
           } else if (type.toLowerCase().startsWith('trend')) {
             //fb trends data
             _storeGPTrendsModel = StoreGPTrendsModel.fromJson(data);
+          } else if (type.toLowerCase().startsWith('geo')) {
+            //fb trends data
+            debugPrint('===>GP Base Data $data');
+            _storeGPBaseModel = StoreGPBaseModel.fromJson(data);
           }
         }
         responseModel = ResponseModel(true, 'Success');

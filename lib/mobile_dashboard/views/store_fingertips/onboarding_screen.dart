@@ -11,7 +11,6 @@ import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:command_centre/mobile_dashboard/utils/png_files.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
 import 'package:flutter_map_marker_popup/flutter_map_marker_popup.dart';
-import 'package:command_centre/mobile_dashboard/bindings/home_binding.dart';
 import 'package:command_centre/mobile_dashboard/utils/routes/app_pages.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:command_centre/mobile_dashboard/controllers/home_controller.dart';

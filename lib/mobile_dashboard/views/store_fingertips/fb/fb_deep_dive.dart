@@ -4,8 +4,8 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:command_centre/mobile_dashboard/utils/app_colors.dart';
 import 'package:command_centre/mobile_dashboard/views/widgets/custom_loader.dart';
-import 'package:command_centre/mobile_dashboard/controllers/store_controller.dart';
 import 'package:command_centre/mobile_dashboard/controllers/store_fb_controller.dart';
+import 'package:command_centre/mobile_dashboard/data/models/response/store_fb_trends_model.dart';
 
 class FBDeepDiveScreen extends StatefulWidget {
   const FBDeepDiveScreen({super.key});
@@ -15,58 +15,22 @@ class FBDeepDiveScreen extends StatefulWidget {
 }
 
 class _FBDeepDiveScreenState extends State<FBDeepDiveScreen> {
-  final StoreFBController fbCtlr =
-      Get.put(StoreFBController(storeFBRepo: Get.find()));
   final double width = 7;
 
-  late List<BarChartGroupData> rawBarGroups;
-  late List<BarChartGroupData> showingBarGroups;
-
-  int touchedGroupIndex = -1;
+  int touchedIndex = -1;
   @override
   void initState() {
     super.initState();
-    fbCtlr.getFBData(distributor: '', branch: '', channel: '', store: '');
-    fbCtlr.getFBData(
-        type: 'trends', distributor: '', branch: '', channel: '', store: '');
-    final barGroup1 = makeGroupData(0, 5, 12);
-    final barGroup2 = makeGroupData(1, 16, 12);
-    final barGroup3 = makeGroupData(2, 18, 5);
-    final barGroup4 = makeGroupData(3, 20, 16);
-    final barGroup5 = makeGroupData(4, 17, 6);
-    final barGroup6 = makeGroupData(5, 19, 1.5);
-    final barGroup7 = makeGroupData(6, 10, 1.5);
-    final items = [
-      barGroup1,
-      barGroup2,
-      barGroup3,
-      barGroup4,
-      barGroup5,
-      barGroup6,
-      barGroup7,
-    ];
-    rawBarGroups = items;
-    showingBarGroups = rawBarGroups;
   }
 
   @override
   Widget build(BuildContext context) {
-    List<StaticBrand> brandList = [
-      StaticBrand(title: 'Ambi Pure', status: false),
-      StaticBrand(title: 'Gurad', status: true),
-      StaticBrand(title: 'Pampers', status: false),
-      StaticBrand(title: 'Pantene', status: false),
-      StaticBrand(title: 'Vicks', status: true),
-      StaticBrand(title: 'Whisper', status: true),
-    ];
-
-    return GetBuilder<StoreController>(
-      init: StoreController(storeRepo: Get.find()),
+    return GetBuilder<StoreFBController>(
+      init: StoreFBController(storeFBRepo: Get.find()),
       builder: (ctlr) {
         return SingleChildScrollView(
-          child: fbCtlr.isLoading
-              ? const Center(child: CustomLoader())
-              : Column(
+          child: !ctlr.isLoading && ctlr.storeFBTrendsModel != null
+              ? Column(
                   children: [
                     // Container(
                     //   padding: const EdgeInsets.all(10.0),
@@ -196,7 +160,7 @@ class _FBDeepDiveScreenState extends State<FBDeepDiveScreen> {
                           Expanded(
                             child: ListTile(
                               title: Text(
-                                '6',
+                                ctlr.storeFBCategoryModel.first.fbTarget ?? '',
                                 style: GoogleFonts.inter(
                                   fontSize: 24,
                                   fontWeight: FontWeight.w400,
@@ -224,7 +188,9 @@ class _FBDeepDiveScreenState extends State<FBDeepDiveScreen> {
                               ),
                               child: ListTile(
                                 title: Text(
-                                  '10',
+                                  ctlr.storeFBCategoryModel.first
+                                          .fbPointsAchieved ??
+                                      '',
                                   style: GoogleFonts.inter(
                                     fontSize: 24,
                                     fontWeight: FontWeight.w400,
@@ -336,64 +302,30 @@ class _FBDeepDiveScreenState extends State<FBDeepDiveScreen> {
                               ],
                             ),
                           ),
+                          const SizedBox(height: 20),
                           Expanded(
                             child: BarChart(
                               BarChartData(
-                                maxY: 20,
-                                barTouchData: BarTouchData(
-                                  touchTooltipData: BarTouchTooltipData(
-                                    tooltipBgColor: Colors.grey,
-                                    getTooltipItem: (a, b, c, d) => null,
-                                  ),
-                                  touchCallback:
-                                      (FlTouchEvent event, response) {
-                                    if (response == null ||
-                                        response.spot == null) {
-                                      // setState(() {
-                                      touchedGroupIndex = -1;
-                                      showingBarGroups = List.of(rawBarGroups);
-                                      // });
-                                      return;
-                                    }
-
-                                    touchedGroupIndex =
-                                        response.spot!.touchedBarGroupIndex;
-
-                                    // setState(() {
-                                    //   if (!event.isInterestedForInteractions) {
-                                    //     touchedGroupIndex = -1;
-                                    //     showingBarGroups = List.of(rawBarGroups);
-                                    //     return;
-                                    //   }
-                                    //   showingBarGroups = List.of(rawBarGroups);
-                                    //   if (touchedGroupIndex != -1) {
-                                    //     var sum = 0.0;
-                                    //     for (final rod
-                                    //         in showingBarGroups[touchedGroupIndex]
-                                    //             .barRods) {
-                                    //       sum += rod.toY;
-                                    //     }
-                                    //     final avg = sum /
-                                    //         showingBarGroups[touchedGroupIndex]
-                                    //             .barRods
-                                    //             .length;
-
-                                    //     showingBarGroups[touchedGroupIndex] =
-                                    //         showingBarGroups[touchedGroupIndex]
-                                    //             .copyWith(
-                                    //       barRods: showingBarGroups[touchedGroupIndex]
-                                    //           .barRods
-                                    //           .map((rod) {
-                                    //         return rod.copyWith(
-                                    //           toY: avg,
-                                    //           color: AppColors.borderColor,
-                                    //         );
-                                    //       }).toList(),
-                                    //     );
-                                    //   }
-                                    // });
-                                  },
-                                ),
+                                maxY:
+                                    ctlr.storeFBTrendsModel?.yMax?.toDouble() ??
+                                        0.0,
+                                // barTouchData: BarTouchData(
+                                //   touchTooltipData: BarTouchTooltipData(
+                                //     tooltipBgColor: Colors.grey,
+                                //     getTooltipItem: (a, b, c, d) => null,
+                                //   ),
+                                //   touchCallback:
+                                //       (FlTouchEvent event, response) {
+                                //     if (response == null ||
+                                //         response.spot == null) {
+                                //       touchedGroupIndex = -1;
+                                //       return;
+                                //     }
+                                //     touchedGroupIndex =
+                                //         response.spot!.touchedBarGroupIndex;
+                                //   },
+                                // ),
+                                minY: 0,
                                 titlesData: FlTitlesData(
                                   show: true,
                                   rightTitles: const AxisTitles(
@@ -403,25 +335,93 @@ class _FBDeepDiveScreenState extends State<FBDeepDiveScreen> {
                                     sideTitles: SideTitles(showTitles: false),
                                   ),
                                   bottomTitles: AxisTitles(
-                                    sideTitles: SideTitles(
-                                      showTitles: true,
-                                      getTitlesWidget: bottomTitles,
-                                      reservedSize: 42,
-                                    ),
+                                    sideTitles: _bottomTitles(
+                                        ctlr.storeFBTrendsModel!.data),
                                   ),
                                   leftTitles: AxisTitles(
                                     sideTitles: SideTitles(
                                       showTitles: true,
-                                      reservedSize: 28,
-                                      interval: 1,
-                                      getTitlesWidget: leftTitles,
+                                      reservedSize: 45,
+                                      interval:
+                                          ctlr.storeFBTrendsModel?.yInterval ??
+                                              1,
+                                      getTitlesWidget: (value, meta) =>
+                                          getLeftLineTitles(
+                                              value,
+                                              meta,
+                                              ctlr.storeFBTrendsModel!
+                                                  .yAxisData),
                                     ),
+                                  ),
+                                ),
+                                barTouchData: BarTouchData(
+                                  enabled: false,
+                                  // handleBuiltInTouches: true,
+                                  longPressDuration:
+                                      const Duration(milliseconds: 100),
+                                  handleBuiltInTouches: true,
+                                  // allowTouchBarBackDraw: false,
+                                  // touchExtraThreshold: EdgeInsets.only(right: 30),
+                                  touchCallback:
+                                      (FlTouchEvent event, barTouchResponse) {
+                                    setState(() {
+                                      if (!event.isInterestedForInteractions ||
+                                          barTouchResponse == null ||
+                                          barTouchResponse.spot == null) {
+                                        touchedIndex = -1;
+                                        return;
+                                      }
+                                      touchedIndex = barTouchResponse
+                                          .spot!.touchedBarGroupIndex;
+                                    });
+                                  },
+                                  touchTooltipData: BarTouchTooltipData(
+                                    tooltipHorizontalAlignment:
+                                        FLHorizontalAlignment.center,
+                                    tooltipMargin: 30,
+                                    tooltipBgColor: AppColors.primary,
+                                    tooltipRoundedRadius: 100,
+                                    getTooltipItem:
+                                        (group, groupIndex, rod, rodIndex) {
+                                      return touchedIndex == groupIndex
+                                          ? BarTooltipItem(
+                                              getDataTitles(
+                                                  group.x.toDouble(),
+                                                  ctlr.storeFBTrendsModel!.data,
+                                                  true),
+                                              const TextStyle(
+                                                color: AppColors.white,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 11,
+                                              ),
+                                            )
+                                          : null;
+                                    },
                                   ),
                                 ),
                                 borderData: FlBorderData(
                                   show: false,
                                 ),
-                                barGroups: showingBarGroups,
+                                barGroups: [
+                                  ...ctlr.storeFBTrendsModel!.data
+                                      .asMap()
+                                      .map(
+                                        (key, value) => MapEntry(
+                                          key,
+                                          makeGroupData(
+                                              value.index ?? 0,
+                                              double.tryParse(
+                                                      value.fbTarget ?? '') ??
+                                                  0.0,
+                                              double.tryParse(
+                                                      value.fbPointsAchieved ??
+                                                          '') ??
+                                                  0.0),
+                                        ),
+                                      )
+                                      .values
+                                      .toList()
+                                ],
                                 gridData: const FlGridData(show: false),
                               ),
                             ),
@@ -443,7 +443,6 @@ class _FBDeepDiveScreenState extends State<FBDeepDiveScreen> {
                           ),
                         ],
                       ),
-                      // padding: ,
                       child: Column(
                         children: [
                           Container(
@@ -485,14 +484,16 @@ class _FBDeepDiveScreenState extends State<FBDeepDiveScreen> {
                               ],
                             ),
                           ),
-                          ...brandList
+                          ...ctlr.storeFBCategoryModel
                               .asMap()
                               .map(
                                 (i, e) => MapEntry(
                                   i,
                                   Container(
                                     decoration: BoxDecoration(
-                                      borderRadius: i == brandList.length - 1
+                                      borderRadius: i ==
+                                              ctlr.storeFBCategoryModel.length -
+                                                  1
                                           ? const BorderRadius.only(
                                               bottomLeft: Radius.circular(5.0),
                                               bottomRight: Radius.circular(5.0),
@@ -511,7 +512,7 @@ class _FBDeepDiveScreenState extends State<FBDeepDiveScreen> {
                                         Expanded(
                                           child: Center(
                                             child: Text(
-                                              e.title,
+                                              e.brandName ?? '',
                                               textAlign: TextAlign.left,
                                             ),
                                           ),
@@ -519,10 +520,10 @@ class _FBDeepDiveScreenState extends State<FBDeepDiveScreen> {
                                         Expanded(
                                           child: Center(
                                             child: Icon(
-                                              e.status
+                                              e.targetAchieved ?? false
                                                   ? Icons.check
                                                   : Icons.close,
-                                              color: e.status
+                                              color: e.targetAchieved ?? false
                                                   ? AppColors.green
                                                   : AppColors.red,
                                             ),
@@ -541,54 +542,78 @@ class _FBDeepDiveScreenState extends State<FBDeepDiveScreen> {
 
                     const SizedBox(height: 20),
                   ],
-                ),
+                )
+              : const Center(child: CustomLoader()),
         );
       },
     );
   }
 
-  Widget leftTitles(double value, TitleMeta meta) {
-    const style = TextStyle(
-      color: Color(0xff7589a2),
-      fontWeight: FontWeight.bold,
-      fontSize: 14,
+  String getDataTitles(
+      double value, List<FBTrendsModel> trendsModel, bool fbAchieved) {
+    String text = '';
+    for (var v in trendsModel) {
+      if (value.toInt() == v.index) {
+        text =
+            '${v.monthYear}\n${fbAchieved ? v.fbPointsAchieved : v.fbTarget ?? ''}';
+      }
+    }
+    return text;
+  }
+
+  Widget getLeftLineTitles(
+      double value, TitleMeta meta, List<YAxisDataModel> yAxisData) {
+    final style = GoogleFonts.ptSans(
+      color: AppColors.primary,
+      fontWeight: FontWeight.w300,
+      fontSize: 12,
     );
-    String text;
-    if (value == 0) {
-      text = '1K';
-    } else if (value == 10) {
-      text = '5K';
-    } else if (value == 19) {
-      text = '10K';
-    } else {
-      return Container();
+    String text = '';
+    for (var v in yAxisData) {
+      if (value == double.tryParse(v.yAbs ?? '0.0')) {
+        text = v.yAbs ?? '';
+      }
     }
     return SideTitleWidget(
       axisSide: meta.axisSide,
-      space: 0,
+      space: 4,
       child: Text(text, style: style),
     );
   }
 
-  Widget bottomTitles(double value, TitleMeta meta) {
-    final titles = <String>['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'];
-
-    final Widget text = Text(
-      titles[value.toInt()],
-      style: const TextStyle(
-        color: Color(0xff7589a2),
-        fontWeight: FontWeight.bold,
-        fontSize: 14,
-      ),
-    );
-
-    return SideTitleWidget(
-      axisSide: meta.axisSide,
-      space: 16, //margin top
-      child: text,
-    );
-  }
-
+  SideTitles _bottomTitles(List<FBTrendsModel> trendsList) => SideTitles(
+        showTitles: true,
+        reservedSize: 60,
+        interval: 1,
+        getTitlesWidget: (value, meta) {
+          String text = '';
+          for (var v in trendsList) {
+            if (value.toInt() == v.index) {
+              text = v.monthYear ?? '';
+            }
+          }
+          final style = GoogleFonts.ptSans(
+            color: AppColors.primary,
+            fontWeight: FontWeight.bold,
+            fontSize: 12,
+          );
+          return SideTitleWidget(
+            axisSide: meta.axisSide,
+            space: 4,
+            angle: 35,
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 4.0),
+              child: RotatedBox(
+                quarterTurns: 1,
+                child: Text(
+                  text,
+                  style: style,
+                ),
+              ),
+            ),
+          );
+        },
+      );
   BarChartGroupData makeGroupData(int x, double y1, double y2) {
     return BarChartGroupData(
       barsSpace: 4,
@@ -607,53 +632,6 @@ class _FBDeepDiveScreenState extends State<FBDeepDiveScreen> {
       ],
     );
   }
-
-  Widget makeTransactionsIcon() {
-    const width = 4.5;
-    const space = 3.5;
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: <Widget>[
-        Container(
-          width: width,
-          height: 10,
-          color: Colors.white.withOpacity(0.4),
-        ),
-        const SizedBox(
-          width: space,
-        ),
-        Container(
-          width: width,
-          height: 28,
-          color: Colors.white.withOpacity(0.8),
-        ),
-        const SizedBox(
-          width: space,
-        ),
-        Container(
-          width: width,
-          height: 42,
-          color: Colors.white.withOpacity(1),
-        ),
-        const SizedBox(
-          width: space,
-        ),
-        Container(
-          width: width,
-          height: 28,
-          color: Colors.white.withOpacity(0.8),
-        ),
-        const SizedBox(
-          width: space,
-        ),
-        Container(
-          width: width,
-          height: 10,
-          color: Colors.white.withOpacity(0.4),
-        ),
-      ],
-    );
-  }
 }
 
 class StaticGraph {
@@ -661,14 +639,4 @@ class StaticGraph {
   final double yValue;
 
   StaticGraph({required this.xValue, required this.yValue});
-}
-
-class StaticBrand {
-  final String title;
-  final bool status;
-
-  StaticBrand({
-    required this.title,
-    required this.status,
-  });
 }

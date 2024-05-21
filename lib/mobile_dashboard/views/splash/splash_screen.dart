@@ -35,39 +35,46 @@ class _SplashScreenState extends State<SplashScreen> {
     var geoValue = await controller.getGeoValue();
     var accessToken = await controller.getAccessToken();
     Timer(const Duration(seconds: 3), () {
-      if (token.isNotEmpty && accessToken.isNotEmpty) {
-        FirebaseCrashlytics.instance.log("Splash Token Check");
-        debugPrint('===>Firebase Crash Analytics$seen');
-        if (seen) {
-          if (controller.configModel != null) {
-            debugPrint('===>Config Model is not null');
-            if (controller.configModel?.onMaintenance ?? false) {
-              Get.offAndToNamed(AppPages.maintenanceScreen);
-            } else {
-              debugPrint('===>Maintenance mode is off');
-              if ((Platform.isAndroid
-                      ? controller.configModel?.apkVersion ?? ''
-                      : controller.configModel?.apkVersion ?? '') !=
-                  AppConstants.APP_VERSION) {
-                Get.offAndToNamed(AppPages.updateScreen);
+      if (controller.getDateFilterCheck()) {
+        if (token.isNotEmpty && accessToken.isNotEmpty) {
+          FirebaseCrashlytics.instance.log("Splash Token Check");
+          debugPrint('===>Firebase Crash Analytics$seen');
+          if (seen) {
+            if (controller.configModel != null) {
+              debugPrint('===>Config Model is not null');
+              if (controller.configModel?.onMaintenance ?? false) {
+                Get.offAndToNamed(AppPages.maintenanceScreen);
               } else {
-                if (geo.isNotEmpty && geoValue.isNotEmpty) {
-                  FirebaseCrashlytics.instance.log("Splash Geo Check");
-                  debugPrint('===>Splash Geo $geo Value $geoValue');
-                  // Get.to(const OnboardingScreen());
-                  Get.offAndToNamed(AppPages.INITIAL);
-                  // Get.offAndToNamed(AppPages.PERSONA_SCREEN);
+                debugPrint('===>Maintenance mode is off');
+                if ((Platform.isAndroid
+                        ? controller.configModel?.apkVersion ?? ''
+                        : controller.configModel?.apkVersion ?? '') !=
+                    AppConstants.APP_VERSION) {
+                  Get.offAndToNamed(AppPages.updateScreen);
                 } else {
-                  Get.offAndToNamed(AppPages.businessOnboarding);
+                  if (geo.isNotEmpty && geoValue.isNotEmpty) {
+                    FirebaseCrashlytics.instance.log("Splash Geo Check");
+                    debugPrint('===>Splash Geo $geo Value $geoValue');
+                    // Get.to(const OnboardingScreen());
+                    Get.offAndToNamed(AppPages.INITIAL);
+                    // Get.offAndToNamed(AppPages.PERSONA_SCREEN);
+                  } else {
+                    Get.offAndToNamed(AppPages.businessOnboarding);
+                  }
                 }
               }
             }
+          } else {
+            Get.offAndToNamed(AppPages.businessOnboarding);
           }
         } else {
-          Get.offAndToNamed(AppPages.businessOnboarding);
+          FirebaseCrashlytics.instance.log("Splash Token False");
+          Get.offAndToNamed(AppPages.FED_AUTH_LOGIN_TEST);
         }
       } else {
-        FirebaseCrashlytics.instance.log("Splash Token False");
+        //clear all the sharedPref data and login
+
+        controller.clearSharedData();
         Get.offAndToNamed(AppPages.FED_AUTH_LOGIN_TEST);
       }
 

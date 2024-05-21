@@ -102,6 +102,10 @@ class AuthController extends GetxController {
     return authRepo.getUserToken();
   }
 
+  bool getDateFilterCheck() {
+    return authRepo.getDateFilterCheck();
+  }
+
   Future<String> getUserAccessToken() async {
     return authRepo.getUserAccessToken();
   }

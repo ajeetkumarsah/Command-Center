@@ -89,9 +89,7 @@ dependencies:
   firebase_messaging: ^14.7.15
   firebase_core: ^2.25.4
   flutter_osm_plugin: ^0.70.4
-
   pointer_interceptor: ^0.10.1
-
   reviews_slider: ^2.0.0
   firebase_crashlytics: ^3.4.14
   flutter_faq: ^1.0.1+1
@@ -111,6 +109,7 @@ dependencies:
   text_3d: ^0.0.4
   tutorial_coach_mark: ^1.2.11
   google_maps_flutter: ^2.6.1
+  # firebase_messaging: ^14.7.15
 
 dependency_overrides:
   intl: 0.18.0
