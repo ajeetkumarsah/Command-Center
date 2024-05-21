@@ -5,7 +5,6 @@ import 'package:command_centre/mobile_dashboard/data/models/response/response_mo
 import 'package:command_centre/mobile_dashboard/data/models/response/store_gp_base_model.dart';
 import 'package:command_centre/mobile_dashboard/data/models/response/store_gp_trends_model.dart';
 import 'package:command_centre/mobile_dashboard/data/models/response/store_gp_category_model.dart';
-import 'package:command_centre/mobile_dashboard/data/models/response/store_fb_category_model.dart';
 
 class StoreGPController extends GetxController {
   final StoreGPRepo storeGPRepo;

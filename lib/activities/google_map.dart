@@ -1,10 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-<<<<<<< HEAD
-import 'package:latlong2/latlong.dart' ;
-=======
 import 'package:latlong2/latlong.dart';
->>>>>>> 4de4be9a0c62aa1259f78d1a60d405ec61d5bce7
 import 'package:http/http.dart' as http;
 import 'package:flutter_map/flutter_map.dart';
 import '../mobile_dashboard/views/store_fingertips/onboarding_screen.dart';
